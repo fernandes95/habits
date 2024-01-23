@@ -9,8 +9,8 @@ import Foundation
 
 struct Habit: Identifiable {
     let id: UUID
-    let name: String
-    let date: Date
+    var name: String
+    var date: Date
     var status: Bool
     
     init(id: UUID = UUID(), name: String, date: Date, status: Bool) {

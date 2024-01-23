@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E192B5FD91B002C7EEB /* ListItem.swift */; };
+		AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */; };
+		AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */; };
 		AEA3D6BB2B5E85B700A08F31 /* HabitsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3D6BA2B5E85B700A08F31 /* HabitsApp.swift */; };
 		AEA3D6BD2B5E85B700A08F31 /* HabitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3D6BC2B5E85B700A08F31 /* HabitsView.swift */; };
 		AEA3D6BF2B5E85B900A08F31 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEA3D6BE2B5E85B900A08F31 /* Assets.xcassets */; };
@@ -15,6 +18,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AE744E192B5FD91B002C7EEB /* ListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItem.swift; sourceTree = "<group>"; };
+		AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelativeHeightSheetContentModifier.swift; sourceTree = "<group>"; };
+		AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerSheetContent.swift; sourceTree = "<group>"; };
 		AEA3D6B72B5E85B700A08F31 /* Habits.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Habits.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEA3D6BA2B5E85B700A08F31 /* HabitsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsApp.swift; sourceTree = "<group>"; };
 		AEA3D6BC2B5E85B700A08F31 /* HabitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsView.swift; sourceTree = "<group>"; };
@@ -34,6 +40,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AE744E182B5FD90B002C7EEB /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				AE744E192B5FD91B002C7EEB /* ListItem.swift */,
+				AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		AE744E1C2B600A4B002C7EEB /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				AE744E1E2B600A7E002C7EEB /* Modifiers */,
+				AE744E182B5FD90B002C7EEB /* Components */,
+				AEA3D6C82B5E8BD300A08F31 /* Models */,
+				AE744E1D2B600A61002C7EEB /* Views */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		AE744E1D2B600A61002C7EEB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AEA3D6BC2B5E85B700A08F31 /* HabitsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		AE744E1E2B600A7E002C7EEB /* Modifiers */ = {
+			isa = PBXGroup;
+			children = (
+				AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */,
+			);
+			path = Modifiers;
+			sourceTree = "<group>";
+		};
 		AEA3D6AE2B5E85B700A08F31 = {
 			isa = PBXGroup;
 			children = (
@@ -53,9 +95,8 @@
 		AEA3D6B92B5E85B700A08F31 /* Habits */ = {
 			isa = PBXGroup;
 			children = (
-				AEA3D6C82B5E8BD300A08F31 /* Models */,
+				AE744E1C2B600A4B002C7EEB /* UI */,
 				AEA3D6BA2B5E85B700A08F31 /* HabitsApp.swift */,
-				AEA3D6BC2B5E85B700A08F31 /* HabitsView.swift */,
 				AEA3D6BE2B5E85B900A08F31 /* Assets.xcassets */,
 				AEA3D6C02B5E85B900A08F31 /* Preview Content */,
 			);
@@ -148,9 +189,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */,
 				AEA3D6CA2B5E8BE000A08F31 /* Habit.swift in Sources */,
+				AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */,
 				AEA3D6BD2B5E85B700A08F31 /* HabitsView.swift in Sources */,
 				AEA3D6BB2B5E85B700A08F31 /* HabitsApp.swift in Sources */,
+				AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

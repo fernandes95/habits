@@ -34,32 +34,19 @@ struct HabitsView: View {
                         showDatePicker.toggle()
                     }
                     .sheet(isPresented: $showDatePicker) {
-                        VStack(alignment: .trailing) {
-                            HStack {
-                                Button("Today", role: .none, action: {
-                                    showDatePicker.toggle()
-                                    date = Date()
-                                    datePickerDate = date
-                                })
-                                .disabled(date.formatDate() == todayDate)
-                                Spacer()
-                                    .buttonStyle(.borderless)
-                                Button("Done", role: .none, action: {
-                                    showDatePicker.toggle()
-                                    date = datePickerDate
-                                })
-                                .buttonStyle(.borderless)
-                            }
-                            .padding([.top, .horizontal])
-                            
-                            DatePicker(
-                                "",
-                                selection: $datePickerDate,
-                                displayedComponents: [.date]
-                            )
-                        }
-                        .datePickerStyle(.graphical)
-                        .presentationDetents([.medium])
+                        DatePickerSheetContent(
+                            datePickerDate: $datePickerDate,
+                            todayAction: {
+                                showDatePicker.toggle()
+                                date = Date()
+                                datePickerDate = date
+                            },
+                            doneAction: {
+                                showDatePicker.toggle()
+                                date = datePickerDate
+                            },
+                            todayButtonDisabled: date.formatDate() == todayDate
+                        )
                     }
                     Spacer()
                     Button(action: { changeDate(day: 1) }) {
@@ -67,12 +54,9 @@ struct HabitsView: View {
                     }
                 }
                 .padding([.top, .horizontal])
-            List($habits) { $habit in
-                Toggle(isOn: .constant(habit.status)) {
-                    Text(habit.name)
+                List($habits) { $habit in
+                    ListItem(name: habit.name, status: habit.status)
                 }
-                .toggleStyle(checkBoxStyle())
-            }
             .navigationTitle("Habits")
             .toolbar {
                 Button(action: {}) {
@@ -86,9 +70,8 @@ struct HabitsView: View {
     private func changeDate(day: Int) {
         var dateComponent = DateComponents()
         dateComponent.day = day
-        let newDate = Calendar.current.date(byAdding: dateComponent, to: date)
-        if newDate != nil {
-            date = newDate.unsafelyUnwrapped
+        if let newDate = Calendar.current.date(byAdding: dateComponent, to: date) {
+            date = newDate
             datePickerDate = date
         }
     }
@@ -108,7 +91,7 @@ struct checkBoxStyle: ToggleStyle {
 extension Date {
         func formatDate() -> String {
             let dateFormatter = DateFormatter()
-            dateFormatter.setLocalizedDateFormatFromTemplate("dd-MM-yyyy") //TODO: improve this later
+            dateFormatter.setLocalizedDateFormatFromTemplate("dd-MM-yyyy")
             return dateFormatter.string(from: self)
         }
 }
