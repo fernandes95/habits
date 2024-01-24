@@ -9,11 +9,25 @@ import SwiftUI
 
 @main
 struct HabitsApp: App {
-    @State private var habits = Habit.sampleData
+    @StateObject private var store = StoreHabits()
     
     var body: some Scene {
         WindowGroup {
-            HabitsView(habits: $habits)
+            HabitsView(habits: $store.habits) {
+                Task {
+                    do {
+                        try await store.save(habits: store.habits)
+                    } catch {
+                        
+                    }
+                }
+            }
+            .task {
+                do {
+                    try await store.load()
+                } catch {
+                }
+            }
         }
     }
 }

@@ -13,6 +13,9 @@ struct HabitsView: View {
     @State private var datePickerDate = Date.now
     @State private var date = Date.now
     private let todayDate = Date().formatDate()
+    @State var isPresentingNewHabit = false
+    @Environment(\.scenePhase) private var scenePhase
+    let saveAction: ()->Void
     
     var body: some View {
         NavigationStack {
@@ -65,12 +68,18 @@ struct HabitsView: View {
                 
                 .navigationTitle("Habits")
                 .toolbar {
-                    Button(action: {}) {
+                    Button(action: { isPresentingNewHabit.toggle() }) {
                         Image(systemName: "plus")
                     }
                     .accessibilityLabel("New Habit")
                 }
             }
+        }
+        .sheet(isPresented: $isPresentingNewHabit) {
+            NewHabitView(isPresentingNewHabit: $isPresentingNewHabit, habits: $habits)
+        }
+        .onChange(of: scenePhase) { phase in
+            if phase == .inactive { saveAction() }
         }
     }
     
@@ -85,13 +94,13 @@ struct HabitsView: View {
 }
 
 extension Date {
-        func formatDate() -> String {
-            let dateFormatter = DateFormatter()
-            dateFormatter.setLocalizedDateFormatFromTemplate("dd-MM-yyyy")
-            return dateFormatter.string(from: self)
-        }
+    func formatDate() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("dd-MM-yyyy")
+        return dateFormatter.string(from: self)
+    }
 }
 
 #Preview {
-    HabitsView(habits: .constant(Habit.sampleData))
+    HabitsView(habits: .constant(Habit.sampleData), saveAction: {})
 }

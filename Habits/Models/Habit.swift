@@ -7,14 +7,16 @@
 
 import Foundation
 
-struct Habit: Identifiable {
+struct Habit: Identifiable, Encodable, Decodable {
     let id: UUID
+    let groupId: UUID
     var name: String
     var date: Date
     var status: Bool
     
-    init(id: UUID = UUID(), name: String, date: Date, status: Bool) {
+    init(id: UUID = UUID(), groupId: UUID = UUID(), name: String, date: Date, status: Bool) {
         self.id = id
+        self.groupId = groupId
         self.name = name
         self.date = date
         self.status = status

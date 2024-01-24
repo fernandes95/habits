@@ -32,6 +32,6 @@ struct checkBoxStyle: ToggleStyle {
     }
 }
 
-#Preview(traits: .sizeThatFitsLayout) {
+#Preview {
     ListItem(name: "Test", status: false)
 }

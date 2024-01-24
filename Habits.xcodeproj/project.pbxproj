@@ -15,6 +15,8 @@
 		AEA3D6BF2B5E85B900A08F31 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEA3D6BE2B5E85B900A08F31 /* Assets.xcassets */; };
 		AEA3D6C22B5E85B900A08F31 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEA3D6C12B5E85B900A08F31 /* Preview Assets.xcassets */; };
 		AEA3D6CA2B5E8BE000A08F31 /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3D6C92B5E8BE000A08F31 /* Habit.swift */; };
+		AED732D52B61584E00CD750D /* NewHabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED732D42B61584E00CD750D /* NewHabitView.swift */; };
+		AED732D82B61702300CD750D /* StoreHabits.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED732D72B61702300CD750D /* StoreHabits.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,8 @@
 		AEA3D6BE2B5E85B900A08F31 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AEA3D6C12B5E85B900A08F31 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		AEA3D6C92B5E8BE000A08F31 /* Habit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
+		AED732D42B61584E00CD750D /* NewHabitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitView.swift; sourceTree = "<group>"; };
+		AED732D72B61702300CD750D /* StoreHabits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreHabits.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +58,6 @@
 			children = (
 				AE744E1E2B600A7E002C7EEB /* Modifiers */,
 				AE744E182B5FD90B002C7EEB /* Components */,
-				AEA3D6C82B5E8BD300A08F31 /* Models */,
 				AE744E1D2B600A61002C7EEB /* Views */,
 			);
 			path = UI;
@@ -64,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				AEA3D6BC2B5E85B700A08F31 /* HabitsView.swift */,
+				AED732D42B61584E00CD750D /* NewHabitView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -95,6 +99,7 @@
 		AEA3D6B92B5E85B700A08F31 /* Habits */ = {
 			isa = PBXGroup;
 			children = (
+				AED732D62B61700C00CD750D /* Models */,
 				AE744E1C2B600A4B002C7EEB /* UI */,
 				AEA3D6BA2B5E85B700A08F31 /* HabitsApp.swift */,
 				AEA3D6BE2B5E85B900A08F31 /* Assets.xcassets */,
@@ -111,10 +116,11 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		AEA3D6C82B5E8BD300A08F31 /* Models */ = {
+		AED732D62B61700C00CD750D /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				AEA3D6C92B5E8BE000A08F31 /* Habit.swift */,
+				AED732D72B61702300CD750D /* StoreHabits.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -191,7 +197,9 @@
 			files = (
 				AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */,
 				AEA3D6CA2B5E8BE000A08F31 /* Habit.swift in Sources */,
+				AED732D52B61584E00CD750D /* NewHabitView.swift in Sources */,
 				AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */,
+				AED732D82B61702300CD750D /* StoreHabits.swift in Sources */,
 				AEA3D6BD2B5E85B700A08F31 /* HabitsView.swift in Sources */,
 				AEA3D6BB2B5E85B700A08F31 /* HabitsApp.swift in Sources */,
 				AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */,
@@ -328,6 +336,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Habits/Preview Content\"";
+				DEVELOPMENT_TEAM = KHV2ZYTA6U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -335,12 +344,13 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = test.Habits;
+				PRODUCT_BUNDLE_IDENTIFIER = test.tiago.Habits;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -356,6 +366,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Habits/Preview Content\"";
+				DEVELOPMENT_TEAM = KHV2ZYTA6U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -363,12 +374,13 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = test.Habits;
+				PRODUCT_BUNDLE_IDENTIFIER = test.tiago.Habits;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
