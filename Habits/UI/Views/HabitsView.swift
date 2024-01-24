@@ -21,6 +21,7 @@ struct HabitsView: View {
                     Button(action: { changeDate(day: -1) }) {
                         Image(systemName: "chevron.left")
                     }
+                    .accessibilityLabel("Previous Day")
                     Spacer()
                     HStack {
                         if date.formatDate() == todayDate {
@@ -52,19 +53,25 @@ struct HabitsView: View {
                     Button(action: { changeDate(day: 1) }) {
                         Image(systemName: "chevron.right")
                     }
+                    .accessibilityLabel("Next Day")
                 }
                 .padding([.top, .horizontal])
+                
                 List($habits) { $habit in
                     ListItem(name: habit.name, status: habit.status)
+                        
                 }
-            .navigationTitle("Habits")
-            .toolbar {
-                Button(action: {}) {
-                    Image(systemName: "plus")
+                .listStyle(.plain)
+                
+                .navigationTitle("Habits")
+                .toolbar {
+                    Button(action: {}) {
+                        Image(systemName: "plus")
+                    }
+                    .accessibilityLabel("New Habit")
                 }
-                .accessibilityLabel("New Habit")
             }
-        }}
+        }
     }
     
     private func changeDate(day: Int) {
@@ -74,17 +81,6 @@ struct HabitsView: View {
             date = newDate
             datePickerDate = date
         }
-    }
-}
-
-struct checkBoxStyle: ToggleStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        HStack {
-            Image(systemName: configuration.isOn ? "checkmark.circle.fill" : "circle")
-                .resizable()
-                .frame(width: 20, height: 20)
-            configuration.label
-        }.onTapGesture { configuration.isOn.toggle() }
     }
 }
 

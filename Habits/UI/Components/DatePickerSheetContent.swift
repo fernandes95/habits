@@ -36,6 +36,6 @@ struct DatePickerSheetContent: View {
     }
 }
 
-#Preview {
+#Preview(traits: .sizeThatFitsLayout) {
     DatePickerSheetContent(datePickerDate: .constant(Date.now), todayAction: { }, doneAction: { }, todayButtonDisabled: false)
 }

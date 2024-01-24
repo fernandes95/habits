@@ -16,6 +16,22 @@ struct ListItem: View {
             Text(self.name)
         }
         .toggleStyle(checkBoxStyle())
+        .padding(.vertical)
     }
     
+}
+
+struct checkBoxStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            Image(systemName: configuration.isOn ? "checkmark.circle.fill" : "circle")
+                .resizable()
+                .frame(width: 20, height: 20)
+            configuration.label
+        }.onTapGesture { configuration.isOn.toggle() }
+    }
+}
+
+#Preview(traits: .sizeThatFitsLayout) {
+    ListItem(name: "Test", status: false)
 }
