@@ -9,19 +9,24 @@ import SwiftUI
 
 struct HabitsView: View {
     @Binding var habits: [Habit]
+    @Binding var habitsFiltered: [Habit]
     @State private var showDatePicker = false
     @State private var datePickerDate = Date.now
     @State private var date = Date.now
     private let todayDate = Date().formatDate()
     @State var isPresentingNewHabit = false
     @Environment(\.scenePhase) private var scenePhase
+    let changeDateAction: (Date)->Void
     let saveAction: ()->Void
     
     var body: some View {
         NavigationStack {
             VStack {
                 HStack {
-                    Button(action: { changeDate(day: -1) }) {
+                    Button(action: {
+                        changeDate(day: -1)
+                        changeDateAction(date)
+                    }) {
                         Image(systemName: "chevron.left")
                     }
                     .accessibilityLabel("Previous Day")
@@ -53,16 +58,21 @@ struct HabitsView: View {
                         )
                     }
                     Spacer()
-                    Button(action: { changeDate(day: 1) }) {
+                    Button(action: {
+                        changeDate(day: 1)
+                        changeDateAction(date)
+                    }) {
                         Image(systemName: "chevron.right")
                     }
                     .accessibilityLabel("Next Day")
                 }
                 .padding([.top, .horizontal])
                 
-                List($habits) { $habit in
-                    ListItem(name: habit.name, status: habit.status)
-                        
+                List($habitsFiltered) { $habit in
+                    ListItem(name: habit.name, status: $habit.status)
+                        .onTapGesture {
+                            habit.status = !habit.status
+                        }
                 }
                 .listStyle(.plain)
                 
@@ -102,5 +112,5 @@ extension Date {
 }
 
 #Preview {
-    HabitsView(habits: .constant(Habit.sampleData), saveAction: {})
+    HabitsView(habits: .constant(Habit.sampleData), habitsFiltered: .constant(Habit.sampleData), changeDateAction: {_ in }, saveAction: {})
 }

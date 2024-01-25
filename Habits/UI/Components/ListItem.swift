@@ -9,10 +9,10 @@ import SwiftUI
 
 struct ListItem: View {
     let name: String
-    let status: Bool
+    @Binding var status: Bool
     
     var body: some View {
-        Toggle(isOn: .constant(self.status)) {
+        Toggle(isOn: $status) {
             Text(self.name)
         }
         .toggleStyle(checkBoxStyle())
@@ -33,5 +33,5 @@ struct checkBoxStyle: ToggleStyle {
 }
 
 #Preview {
-    ListItem(name: "Test", status: false)
+    ListItem(name: "Test", status: .constant(false))
 }
