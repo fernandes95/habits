@@ -68,25 +68,29 @@ struct HabitsView: View {
                 }
                 .padding([.top, .horizontal])
                 
-                List($habitsFiltered) { $habit in
-                    ListItem(name: habit.name, status: $habit.status)
-                        .onTapGesture {
-                            habit.status = !habit.status
-                        }
+                List {
+                    ForEach($habitsFiltered) { $habit in
+                        let isLast = habit == habitsFiltered.last
+                        
+                        ListItem(name: habit.name, status: $habit.status)
+                            .onTapGesture {
+                                habit.status = !habit.status
+                            }
+                            .listRowSeparator(.hidden, edges: isLast ? .bottom : .top)
+                    }
                 }
                 .listStyle(.plain)
-                
-                .navigationTitle("Habits")
-                .toolbar {
-                    Button(action: { isPresentingNewHabit.toggle() }) {
-                        Image(systemName: "plus")
-                    }
-                    .accessibilityLabel("New Habit")
+            }
+            .navigationTitle("Habits")
+            .toolbar {
+                Button(action: { isPresentingNewHabit.toggle() }) {
+                    Image(systemName: "plus")
                 }
+                .accessibilityLabel("New Habit")
             }
         }
         .sheet(isPresented: $isPresentingNewHabit) {
-            NewHabitView(isPresentingNewHabit: $isPresentingNewHabit, habits: $habits)
+            NewHabitView(isPresentingNewHabit: $isPresentingNewHabit, habits: $habits, updateList: { changeDateAction(date) })
         }
         .onChange(of: scenePhase) { phase in
             if phase == .inactive { saveAction() }

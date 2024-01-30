@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Habit: Identifiable, Encodable, Decodable {
+struct Habit: Identifiable, Encodable, Decodable, Equatable {
     let id: UUID
     let groupId: UUID
     var name: String
@@ -30,4 +30,16 @@ extension Habit {
         Habit(name: "Take Supplemets", date: Date(), status: true),
         Habit(name: "Go for a walk", date: Date(), status: false)
     ]
+}
+
+enum HabitFrequency: String, Identifiable, CaseIterable {
+    case Daily
+    case Weekly
+    case Monthly
+    case Yearly
+    case Custom
+    
+    var id: String {
+        rawValue.capitalized
+    }
 }
