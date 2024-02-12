@@ -13,7 +13,7 @@ struct HabitsApp: App {
     
     var body: some Scene {
         WindowGroup {
-            HabitsView(habits: $store.habits, habitsFiltered: $store.filteredHabits, changeDateAction: { store.filterListByDate(date: $0) }) {
+            HabitsView(habits: $store.habits, habitsFiltered: $store.filteredHabits, changeStatusAction: { store.changeHabitStatus(habitId: $0)}, changeDateAction: { store.filterListByDate(date: $0) }) {
                 Task {
                     do {
                         try await store.save(habits: store.habits)

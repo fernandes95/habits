@@ -16,6 +16,7 @@ struct HabitsView: View {
     private let todayDate = Date().formatDate()
     @State var isPresentingNewHabit = false
     @Environment(\.scenePhase) private var scenePhase
+    let changeStatusAction: (UUID)->Void
     let changeDateAction: (Date)->Void
     let saveAction: ()->Void
     
@@ -74,7 +75,7 @@ struct HabitsView: View {
                         
                         ListItem(name: habit.name, status: $habit.status)
                             .onTapGesture {
-                                habit.status = !habit.status
+                                changeStatusAction(habit.id)
                             }
                             .listRowSeparator(.hidden, edges: isLast ? .bottom : .top)
                     }
@@ -116,5 +117,5 @@ extension Date {
 }
 
 #Preview {
-    HabitsView(habits: .constant(Habit.sampleData), habitsFiltered: .constant(Habit.sampleData), changeDateAction: {_ in }, saveAction: {})
+    HabitsView(habits: .constant(Habit.sampleData), habitsFiltered: .constant(Habit.sampleData), changeStatusAction: {_ in }, changeDateAction: {_ in }, saveAction: {})
 }

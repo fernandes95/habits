@@ -14,7 +14,7 @@ struct Habit: Identifiable, Encodable, Decodable, Equatable {
     var date: Date
     var status: Bool
     
-    init(id: UUID = UUID(), groupId: UUID = UUID(), name: String, date: Date, status: Bool) {
+    init(id: UUID = UUID(), groupId: UUID, name: String, date: Date, status: Bool = false) {
         self.id = id
         self.groupId = groupId
         self.name = name
@@ -26,9 +26,9 @@ struct Habit: Identifiable, Encodable, Decodable, Equatable {
 extension Habit {
     static let sampleData: [Habit] =
     [
-        Habit(name: "Drink Milk", date: Date(), status: false),
-        Habit(name: "Take Supplemets", date: Date(), status: true),
-        Habit(name: "Go for a walk", date: Date(), status: false)
+        Habit(groupId: UUID(), name: "Drink Milk", date: Date()),
+        Habit(groupId: UUID(), name: "Take Supplemets", date: Date(), status: true),
+        Habit(groupId: UUID(), name: "Go for a walk", date: Date())
     ]
 }
 

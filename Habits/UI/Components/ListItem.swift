@@ -13,7 +13,7 @@ struct ListItem: View {
     
     var body: some View {
         Toggle(isOn: $status) {
-            Text(self.name)
+            Text(self.name).strikethrough(status)
         }
         .toggleStyle(checkBoxStyle())
         .padding(.vertical)
@@ -28,10 +28,13 @@ struct checkBoxStyle: ToggleStyle {
                 .resizable()
                 .frame(width: 20, height: 20)
             configuration.label
-        }.onTapGesture { configuration.isOn.toggle() }
+        }
     }
 }
 
 #Preview {
-    ListItem(name: "Test", status: .constant(false))
+    VStack {
+        ListItem(name: "Test", status: .constant(false))
+        ListItem(name: "Test 1", status: .constant(true))
+    }
 }

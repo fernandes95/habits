@@ -11,7 +11,8 @@ import Foundation
 struct NewHabitView: View {
     @Binding var isPresentingNewHabit: Bool
     @Binding var habits: [Habit]
-    @State private var newHabit = Habit(name: "", date: Date.now, status: false)
+    private let newHabitGroupId = UUID()
+    @State private var newHabit = Habit(groupId: UUID(), name: "", date: Date.now)
     @State private var startDate = Date.now
     @State private var endDate = Date.now
 //    @State private var frequency: HabitFrequency = .Daily
@@ -73,8 +74,9 @@ struct NewHabitView: View {
             var dateComponent = DateComponents()
             dateComponent.day = i
             if let newDate = Calendar.current.date(byAdding: dateComponent, to: startDate) {
-                newHabit.date = newDate
-                habits.append(newHabit)
+                var addHabit = Habit(groupId: newHabitGroupId, name: newHabit.name, date: newDate, status: false)
+                
+                habits.append(addHabit)
             }
         }
         
