@@ -20,18 +20,28 @@ class StoreHabits: ObservableObject {
         .appendingPathComponent("habits.data")
     }
     
-    func filterListByDate(date: Date) {
-        filteredHabits = habits
+    func filterListByDate(date: Date) {	
+        var dateList = habits
             .filter { $0.date.formatDate() == date.formatDate() }
+        var uncheckedList = dateList
+            .filter { !$0.status }
             .sorted { (lhs: Habit, rhs: Habit) in
-                return lhs.status != rhs.status
+                return lhs.date < rhs.date
             }
+        var checkedList = dateList
+            .filter { $0.status }
+            .sorted { (lhs: Habit, rhs: Habit) in
+                return lhs.statusDate > rhs.statusDate
+            }
+        
+        filteredHabits = uncheckedList + checkedList
     }
     
     func changeHabitStatus(habitId: UUID) {
         if let index = habits.firstIndex(where: {$0.id == habitId}) {
             var habitUpdated = habits[index]
             habitUpdated.status = !habitUpdated.status
+            habitUpdated.statusDate = Date.now
             
             habits[index] = habitUpdated
             

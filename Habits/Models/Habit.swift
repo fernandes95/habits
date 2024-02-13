@@ -13,22 +13,24 @@ struct Habit: Identifiable, Encodable, Decodable, Equatable {
     var name: String
     var date: Date
     var status: Bool
+    var statusDate: Date
     
-    init(id: UUID = UUID(), groupId: UUID, name: String, date: Date, status: Bool = false) {
+    init(id: UUID = UUID(), groupId: UUID, name: String, date: Date, status: Bool = false, statusDate: Date) {
         self.id = id
         self.groupId = groupId
         self.name = name
         self.date = date
         self.status = status
+        self.statusDate = statusDate
     }
 }
 
 extension Habit {
     static let sampleData: [Habit] =
     [
-        Habit(groupId: UUID(), name: "Drink Milk", date: Date()),
-        Habit(groupId: UUID(), name: "Take Supplemets", date: Date(), status: true),
-        Habit(groupId: UUID(), name: "Go for a walk", date: Date())
+        Habit(groupId: UUID(), name: "Drink Milk", date: Date(), statusDate: Date.now),
+        Habit(groupId: UUID(), name: "Take Supplemets", date: Date(), status: true, statusDate: Date.now),
+        Habit(groupId: UUID(), name: "Go for a walk", date: Date(), statusDate: Date.now)
     ]
 }
 
