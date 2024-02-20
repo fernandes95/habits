@@ -73,11 +73,21 @@ struct HabitsView: View {
                     ForEach($habitsFiltered) { $habit in
                         let isLast = habit == habitsFiltered.last
                         
-                        ListItem(name: habit.name, status: $habit.status)
+                        ZStack(alignment: .leading) {
+                            NavigationLink(destination: HabitDetailView(habits: $habits, habit: $habit)) {
+                                EmptyView()
+                            }
+                            .opacity(0)
+                            
+                            ListItem(
+                                name: habit.name,
+                                status: $habit.status
+                            )
                             .onTapGesture {
                                 changeStatusAction(habit.id)
                             }
                             .listRowSeparator(.hidden, edges: isLast ? .bottom : .top)
+                        }
                     }
                 }
                 .listStyle(.plain)

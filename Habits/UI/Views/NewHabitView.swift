@@ -20,25 +20,13 @@ struct NewHabitView: View {
     
     var body: some View {
         NavigationStack {
-            Form {
-                TextField("Name", text: $newHabit.name)
-                
-                DatePicker("Start Date", selection: $startDate,
-                           in: Date()...,
-                           displayedComponents: .date
-                )
-                DatePicker("End Date", selection: $endDate,
-                           in: startDate...,
-                           displayedComponents: .date)
-                
-//                if startDate.formatDate() != endDate.formatDate() {
-//                    Picker("Frequency", selection: $frequency, content: {
-//                        ForEach(HabitFrequency.allCases) { frequency in
-//                            Text(frequency.rawValue.capitalized).tag(frequency)
-//                        }
-//                    }).pickerStyle(.menu)
-//                }
-            }
+            NewHabitContentView(
+                habitName: $newHabit.name,
+                startDate: $startDate,
+                endDate: $endDate,
+                isEdit: .constant(true),
+                isNew: true
+            )
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Dismiss") {
@@ -74,7 +62,7 @@ struct NewHabitView: View {
             var dateComponent = DateComponents()
             dateComponent.day = i
             if let newDate = Calendar.current.date(byAdding: dateComponent, to: startDate) {
-                var addHabit = Habit(groupId: newHabitGroupId, name: newHabit.name, date: newDate, status: false, statusDate: Date.now)
+                let addHabit = Habit(groupId: newHabitGroupId, name: newHabit.name, date: newDate, status: false, statusDate: Date.now)
                 
                 habits.append(addHabit)
             }

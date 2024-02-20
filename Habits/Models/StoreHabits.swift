@@ -21,14 +21,14 @@ class StoreHabits: ObservableObject {
     }
     
     func filterListByDate(date: Date) {	
-        var dateList = habits
+        let dateList = habits
             .filter { $0.date.formatDate() == date.formatDate() }
-        var uncheckedList = dateList
+        let uncheckedList = dateList
             .filter { !$0.status }
             .sorted { (lhs: Habit, rhs: Habit) in
                 return lhs.date < rhs.date
             }
-        var checkedList = dateList
+        let checkedList = dateList
             .filter { $0.status }
             .sorted { (lhs: Habit, rhs: Habit) in
                 return lhs.statusDate > rhs.statusDate
