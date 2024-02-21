@@ -50,10 +50,12 @@ struct HabitsView: View {
                                 showDatePicker.toggle()
                                 date = Date()
                                 datePickerDate = date
+                                changeDateAction(date)
                             },
                             doneAction: {
                                 showDatePicker.toggle()
                                 date = datePickerDate
+                                changeDateAction(date)
                             },
                             todayButtonDisabled: date.formatDate() == todayDate
                         )
@@ -101,7 +103,12 @@ struct HabitsView: View {
             }
         }
         .sheet(isPresented: $isPresentingNewHabit) {
-            NewHabitView(isPresentingNewHabit: $isPresentingNewHabit, habits: $habits, updateList: { changeDateAction(date) })
+            NewHabitView(
+                isPresentingNewHabit: $isPresentingNewHabit,
+                habits: $habits, 
+                startDate: date,
+                updateList: { changeDateAction(date) }
+            )
         }
         .onChange(of: scenePhase) { phase in
             if phase == .inactive { saveAction() }

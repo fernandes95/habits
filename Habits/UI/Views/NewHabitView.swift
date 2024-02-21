@@ -13,7 +13,7 @@ struct NewHabitView: View {
     @Binding var habits: [Habit]
     private let newHabitGroupId = UUID()
     @State private var newHabit = Habit(groupId: UUID(), name: "", date: Date.now, statusDate: Date.now)
-    @State private var startDate = Date.now
+    @State var startDate: Date
     @State private var endDate = Date.now
 //    @State private var frequency: HabitFrequency = .Daily
     var updateList: ()->Void
@@ -74,5 +74,5 @@ struct NewHabitView: View {
 }
 
 #Preview {
-    NewHabitView(isPresentingNewHabit: .constant(false), habits: .constant(Habit.sampleData), updateList: {})
+    NewHabitView(isPresentingNewHabit: .constant(false), habits: .constant(Habit.sampleData), startDate: Date.now, updateList: {})
 }
