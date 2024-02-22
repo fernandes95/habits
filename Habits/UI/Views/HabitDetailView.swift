@@ -8,53 +8,90 @@
 import SwiftUI
 
 struct HabitDetailView: View {
-    @Binding var habits: [Habit]
+    @EnvironmentObject
+    private var router: HabitsRouter
+    
+    @EnvironmentObject
+    private var store: StoreHabits
+    
     @Binding var habit: Habit
     @State private var isEditing: Bool = false
     @State private var editingHabit: Habit
+    @State private var showingAlert = false
     
-    init(habits: Binding<[Habit]>, habit: Binding<Habit>) {
-        self._habits = habits
+    init(habit: Binding<Habit>) {
         self._habit = habit
         self._editingHabit = State(initialValue: habit.wrappedValue)
     }
     
     var body: some View {
-        NavigationStack {
-            NewHabitContentView(
-                habitName: $editingHabit.name,
-                startDate: $editingHabit.date, // TODO: get correct startDate
-                endDate: $editingHabit.date, // TODO: get groupId endDate?
-                isEdit: $isEditing,
-                isNew: false
+            VStack {
+                NewHabitContentView(
+                    habitName: $editingHabit.name,
+                    startDate: $editingHabit.date, // TODO: get correct startDate
+                    endDate: $editingHabit.date, // TODO: get groupId endDate?
+                    isEdit: $isEditing,
+                    isNew: false
+                )
                 
-                // TODO: add remove button
-            )
-            .navigationBarBackButtonHidden(isEditing)
-            .navigationTitle($habit.name)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    if isEditing {
-                        Button("Cancel") {
-                            cancelEditHabit()
-                        }
-                    }
+                Button(role: .destructive) {
+                    showingAlert = true
+                } label: {
+                    Label("Delete habit", systemImage: "trash")
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    let title = isEditing ? "Done" : "Edit"
-                    Button(title) {
-                        if isEditing {
-                            editHabit()
-                            isEditing = false
-                        } else {
-                            isEditing = true
-                        }
+                .confirmationDialog(
+                    "Are you sure you wanto to delete this habit?",
+                    isPresented: $showingAlert,
+                    titleVisibility: .visible
+                ) {
+                    Button("Delete this habit", role: .destructive) {
+                        removeHabit()
+                    }
+                    Button("Delete future habits", role: .destructive) {
+                        //TODO
+                    }
+                    Button("Cancel", role: .cancel) { }
+                }
+        }
+        .navigationBarBackButtonHidden(isEditing)
+        .navigationTitle("Habit detail")
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                if isEditing {
+                    Button("Cancel") {
+                        cancelEditHabit()
                     }
                 }
             }
-            
+            ToolbarItem(placement: .confirmationAction) {
+                let title = isEditing ? "Done" : "Edit"
+                Button(title) {
+                    if isEditing {
+                        editHabit()
+                        isEditing = false
+                    } else {
+                        isEditing = true
+                    }
+                }
+            }
         }
-        
+    }
+    
+    private func save() {
+        Task {
+            do {
+                try await store.save()
+            } catch {
+            }
+        }
+    }
+    
+    private func editHabit() {
+        if let index = store.habits.firstIndex(where: {$0.id == habit.id}) {
+            store.habits[index] = editingHabit
+            habit = editingHabit
+            save()
+        }
     }
     
     private func cancelEditHabit() {
@@ -62,17 +99,17 @@ struct HabitDetailView: View {
         isEditing = false
     }
     
-    private func editHabit() {
-        if let index = habits.firstIndex(where: {$0.id == habit.id}) {
-            habits[index] = editingHabit
-            habit = editingHabit
+    private func removeHabit() {
+        if let index = store.habits.firstIndex(where: {$0.id == habit.id}) {
+            store.habits.remove(at: index)
+            save()
+            router.pop()
         }
     }
 }
 
 #Preview {
     HabitDetailView(
-        habits: .constant([]),
         habit: .constant(Habit(groupId: UUID(), name: "CENAS", date: Date.now, statusDate: Date.now))
     )
 }

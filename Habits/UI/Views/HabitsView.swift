@@ -8,25 +8,26 @@
 import SwiftUI
 
 struct HabitsView: View {
-    @Binding var habits: [Habit]
-    @Binding var habitsFiltered: [Habit]
+    @EnvironmentObject
+    private var router: HabitsRouter
+    
+    @EnvironmentObject
+    private var store: StoreHabits
+    
     @State private var showDatePicker = false
     @State private var datePickerDate = Date.now
     @State private var date = Date.now
     private let todayDate = Date().formatDate()
     @State var isPresentingNewHabit = false
+    @State var didLoadData = false
     @Environment(\.scenePhase) private var scenePhase
-    let changeStatusAction: (UUID)->Void
-    let changeDateAction: (Date)->Void
-    let saveAction: ()->Void
     
     var body: some View {
-        NavigationStack {
             VStack {
                 HStack {
                     Button(action: {
-                        changeDate(day: -1)
-                        changeDateAction(date)
+                        changeDate(day: -1) // TODO: create enum previous and next for day param
+                        store.filterListByDate(date: date)
                     }) {
                         Image(systemName: "chevron.left")
                     }
@@ -50,12 +51,12 @@ struct HabitsView: View {
                                 showDatePicker.toggle()
                                 date = Date()
                                 datePickerDate = date
-                                changeDateAction(date)
+                                store.filterListByDate(date: date)
                             },
                             doneAction: {
                                 showDatePicker.toggle()
                                 date = datePickerDate
-                                changeDateAction(date)
+                                store.filterListByDate(date: date)
                             },
                             todayButtonDisabled: date.formatDate() == todayDate
                         )
@@ -63,7 +64,7 @@ struct HabitsView: View {
                     Spacer()
                     Button(action: {
                         changeDate(day: 1)
-                        changeDateAction(date)
+                        store.filterListByDate(date: date)
                     }) {
                         Image(systemName: "chevron.right")
                     }
@@ -72,27 +73,35 @@ struct HabitsView: View {
                 .padding([.top, .horizontal])
                 
                 List {
-                    ForEach($habitsFiltered) { $habit in
-                        let isLast = habit == habitsFiltered.last
+                    ForEach($store.filteredHabits) { $habit in
+                        let isLast = habit == store.filteredHabits.last
                         
                         ZStack(alignment: .leading) {
-                            NavigationLink(destination: HabitDetailView(habits: $habits, habit: $habit)) {
-                                EmptyView()
-                            }
-                            .opacity(0)
-                            
                             ListItem(
                                 name: habit.name,
                                 status: $habit.status
                             )
                             .onTapGesture {
-                                changeStatusAction(habit.id)
+                                //TODO: FIX LAYOUT TO SEPARATE CHECK ACTION FROM DETAIL ACTION
+//                                changeStatusAction(habit.id)
+                                router.push(
+                                    HabitDetailView(habit: $habit)
+                                )
                             }
                             .listRowSeparator(.hidden, edges: isLast ? .bottom : .top)
                         }
                     }
                 }
                 .listStyle(.plain)
+            }
+            .task {
+                if !didLoadData {
+                    do {
+                        try await store.load()
+                        didLoadData = true
+                    } catch {
+                    }
+                }
             }
             .navigationTitle("Habits")
             .toolbar {
@@ -101,17 +110,23 @@ struct HabitsView: View {
                 }
                 .accessibilityLabel("New Habit")
             }
-        }
         .sheet(isPresented: $isPresentingNewHabit) {
             NewHabitView(
                 isPresentingNewHabit: $isPresentingNewHabit,
-                habits: $habits, 
+                habits: $store.habits,
                 startDate: date,
-                updateList: { changeDateAction(date) }
+                updateList: { store.filterListByDate(date: date) }
             )
         }
         .onChange(of: scenePhase) { phase in
-            if phase == .inactive { saveAction() }
+            if phase == .inactive {
+                Task {
+                    do {
+                        try await store.save()
+                    } catch {
+                    }
+                }
+            }
         }
     }
     
@@ -134,5 +149,5 @@ extension Date {
 }
 
 #Preview {
-    HabitsView(habits: .constant(Habit.sampleData), habitsFiltered: .constant(Habit.sampleData), changeStatusAction: {_ in }, changeDateAction: {_ in }, saveAction: {})
+    HabitsView()
 }

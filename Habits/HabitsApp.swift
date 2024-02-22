@@ -10,23 +10,14 @@ import SwiftUI
 @main
 struct HabitsApp: App {
     @StateObject private var store = StoreHabits()
-    
+    @StateObject private var router: HabitsRouter = HabitsRouter()
+
     var body: some Scene {
         WindowGroup {
-            HabitsView(habits: $store.habits, habitsFiltered: $store.filteredHabits, changeStatusAction: { store.changeHabitStatus(habitId: $0)}, changeDateAction: { store.filterListByDate(date: $0) }) {
-                Task {
-                    do {
-                        try await store.save(habits: store.habits)
-                    } catch {
-                        
-                    }
-                }
-            }
-            .task {
-                do {
-                    try await store.load()
-                } catch {
-                }
+            ZStack {
+                self.router.root
+                    .environmentObject(self.store)
+                    .environmentObject(self.router)
             }
         }
     }

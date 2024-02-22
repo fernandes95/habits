@@ -9,8 +9,15 @@ import SwiftUI
 
 @MainActor
 class StoreHabits: ObservableObject {
-    @Published var habits: [Habit] = []
+    @Published var habits: [Habit] = [] 
+    {
+        didSet {
+            filterListByDate(date: selectedDate)
+        }
+    }
+    
     @Published var filteredHabits: [Habit] = []
+    @Published var selectedDate: Date = Date.now
     
     private static func fileURL() throws -> URL {
         try FileManager.default.url(for: .documentDirectory,
@@ -20,7 +27,9 @@ class StoreHabits: ObservableObject {
         .appendingPathComponent("habits.data")
     }
     
-    func filterListByDate(date: Date) {	
+    func filterListByDate(date: Date) {
+        selectedDate = date
+        
         let dateList = habits
             .filter { $0.date.formatDate() == date.formatDate() }
         let uncheckedList = dateList
@@ -63,7 +72,7 @@ class StoreHabits: ObservableObject {
         filteredHabits = habits.filter { $0.date.formatDate() == Date.now.formatDate() }
     }
     
-    func save(habits: [Habit]) async throws {
+    func save() async throws {
         let task = Task {
             let data = try JSONEncoder().encode(habits)
             let outfile = try Self.fileURL()
