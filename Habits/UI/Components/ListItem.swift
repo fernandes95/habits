@@ -10,15 +10,28 @@ import SwiftUI
 struct ListItem: View {
     let name: String
     @Binding var status: Bool
+    let statusAction: () -> Void
+    let itemAction: () -> Void
     
     var body: some View {
-        Toggle(isOn: $status) {
-            Text(self.name).strikethrough(status)
+        HStack {
+            Toggle(isOn: $status) {
+                Text(self.name).strikethrough(status)
+                    .lineLimit(1)
+            }
+            .padding([.vertical, .trailing])
+            .toggleStyle(checkBoxStyle())
+            .onTapGesture { statusAction() }
+            
+            Spacer()
+            
+            Button(action: { itemAction() }) {
+                Image(systemName: "chevron.right")
+                    .padding(.leading)
+            }
+            .padding([.vertical, .leading])
         }
-        .toggleStyle(checkBoxStyle())
-        .padding(.vertical)
     }
-    
 }
 
 struct checkBoxStyle: ToggleStyle {
@@ -34,7 +47,7 @@ struct checkBoxStyle: ToggleStyle {
 
 #Preview {
     VStack {
-        ListItem(name: "Test", status: .constant(false))
-        ListItem(name: "Test 1", status: .constant(true))
+        ListItem(name: "LONG NAMEEEEEEEEEEEEEEEEEEEEE shfsjdfnsjdfbsljdfbs", status: .constant(false), statusAction: {}, itemAction: {})
+        ListItem(name: "Test 1", status: .constant(true), statusAction: {}, itemAction: {})
     }
 }

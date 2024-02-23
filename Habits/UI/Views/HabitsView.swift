@@ -27,7 +27,10 @@ struct HabitsView: View {
             .padding([.top, .horizontal])
             
             ContentView(
-                list: $store.filteredHabits,
+                list: $store.filteredHabits, 
+                onItemStatusTap: { id in
+                    store.changeHabitStatus(habitId: id)
+                },
                 onItemTap: { habit in
                     router.push(HabitDetailView(habit: habit))
                 }
@@ -125,25 +128,21 @@ private struct HeaderView: View {
 
 private struct ContentView: View {
     @Binding var list: [Habit]
-    var onItemTap: (Habit)->Void
+    var onItemStatusTap: (UUID) -> Void
+    var onItemTap: (Habit) -> Void
     
     var body: some View {
         List {
             ForEach($list) { $habit in
                 let isLast = habit == list.last
-                
-                ZStack(alignment: .leading) {
-                    ListItem(
-                        name: habit.name,
-                        status: $habit.status
-                    )
-                    .onTapGesture {
-                        //TODO: FIX LAYOUT TO SEPARATE CHECK ACTION FROM DETAIL ACTION
-//                        changeStatusAction(habit.id)
-                        onItemTap(habit)
-                    }
-                    .listRowSeparator(.hidden, edges: isLast ? .bottom : .top)
-                }
+              
+                ListItem(
+                    name: habit.name,
+                    status: $habit.status,
+                    statusAction: { onItemStatusTap(habit.id) },
+                    itemAction: { onItemTap(habit) }
+                )
+                .listRowSeparator(.hidden, edges: isLast ? .bottom : .top)
             }
         }
         .listStyle(.plain)
