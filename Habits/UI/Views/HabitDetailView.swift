@@ -14,44 +14,44 @@ struct HabitDetailView: View {
     @EnvironmentObject
     private var store: StoreHabits
     
-    @Binding var habit: Habit
+    let habit: Habit
     @State private var isEditing: Bool = false
     @State private var editingHabit: Habit
     @State private var showingAlert = false
     
-    init(habit: Binding<Habit>) {
-        self._habit = habit
-        self._editingHabit = State(initialValue: habit.wrappedValue)
+    init(habit: Habit) {
+        self.habit = habit
+        self._editingHabit = State(initialValue: habit)
     }
     
     var body: some View {
-            VStack {
-                NewHabitContentView(
-                    habitName: $editingHabit.name,
-                    startDate: $editingHabit.date, // TODO: get correct startDate
-                    endDate: $editingHabit.date, // TODO: get groupId endDate?
-                    isEdit: $isEditing,
-                    isNew: false
-                )
-                
-                Button(role: .destructive) {
-                    showingAlert = true
-                } label: {
-                    Label("Delete habit", systemImage: "trash")
+        VStack {
+            NewHabitContentView(
+                habitName: $editingHabit.name,
+                startDate: $editingHabit.date,
+                endDate: $editingHabit.date, // TODO: get groupId endDate?
+                isEdit: $isEditing,
+                isNew: false
+            )
+            
+            Button(role: .destructive) {
+                showingAlert = true
+            } label: {
+                Label("Delete habit", systemImage: "trash")
+            }
+            .confirmationDialog(
+                "Are you sure you wanto to delete this habit?",
+                isPresented: $showingAlert,
+                titleVisibility: .visible
+            ) {
+                Button("Delete this habit", role: .destructive) {
+                    removeHabit()
                 }
-                .confirmationDialog(
-                    "Are you sure you wanto to delete this habit?",
-                    isPresented: $showingAlert,
-                    titleVisibility: .visible
-                ) {
-                    Button("Delete this habit", role: .destructive) {
-                        removeHabit()
-                    }
-                    Button("Delete future habits", role: .destructive) {
-                        //TODO
-                    }
-                    Button("Cancel", role: .cancel) { }
+                Button("Delete future habits", role: .destructive) {
+                    //TODO
                 }
+                Button("Cancel", role: .cancel) { }
+            }
         }
         .navigationBarBackButtonHidden(isEditing)
         .navigationTitle("Habit detail")
@@ -81,15 +81,13 @@ struct HabitDetailView: View {
         Task {
             do {
                 try await store.save()
-            } catch {
-            }
+            } catch { }
         }
     }
     
     private func editHabit() {
         if let index = store.habits.firstIndex(where: {$0.id == habit.id}) {
             store.habits[index] = editingHabit
-            habit = editingHabit
             save()
         }
     }
@@ -110,6 +108,6 @@ struct HabitDetailView: View {
 
 #Preview {
     HabitDetailView(
-        habit: .constant(Habit(groupId: UUID(), name: "CENAS", date: Date.now, statusDate: Date.now))
+        habit: Habit(groupId: UUID(), name: "CENAS", date: Date.now, statusDate: Date.now)
     )
 }

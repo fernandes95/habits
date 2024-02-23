@@ -14,129 +14,139 @@ struct HabitsView: View {
     @EnvironmentObject
     private var store: StoreHabits
     
-    @State private var showDatePicker = false
-    @State private var datePickerDate = Date.now
     @State private var date = Date.now
-    private let todayDate = Date().formatDate()
-    @State var isPresentingNewHabit = false
-    @State var didLoadData = false
-    @Environment(\.scenePhase) private var scenePhase
+    @State private var isPresentingNewHabit = false
+    @State private var didLoadData = false
     
     var body: some View {
-            VStack {
-                HStack {
-                    Button(action: {
-                        changeDate(day: -1) // TODO: create enum previous and next for day param
-                        store.filterListByDate(date: date)
-                    }) {
-                        Image(systemName: "chevron.left")
-                    }
-                    .accessibilityLabel("Previous Day")
-                    Spacer()
-                    HStack {
-                        if date.formatDate() == todayDate {
-                            Text("Today")
-                        }
-                        else {
-                            Text(date, style: .date)
-                        }
-                    }
-                    .onTapGesture {
-                        showDatePicker.toggle()
-                    }
-                    .sheet(isPresented: $showDatePicker) {
-                        DatePickerSheetContent(
-                            datePickerDate: $datePickerDate,
-                            todayAction: {
-                                showDatePicker.toggle()
-                                date = Date()
-                                datePickerDate = date
-                                store.filterListByDate(date: date)
-                            },
-                            doneAction: {
-                                showDatePicker.toggle()
-                                date = datePickerDate
-                                store.filterListByDate(date: date)
-                            },
-                            todayButtonDisabled: date.formatDate() == todayDate
-                        )
-                    }
-                    Spacer()
-                    Button(action: {
-                        changeDate(day: 1)
-                        store.filterListByDate(date: date)
-                    }) {
-                        Image(systemName: "chevron.right")
-                    }
-                    .accessibilityLabel("Next Day")
+        VStack {
+            HeaderView(
+                date: $date,
+                changeDateAction: { store.filterListByDate(date: date) }
+            )
+            .padding([.top, .horizontal])
+            
+            ContentView(
+                list: $store.filteredHabits,
+                onItemTap: { habit in
+                    router.push(HabitDetailView(habit: habit))
                 }
-                .padding([.top, .horizontal])
-                
-                List {
-                    ForEach($store.filteredHabits) { $habit in
-                        let isLast = habit == store.filteredHabits.last
-                        
-                        ZStack(alignment: .leading) {
-                            ListItem(
-                                name: habit.name,
-                                status: $habit.status
-                            )
-                            .onTapGesture {
-                                //TODO: FIX LAYOUT TO SEPARATE CHECK ACTION FROM DETAIL ACTION
-//                                changeStatusAction(habit.id)
-                                router.push(
-                                    HabitDetailView(habit: $habit)
-                                )
-                            }
-                            .listRowSeparator(.hidden, edges: isLast ? .bottom : .top)
-                        }
-                    }
-                }
-                .listStyle(.plain)
+            )
+        }
+        .task {
+            if !didLoadData {
+                do {
+                    try await store.load()
+                    didLoadData = true
+                } catch { }
             }
-            .task {
-                if !didLoadData {
-                    do {
-                        try await store.load()
-                        didLoadData = true
-                    } catch {
-                    }
-                }
+        }
+        .navigationTitle("Habits")
+        .toolbar {
+            Button(action: { isPresentingNewHabit = true }) {
+                Image(systemName: "plus")
             }
-            .navigationTitle("Habits")
-            .toolbar {
-                Button(action: { isPresentingNewHabit.toggle() }) {
-                    Image(systemName: "plus")
-                }
-                .accessibilityLabel("New Habit")
-            }
+            .accessibilityLabel("New Habit")
+        }
         .sheet(isPresented: $isPresentingNewHabit) {
             NewHabitView(
                 isPresentingNewHabit: $isPresentingNewHabit,
-                habits: $store.habits,
-                startDate: date,
-                updateList: { store.filterListByDate(date: date) }
+                startDate: date
             )
         }
-        .onChange(of: scenePhase) { phase in
-            if phase == .inactive {
-                Task {
-                    do {
-                        try await store.save()
-                    } catch {
-                    }
+    }
+}
+
+private struct HeaderView: View {
+    @Binding var date: Date
+    var changeDateAction: () -> Void
+    @State private var showDatePicker = false
+    @State private var datePickerDate = Date.now
+    private let todayDate = Date.now.formatDate()
+    
+    var body: some View {
+        HStack {
+            Button(action: { changeDate(dateOption: DateOption.Previous) }) {
+                Image(systemName: "chevron.left")
+            }
+            .accessibilityLabel("Previous Day")
+            Spacer()
+            HStack {
+                if date.formatDate() == todayDate {
+                    Text("Today")
+                }
+                else {
+                    Text(date, style: .date)
                 }
             }
+            .onTapGesture {
+                showDatePicker = true
+            }
+            .sheet(isPresented: $showDatePicker) {
+                DatePickerSheetContent(
+                    datePickerDate: $datePickerDate,
+                    todayAction: {
+                        showDatePicker = false
+                        date = Date()
+                        datePickerDate = date
+                        changeDateAction()
+                    },
+                    doneAction: {
+                        showDatePicker = false
+                        date = datePickerDate
+                        changeDateAction()
+                    },
+                    todayButtonDisabled: date.formatDate() == todayDate
+                )
+            }
+            Spacer()
+            Button(action: { changeDate(dateOption: DateOption.Next) }) {
+                Image(systemName: "chevron.right")
+            }
+            .accessibilityLabel("Next Day")
         }
     }
     
-    private func changeDate(day: Int) {
+    private func changeDate(dateOption: DateOption) {
         var dateComponent = DateComponents()
-        dateComponent.day = day
+        dateComponent.day = dateOption.rawValue
         if let newDate = Calendar.current.date(byAdding: dateComponent, to: date) {
             date = newDate
             datePickerDate = date
+            changeDateAction()
         }
+    }
+    
+    private enum DateOption: Int {
+        case Previous = -1
+        case Next = 1
+    }
+}
+
+private struct ContentView: View {
+    @Binding var list: [Habit]
+    var onItemTap: (Habit)->Void
+    
+    var body: some View {
+        List {
+            ForEach($list) { $habit in
+                let isLast = habit == list.last
+                
+                ZStack(alignment: .leading) {
+                    ListItem(
+                        name: habit.name,
+                        status: $habit.status
+                    )
+                    .onTapGesture {
+                        //TODO: FIX LAYOUT TO SEPARATE CHECK ACTION FROM DETAIL ACTION
+//                        changeStatusAction(habit.id)
+                        onItemTap(habit)
+                    }
+                    .listRowSeparator(.hidden, edges: isLast ? .bottom : .top)
+                }
+            }
+        }
+        .listStyle(.plain)
     }
 }
 

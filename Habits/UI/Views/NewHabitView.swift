@@ -9,14 +9,15 @@ import SwiftUI
 import Foundation
 
 struct NewHabitView: View {
+    @EnvironmentObject
+    private var store: StoreHabits
+    
     @Binding var isPresentingNewHabit: Bool
-    @Binding var habits: [Habit]
     private let newHabitGroupId = UUID()
     @State private var newHabit = Habit(groupId: UUID(), name: "", date: Date.now, statusDate: Date.now)
     @State var startDate: Date
     @State private var endDate = Date.now
 //    @State private var frequency: HabitFrequency = .Daily
-    var updateList: ()->Void
     
     var body: some View {
         NavigationStack {
@@ -36,7 +37,7 @@ struct NewHabitView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
                         addHabits()
-                    }
+                    }.disabled(newHabit.name.isEmpty)
                 }
             }
         }
@@ -64,15 +65,20 @@ struct NewHabitView: View {
             if let newDate = Calendar.current.date(byAdding: dateComponent, to: startDate) {
                 let addHabit = Habit(groupId: newHabitGroupId, name: newHabit.name, date: newDate, status: false, statusDate: Date.now)
                 
-                habits.append(addHabit)
+                store.habits.append(addHabit)
             }
         }
         
-        updateList()
+        Task {
+            do {
+                try await store.save()
+            } catch { }
+        }
+        
         isPresentingNewHabit = false
     }
 }
 
 #Preview {
-    NewHabitView(isPresentingNewHabit: .constant(false), habits: .constant(Habit.sampleData), startDate: Date.now, updateList: {})
+    NewHabitView(isPresentingNewHabit: .constant(false), startDate: Date.now)
 }
