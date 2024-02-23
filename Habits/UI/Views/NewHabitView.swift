@@ -65,16 +65,9 @@ struct NewHabitView: View {
             if let newDate = Calendar.current.date(byAdding: dateComponent, to: startDate) {
                 let addHabit = Habit(groupId: newHabitGroupId, name: newHabit.name, date: newDate, status: false, statusDate: Date.now)
                 
-                store.habits.append(addHabit)
+                store.addHabit(addHabit)
             }
         }
-        
-        Task {
-            do {
-                try await store.save()
-            } catch { }
-        }
-        
         isPresentingNewHabit = false
     }
 }

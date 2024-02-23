@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Habit: Identifiable, Encodable, Decodable, Equatable {
+struct Habit: Identifiable, Encodable, Decodable, Equatable, Hashable {
     let id: UUID
     let groupId: UUID
     var name: String

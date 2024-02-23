@@ -45,7 +45,8 @@ struct HabitDetailView: View {
                 titleVisibility: .visible
             ) {
                 Button("habit_delete_dialog_single", role: .destructive) {
-                    removeHabit()
+                    store.removeHabit(habit.id)
+                    router.pop()
                 }
                 Button("habit_delete_dialog_future", role: .destructive) {
                     //TODO
@@ -67,7 +68,7 @@ struct HabitDetailView: View {
                 let title = isEditing ? "general_done" : "general_edit"
                 Button(LocalizedStringKey(title)) {
                     if isEditing {
-                        editHabit()
+                        store.updateHabit(habitId: habit.id, habitEdited: editingHabit)
                         isEditing = false
                     } else {
                         isEditing = true
@@ -77,32 +78,9 @@ struct HabitDetailView: View {
         }
     }
     
-    private func save() {
-        Task {
-            do {
-                try await store.save()
-            } catch { }
-        }
-    }
-    
-    private func editHabit() {
-        if let index = store.habits.firstIndex(where: {$0.id == habit.id}) {
-            store.habits[index] = editingHabit
-            save()
-        }
-    }
-    
     private func cancelEditHabit() {
         editingHabit = habit
         isEditing = false
-    }
-    
-    private func removeHabit() {
-        if let index = store.habits.firstIndex(where: {$0.id == habit.id}) {
-            store.habits.remove(at: index)
-            save()
-            router.pop()
-        }
     }
 }
 

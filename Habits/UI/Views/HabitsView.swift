@@ -33,15 +33,23 @@ struct HabitsView: View {
                 },
                 onItemTap: { habit in
                     router.push(HabitDetailView(habit: habit))
+                }, 
+                onDelete: { indexSet in
+                    //TODO: VERIFY IF THERE'S A BETTER WAY TO IMPLEMENT THIS
+                    var filteredHabitsCopy = store.filteredHabits
+                    filteredHabitsCopy.remove(atOffsets: indexSet)
+                    
+                    let listDifference = Set<Habit>(store.filteredHabits).subtracting(Set<Habit>(filteredHabitsCopy))
+                    
+                    if let id = listDifference.first?.id {
+                        store.removeHabit(id)
+                    }
                 }
             )
         }
         .task {
             if !didLoadData {
-                do {
-                    try await store.load()
-                    didLoadData = true
-                } catch { }
+                store.loadData()
             }
         }
         .navigationTitle("habits_title")
@@ -130,6 +138,7 @@ private struct ContentView: View {
     @Binding var list: [Habit]
     var onItemStatusTap: (UUID) -> Void
     var onItemTap: (Habit) -> Void
+    var onDelete: (IndexSet) -> Void
     
     var body: some View {
         List {
@@ -144,6 +153,7 @@ private struct ContentView: View {
                 )
                 .listRowSeparator(.hidden, edges: isLast ? .bottom : .top)
             }
+            .onDelete(perform: onDelete)
         }
         .listStyle(.plain)
     }

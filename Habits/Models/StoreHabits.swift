@@ -58,7 +58,7 @@ class StoreHabits: ObservableObject {
         }
     }
     
-    func load() async throws {
+    private func load() async throws {
         let task = Task<[Habit], Error> {
             let fileURL = try Self.fileURL()
             guard let data = try? Data(contentsOf: fileURL) else {
@@ -72,13 +72,48 @@ class StoreHabits: ObservableObject {
         filteredHabits = habits.filter { $0.date.formatDate() == Date.now.formatDate() }
     }
     
-    func save() async throws {
+    private func save() async throws {
         let task = Task {
             let data = try JSONEncoder().encode(habits)
             let outfile = try Self.fileURL()
             try data.write(to: outfile)
         }
         _ = try await task.value
+    }
+    
+    func addHabit(_ habit: Habit) {
+        habits.append(habit)
+        saveData()
+    }
+    
+    func updateHabit(habitId: UUID, habitEdited: Habit) {
+        if let index = habits.firstIndex(where: {$0.id == habitId}) {
+            habits[index] = habitEdited
+            saveData()
+        }
+    }
+    
+    func removeHabit(_ habitId: UUID) {
+        if let index = habits.firstIndex(where: {$0.id == habitId}) {
+            habits.remove(at: index)
+            saveData()
+        }
+    }
+    
+    func loadData() {
+        Task {
+            do {
+                try await load()
+            } catch { }
+        }
+    }
+    
+    func saveData() {
+        Task {
+            do {
+                try await save()
+            } catch { }
+        }
     }
 }
 
