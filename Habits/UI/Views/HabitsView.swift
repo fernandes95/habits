@@ -42,6 +42,7 @@ struct HabitsView: View {
         .task {
             if !didLoadData {
                 store.loadData()
+                didLoadData = true
             }
         }
         .navigationTitle("habits_title")
