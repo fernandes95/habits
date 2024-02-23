@@ -28,22 +28,14 @@ struct HabitsView: View {
             
             ContentView(
                 list: $store.filteredHabits, 
-                onItemStatusTap: { id in
+                onItemStatusAction: { id in
                     store.changeHabitStatus(habitId: id)
                 },
-                onItemTap: { habit in
+                onItemAction: { habit in
                     router.push(HabitDetailView(habit: habit))
                 }, 
-                onDelete: { indexSet in
-                    //TODO: VERIFY IF THERE'S A BETTER WAY TO IMPLEMENT THIS
-                    var filteredHabitsCopy = store.filteredHabits
-                    filteredHabitsCopy.remove(atOffsets: indexSet)
-                    
-                    let listDifference = Set<Habit>(store.filteredHabits).subtracting(Set<Habit>(filteredHabitsCopy))
-                    
-                    if let id = listDifference.first?.id {
-                        store.removeHabit(id)
-                    }
+                onDeleteAction: { id in
+                    store.removeHabit(id)
                 }
             )
         }
@@ -136,9 +128,9 @@ private struct HeaderView: View {
 
 private struct ContentView: View {
     @Binding var list: [Habit]
-    var onItemStatusTap: (UUID) -> Void
-    var onItemTap: (Habit) -> Void
-    var onDelete: (IndexSet) -> Void
+    var onItemStatusAction: (UUID) -> Void
+    var onItemAction: (Habit) -> Void
+    var onDeleteAction: (UUID) -> Void
     
     var body: some View {
         List {
@@ -148,12 +140,18 @@ private struct ContentView: View {
                 ListItem(
                     name: habit.name,
                     status: $habit.status,
-                    statusAction: { onItemStatusTap(habit.id) },
-                    itemAction: { onItemTap(habit) }
+                    statusAction: { onItemStatusAction(habit.id) },
+                    itemAction: { onItemAction(habit) }
                 )
+                .swipeActions(edge: .trailing) {
+                    Button(role: .destructive) {
+                        onDeleteAction(habit.id)
+                    } label: {
+                        Label("habit_detail_delete", systemImage: "trash")
+                    }
+                }
                 .listRowSeparator(.hidden, edges: isLast ? .bottom : .top)
             }
-            .onDelete(perform: onDelete)
         }
         .listStyle(.plain)
     }
