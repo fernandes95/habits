@@ -41,12 +41,12 @@ struct HabitsView: View {
                 } catch { }
             }
         }
-        .navigationTitle("Habits")
+        .navigationTitle("habits_title")
         .toolbar {
             Button(action: { isPresentingNewHabit = true }) {
                 Image(systemName: "plus")
             }
-            .accessibilityLabel("New Habit")
+            .accessibilityLabel("habits_accessibility_new_habit")
         }
         .sheet(isPresented: $isPresentingNewHabit) {
             NewHabitView(
@@ -69,11 +69,11 @@ private struct HeaderView: View {
             Button(action: { changeDate(dateOption: DateOption.Previous) }) {
                 Image(systemName: "chevron.left")
             }
-            .accessibilityLabel("Previous Day")
+            .accessibilityLabel("habits_accessibility_previous_day")
             Spacer()
             HStack {
                 if date.formatDate() == todayDate {
-                    Text("Today")
+                    Text("general_today")
                 }
                 else {
                     Text(date, style: .date)
@@ -103,7 +103,7 @@ private struct HeaderView: View {
             Button(action: { changeDate(dateOption: DateOption.Next) }) {
                 Image(systemName: "chevron.right")
             }
-            .accessibilityLabel("Next Day")
+            .accessibilityLabel("habits_accessibility_next_day")
         }
     }
     

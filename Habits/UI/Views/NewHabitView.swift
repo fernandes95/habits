@@ -30,12 +30,12 @@ struct NewHabitView: View {
             )
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Dismiss") {
+                    Button("general_dismiss") {
                         isPresentingNewHabit = false
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
+                    Button("general_add") {
                         addHabits()
                     }.disabled(newHabit.name.isEmpty)
                 }

@@ -16,11 +16,11 @@ struct DatePickerSheetContent: View {
     var body: some View {
         VStack(alignment: .trailing) {
             HStack {
-                Button("Today", role: .none, action: todayAction)
+                Button("general_today", role: .none, action: todayAction)
                 .disabled(todayButtonDisabled)
                 Spacer()
                     .buttonStyle(.borderless)
-                Button("Done", role: .none, action: doneAction)
+                Button("general_done", role: .none, action: doneAction)
                 .buttonStyle(.borderless)
             }
             .padding([.top, .horizontal])

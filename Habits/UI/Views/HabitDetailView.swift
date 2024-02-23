@@ -37,35 +37,35 @@ struct HabitDetailView: View {
             Button(role: .destructive) {
                 showingAlert = true
             } label: {
-                Label("Delete habit", systemImage: "trash")
+                Label("habit_detail_delete", systemImage: "trash")
             }
             .confirmationDialog(
-                "Are you sure you wanto to delete this habit?",
+                "habit_delete_dialog_title",
                 isPresented: $showingAlert,
                 titleVisibility: .visible
             ) {
-                Button("Delete this habit", role: .destructive) {
+                Button("habit_delete_dialog_single", role: .destructive) {
                     removeHabit()
                 }
-                Button("Delete future habits", role: .destructive) {
+                Button("habit_delete_dialog_future", role: .destructive) {
                     //TODO
                 }
-                Button("Cancel", role: .cancel) { }
+                Button("general_cancel", role: .cancel) { }
             }
         }
         .navigationBarBackButtonHidden(isEditing)
-        .navigationTitle("Habit detail")
+        .navigationTitle("habit_detail_title")
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 if isEditing {
-                    Button("Cancel") {
+                    Button("general_cancel") {
                         cancelEditHabit()
                     }
                 }
             }
             ToolbarItem(placement: .confirmationAction) {
-                let title = isEditing ? "Done" : "Edit"
-                Button(title) {
+                let title = isEditing ? "general_done" : "general_edit"
+                Button(LocalizedStringKey(title)) {
                     if isEditing {
                         editHabit()
                         isEditing = false

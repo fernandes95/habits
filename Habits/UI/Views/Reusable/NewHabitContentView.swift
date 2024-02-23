@@ -16,24 +16,24 @@ struct NewHabitContentView: View {
     
     var body: some View {
         Form {
-            Section(header: Text("Habit Info")) {
-                TextField("Name", text: $habitName)
+            Section(header: Text("habit_new_section_habit_info")) {
+                TextField("habit_name", text: $habitName)
                     .disabled(!isEdit)
                 
-                DatePicker("Start Date", selection: $startDate,
+                DatePicker("habit_start_date", selection: $startDate,
                            in: Date()...,
                            displayedComponents: .date
                 )
                 .disabled(!isNew)
                 
-                DatePicker("End Date", selection: $endDate,
+                DatePicker("habit_end_date", selection: $endDate,
                            in: startDate...,
                            displayedComponents: .date)
                 .disabled(!isEdit)
             }
             
 //                if startDate.formatDate() != endDate.formatDate() {
-//                    Picker("Frequency", selection: $frequency, content: {
+//                    Picker("habit_frequency", selection: $frequency, content: {
 //                        ForEach(HabitFrequency.allCases) { frequency in
 //                            Text(frequency.rawValue.capitalized).tag(frequency)
 //                        }
