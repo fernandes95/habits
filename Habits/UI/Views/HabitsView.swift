@@ -12,7 +12,7 @@ struct HabitsView: View {
     private var router: HabitsRouter
     
     @EnvironmentObject
-    private var store: StoreHabits
+    private var state: MainState
     
     @State private var date = Date.now
     @State private var isPresentingNewHabit = false
@@ -22,26 +22,26 @@ struct HabitsView: View {
         VStack {
             HeaderView(
                 date: $date,
-                changeDateAction: { store.filterListByDate(date: date) }
+                changeDateAction: { state.loadHabits(date: date) }
             )
             .padding([.top, .horizontal])
             
             ContentView(
-                list: $store.filteredHabits, 
+                list: $state.items,
                 onItemStatusAction: { id in
-                    store.changeHabitStatus(habitId: id)
+//                    store.changeHabitStatus(habitId: id)
                 },
                 onItemAction: { habit in
                     router.push(HabitDetailView(habit: habit))
                 }, 
                 onDeleteAction: { id in
-                    store.removeHabit(id)
+//                    store.removeHabit(id)
                 }
             )
         }
         .task {
             if !didLoadData {
-                store.loadData()
+                state.loadHabits(date: date)
                 didLoadData = true
             }
         }
@@ -128,9 +128,9 @@ private struct HeaderView: View {
 }
 
 private struct ContentView: View {
-    @Binding var list: [Habit]
+    @Binding var list: [MainState.Item]
     var onItemStatusAction: (UUID) -> Void
-    var onItemAction: (Habit) -> Void
+    var onItemAction: (MainState.Item) -> Void
     var onDeleteAction: (UUID) -> Void
     
     var body: some View {
@@ -140,7 +140,7 @@ private struct ContentView: View {
               
                 ListItem(
                     name: habit.name,
-                    status: $habit.status,
+                    status: $habit.isChecked,
                     statusAction: { onItemStatusAction(habit.id) },
                     itemAction: { onItemAction(habit) }
                 )
@@ -158,14 +158,7 @@ private struct ContentView: View {
     }
 }
 
-extension Date {
-    func formatDate() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.setLocalizedDateFormatFromTemplate("dd-MM-yyyy")
-        return dateFormatter.string(from: self)
-    }
-}
-
 #Preview {
     HabitsView()
+        .environmentObject(MainState())
 }

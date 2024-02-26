@@ -9,14 +9,14 @@ import SwiftUI
 
 @main
 struct HabitsApp: App {
-    @StateObject private var store = StoreHabits()
+    @StateObject private var state = MainState()
     @StateObject private var router: HabitsRouter = HabitsRouter()
 
     var body: some Scene {
         WindowGroup {
             ZStack {
                 self.router.root
-                    .environmentObject(self.store)
+                    .environmentObject(self.state)
                     .environmentObject(self.router)
             }
         }
