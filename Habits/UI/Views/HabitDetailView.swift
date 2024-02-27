@@ -14,15 +14,15 @@ struct HabitDetailView: View {
     @EnvironmentObject
     private var state: MainState
     
-    private let habit: MainState.Item
+    private let habit: Habit
     
     @State private var isEditing: Bool = false
-    @State private var editingHabit: MainState.Item
+    @State private var editingHabit: Habit
     @State private var showingAlert = false
-    @State private var endDate: Date = Date.now
+//    @State private var endDate: Date = Date.now
     @State private var editingEndDate: Date = Date.now
     
-    init(habit: MainState.Item) {
+    init(habit: Habit) {
         self.habit = habit
         self._editingHabit = State(initialValue: habit)
     }
@@ -48,21 +48,36 @@ struct HabitDetailView: View {
                 titleVisibility: .visible
             ) {
                 Button("habit_delete_dialog_single", role: .destructive) {
-//                    store.removeHabit(habit.id)
+                    var amountOfDays = DateHelper.numberOfDaysBetween(editingHabit.startDate, and: editingHabit.endDate)
+                    if amountOfDays == 0 {
+                        removeHabit()
+                    } else {
+                        editingHabit.isDeleted = true
+                        updateHabit()
+                    }
                     router.pop()
                 }
-//                if groupHabits.count > 1 {
-//                    Button("habit_delete_dialog_future", role: .destructive) {
-////                        store.removeFutureHabits(groupId: editingHabit.groupId, date: editingHabit.date)
-//                        router.pop()
-//                    }
-//                }
+                if habit.endDate > state.selectedDate  {
+                    Button("habit_delete_dialog_future", role: .destructive) {
+                        if editingHabit.startDate.formatDate() == state.selectedDate.formatDate() {
+                            removeHabit()
+                        } else {
+                            let date = state.selectedDate
+                            var dateComponent = DateComponents()
+                            dateComponent.day = -1
+                            if let newDate = Calendar.current.date(byAdding: dateComponent, to: date) {
+                                editingHabit.endDate = newDate
+                                updateHabit()
+                            }
+                        }
+                        router.pop()
+                    }
+                }
                 Button("general_cancel", role: .cancel) { }
             }
         }
-        .onAppear {
-//            endDate = groupHabits.last?.date ?? habit.date
-            editingEndDate = endDate
+        .onAppear() {
+            editingEndDate = habit.endDate
         }
         .navigationBarBackButtonHidden(isEditing)
         .navigationTitle("habit_detail_title")
@@ -89,28 +104,31 @@ struct HabitDetailView: View {
     }
     
     private func updateHabit() {
-//        if habit.name != editingHabit.name {
-//            
-//        }
-//        
-//        if editingEndDate < endDate {
-//            store.removeGroupHabits(groupId: habit.groupId, date: editingEndDate)
-//        } else if editingEndDate > endDate {
-//            store.addHabitsByDates(startDate: habit.date, endDate: editingEndDate, groupId: habit.groupId, habitName: editingHabit.name)
-//        }
-//        store.updateHabit(habitId: habit.id, habitEdited: editingHabit)
+        Task {
+            do {
+                try await state.updateHabit(habit: editingHabit)
+            } catch {}
+        }
+    }
+    
+    private func removeHabit() {
+        Task {
+            do {
+                try await state.removeHabit(habitId: editingHabit.id)
+            } catch {}
+        }
     }
     
     private func cancelEditHabit() {
         editingHabit = habit
-        editingEndDate = endDate
+        editingEndDate = habit.endDate
         isEditing = false
     }
 }
 
 #Preview {
     HabitDetailView(
-        habit: MainState.Item(id: UUID(), name: "CENAS", startDate: Date.now, endDate: Date.now, isChecked: false)
+        habit: Habit(id: UUID(), name: "CENAS", startDate: Date.now, endDate: Date.now, isChecked: false, isDeleted: false, updatedDate: Date.now)
     )
     .environmentObject(HabitsRouter())
     .environmentObject(MainState())

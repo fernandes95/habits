@@ -16,6 +16,7 @@
 		AE448A932B8D20160034898F /* StoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A922B8D20160034898F /* StoreService.swift */; };
 		AE448A952B8D20700034898F /* DefaultStoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A942B8D20700034898F /* DefaultStoreService.swift */; };
 		AE448A9A2B8D228C0034898F /* MainState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A992B8D228C0034898F /* MainState.swift */; };
+		AE448A9C2B8DEC970034898F /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A9B2B8DEC970034898F /* Habit.swift */; };
 		AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E192B5FD91B002C7EEB /* ListItem.swift */; };
 		AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */; };
 		AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */; };
@@ -23,7 +24,7 @@
 		AEA3D6BD2B5E85B700A08F31 /* HabitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3D6BC2B5E85B700A08F31 /* HabitsView.swift */; };
 		AEA3D6BF2B5E85B900A08F31 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEA3D6BE2B5E85B900A08F31 /* Assets.xcassets */; };
 		AEA3D6C22B5E85B900A08F31 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEA3D6C12B5E85B900A08F31 /* Preview Assets.xcassets */; };
-		AEA3D6CA2B5E8BE000A08F31 /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3D6C92B5E8BE000A08F31 /* Habit.swift */; };
+		AEA3D6CA2B5E8BE000A08F31 /* HabitEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3D6C92B5E8BE000A08F31 /* HabitEntity.swift */; };
 		AED732D52B61584E00CD750D /* NewHabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED732D42B61584E00CD750D /* NewHabitView.swift */; };
 		AED732D82B61702300CD750D /* StoreHabits.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED732D72B61702300CD750D /* StoreHabits.swift */; };
 /* End PBXBuildFile section */
@@ -38,6 +39,7 @@
 		AE448A922B8D20160034898F /* StoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreService.swift; sourceTree = "<group>"; };
 		AE448A942B8D20700034898F /* DefaultStoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultStoreService.swift; sourceTree = "<group>"; };
 		AE448A992B8D228C0034898F /* MainState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainState.swift; sourceTree = "<group>"; };
+		AE448A9B2B8DEC970034898F /* Habit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
 		AE744E192B5FD91B002C7EEB /* ListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItem.swift; sourceTree = "<group>"; };
 		AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelativeHeightSheetContentModifier.swift; sourceTree = "<group>"; };
 		AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerSheetContent.swift; sourceTree = "<group>"; };
@@ -46,7 +48,7 @@
 		AEA3D6BC2B5E85B700A08F31 /* HabitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsView.swift; sourceTree = "<group>"; };
 		AEA3D6BE2B5E85B900A08F31 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AEA3D6C12B5E85B900A08F31 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		AEA3D6C92B5E8BE000A08F31 /* Habit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
+		AEA3D6C92B5E8BE000A08F31 /* HabitEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitEntity.swift; sourceTree = "<group>"; };
 		AED732D42B61584E00CD750D /* NewHabitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitView.swift; sourceTree = "<group>"; };
 		AED732D72B61702300CD750D /* StoreHabits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreHabits.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -106,6 +108,7 @@
 		AE448A912B8D1FF80034898F /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				AE448A942B8D20700034898F /* DefaultStoreService.swift */,
 				AE448A922B8D20160034898F /* StoreService.swift */,
 			);
 			path = Services;
@@ -114,6 +117,7 @@
 		AE448A962B8D224F0034898F /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				AE448A912B8D1FF80034898F /* Services */,
 				AED732D62B61700C00CD750D /* Models */,
 				AE448A972B8D227A0034898F /* State */,
 			);
@@ -132,6 +136,7 @@
 		AE448A982B8D22800034898F /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				AE448A9B2B8DEC970034898F /* Habit.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -216,10 +221,8 @@
 		AED732D62B61700C00CD750D /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				AE448A912B8D1FF80034898F /* Services */,
-				AEA3D6C92B5E8BE000A08F31 /* Habit.swift */,
+				AEA3D6C92B5E8BE000A08F31 /* HabitEntity.swift */,
 				AED732D72B61702300CD750D /* StoreHabits.swift */,
-				AE448A942B8D20700034898F /* DefaultStoreService.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -297,7 +300,7 @@
 			files = (
 				AE448A9A2B8D228C0034898F /* MainState.swift in Sources */,
 				AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */,
-				AEA3D6CA2B5E8BE000A08F31 /* Habit.swift in Sources */,
+				AEA3D6CA2B5E8BE000A08F31 /* HabitEntity.swift in Sources */,
 				AE448A872B86632E0034898F /* HabitRouteIdEnvironmentKey.swift in Sources */,
 				AE448A812B84E99F0034898F /* HabitDetailView.swift in Sources */,
 				AED732D52B61584E00CD750D /* NewHabitView.swift in Sources */,
@@ -309,6 +312,7 @@
 				AE448A842B85238E0034898F /* NewHabitContentView.swift in Sources */,
 				AEA3D6BD2B5E85B700A08F31 /* HabitsView.swift in Sources */,
 				AEA3D6BB2B5E85B700A08F31 /* HabitsApp.swift in Sources */,
+				AE448A9C2B8DEC970034898F /* Habit.swift in Sources */,
 				AE448A952B8D20700034898F /* DefaultStoreService.swift in Sources */,
 				AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */,
 			);

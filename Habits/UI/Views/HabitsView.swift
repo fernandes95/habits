@@ -22,26 +22,44 @@ struct HabitsView: View {
         VStack {
             HeaderView(
                 date: $date,
-                changeDateAction: { state.loadHabits(date: date) }
+                changeDateAction: { 
+                    Task {
+                        do {
+                            try await state.loadHabits(date: date)
+                        } catch { }
+                    }
+                }
             )
             .padding([.top, .horizontal])
             
             ContentView(
                 list: $state.items,
-                onItemStatusAction: { id in
-//                    store.changeHabitStatus(habitId: id)
+                onItemStatusAction: { habit in
+                    Task {
+                        do {
+                            try await state.updateHabit(habit: habit)
+                        } catch { }
+                    }
                 },
                 onItemAction: { habit in
                     router.push(HabitDetailView(habit: habit))
                 }, 
-                onDeleteAction: { id in
-//                    store.removeHabit(id)
+                onDeleteAction: { habit in
+                    Task {
+                        do {
+                            try await state.updateHabit(habit: habit)
+                        } catch { }
+                    }
                 }
             )
         }
         .task {
             if !didLoadData {
-                state.loadHabits(date: date)
+                Task {
+                    do {
+                        try await state.loadHabits(date: date)
+                    } catch { }
+                }
                 didLoadData = true
             }
         }
@@ -128,10 +146,10 @@ private struct HeaderView: View {
 }
 
 private struct ContentView: View {
-    @Binding var list: [MainState.Item]
-    var onItemStatusAction: (UUID) -> Void
-    var onItemAction: (MainState.Item) -> Void
-    var onDeleteAction: (UUID) -> Void
+    @Binding var list: [Habit]
+    var onItemStatusAction: (Habit) -> Void
+    var onItemAction: (Habit) -> Void
+    var onDeleteAction: (Habit) -> Void
     
     var body: some View {
         List {
@@ -141,12 +159,15 @@ private struct ContentView: View {
                 ListItem(
                     name: habit.name,
                     status: $habit.isChecked,
-                    statusAction: { onItemStatusAction(habit.id) },
+                    statusAction: { onItemStatusAction(habit) },
                     itemAction: { onItemAction(habit) }
                 )
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
-                        onDeleteAction(habit.id)
+                        var habitDeleted = habit
+                        habitDeleted.isDeleted = true
+                        
+                        onDeleteAction(habitDeleted)
                     } label: {
                         Label("habit_detail_delete", systemImage: "trash")
                     }

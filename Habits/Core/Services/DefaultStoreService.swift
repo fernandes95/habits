@@ -16,19 +16,19 @@ class DefaultStoreService: StoreService {
         .appendingPathComponent("habitsTest.data")
     }
     
-    func load() async throws -> [Habit] {
-        let task = Task<[Habit], Error> {
+    func load() async throws -> [HabitEntity] {
+        let task = Task<[HabitEntity], Error> {
             let fileURL = try fileURL()
             guard let data = try? Data(contentsOf: fileURL) else {
                 return []
             }
-            let decodedHabits = try JSONDecoder().decode([Habit].self, from: data)
+            let decodedHabits = try JSONDecoder().decode([HabitEntity].self, from: data)
             return decodedHabits
         }
         return try await task.value
     }
     
-    func save(_ habits: [Habit]) async throws {
+    func save(_ habits: [HabitEntity]) async throws {
         let task = Task {
             let data = try JSONEncoder().encode(habits)
             let outfile = try fileURL()

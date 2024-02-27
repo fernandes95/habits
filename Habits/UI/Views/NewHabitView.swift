@@ -45,19 +45,23 @@ struct NewHabitView: View {
     }
     
     private func addHabit() {
-        if startDate >= endDate {
-            endDate = startDate
+        Task {
+            if startDate >= endDate {
+                endDate = startDate
+            }
+            let newHabit = Habit(
+                id: UUID(),
+                name: name,
+                startDate: startDate,
+                endDate: endDate,
+                isChecked: false,
+                isDeleted: false,
+                updatedDate: Date.now
+            )
+            try await state.addItem(newHabit)
+            
+            isPresentingNewHabit = false
         }
-        let newHabit = MainState.Item(
-            id: UUID(),
-            name: name,
-            startDate: startDate,
-            endDate: endDate,
-            isChecked: false
-        )
-        state.addItem(newHabit)
-        
-        isPresentingNewHabit = false
     }
 }
 

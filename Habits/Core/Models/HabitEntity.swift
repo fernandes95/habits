@@ -1,5 +1,5 @@
 //
-//  Habit.swift
+//  HabitEntity.swift
 //  Habits
 //
 //  Created by Tiago Fernandes on 22/01/2024.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Habit: Encodable, Decodable {
+struct HabitEntity: Codable {
     var id: UUID
     var name: String
     var startDate: Date
@@ -23,18 +23,20 @@ struct Habit: Encodable, Decodable {
     }
 }
 
-extension Habit {
-    struct Status: Encodable, Decodable {
+extension HabitEntity {
+    struct Status: Codable {
         let id: UUID
         let date: Date
-        let updatedDate: Date
+        var updatedDate: Date
         var isChecked: Bool
+        var isDeleted: Bool
         
-        init(id: UUID, date: Date, updatedDate: Date, isChecked: Bool = false) {
+        init(id: UUID = UUID(), date: Date, updatedDate: Date = Date.now, isChecked: Bool = false, isDeleted: Bool = false) {
             self.id = id
             self.date = date
             self.updatedDate = updatedDate
             self.isChecked = isChecked
+            self.isDeleted = isDeleted
         }
     }
 }
