@@ -18,7 +18,7 @@ class DefaultStoreService: StoreService {
     
     func load() async throws -> [HabitEntity] {
         let task = Task<[HabitEntity], Error> {
-            let fileURL = try fileURL()
+            let fileURL = try self.fileURL()
             guard let data = try? Data(contentsOf: fileURL) else {
                 return []
             }
@@ -31,7 +31,7 @@ class DefaultStoreService: StoreService {
     func save(_ habits: [HabitEntity]) async throws {
         let task = Task {
             let data = try JSONEncoder().encode(habits)
-            let outfile = try fileURL()
+            let outfile = try self.fileURL()
             try data.write(to: outfile)
         }
         _ = try await task.value

@@ -24,10 +24,10 @@ class MainState: ObservableObject {
     
     func loadHabits(date: Date) async throws {
         self.items = []
-        selectedDate = date
-        let habits = try await load()
+        self.selectedDate = date
+        let habits : [HabitEntity] = try await load()
         let items: [Habit] = habits
-            .filter { ($0.startDate.formatDate() ... $0.endDate.formatDate()).contains(date.formatDate())}
+            .filter { ($0.startDate ... $0.endDate) ~= date } //TODO: FIX IT'S NOT INCLUDING ENDDATE HABITS
             .map { habit in
             
             var item = Habit(
@@ -64,25 +64,25 @@ class MainState: ObservableObject {
     
     func updateHabit(habit: Habit) async throws {
         do {
-            var habits = try await load()
+            var habits: [HabitEntity] = try await load()
             if let index = habits.firstIndex(where: { $0.id == habit.id}) {
-                var habitEntity = habits[index]
-                var habitStatus : HabitEntity.Status
+                var habitEntity: HabitEntity = habits[index]
+                var habitStatus: HabitEntity.Status
                 habitEntity.name = habit.name
                 habitEntity.endDate = habit.endDate
                 
                 //TODO: START AND END DATES LOGIC
                 
-                if let statusIndex = habitEntity.statusList.firstIndex(where: { $0.date == selectedDate }) {
+                if let statusIndex = habitEntity.statusList.firstIndex(where: { $0.date == self.selectedDate }) {
                     habitStatus = habitEntity.statusList[statusIndex]
-                    habitStatus.isChecked = !habitStatus.isChecked
-                    habitStatus.isDeleted = !habitStatus.isDeleted
+                    habitStatus.isChecked = habit.isChecked
+                    habitStatus.isDeleted = habit.isDeleted
                     habitStatus.updatedDate = Date.now
                     
                     habitEntity.statusList[statusIndex] = habitStatus
                 } else {
                     habitStatus = HabitEntity.Status(
-                        date: selectedDate,
+                        date: self.selectedDate,
                         isChecked: habit.isChecked,
                         isDeleted: habit.isDeleted
                     )
@@ -99,7 +99,7 @@ class MainState: ObservableObject {
     
     func removeHabit(habitId: UUID) async throws {
         do {
-            var habits = try await load()
+            var habits: [HabitEntity] = try await load()
             if let index = habits.firstIndex(where: { $0.id == habitId }) {
                 habits.remove(at: index)
                 
@@ -111,9 +111,44 @@ class MainState: ObservableObject {
         } catch {}
     }
     
+    //TODO: FINALIZE THIS FUTURE REMOVE HABIT
+//    func cenasHabit(habitId: UUID) async throws {
+//        do {
+//            var habits = try await load()
+//            if let index = habits.firstIndex(where: { $0.id == habitId }) {
+//                var habit = habits[index]
+//                var lastActiveHabit: Date = habit.endDate
+//                
+//                let dayDurationInSeconds: TimeInterval = 60*60*24
+//                stride(from: habit.startDate, to: habit.endDate, by: dayDurationInSeconds).forEach { date in
+//                    
+//                    
+//                    guard let index = habit.statusList.firstIndex(where: { $0.date == date }) else {
+//                        // se o indice não existir considerar que é o último ativo
+//                        lastActiveHabit = date
+//                        return
+//                    }
+//                    
+//                    // se o indice não existir e não for deleted considerar que é o último ativo
+//                    if !habit.statusList[index].isDeleted {
+//                        lastActiveHabit = date
+//                    }
+//                }
+//                
+//                habit.endDate = lastActiveHabit
+//                habits[index] = habit
+//                
+//                try await storeService.save(habits)
+//                try await loadHabits(date: selectedDate)
+//            }
+//            
+//            
+//        } catch {}
+//    }
+    
     func addItem(_ item: Habit) async throws {
         do {
-            var habits = try await load()
+            var habits: [HabitEntity] = try await load()
             habits.append(HabitEntity(name: item.name, startDate: item.startDate, endDate: item.endDate))
             
             try await storeService.save(habits)

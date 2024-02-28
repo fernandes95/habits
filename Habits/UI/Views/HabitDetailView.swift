@@ -48,13 +48,14 @@ struct HabitDetailView: View {
                 titleVisibility: .visible
             ) {
                 Button("habit_delete_dialog_single", role: .destructive) {
-                    var amountOfDays = DateHelper.numberOfDaysBetween(editingHabit.startDate, and: editingHabit.endDate)
-                    if amountOfDays == 0 {
-                        removeHabit()
-                    } else {
-                        editingHabit.isDeleted = true
-                        updateHabit()
-                    }
+                    //  TODO: ON DEVELOPMENT
+//                    var amountOfDays = DateHelper.numberOfDaysBetween(editingHabit.startDate, and: editingHabit.endDate)
+//                    if amountOfDays == 0 {
+//                        removeHabit()
+//                    } else {
+//                        editingHabit.isDeleted = true
+//                        updateHabit()
+//                    }
                     router.pop()
                 }
                 if habit.endDate > state.selectedDate  {

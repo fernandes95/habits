@@ -159,7 +159,11 @@ private struct ContentView: View {
                 ListItem(
                     name: habit.name,
                     status: $habit.isChecked,
-                    statusAction: { onItemStatusAction(habit) },
+                    statusAction: {
+                        var habitChecked = habit
+                        habitChecked.isChecked = !habitChecked.isChecked
+                        onItemStatusAction(habitChecked)
+                    },
                     itemAction: { onItemAction(habit) }
                 )
                 .swipeActions(edge: .trailing) {
