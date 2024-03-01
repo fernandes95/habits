@@ -27,7 +27,7 @@ class MainState: ObservableObject {
         self.selectedDate = date
         let habits : [HabitEntity] = try await load()
         let items: [Habit] = habits
-            .filter { ($0.startDate ... $0.endDate) ~= date } //TODO: FIX IT'S NOT INCLUDING ENDDATE HABITS
+            .filter { ($0.startDate.startOfDay ... $0.endDate.endOfDay) ~= date }
             .map { habit in
             
             var item = Habit(
@@ -89,7 +89,7 @@ class MainState: ObservableObject {
             }
             
             try await storeService.save(habits)
-            try await loadHabits(date: selectedDate)
+            try await loadHabits(date: self.selectedDate)
         } catch {}
     }
     
@@ -100,47 +100,10 @@ class MainState: ObservableObject {
                 habits.remove(at: index)
                 
                 try await storeService.save(habits)
-                try await loadHabits(date: selectedDate)
+                try await loadHabits(date: self.selectedDate)
             }
-            
-            
         } catch {}
     }
-    
-    //TODO: FINALIZE THIS FUTURE REMOVE HABIT
-//    func cenasHabit(habitId: UUID) async throws {
-//        do {
-//            var habits = try await load()
-//            if let index = habits.firstIndex(where: { $0.id == habitId }) {
-//                var habit = habits[index]
-//                var lastActiveHabit: Date = habit.endDate
-//                
-//                let dayDurationInSeconds: TimeInterval = 60*60*24
-//                stride(from: habit.startDate, to: habit.endDate, by: dayDurationInSeconds).forEach { date in
-//                    
-//                    
-//                    guard let index = habit.statusList.firstIndex(where: { $0.date == date }) else {
-//                        // se o indice não existir considerar que é o último ativo
-//                        lastActiveHabit = date
-//                        return
-//                    }
-//                    
-//                    // se o indice não existir e não for deleted considerar que é o último ativo
-//                    if !habit.statusList[index].isDeleted {
-//                        lastActiveHabit = date
-//                    }
-//                }
-//                
-//                habit.endDate = lastActiveHabit
-//                habits[index] = habit
-//                
-//                try await storeService.save(habits)
-//                try await loadHabits(date: selectedDate)
-//            }
-//            
-//            
-//        } catch {}
-//    }
     
     func addItem(_ item: Habit) async throws {
         do {
@@ -148,7 +111,7 @@ class MainState: ObservableObject {
             habits.append(HabitEntity(name: item.name, startDate: item.startDate, endDate: item.endDate))
             
             try await storeService.save(habits)
-            try await loadHabits(date: selectedDate)
+            try await loadHabits(date: self.selectedDate)
         } catch { }
     }
 }

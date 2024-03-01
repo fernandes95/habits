@@ -14,18 +14,17 @@ struct HabitsView: View {
     @EnvironmentObject
     private var state: MainState
     
-    @State private var date = Date.now
     @State private var isPresentingNewHabit = false
     @State private var didLoadData = false
     
     var body: some View {
         VStack {
             HeaderView(
-                date: $date,
-                changeDateAction: { 
+                date: $state.selectedDate,
+                changeDateAction: {
                     Task {
                         do {
-                            try await state.loadHabits(date: date)
+                            try await state.loadHabits(date: state.selectedDate)
                         } catch { }
                     }
                 }
@@ -43,13 +42,6 @@ struct HabitsView: View {
                 },
                 onItemAction: { habit in
                     router.push(HabitDetailView(habit: habit))
-                }, 
-                onDeleteAction: { habit in
-                    Task {
-                        do {
-                            try await state.updateHabit(habit: habit)
-                        } catch { }
-                    }
                 }
             )
         }
@@ -57,7 +49,7 @@ struct HabitsView: View {
             if !didLoadData {
                 Task {
                     do {
-                        try await state.loadHabits(date: date)
+                        try await state.loadHabits(date: state.selectedDate)
                     } catch { }
                 }
                 didLoadData = true
@@ -69,11 +61,12 @@ struct HabitsView: View {
                 Image(systemName: "plus")
             }
             .accessibilityLabel("habits_accessibility_new_habit")
+            .disabled(!DateHelper.dateIsValidToDelete(startDate: state.selectedDate))
         }
         .sheet(isPresented: $isPresentingNewHabit) {
             NewHabitView(
                 isPresentingNewHabit: $isPresentingNewHabit,
-                startDate: date
+                startDate: state.selectedDate
             )
         }
     }
@@ -153,8 +146,9 @@ private struct ContentView: View {
     var body: some View {
         List {
             ForEach($list) { $habit in
-                let isLast = habit == list.last
-              
+                let dividerColor = $list.count == 1 ?
+                    Color.black.opacity(0.0) : nil
+                
                 ListItem(
                     name: habit.name,
                     status: $habit.isChecked,
@@ -165,6 +159,7 @@ private struct ContentView: View {
                     },
                     itemAction: { onItemAction(habit) }
                 )
+                .listRowSeparatorTint(dividerColor)
             }
         }
         .listStyle(.plain)

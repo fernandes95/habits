@@ -19,16 +19,18 @@ struct HabitDetailView: View {
     @State private var isEditing: Bool = false
     @State private var editingHabit: Habit
     @State private var showingAlert = false
-//    @State private var endDate: Date = Date.now
-    @State private var editingEndDate: Date = Date.now
+    @State private var editingEndDate: Date
     
     init(habit: Habit) {
         self.habit = habit
         self._editingHabit = State(initialValue: habit)
+        self._editingEndDate = State(initialValue: habit.endDate)
     }
     
     var body: some View {
         VStack {
+            let isValidToDelete = DateHelper.dateIsValidToDelete(startDate: habit.startDate)
+            
             NewHabitContentView(
                 habitName: $editingHabit.name,
                 startDate: $editingHabit.startDate,
@@ -42,43 +44,24 @@ struct HabitDetailView: View {
             } label: {
                 Label("habit_detail_delete", systemImage: "trash")
             }
+            .disabled(!isValidToDelete)
             .confirmationDialog(
                 "habit_delete_dialog_title",
                 isPresented: $showingAlert,
                 titleVisibility: .visible
             ) {
-                Button("habit_delete_dialog_single", role: .destructive) {
-                    //  TODO: ON DEVELOPMENT
-//                    var amountOfDays = DateHelper.numberOfDaysBetween(editingHabit.startDate, and: editingHabit.endDate)
-//                    if amountOfDays == 0 {
-//                        removeHabit()
-//                    } else {
-//                        editingHabit.isDeleted = true
-//                        updateHabit()
-//                    }
-                    router.pop()
-                }
-                if habit.endDate > state.selectedDate  {
-                    Button("habit_delete_dialog_future", role: .destructive) {
-                        if editingHabit.startDate.formatDate() == state.selectedDate.formatDate() {
-                            removeHabit()
-                        } else {
-                            let date = state.selectedDate
-                            var dateComponent = DateComponents()
-                            dateComponent.day = -1
-                            if let newDate = Calendar.current.date(byAdding: dateComponent, to: date) {
-                                editingHabit.endDate = newDate
-                                updateHabit()
-                            }
-                        }
-                        router.pop()
-                    }
+                
+                let isSingleDate = DateHelper.numberOfDaysBetween(editingHabit.startDate, and: editingHabit.endDate) == 0
+                let isLastDayValidation = editingHabit.endDate == state.selectedDate
+                let isFirstDayValidation = editingHabit.createdDate == state.selectedDate
+                    
+                if isSingleDate || isLastDayValidation || isFirstDayValidation {
+                    deleteSingleHabitButton
+                } else {
+                    deleteFutureHabitsButton
                 }
                 Button("general_cancel", role: .cancel) { }
             }
-        }
-        .onAppear() {
-            editingEndDate = habit.endDate
         }
         .navigationBarBackButtonHidden(isEditing)
         .navigationTitle("habit_detail_title")
@@ -101,6 +84,36 @@ struct HabitDetailView: View {
                     }
                 }
             }
+        }
+    }
+   
+    var deleteSingleHabitButton: some View {
+        Button("habit_delete_dialog_single", role: .destructive) {
+            //  TODO: ON DEVELOPMENT
+            var amountOfDays = DateHelper.numberOfDaysBetween(editingHabit.startDate, and: editingHabit.endDate)
+            if amountOfDays == 0 {
+                removeHabit()
+            } else {
+                updateHabit()
+            }
+            router.pop()
+        }
+    }
+    
+    var deleteFutureHabitsButton: some View {
+        Button("habit_delete_dialog_future", role: .destructive) {
+            if editingHabit.startDate.formatDate() == state.selectedDate.formatDate() {
+                removeHabit()
+            } else {
+                let date = state.selectedDate
+                var dateComponent = DateComponents()
+                dateComponent.day = -1
+                if let newDate = Calendar.current.date(byAdding: dateComponent, to: date) {
+                    editingHabit.endDate = newDate
+                    updateHabit()
+                }
+            }
+            router.pop()
         }
     }
     
