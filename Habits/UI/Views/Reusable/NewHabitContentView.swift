@@ -13,6 +13,7 @@ struct NewHabitContentView: View {
     @Binding var endDate: Date
     @Binding var isEdit: Bool
     let isNew: Bool
+    var startDateIn: Date = Date.now
     
     var body: some View {
         Form {
@@ -21,7 +22,7 @@ struct NewHabitContentView: View {
                     .disabled(!isEdit)
                 
                 DatePicker("habit_start_date", selection: $startDate,
-                           in: Date()...,
+                           in: startDateIn...,
                            displayedComponents: .date
                 )
                 .disabled(!isNew)
@@ -49,5 +50,6 @@ struct NewHabitContentView: View {
         startDate: .constant(Date.now),
         endDate: .constant(Date.now),
         isEdit: .constant(true),
-        isNew: true)
+        isNew: true
+    )
 }

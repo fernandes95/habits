@@ -24,7 +24,8 @@ struct NewHabitView: View {
                 startDate: $startDate,
                 endDate: $endDate,
                 isEdit: .constant(true),
-                isNew: true
+                isNew: true,
+                startDateIn: state.selectedDate
             )
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
