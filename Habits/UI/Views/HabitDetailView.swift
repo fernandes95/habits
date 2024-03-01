@@ -129,7 +129,7 @@ struct HabitDetailView: View {
 
 #Preview {
     HabitDetailView(
-        habit: Habit(id: UUID(), name: "CENAS", startDate: Date.now, endDate: Date.now, isChecked: false, isDeleted: false, updatedDate: Date.now)
+        habit: Habit(id: UUID(), name: "CENAS", startDate: Date.now, endDate: Date.now, isChecked: false, createdDate: Date.now, updatedDate: Date.now)
     )
     .environmentObject(HabitsRouter())
     .environmentObject(MainState())

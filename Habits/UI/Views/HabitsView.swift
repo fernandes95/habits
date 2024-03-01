@@ -149,7 +149,6 @@ private struct ContentView: View {
     @Binding var list: [Habit]
     var onItemStatusAction: (Habit) -> Void
     var onItemAction: (Habit) -> Void
-    var onDeleteAction: (Habit) -> Void
     
     var body: some View {
         List {
@@ -166,17 +165,6 @@ private struct ContentView: View {
                     },
                     itemAction: { onItemAction(habit) }
                 )
-                .swipeActions(edge: .trailing) {
-                    Button(role: .destructive) {
-                        var habitDeleted = habit
-                        habitDeleted.isDeleted = true
-                        
-                        onDeleteAction(habitDeleted)
-                    } label: {
-                        Label("habit_detail_delete", systemImage: "trash")
-                    }
-                }
-                .listRowSeparator(.hidden, edges: isLast ? .bottom : .top)
             }
         }
         .listStyle(.plain)

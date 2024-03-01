@@ -36,19 +36,17 @@ class MainState: ObservableObject {
                 startDate: habit.startDate,
                 endDate: habit.endDate,
                 isChecked: false,
-                isDeleted: false,
+                createdDate: habit.createdDate,
                 updatedDate: date
             )
             
             if let status: HabitEntity.Status = habit.statusList.first(where: { $0.date.formatDate() == date.formatDate()}) {
                 item.isChecked = status.isChecked
-                item.isDeleted = status.isDeleted
                 item.updatedDate = status.updatedDate
             }
             
             return item
         }
-            .filter { $0.isDeleted == false }
         
         let uncheckedList = items
             .filter { !$0.isChecked }
@@ -76,15 +74,13 @@ class MainState: ObservableObject {
                 if let statusIndex = habitEntity.statusList.firstIndex(where: { $0.date == self.selectedDate }) {
                     habitStatus = habitEntity.statusList[statusIndex]
                     habitStatus.isChecked = habit.isChecked
-                    habitStatus.isDeleted = habit.isDeleted
                     habitStatus.updatedDate = Date.now
                     
                     habitEntity.statusList[statusIndex] = habitStatus
                 } else {
                     habitStatus = HabitEntity.Status(
                         date: self.selectedDate,
-                        isChecked: habit.isChecked,
-                        isDeleted: habit.isDeleted
+                        isChecked: habit.isChecked
                     )
                     habitEntity.statusList.append(habitStatus)
                 }

@@ -13,6 +13,6 @@ struct Habit: Identifiable, Equatable {
     var startDate: Date
     var endDate: Date
     var isChecked: Bool
-    var isDeleted: Bool
+    let createdDate: Date
     var updatedDate: Date
 }

@@ -54,8 +54,7 @@ struct NewHabitView: View {
                 name: name,
                 startDate: startDate,
                 endDate: endDate,
-                isChecked: false,
-                isDeleted: false,
+                isChecked: false, createdDate: Date.now,
                 updatedDate: Date.now
             )
             try await state.addItem(newHabit)

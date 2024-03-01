@@ -13,13 +13,17 @@ struct HabitEntity: Codable {
     var startDate: Date
     var endDate: Date
     var statusList: [Status]
+    var updatedDate: Date
+    let createdDate: Date
     
-    init(id: UUID = UUID(), name: String, startDate: Date, endDate: Date, statusList: [Status] = []) {
+    init(id: UUID = UUID(), name: String, startDate: Date, endDate: Date, statusList: [Status] = [], updatedDate: Date = Date.now) {
         self.id = id
         self.name = name
         self.startDate = startDate
         self.endDate = endDate
         self.statusList = statusList
+        self.updatedDate = updatedDate
+        self.createdDate = Date.now
     }
 }
 
@@ -29,14 +33,12 @@ extension HabitEntity {
         let date: Date
         var updatedDate: Date
         var isChecked: Bool
-        var isDeleted: Bool
         
-        init(id: UUID = UUID(), date: Date, updatedDate: Date = Date.now, isChecked: Bool = false, isDeleted: Bool = false) {
+        init(id: UUID = UUID(), date: Date, updatedDate: Date = Date.now, isChecked: Bool = false) {
             self.id = id
             self.date = date
             self.updatedDate = updatedDate
             self.isChecked = isChecked
-            self.isDeleted = isDeleted
         }
     }
 }
