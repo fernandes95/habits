@@ -9,6 +9,6 @@ import Foundation
 
 protocol StoreService {
     func fileURL() throws -> URL
-    func load() async throws -> [HabitEntity]
-    func save(_ habits: [HabitEntity]) async throws
+    func load() async throws -> StoreEntity
+    func save(_ store: StoreEntity) async throws
 }

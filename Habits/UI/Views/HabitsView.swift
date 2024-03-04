@@ -32,7 +32,7 @@ struct HabitsView: View {
             .padding([.top, .horizontal])
             
             ContentView(
-                list: $state.items,
+                list: $state.habits,
                 onItemStatusAction: { habit in
                     Task {
                         do {
@@ -61,7 +61,6 @@ struct HabitsView: View {
                 Image(systemName: "plus")
             }
             .accessibilityLabel("habits_accessibility_new_habit")
-            .disabled(!DateHelper.dateIsValidToDelete(startDate: state.selectedDate))
         }
         .sheet(isPresented: $isPresentingNewHabit) {
             NewHabitView(

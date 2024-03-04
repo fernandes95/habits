@@ -12,64 +12,64 @@ import SwiftUI
 class MainState: ObservableObject {
     
     @Published
-    var items: [Habit] = []
+    var habits: [Habit] = []
     
     @Published
     var selectedDate: Date = Date.now
     private let storeService = DefaultStoreService()
     
-    private func load() async throws -> [HabitEntity] {
+    private func load() async throws -> StoreEntity {
         return try await storeService.load()
     }
     
     func loadHabits(date: Date) async throws {
-        self.items = []
+        self.habits = []
         self.selectedDate = date
-        let habits : [HabitEntity] = try await load()
-        let items: [Habit] = habits
+        let store : StoreEntity = try await load()
+        let habits: [Habit] = store.habits
             .filter { ($0.startDate.startOfDay ... $0.endDate.endOfDay) ~= date }
-            .map { habit in
+            .map { habitEntity in
             
-            var item = Habit(
-                id: habit.id,
-                name: habit.name,
-                startDate: habit.startDate,
-                endDate: habit.endDate,
+            var habit = Habit(
+                id: habitEntity.id,
+                name: habitEntity.name,
+                startDate: habitEntity.startDate,
+                endDate: habitEntity.endDate,
                 isChecked: false,
-                createdDate: habit.createdDate,
+                createdDate: habitEntity.createdDate,
                 updatedDate: date
             )
             
-            if let status: HabitEntity.Status = habit.statusList.first(where: { $0.date.formatDate() == date.formatDate()}) {
-                item.isChecked = status.isChecked
-                item.updatedDate = status.updatedDate
+            if let status: HabitEntity.Status = habitEntity.statusList.first(
+                where: { $0.date.formatDate() == date.formatDate()}
+            ) {
+                habit.isChecked = status.isChecked
+                habit.updatedDate = status.updatedDate
             }
             
-            return item
+            return habit
         }
         
-        let uncheckedList = items
+        let uncheckedList = habits
             .filter { !$0.isChecked }
                   
-        let checkedList = items
+        let checkedList = habits
             .filter { $0.isChecked }
             .sorted { (lhs: Habit, rhs: Habit) in
                 return (lhs.updatedDate < rhs.updatedDate)
             }
         
-        self.items = uncheckedList + checkedList
+        self.habits = uncheckedList + checkedList
     }
     
     func updateHabit(habit: Habit) async throws {
         do {
-            var habits: [HabitEntity] = try await load()
-            if let index = habits.firstIndex(where: { $0.id == habit.id}) {
-                var habitEntity: HabitEntity = habits[index]
+            var store: StoreEntity = try await load()
+            if let index = store.habits.firstIndex(where: { $0.id == habit.id}) {
+                var habitEntity: HabitEntity = store.habits[index]
                 var habitStatus: HabitEntity.Status
                 habitEntity.name = habit.name
                 habitEntity.endDate = habit.endDate
-                
-                //TODO: START AND END DATES LOGIC
                 
                 if let statusIndex = habitEntity.statusList.firstIndex(where: { $0.date == self.selectedDate }) {
                     habitStatus = habitEntity.statusList[statusIndex]
@@ -85,32 +85,41 @@ class MainState: ObservableObject {
                     habitEntity.statusList.append(habitStatus)
                 }
                 
-                habits[index] = habitEntity
+                store.habits[index] = habitEntity
             }
             
-            try await storeService.save(habits)
+            try await storeService.save(store)
             try await loadHabits(date: self.selectedDate)
         } catch {}
     }
     
     func removeHabit(habitId: UUID) async throws {
         do {
-            var habits: [HabitEntity] = try await load()
-            if let index = habits.firstIndex(where: { $0.id == habitId }) {
-                habits.remove(at: index)
+            var store: StoreEntity = try await load()
+            if let index = store.habits.firstIndex(where: { $0.id == habitId }) {
+                let deleteHabit = store.habits[index]
                 
-                try await storeService.save(habits)
+                store.habitsArchived.append(deleteHabit)
+                store.habits.remove(at: index)
+                
+                try await storeService.save(store)
                 try await loadHabits(date: self.selectedDate)
             }
         } catch {}
     }
     
-    func addItem(_ item: Habit) async throws {
+    func addHabit(_ habit: Habit) async throws {
         do {
-            var habits: [HabitEntity] = try await load()
-            habits.append(HabitEntity(name: item.name, startDate: item.startDate, endDate: item.endDate))
+            var store: StoreEntity = try await load()
+            store.habits.append(
+                HabitEntity(
+                    name: habit.name,
+                    startDate: habit.startDate,
+                    endDate: habit.endDate
+                )
+            )
             
-            try await storeService.save(habits)
+            try await storeService.save(store)
             try await loadHabits(date: self.selectedDate)
         } catch { }
     }

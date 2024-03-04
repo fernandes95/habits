@@ -13,24 +13,24 @@ class DefaultStoreService: StoreService {
                                     in: .userDomainMask,
                                     appropriateFor: nil,
                                     create: false)
-        .appendingPathComponent("habitsTest.data")
+        .appendingPathComponent("habits.data")
     }
     
-    func load() async throws -> [HabitEntity] {
-        let task = Task<[HabitEntity], Error> {
+    func load() async throws -> StoreEntity {
+        let task = Task<StoreEntity, Error> {
             let fileURL = try self.fileURL()
             guard let data = try? Data(contentsOf: fileURL) else {
-                return []
+                return StoreEntity(habits: [], habitsArchived: [])
             }
-            let decodedHabits = try JSONDecoder().decode([HabitEntity].self, from: data)
+            let decodedHabits = try JSONDecoder().decode(StoreEntity.self, from: data)
             return decodedHabits
         }
         return try await task.value
     }
     
-    func save(_ habits: [HabitEntity]) async throws {
+    func save(_ store: StoreEntity) async throws {
         let task = Task {
-            let data = try JSONEncoder().encode(habits)
+            let data = try JSONEncoder().encode(store)
             let outfile = try self.fileURL()
             try data.write(to: outfile)
         }

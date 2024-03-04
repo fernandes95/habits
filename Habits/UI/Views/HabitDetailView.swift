@@ -28,10 +28,7 @@ struct HabitDetailView: View {
     }
     
     var body: some View {
-        VStack {
-            let isValidToDelete = DateHelper.dateIsValidToDelete(startDate: habit.startDate)
-            
-            NewHabitContentView(
+        VStack {NewHabitContentView(
                 habitName: $editingHabit.name,
                 startDate: $editingHabit.startDate,
                 endDate: $editingEndDate,
@@ -44,21 +41,18 @@ struct HabitDetailView: View {
             } label: {
                 Label("habit_detail_delete", systemImage: "trash")
             }
-            .disabled(!isValidToDelete)
             .confirmationDialog(
                 "habit_delete_dialog_title",
                 isPresented: $showingAlert,
                 titleVisibility: .visible
             ) {
-                
-                let isSingleDate = DateHelper.numberOfDaysBetween(editingHabit.startDate, and: editingHabit.endDate) == 0
-                let isLastDayValidation = editingHabit.endDate == state.selectedDate
-                let isFirstDayValidation = editingHabit.createdDate == state.selectedDate
-                    
-                if isSingleDate || isLastDayValidation || isFirstDayValidation {
-                    deleteSingleHabitButton
-                } else {
-                    deleteFutureHabitsButton
+                Button("habit_delete_dialog_single", role: .destructive) {
+                    Task {
+                        do {
+                            try await state.removeHabit(habitId: editingHabit.id)
+                        } catch {}
+                    }
+                    router.pop()
                 }
                 Button("general_cancel", role: .cancel) { }
             }
@@ -86,49 +80,11 @@ struct HabitDetailView: View {
             }
         }
     }
-   
-    var deleteSingleHabitButton: some View {
-        Button("habit_delete_dialog_single", role: .destructive) {
-            //  TODO: ON DEVELOPMENT
-            var amountOfDays = DateHelper.numberOfDaysBetween(editingHabit.startDate, and: editingHabit.endDate)
-            if amountOfDays == 0 {
-                removeHabit()
-            } else {
-                updateHabit()
-            }
-            router.pop()
-        }
-    }
-    
-    var deleteFutureHabitsButton: some View {
-        Button("habit_delete_dialog_future", role: .destructive) {
-            if editingHabit.startDate.formatDate() == state.selectedDate.formatDate() {
-                removeHabit()
-            } else {
-                let date = state.selectedDate
-                var dateComponent = DateComponents()
-                dateComponent.day = -1
-                if let newDate = Calendar.current.date(byAdding: dateComponent, to: date) {
-                    editingHabit.endDate = newDate
-                    updateHabit()
-                }
-            }
-            router.pop()
-        }
-    }
     
     private func updateHabit() {
         Task {
             do {
                 try await state.updateHabit(habit: editingHabit)
-            } catch {}
-        }
-    }
-    
-    private func removeHabit() {
-        Task {
-            do {
-                try await state.removeHabit(habitId: editingHabit.id)
             } catch {}
         }
     }

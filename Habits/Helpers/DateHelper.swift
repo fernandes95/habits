@@ -16,16 +16,6 @@ struct DateHelper {
         
         return numberOfDays!
     }
-    
-    //  TODO validate that the date is at least 3 days old
-    static func dateIsValidToDelete(startDate: Date) -> Bool {
-        let daysDiff = DateHelper.numberOfDaysBetween(
-            startDate.startOfDay,
-            and: Date.now.startOfDay
-        )
-        
-        return daysDiff <= 3
-    }
 }
 
 extension Date {
