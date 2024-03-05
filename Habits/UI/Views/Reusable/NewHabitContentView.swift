@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct NewHabitContentView: View {
-    @Binding var habitName: String
+    @Binding var name: String
     @Binding var startDate: Date
     @Binding var endDate: Date
+    @Binding var frequency: String
+    @Binding var category: Habit.Category
     @Binding var isEdit: Bool
     let isNew: Bool
     var startDateIn: Date = Date.now
@@ -18,8 +20,15 @@ struct NewHabitContentView: View {
     var body: some View {
         Form {
             Section(header: Text("habit_new_section_habit_info")) {
-                TextField("habit_name", text: $habitName)
+                TextField("habit_name", text: $name)
                     .disabled(!isEdit)
+                
+                Picker("habit_category", selection: $category) {
+                    ForEach(Habit.Category.allCases) { category in
+                        Text(getCategoryName(category)).tag(category)
+                    }
+                }
+                .disabled(!isEdit)
                 
                 DatePicker("habit_start_date", selection: $startDate,
                            in: startDateIn...,
@@ -33,22 +42,25 @@ struct NewHabitContentView: View {
                 .disabled(!isEdit)
             }
             
-//                if startDate.formatDate() != endDate.formatDate() {
-//                    Picker("habit_frequency", selection: $frequency, content: {
-//                        ForEach(HabitFrequency.allCases) { frequency in
-//                            Text(frequency.rawValue.capitalized).tag(frequency)
-//                        }
-//                    }).pickerStyle(.menu)
-//                }
+            Section(header: Text("habit_new_section_habit_frequency")) {
+                TextField("", text: $frequency)
+                    .disabled(true)
+            }
+            
+            Section(header: Text("habit_new_section_habit_frequency")) {
+                
+            }
         }
     }
 }
 
 #Preview {
     NewHabitContentView(
-        habitName: .constant("cenas"),
+        name: .constant("cenas"),
         startDate: .constant(Date.now),
         endDate: .constant(Date.now),
+        frequency: .constant("Monthly"),
+        category: .constant(.newHabit),
         isEdit: .constant(true),
         isNew: true
     )

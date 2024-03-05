@@ -28,10 +28,13 @@ struct HabitDetailView: View {
     }
     
     var body: some View {
-        VStack {NewHabitContentView(
-                habitName: $editingHabit.name,
+        VStack {
+            NewHabitContentView(
+                name: $editingHabit.name,
                 startDate: $editingHabit.startDate,
-                endDate: $editingEndDate,
+                endDate: $editingEndDate, 
+                frequency: $editingHabit.frequency, 
+                category: $editingHabit.category,
                 isEdit: $isEditing,
                 isNew: false
             )
@@ -84,6 +87,7 @@ struct HabitDetailView: View {
     private func updateHabit() {
         Task {
             do {
+                editingHabit.endDate = editingEndDate
                 try await state.updateHabit(habit: editingHabit)
             } catch {}
         }
@@ -98,7 +102,17 @@ struct HabitDetailView: View {
 
 #Preview {
     HabitDetailView(
-        habit: Habit(id: UUID(), name: "CENAS", startDate: Date.now, endDate: Date.now, isChecked: false, createdDate: Date.now, updatedDate: Date.now)
+        habit: Habit(
+            id: UUID(),
+            name: "CENAS",
+            startDate: Date.now,
+            endDate: Date.now,
+            frequency: "Weekly",
+            category: "newHabit",
+            isChecked: false,
+            createdDate: Date.now,
+            updatedDate: Date.now
+        )
     )
     .environmentObject(HabitsRouter())
     .environmentObject(MainState())

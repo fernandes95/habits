@@ -16,13 +16,16 @@ struct NewHabitView: View {
     @State private var name: String = ""
     @State var startDate: Date
     @State private var endDate: Date = Date.now
+    @State private var category: Habit.Category = .newHabit
     
     var body: some View {
         NavigationStack {
             NewHabitContentView(
-                habitName: $name,
+                name: $name,
                 startDate: $startDate,
-                endDate: $endDate,
+                endDate: $endDate, 
+                frequency: .constant("Daily"), //TODO
+                category: $category,
                 isEdit: .constant(true),
                 isNew: true,
                 startDateIn: state.selectedDate
@@ -54,7 +57,9 @@ struct NewHabitView: View {
                 id: UUID(),
                 name: name,
                 startDate: startDate,
-                endDate: endDate,
+                endDate: endDate, 
+                frequency: "Daily", 
+                category: category.rawValue,
                 isChecked: false, createdDate: Date.now,
                 updatedDate: Date.now
             )

@@ -35,6 +35,8 @@ class MainState: ObservableObject {
                 name: habitEntity.name,
                 startDate: habitEntity.startDate,
                 endDate: habitEntity.endDate,
+                frequency: habitEntity.frequency, 
+                category: habitEntity.category.rawValue,
                 isChecked: false,
                 createdDate: habitEntity.createdDate,
                 updatedDate: date
@@ -66,26 +68,27 @@ class MainState: ObservableObject {
         do {
             var store: StoreEntity = try await load()
             if let index = store.habits.firstIndex(where: { $0.id == habit.id}) {
-                var habitEntity: HabitEntity = store.habits[index]
-                var habitStatus: HabitEntity.Status
-                habitEntity.name = habit.name
-                habitEntity.endDate = habit.endDate
+                var updatedHabit: HabitEntity = store.habits[index].with(
+                    name: habit.name,
+                    endDate: habit.endDate,
+                    category: habit.category.rawValue
+                )
                 
-                if let statusIndex = habitEntity.statusList.firstIndex(where: { $0.date == self.selectedDate }) {
-                    habitStatus = habitEntity.statusList[statusIndex]
-                    habitStatus.isChecked = habit.isChecked
-                    habitStatus.updatedDate = Date.now
+                if let statusIndex = updatedHabit.statusList.firstIndex(where: { $0.date == self.selectedDate }) {
+                    var status = updatedHabit.statusList[statusIndex]
+                    status.isChecked = habit.isChecked
+                    status.updatedDate = Date.now
                     
-                    habitEntity.statusList[statusIndex] = habitStatus
+                    updatedHabit.statusList[statusIndex] = status
                 } else {
-                    habitStatus = HabitEntity.Status(
+                    let status = HabitEntity.Status(
                         date: self.selectedDate,
                         isChecked: habit.isChecked
                     )
-                    habitEntity.statusList.append(habitStatus)
+                    updatedHabit.statusList.append(status)
                 }
                 
-                store.habits[index] = habitEntity
+                store.habits[index] = updatedHabit
             }
             
             try await storeService.save(store)
@@ -115,7 +118,9 @@ class MainState: ObservableObject {
                 HabitEntity(
                     name: habit.name,
                     startDate: habit.startDate,
-                    endDate: habit.endDate
+                    endDate: habit.endDate,
+                    frequency: HabitEntity.Frequency.Daily.rawValue, 
+                    category: habit.category.rawValue
                 )
             )
             

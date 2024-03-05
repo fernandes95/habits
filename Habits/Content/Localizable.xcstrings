@@ -70,6 +70,17 @@
         }
       }
     },
+    "habit_category" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category"
+          }
+        }
+      }
+    },
     "habit_delete_dialog_future" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -154,6 +165,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Name"
+          }
+        }
+      }
+    },
+    "habit_new_section_habit_frequency" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habit frequency"
           }
         }
       }
