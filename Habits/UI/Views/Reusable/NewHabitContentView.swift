@@ -11,7 +11,7 @@ struct NewHabitContentView: View {
     @Binding var name: String
     @Binding var startDate: Date
     @Binding var endDate: Date
-    @Binding var frequency: String
+    @Binding var frequency: Habit.Frequency
     @Binding var category: Habit.Category
     @Binding var isEdit: Bool
     let isNew: Bool
@@ -43,12 +43,12 @@ struct NewHabitContentView: View {
             }
             
             Section(header: Text("habit_new_section_habit_frequency")) {
-                TextField("", text: $frequency)
-                    .disabled(true)
-            }
-            
-            Section(header: Text("habit_new_section_habit_frequency")) {
-                
+                Picker("habit_frequency", selection: $frequency) {
+                    ForEach(Habit.Frequency.allCases) { frequency in
+                        Text(frequency.id).tag(frequency)
+                    }
+                }
+                .disabled(!isEdit)
             }
         }
     }
@@ -59,7 +59,7 @@ struct NewHabitContentView: View {
         name: .constant("cenas"),
         startDate: .constant(Date.now),
         endDate: .constant(Date.now),
-        frequency: .constant("Monthly"),
+        frequency: .constant(.daily),
         category: .constant(.newHabit),
         isEdit: .constant(true),
         isNew: true

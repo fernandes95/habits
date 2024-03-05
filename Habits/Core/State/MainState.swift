@@ -25,7 +25,7 @@ class MainState: ObservableObject {
     func loadHabits(date: Date) async throws {
         self.habits = []
         self.selectedDate = date
-        let store : StoreEntity = try await load()
+        let store: StoreEntity = try await load()
         let habits: [Habit] = store.habits
             .filter { ($0.startDate.startOfDay ... $0.endDate.endOfDay) ~= date }
             .map { habitEntity in
@@ -35,7 +35,7 @@ class MainState: ObservableObject {
                 name: habitEntity.name,
                 startDate: habitEntity.startDate,
                 endDate: habitEntity.endDate,
-                frequency: habitEntity.frequency, 
+                frequency: habitEntity.frequency.rawValue, 
                 category: habitEntity.category.rawValue,
                 isChecked: false,
                 createdDate: habitEntity.createdDate,
@@ -52,14 +52,38 @@ class MainState: ObservableObject {
             return habit
         }
         
-        let uncheckedList = habits
-            .filter { !$0.isChecked }
-                  
-        let checkedList = habits
-            .filter { $0.isChecked }
-            .sorted { (lhs: Habit, rhs: Habit) in
-                return (lhs.updatedDate < rhs.updatedDate)
+        let habitsDaily: [Habit] = habits.filter { $0.frequency == .daily}
+        let habitsWeekly: [Habit] = habits
+            .filter { $0.frequency == .weekly }
+            .compactMap { habit in
+                let daysDiff = DateHelper.numberOfDaysBetween(habit.startDate, and: self.selectedDate)
+                
+                return if (daysDiff % 7) == 0 {
+                    habit
+                } else {
+                    nil
+                }
             }
+        
+        let uncheckedDailyList = habitsDaily
+            .filter { !$0.isChecked }
+        let uncheckedWeeklyList = habitsWeekly
+            .filter { !$0.isChecked }
+        
+        let uncheckedList = uncheckedDailyList + uncheckedWeeklyList
+        
+        let checkedDailyList = habitsDaily
+          .filter { $0.isChecked }
+          .sorted { (lhs: Habit, rhs: Habit) in
+              return (lhs.updatedDate < rhs.updatedDate)
+          }
+        let checkedWeeklyList = habitsWeekly
+          .filter { $0.isChecked }
+          .sorted { (lhs: Habit, rhs: Habit) in
+              return (lhs.updatedDate < rhs.updatedDate)
+          }
+        
+        let checkedList = checkedDailyList + checkedWeeklyList
         
         self.habits = uncheckedList + checkedList
     }
@@ -119,7 +143,7 @@ class MainState: ObservableObject {
                     name: habit.name,
                     startDate: habit.startDate,
                     endDate: habit.endDate,
-                    frequency: HabitEntity.Frequency.Daily.rawValue, 
+                    frequency: habit.frequency.rawValue, 
                     category: habit.category.rawValue
                 )
             )

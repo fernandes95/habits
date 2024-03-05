@@ -12,7 +12,7 @@ struct Habit: Identifiable, Equatable {
     var name: String
     var startDate: Date
     var endDate: Date
-    var frequency: String
+    var frequency: Frequency
     var category: Category
     var isChecked: Bool
     let createdDate: Date
@@ -23,12 +23,14 @@ struct Habit: Identifiable, Equatable {
         self.name = name
         self.startDate = startDate
         self.endDate = endDate
-        self.frequency = frequency
+        self.frequency = getFrequency(frequency)
         self.category = getCategory(category)
         self.isChecked = isChecked
         self.createdDate = createdDate
         self.updatedDate = updatedDate
     }
+    
+    //TODO INIT WITH HabitEntity
 }
 
 extension Habit {
@@ -39,6 +41,31 @@ extension Habit {
         var id: String {
             rawValue.capitalized
         }
+    }
+    
+    enum Frequency: String, Identifiable, CaseIterable {
+        case daily
+        case weekly
+        case monthly
+        case yearly
+//        case Custom
+        
+        var id: String {
+            rawValue.capitalized
+        }
+    }
+}
+
+func getFrequency(_ frequency: String) -> Habit.Frequency {
+    return switch frequency {
+    case Habit.Frequency.weekly.rawValue:
+        Habit.Frequency.weekly
+    case Habit.Frequency.monthly.rawValue:
+        Habit.Frequency.monthly
+    case Habit.Frequency.monthly.rawValue:
+        Habit.Frequency.yearly
+    default:
+        Habit.Frequency.daily
     }
 }
 

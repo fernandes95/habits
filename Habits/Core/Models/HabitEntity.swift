@@ -12,7 +12,7 @@ struct HabitEntity: Codable {
     var name: String
     var startDate: Date
     var endDate: Date
-    var frequency: String
+    var frequency: Frequency
     var category: Category
     var statusList: [Status]
     var updatedDate: Date
@@ -31,7 +31,7 @@ struct HabitEntity: Codable {
         self.name = name
         self.startDate = startDate
         self.endDate = endDate
-        self.frequency = frequency
+        self.frequency = getEntityFrequency(frequency)
         self.category = getEntityCategory(category)
         self.statusList = statusList
         self.updatedDate = updatedDate
@@ -52,7 +52,7 @@ struct HabitEntity: Codable {
             name: name ?? self.name,
             startDate: self.startDate,
             endDate: endDate ?? self.endDate,
-            frequency: self.frequency,
+            frequency: frequency ?? self.frequency.rawValue,
             category: category ?? self.category.rawValue,
             statusList: statusList ?? self.statusList,
             updatedDate: updatedDate ?? self.updatedDate
@@ -76,6 +76,19 @@ extension HabitEntity {
     }
 }
 
+func getEntityFrequency(_ frequency: String) -> HabitEntity.Frequency {
+    return switch frequency {
+        case HabitEntity.Frequency.weekly.rawValue:
+            HabitEntity.Frequency.weekly
+        case HabitEntity.Frequency.monthly.rawValue:
+            HabitEntity.Frequency.monthly
+        case HabitEntity.Frequency.yearly.rawValue:
+            HabitEntity.Frequency.yearly
+        default:
+            HabitEntity.Frequency.daily
+    }
+}
+
 func getEntityCategory(_ category: String) -> HabitEntity.Category {
     return if category == HabitEntity.Category.newHabit.rawValue {
         HabitEntity.Category.newHabit
@@ -85,16 +98,12 @@ func getEntityCategory(_ category: String) -> HabitEntity.Category {
 }
 
 extension HabitEntity {
-    enum Frequency: String, Identifiable, CaseIterable, Codable {
-        case Daily
-        case Weekly
-        case Monthly
-        case Yearly
-        case Custom
-        
-        var id: String {
-            rawValue.capitalized
-        }
+    enum Frequency: String, Codable {
+        case daily
+        case weekly
+        case monthly
+        case yearly
+//        case Custom
     }
 }
 

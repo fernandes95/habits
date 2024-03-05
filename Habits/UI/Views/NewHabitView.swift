@@ -16,6 +16,7 @@ struct NewHabitView: View {
     @State private var name: String = ""
     @State var startDate: Date
     @State private var endDate: Date = Date.now
+    @State private var frequency: Habit.Frequency = .daily
     @State private var category: Habit.Category = .newHabit
     
     var body: some View {
@@ -24,7 +25,7 @@ struct NewHabitView: View {
                 name: $name,
                 startDate: $startDate,
                 endDate: $endDate, 
-                frequency: .constant("Daily"), //TODO
+                frequency: $frequency,
                 category: $category,
                 isEdit: .constant(true),
                 isNew: true,
@@ -58,7 +59,7 @@ struct NewHabitView: View {
                 name: name,
                 startDate: startDate,
                 endDate: endDate, 
-                frequency: "Daily", 
+                frequency: frequency.rawValue, 
                 category: category.rawValue,
                 isChecked: false, createdDate: Date.now,
                 updatedDate: Date.now
