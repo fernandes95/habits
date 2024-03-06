@@ -12,9 +12,11 @@ struct HabitEntity: Codable {
     var name: String
     var startDate: Date
     var endDate: Date
-    var frequency: Frequency
-    var category: Category
+    var frequency: String
+    var category: String
     var statusList: [Status]
+    var hoursList: [Hour]
+    var successRate: Int = 0
     var updatedDate: Date
     let createdDate: Date
     
@@ -25,17 +27,20 @@ struct HabitEntity: Codable {
          frequency: String,
          category: String,
          statusList: [Status] = [],
+         hoursList: [Hour] = [],
          updatedDate: Date = Date.now
     ) {
         self.id = id
         self.name = name
         self.startDate = startDate
         self.endDate = endDate
-        self.frequency = getEntityFrequency(frequency)
-        self.category = getEntityCategory(category)
+        self.frequency = frequency
+        self.category = category
         self.statusList = statusList
+        self.hoursList = hoursList
         self.updatedDate = updatedDate
         self.createdDate = Date.now
+        self.successRate = getSuccessRateValue(statusList: self.statusList, startDate: self.startDate)
     }
     
     internal func with(
@@ -52,16 +57,14 @@ struct HabitEntity: Codable {
             name: name ?? self.name,
             startDate: self.startDate,
             endDate: endDate ?? self.endDate,
-            frequency: frequency ?? self.frequency.rawValue,
-            category: category ?? self.category.rawValue,
+            frequency: frequency ?? self.frequency,
+            category: category ?? self.category,
             statusList: statusList ?? self.statusList,
             updatedDate: updatedDate ?? self.updatedDate
         )
     }
-}
-
-extension HabitEntity {
-    struct Status: Codable {
+    
+    internal struct Status: Codable {
         let id: UUID
         let date: Date
         var updatedDate: Date
@@ -74,42 +77,28 @@ extension HabitEntity {
             self.isChecked = isChecked
         }
     }
-}
-
-func getEntityFrequency(_ frequency: String) -> HabitEntity.Frequency {
-    return switch frequency {
-        case HabitEntity.Frequency.weekly.rawValue:
-            HabitEntity.Frequency.weekly
-        case HabitEntity.Frequency.monthly.rawValue:
-            HabitEntity.Frequency.monthly
-        case HabitEntity.Frequency.yearly.rawValue:
-            HabitEntity.Frequency.yearly
-        default:
-            HabitEntity.Frequency.daily
-    }
-}
-
-func getEntityCategory(_ category: String) -> HabitEntity.Category {
-    return if category == HabitEntity.Category.newHabit.rawValue {
-        HabitEntity.Category.newHabit
-    } else {
-        HabitEntity.Category.badHabit
+    
+    internal struct Hour: Codable {
+        let id: UUID
+        let date: Date
+        
+        init(id: UUID = UUID(), date: Date) {
+            self.id = id
+            self.date = date
+        }
     }
 }
 
 extension HabitEntity {
-    enum Frequency: String, Codable {
-        case daily
-        case weekly
-        case monthly
-        case yearly
-//        case Custom
+    private func getSuccessRateValue(statusList: [Status], startDate: Date) -> Int {
+        let checkedAmount = statusList.filter { $0.date <= Date.now.endOfDay && $0.isChecked }.count
+        let dayDiff = DateHelper.numberOfDaysBetween(startDate.startOfDay, and: Date.now.endOfDay) + 1
+        let percentage = checkedAmount == 0 ? 0 : (Double(checkedAmount) / Double(dayDiff)) * 100.0
+        
+        return Int(percentage)
     }
-}
-
-extension HabitEntity {
-    enum Category: String, Codable {
-        case newHabit
-        case badHabit
+    
+    func getSuccessRate() -> Int {
+        return getSuccessRateValue(statusList: self.statusList, startDate: self.startDate)
     }
 }

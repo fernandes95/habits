@@ -29,28 +29,9 @@ class MainState: ObservableObject {
         let habits: [Habit] = store.habits
             .filter { ($0.startDate.startOfDay ... $0.endDate.endOfDay) ~= date }
             .map { habitEntity in
-            
-            var habit = Habit(
-                id: habitEntity.id,
-                name: habitEntity.name,
-                startDate: habitEntity.startDate,
-                endDate: habitEntity.endDate,
-                frequency: habitEntity.frequency.rawValue, 
-                category: habitEntity.category.rawValue,
-                isChecked: false,
-                createdDate: habitEntity.createdDate,
-                updatedDate: date
-            )
-            
-            if let status: HabitEntity.Status = habitEntity.statusList.first(
-                where: { $0.date.formatDate() == date.formatDate()}
-            ) {
-                habit.isChecked = status.isChecked
-                habit.updatedDate = status.updatedDate
+                let habit = Habit(habitEntity: habitEntity, selectedDate: selectedDate)
+                return habit
             }
-            
-            return habit
-        }
         
         let habitsDaily: [Habit] = habits.filter { $0.frequency == .daily}
         let habitsWeekly: [Habit] = habits
@@ -98,7 +79,7 @@ class MainState: ObservableObject {
                     category: habit.category.rawValue
                 )
                 
-                if let statusIndex = updatedHabit.statusList.firstIndex(where: { $0.date == self.selectedDate }) {
+                if let statusIndex = updatedHabit.statusList.firstIndex(where: { $0.date.startOfDay == self.selectedDate.startOfDay }) {
                     var status = updatedHabit.statusList[statusIndex]
                     status.isChecked = habit.isChecked
                     status.updatedDate = Date.now
@@ -111,6 +92,8 @@ class MainState: ObservableObject {
                     )
                     updatedHabit.statusList.append(status)
                 }
+                
+                updatedHabit.successRate = updatedHabit.getSuccessRate()
                 
                 store.habits[index] = updatedHabit
             }

@@ -35,6 +35,7 @@ struct HabitDetailView: View {
                 endDate: $editingEndDate, 
                 frequency: $editingHabit.frequency, 
                 category: $editingHabit.category,
+                successRate: editingHabit.successRate,
                 isEdit: $isEditing,
                 isNew: false
             )
@@ -110,6 +111,7 @@ struct HabitDetailView: View {
             frequency: "Weekly",
             category: "newHabit",
             isChecked: false,
+            successRate: "0%",
             createdDate: Date.now,
             updatedDate: Date.now
         )

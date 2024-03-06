@@ -61,7 +61,9 @@ struct NewHabitView: View {
                 endDate: endDate, 
                 frequency: frequency.rawValue, 
                 category: category.rawValue,
-                isChecked: false, createdDate: Date.now,
+                isChecked: false, 
+                successRate: "0",
+                createdDate: Date.now,
                 updatedDate: Date.now
             )
             try await state.addHabit(newHabit)

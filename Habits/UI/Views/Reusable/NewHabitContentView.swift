@@ -13,6 +13,7 @@ struct NewHabitContentView: View {
     @Binding var endDate: Date
     @Binding var frequency: Habit.Frequency
     @Binding var category: Habit.Category
+    var successRate: String? = nil
     @Binding var isEdit: Bool
     let isNew: Bool
     var startDateIn: Date = Date.now
@@ -50,6 +51,11 @@ struct NewHabitContentView: View {
                 }
                 .disabled(!isEdit)
             }
+            
+            if !isNew && successRate != nil {
+                Text(successRate!)
+                    .disabled(true)
+            }
         }
     }
 }
@@ -61,6 +67,7 @@ struct NewHabitContentView: View {
         endDate: .constant(Date.now),
         frequency: .constant(.daily),
         category: .constant(.newHabit),
+        successRate: "70%",
         isEdit: .constant(true),
         isNew: true
     )

@@ -15,10 +15,11 @@ struct Habit: Identifiable, Equatable {
     var frequency: Frequency
     var category: Category
     var isChecked: Bool
+    var successRate: String
     let createdDate: Date
     var updatedDate: Date
     
-    init(id: UUID, name: String, startDate: Date, endDate: Date, frequency: String, category: String, isChecked: Bool, createdDate: Date, updatedDate: Date) {
+    init(id: UUID, name: String, startDate: Date, endDate: Date, frequency: String, category: String, isChecked: Bool, successRate: String, createdDate: Date, updatedDate: Date) {
         self.id = id
         self.name = name
         self.startDate = startDate
@@ -26,14 +27,31 @@ struct Habit: Identifiable, Equatable {
         self.frequency = getFrequency(frequency)
         self.category = getCategory(category)
         self.isChecked = isChecked
+        self.successRate = successRate
         self.createdDate = createdDate
         self.updatedDate = updatedDate
     }
     
-    //TODO INIT WITH HabitEntity
-}
+    init(habitEntity: HabitEntity, selectedDate: Date) {
+        self.id = habitEntity.id
+        self.name = habitEntity.name
+        self.startDate = habitEntity.startDate
+        self.endDate = habitEntity.endDate
+        self.frequency = getFrequency(habitEntity.frequency)
+        self.category = getCategory(habitEntity.category)
+        self.isChecked = false
+        self.successRate = "\(habitEntity.successRate)%"
+        self.createdDate = habitEntity.createdDate
+        self.updatedDate = habitEntity.updatedDate
+        
+        if let status: HabitEntity.Status = habitEntity.statusList.first(
+            where: { $0.date.formatDate() == selectedDate.formatDate()}
+        ) {
+            self.isChecked = status.isChecked
+            self.updatedDate = status.updatedDate
+        }
+    }
 
-extension Habit {
     enum Category: String, Identifiable, CaseIterable {
         case newHabit
         case badHabit
