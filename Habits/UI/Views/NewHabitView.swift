@@ -17,7 +17,8 @@ struct NewHabitView: View {
     @State var startDate: Date
     @State private var endDate: Date = Date.now
     @State private var frequency: Habit.Frequency = .daily
-    @State private var category: Habit.Category = .newHabit
+    @State private var category: Habit.Category = .new
+    @State private var schedule: [Habit.Hour] = []
     
     var body: some View {
         NavigationStack {
@@ -26,7 +27,8 @@ struct NewHabitView: View {
                 startDate: $startDate,
                 endDate: $endDate, 
                 frequency: $frequency,
-                category: $category,
+                category: $category, 
+                schedule: $schedule,
                 isEdit: .constant(true),
                 isNew: true,
                 startDateIn: state.selectedDate
@@ -60,8 +62,9 @@ struct NewHabitView: View {
                 startDate: startDate,
                 endDate: endDate, 
                 frequency: frequency.rawValue, 
-                category: category.rawValue,
-                isChecked: false, 
+                category: category.rawValue, 
+                schedule: schedule,
+                isChecked: false,
                 successRate: "0",
                 createdDate: Date.now,
                 updatedDate: Date.now

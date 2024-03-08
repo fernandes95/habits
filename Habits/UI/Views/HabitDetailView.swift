@@ -34,10 +34,11 @@ struct HabitDetailView: View {
                 startDate: $editingHabit.startDate,
                 endDate: $editingEndDate, 
                 frequency: $editingHabit.frequency, 
-                category: $editingHabit.category,
-                successRate: editingHabit.successRate,
+                category: $editingHabit.category, 
+                schedule: $editingHabit.schedule,
                 isEdit: $isEditing,
-                isNew: false
+                isNew: false,
+                successRate: editingHabit.successRate
             )
             
             Button(role: .destructive) {
@@ -109,7 +110,8 @@ struct HabitDetailView: View {
             startDate: Date.now,
             endDate: Date.now,
             frequency: "Weekly",
-            category: "newHabit",
+            category: "newHabit", 
+            schedule: [],
             isChecked: false,
             successRate: "0%",
             createdDate: Date.now,

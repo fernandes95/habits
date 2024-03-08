@@ -13,10 +13,13 @@ struct NewHabitContentView: View {
     @Binding var endDate: Date
     @Binding var frequency: Habit.Frequency
     @Binding var category: Habit.Category
-    var successRate: String? = nil
+    @Binding var schedule: [Habit.Hour]
     @Binding var isEdit: Bool
     let isNew: Bool
     var startDateIn: Date = Date.now
+    var successRate: String? = nil
+    
+    @State private var hoursDate: Date = Date.now
     
     var body: some View {
         Form {
@@ -26,7 +29,7 @@ struct NewHabitContentView: View {
                 
                 Picker("habit_category", selection: $category) {
                     ForEach(Habit.Category.allCases) { category in
-                        Text(getCategoryName(category)).tag(category)
+                        Text(category.rawValue).tag(category)
                     }
                 }
                 .disabled(!isEdit)
@@ -46,12 +49,52 @@ struct NewHabitContentView: View {
             Section(header: Text("habit_new_section_habit_frequency")) {
                 Picker("habit_frequency", selection: $frequency) {
                     ForEach(Habit.Frequency.allCases) { frequency in
-                        Text(frequency.id).tag(frequency)
+                        Text(frequency.rawValue).tag(frequency)
                     }
                 }
                 .disabled(!isEdit)
             }
             
+            if schedule.count > 0 || schedule.count == 0 && isEdit  {
+                Section {
+                    ForEach($schedule) { $hour in
+                        if let index = schedule.firstIndex(of: hour){
+                            let datePicker = DatePicker("Hour #\(index + 1)",
+                                                        selection: $hour.date,
+                                                        displayedComponents: .hourAndMinute
+                            )
+                            
+                            if !isEdit {
+                                datePicker
+                            } else {
+                                datePicker
+                                    .swipeActions(edge: .trailing) {
+                                        Button(role: .destructive) {
+                                            schedule.remove(at: index)
+                                        } label: {
+                                            Label("habit_schedule_delete", systemImage: "trash")
+                                        }
+                                    }
+                            }
+                        }
+                    }
+                    .disabled(!isEdit)
+                } header: {
+                    HStack {
+                        Text("habit_new_section_habit_schedule")
+                        Spacer()
+                        if isEdit {
+                            Button(action: {
+                                schedule.append(Habit.Hour(date: Date.now))
+                            }) {
+                                Image(systemName: "plus")
+                            }
+                            .accessibilityLabel("habits_accessibility_new_schedule_hour")
+                        }
+                    }
+                }
+            }
+
             if !isNew && successRate != nil {
                 Text(successRate!)
                     .disabled(true)
@@ -66,9 +109,10 @@ struct NewHabitContentView: View {
         startDate: .constant(Date.now),
         endDate: .constant(Date.now),
         frequency: .constant(.daily),
-        category: .constant(.newHabit),
-        successRate: "70%",
+        category: .constant(.new),
+        schedule: .constant([]),
         isEdit: .constant(true),
-        isNew: true
+        isNew: true,
+        successRate: "70%"
     )
 }

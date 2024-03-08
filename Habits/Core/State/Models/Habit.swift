@@ -14,12 +14,13 @@ struct Habit: Identifiable, Equatable {
     var endDate: Date
     var frequency: Frequency
     var category: Category
+    var schedule: [Hour]
     var isChecked: Bool
     var successRate: String
     let createdDate: Date
     var updatedDate: Date
     
-    init(id: UUID, name: String, startDate: Date, endDate: Date, frequency: String, category: String, isChecked: Bool, successRate: String, createdDate: Date, updatedDate: Date) {
+    init(id: UUID, name: String, startDate: Date, endDate: Date, frequency: String, category: String, schedule: [Hour], isChecked: Bool, successRate: String, createdDate: Date, updatedDate: Date) {
         self.id = id
         self.name = name
         self.startDate = startDate
@@ -30,6 +31,7 @@ struct Habit: Identifiable, Equatable {
         self.successRate = successRate
         self.createdDate = createdDate
         self.updatedDate = updatedDate
+        self.schedule = schedule
     }
     
     init(habitEntity: HabitEntity, selectedDate: Date) {
@@ -39,6 +41,11 @@ struct Habit: Identifiable, Equatable {
         self.endDate = habitEntity.endDate
         self.frequency = getFrequency(habitEntity.frequency)
         self.category = getCategory(habitEntity.category)
+        
+        self.schedule = habitEntity.schedule.map { hourEntity in
+            return Hour(id: hourEntity.id, date: hourEntity.date)
+        }
+        
         self.isChecked = false
         self.successRate = "\(habitEntity.successRate)%"
         self.createdDate = habitEntity.createdDate
@@ -53,8 +60,9 @@ struct Habit: Identifiable, Equatable {
     }
 
     enum Category: String, Identifiable, CaseIterable {
-        case newHabit
-        case badHabit
+        case new = "New habit"
+        case maintain = "Keep habit"
+        case bad = "Bad habit"
         
         var id: String {
             rawValue.capitalized
@@ -62,14 +70,26 @@ struct Habit: Identifiable, Equatable {
     }
     
     enum Frequency: String, Identifiable, CaseIterable {
-        case daily
-        case weekly
-        case monthly
-        case yearly
+        case daily = "Daily"
+        case weekly = "Weekly"
+        case monthly = "Monthly"
+        case yearly = "Yearly"
 //        case Custom
         
         var id: String {
             rawValue.capitalized
+        }
+    }
+    
+    struct Hour: Identifiable, Equatable {
+        let id: UUID
+        var date: Date
+        var hour: String
+        
+        init(id: UUID = UUID(), date: Date) {
+            self.id = id
+            self.date = date
+            self.hour = date.getHourAndMinutes()
         }
     }
 }
@@ -77,28 +97,23 @@ struct Habit: Identifiable, Equatable {
 func getFrequency(_ frequency: String) -> Habit.Frequency {
     return switch frequency {
     case Habit.Frequency.weekly.rawValue:
-        Habit.Frequency.weekly
+        .weekly
     case Habit.Frequency.monthly.rawValue:
-        Habit.Frequency.monthly
+        .monthly
     case Habit.Frequency.monthly.rawValue:
-        Habit.Frequency.yearly
+        .yearly
     default:
-        Habit.Frequency.daily
+        .daily
     }
 }
 
 func getCategory(_ category: String) -> Habit.Category {
-    return if category == Habit.Category.newHabit.rawValue {
-        Habit.Category.newHabit
-    } else {
-        Habit.Category.badHabit
-    }
-}
-
-func getCategoryName(_ category: Habit.Category) -> String {
-    return if category == .newHabit {
-        "New habit"
-    } else {
-        "Bad habit"
+    return switch category {
+    case Habit.Category.maintain.rawValue:
+        .maintain
+    case Habit.Category.bad.rawValue:
+        .bad
+    default:
+        .new
     }
 }

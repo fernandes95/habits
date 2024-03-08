@@ -76,7 +76,10 @@ class MainState: ObservableObject {
                 var updatedHabit: HabitEntity = store.habits[index].with(
                     name: habit.name,
                     endDate: habit.endDate,
-                    category: habit.category.rawValue
+                    category: habit.category.rawValue,
+                    schedule: habit.schedule.map { hour in
+                        return HabitEntity.Hour(date: hour.date)
+                    }
                 )
                 
                 if let statusIndex = updatedHabit.statusList.firstIndex(where: { $0.date.startOfDay == self.selectedDate.startOfDay }) {
@@ -127,7 +130,10 @@ class MainState: ObservableObject {
                     startDate: habit.startDate,
                     endDate: habit.endDate,
                     frequency: habit.frequency.rawValue, 
-                    category: habit.category.rawValue
+                    category: habit.category.rawValue,
+                    schedule: habit.schedule.map { hour in
+                        return HabitEntity.Hour(date: hour.date)
+                    }
                 )
             )
             

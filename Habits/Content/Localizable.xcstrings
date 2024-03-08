@@ -191,6 +191,28 @@
         }
       }
     },
+    "habit_new_section_habit_schedule" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habit schedule (Optional)"
+          }
+        }
+      }
+    },
+    "habit_schedule_delete" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete schedule hour"
+          }
+        }
+      }
+    },
     "habit_start_date" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -209,6 +231,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "New habit"
+          }
+        }
+      }
+    },
+    "habits_accessibility_new_schedule_hour" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New schedule hour"
           }
         }
       }
@@ -246,8 +279,8 @@
         }
       }
     },
-    "Key" : {
-      "extractionState" : "manual"
+    "Hour #%lld" : {
+
     }
   },
   "version" : "1.0"

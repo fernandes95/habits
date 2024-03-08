@@ -15,7 +15,7 @@ struct HabitEntity: Codable {
     var frequency: String
     var category: String
     var statusList: [Status]
-    var hoursList: [Hour]
+    var schedule: [Hour]
     var successRate: Int = 0
     var updatedDate: Date
     let createdDate: Date
@@ -27,7 +27,7 @@ struct HabitEntity: Codable {
          frequency: String,
          category: String,
          statusList: [Status] = [],
-         hoursList: [Hour] = [],
+         schedule: [Hour] = [],
          updatedDate: Date = Date.now
     ) {
         self.id = id
@@ -37,7 +37,7 @@ struct HabitEntity: Codable {
         self.frequency = frequency
         self.category = category
         self.statusList = statusList
-        self.hoursList = hoursList
+        self.schedule = schedule
         self.updatedDate = updatedDate
         self.createdDate = Date.now
         self.successRate = getSuccessRateValue(statusList: self.statusList, startDate: self.startDate)
@@ -50,6 +50,7 @@ struct HabitEntity: Codable {
         frequency: String? = nil,
         category: String? = nil,
         statusList: [Status]? = nil,
+        schedule: [Hour]? = nil,
         updatedDate: Date? = nil
     ) -> Self {
         return Self(
@@ -60,13 +61,14 @@ struct HabitEntity: Codable {
             frequency: frequency ?? self.frequency,
             category: category ?? self.category,
             statusList: statusList ?? self.statusList,
+            schedule: schedule ?? self.schedule,
             updatedDate: updatedDate ?? self.updatedDate
         )
     }
     
     internal struct Status: Codable {
         let id: UUID
-        let date: Date
+        var date: Date
         var updatedDate: Date
         var isChecked: Bool
         

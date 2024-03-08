@@ -35,4 +35,12 @@ extension Date {
         components.second = -1
         return Calendar.current.date(byAdding: components, to: startOfDay)!
     }
+    
+    func getHourAndMinutes() -> String {
+        var calendar = Calendar.current
+        let hour = calendar.component(.hour, from: self)
+        let minute = calendar.component(.minute, from: self)
+        
+        return "\(hour):\(minute)"
+    }
 }
