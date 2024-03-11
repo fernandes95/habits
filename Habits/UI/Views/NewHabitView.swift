@@ -7,10 +7,13 @@
 
 import SwiftUI
 import Foundation
+import EventKitUI
 
 struct NewHabitView: View {
     @EnvironmentObject
     private var state: MainState
+    
+    var store = EKEventStore()
     
     @Binding var isPresentingNewHabit: Bool
     @State private var name: String = ""
@@ -51,6 +54,38 @@ struct NewHabitView: View {
         }
     }
     
+    private func verifyAuthStatus() async throws -> Bool {
+        let status = EKEventStore.authorizationStatus(for: .event)
+        if status == .notDetermined {
+            if #available(iOS 17.0, *) {
+                return try await store.requestFullAccessToEvents()
+            } else {
+                return try await store.requestAccess(to: .event)
+            }
+        }
+        return true
+    }
+    
+    private func addCalendarEvent(habit: Habit)async throws -> Habit {
+        let auth = try await verifyAuthStatus()
+        if auth {
+            let newEvent = EKEvent(eventStore: self.store)
+            newEvent.title = habit.name
+            newEvent.startDate = habit.startDate
+            newEvent.endDate = habit.startDate
+            newEvent.calendar = self.store.defaultCalendarForNewEvents
+            newEvent.recurrenceRules = [EKRecurrenceRule(recurrenceWith: EKRecurrenceFrequency.daily, interval: 1, end: EKRecurrenceEnd.init(end: habit.endDate))]
+            
+            try self.store.save(newEvent, span: .thisEvent)
+            
+            var returnHabit = habit
+            returnHabit.eventId = newEvent.eventIdentifier
+            return returnHabit
+        } else {
+            return habit
+        }
+    }
+    
     private func addHabit() {
         Task {
             if startDate >= endDate {
@@ -58,6 +93,7 @@ struct NewHabitView: View {
             }
             let newHabit = Habit(
                 id: UUID(),
+                eventId: "",
                 name: name,
                 startDate: startDate,
                 endDate: endDate, 
@@ -69,7 +105,8 @@ struct NewHabitView: View {
                 createdDate: Date.now,
                 updatedDate: Date.now
             )
-            try await state.addHabit(newHabit)
+            let habitWithEventId = try await addCalendarEvent(habit: newHabit)
+            try await state.addHabit(habitWithEventId)
             
             isPresentingNewHabit = false
         }

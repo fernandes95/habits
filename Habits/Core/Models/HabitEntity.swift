@@ -9,6 +9,7 @@ import Foundation
 
 struct HabitEntity: Codable {
     var id: UUID
+    var eventId: String
     var name: String
     var startDate: Date
     var endDate: Date
@@ -21,6 +22,7 @@ struct HabitEntity: Codable {
     let createdDate: Date
     
     init(id: UUID = UUID(),
+         eventId: String,
          name: String,
          startDate: Date,
          endDate: Date,
@@ -31,6 +33,7 @@ struct HabitEntity: Codable {
          updatedDate: Date = Date.now
     ) {
         self.id = id
+        self.eventId = eventId
         self.name = name
         self.startDate = startDate
         self.endDate = endDate
@@ -55,6 +58,7 @@ struct HabitEntity: Codable {
     ) -> Self {
         return Self(
             id: self.id,
+            eventId: self.eventId,
             name: name ?? self.name,
             startDate: self.startDate,
             endDate: endDate ?? self.endDate,

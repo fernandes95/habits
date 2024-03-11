@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import EventKitUI
 
 struct HabitDetailView: View {
     @EnvironmentObject
@@ -15,6 +16,7 @@ struct HabitDetailView: View {
     private var state: MainState
     
     private let habit: Habit
+    private var store = EKEventStore()
     
     @State private var isEditing: Bool = false
     @State private var editingHabit: Habit
@@ -55,6 +57,13 @@ struct HabitDetailView: View {
                     Task {
                         do {
                             try await state.removeHabit(habitId: editingHabit.id)
+                            if let eventToDelete = store.event(withIdentifier: editingHabit.eventId) {
+                                do {
+                                    try store.remove(eventToDelete, span: .thisEvent)
+                                } catch {
+                                    print("Error deleting event: \(error.localizedDescription)")
+                                }
+                            }
                         } catch {}
                     }
                     router.pop()
@@ -106,6 +115,7 @@ struct HabitDetailView: View {
     HabitDetailView(
         habit: Habit(
             id: UUID(),
+            eventId: "",
             name: "CENAS",
             startDate: Date.now,
             endDate: Date.now,

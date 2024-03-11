@@ -9,6 +9,7 @@ import Foundation
 
 struct Habit: Identifiable, Equatable {
     var id: UUID
+    var eventId: String
     var name: String
     var startDate: Date
     var endDate: Date
@@ -20,8 +21,9 @@ struct Habit: Identifiable, Equatable {
     let createdDate: Date
     var updatedDate: Date
     
-    init(id: UUID, name: String, startDate: Date, endDate: Date, frequency: String, category: String, schedule: [Hour], isChecked: Bool, successRate: String, createdDate: Date, updatedDate: Date) {
+    init(id: UUID, eventId: String, name: String, startDate: Date, endDate: Date, frequency: String, category: String, schedule: [Hour], isChecked: Bool, successRate: String, createdDate: Date, updatedDate: Date) {
         self.id = id
+        self.eventId = eventId
         self.name = name
         self.startDate = startDate
         self.endDate = endDate
@@ -36,6 +38,7 @@ struct Habit: Identifiable, Equatable {
     
     init(habitEntity: HabitEntity, selectedDate: Date) {
         self.id = habitEntity.id
+        self.eventId = habitEntity.eventId
         self.name = habitEntity.name
         self.startDate = habitEntity.startDate
         self.endDate = habitEntity.endDate

@@ -126,6 +126,7 @@ class MainState: ObservableObject {
             var store: StoreEntity = try await load()
             store.habits.append(
                 HabitEntity(
+                    eventId: habit.eventId,
                     name: habit.name,
                     startDate: habit.startDate,
                     endDate: habit.endDate,

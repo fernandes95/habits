@@ -41,6 +41,7 @@
 		AE448A992B8D228C0034898F /* MainState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainState.swift; sourceTree = "<group>"; };
 		AE448A9B2B8DEC970034898F /* Habit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
 		AE51BD582B9612E3005DCBC7 /* StoreEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreEntity.swift; sourceTree = "<group>"; };
+		AE6CC09A2B9F02DE00873D03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AE744E192B5FD91B002C7EEB /* ListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItem.swift; sourceTree = "<group>"; };
 		AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelativeHeightSheetContentModifier.swift; sourceTree = "<group>"; };
 		AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerSheetContent.swift; sourceTree = "<group>"; };
@@ -200,6 +201,7 @@
 		AEA3D6B92B5E85B700A08F31 /* Habits */ = {
 			isa = PBXGroup;
 			children = (
+				AE6CC09A2B9F02DE00873D03 /* Info.plist */,
 				AE448A962B8D224F0034898F /* Core */,
 				AE448A8E2B8CECE40034898F /* Helpers */,
 				AE744E1C2B600A4B002C7EEB /* UI */,
@@ -451,6 +453,9 @@
 				DEVELOPMENT_TEAM = KHV2ZYTA6U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Habits/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -481,6 +486,9 @@
 				DEVELOPMENT_TEAM = KHV2ZYTA6U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Habits/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
