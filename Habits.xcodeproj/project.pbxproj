@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AE30E1582B9F7428009E10CD /* EventKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1572B9F7428009E10CD /* EventKitService.swift */; };
 		AE448A812B84E99F0034898F /* HabitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A802B84E99F0034898F /* HabitDetailView.swift */; };
 		AE448A842B85238E0034898F /* NewHabitContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A832B85238E0034898F /* NewHabitContentView.swift */; };
 		AE448A872B86632E0034898F /* HabitRouteIdEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A862B86632E0034898F /* HabitRouteIdEnvironmentKey.swift */; };
@@ -30,6 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AE30E1572B9F7428009E10CD /* EventKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventKitService.swift; sourceTree = "<group>"; };
 		AE448A802B84E99F0034898F /* HabitDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailView.swift; sourceTree = "<group>"; };
 		AE448A832B85238E0034898F /* NewHabitContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitContentView.swift; sourceTree = "<group>"; };
 		AE448A862B86632E0034898F /* HabitRouteIdEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRouteIdEnvironmentKey.swift; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 			children = (
 				AE448A942B8D20700034898F /* DefaultStoreService.swift */,
 				AE448A922B8D20160034898F /* StoreService.swift */,
+				AE30E1572B9F7428009E10CD /* EventKitService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -311,6 +314,7 @@
 				AE448A8A2B8664B40034898F /* HabitsRouter.swift in Sources */,
 				AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */,
 				AE448A902B8CECF60034898F /* DateHelper.swift in Sources */,
+				AE30E1582B9F7428009E10CD /* EventKitService.swift in Sources */,
 				AE448A842B85238E0034898F /* NewHabitContentView.swift in Sources */,
 				AEA3D6BD2B5E85B700A08F31 /* HabitsView.swift in Sources */,
 				AEA3D6BB2B5E85B700A08F31 /* HabitsApp.swift in Sources */,

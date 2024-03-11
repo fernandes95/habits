@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import EventKit
 
 struct Habit: Identifiable, Equatable {
     var id: UUID
@@ -60,6 +61,23 @@ struct Habit: Identifiable, Equatable {
             self.isChecked = status.isChecked
             self.updatedDate = status.updatedDate
         }
+    }
+    
+    func getEKEvent(store: EKEventStore) -> EKEvent {
+        let event = EKEvent(eventStore: store)
+        event.title = self.name
+        event.startDate = self.startDate
+        event.endDate = self.startDate
+        event.calendar = store.defaultCalendarForNewEvents
+        event.recurrenceRules = [
+            EKRecurrenceRule(
+                recurrenceWith: EKRecurrenceFrequency.daily,
+                interval: 1,
+                end: EKRecurrenceEnd.init(end: self.endDate)
+            )
+        ]
+        
+        return event
     }
 
     enum Category: String, Identifiable, CaseIterable {

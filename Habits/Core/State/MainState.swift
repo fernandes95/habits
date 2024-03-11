@@ -17,6 +17,7 @@ class MainState: ObservableObject {
     @Published
     var selectedDate: Date = Date.now
     private let storeService = DefaultStoreService()
+    private let eventKitService = EventKitService()
     
     private func load() async throws -> StoreEntity {
         return try await storeService.load()
@@ -123,10 +124,13 @@ class MainState: ObservableObject {
     
     func addHabit(_ habit: Habit) async throws {
         do {
+            
+            let eventId = try await eventKitService.createCalendarEvent(habit)
+            
             var store: StoreEntity = try await load()
             store.habits.append(
                 HabitEntity(
-                    eventId: habit.eventId,
+                    eventId: eventId,
                     name: habit.name,
                     startDate: habit.startDate,
                     endDate: habit.endDate,

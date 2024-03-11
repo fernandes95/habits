@@ -57,13 +57,6 @@ struct HabitDetailView: View {
                     Task {
                         do {
                             try await state.removeHabit(habitId: editingHabit.id)
-                            if let eventToDelete = store.event(withIdentifier: editingHabit.eventId) {
-                                do {
-                                    try store.remove(eventToDelete, span: .thisEvent)
-                                } catch {
-                                    print("Error deleting event: \(error.localizedDescription)")
-                                }
-                            }
                         } catch {}
                     }
                     router.pop()
