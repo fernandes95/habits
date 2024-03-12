@@ -47,7 +47,7 @@ struct Habit: Identifiable, Equatable {
         self.category = getCategory(habitEntity.category)
         
         self.schedule = habitEntity.schedule.map { hourEntity in
-            return Hour(id: hourEntity.id, date: hourEntity.date)
+            return Hour(id: hourEntity.id, eventId: "", date: hourEntity.date)
         }
         
         self.isChecked = false
@@ -109,11 +109,13 @@ struct Habit: Identifiable, Equatable {
     
     struct Hour: Identifiable, Equatable {
         let id: UUID
+        var eventId: String
         var date: Date
         var hour: String
         
-        init(id: UUID = UUID(), date: Date) {
+        init(id: UUID = UUID(), eventId: String, date: Date) {
             self.id = id
+            self.eventId = eventId
             self.date = date
             self.hour = date.getHourAndMinutes()
         }

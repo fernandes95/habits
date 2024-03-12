@@ -87,10 +87,12 @@ struct HabitEntity: Codable {
     internal struct Hour: Codable {
         let id: UUID
         let date: Date
+        var eventId: String
         
-        init(id: UUID = UUID(), date: Date) {
+        init(id: UUID = UUID(), date: Date, eventId: String) {
             self.id = id
             self.date = date
+            self.eventId = eventId
         }
     }
 }

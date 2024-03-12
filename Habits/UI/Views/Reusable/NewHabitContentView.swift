@@ -85,7 +85,35 @@ struct NewHabitContentView: View {
                         Spacer()
                         if isEdit {
                             Button(action: {
-                                schedule.append(Habit.Hour(date: Date.now))
+                                let calendar = Calendar.current
+                                var date: Date = Date.now
+                                var mainDateComponents: DateComponents = DateComponents()
+                                
+                                if schedule.isEmpty {
+                                    var dateComponents = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: self.startDate)
+                                    dateComponents.hour = 09
+                                    dateComponents.minute = 00
+                                    dateComponents.second = 00
+                                    
+                                    mainDateComponents = dateComponents
+                                } else {
+                                    let scheduleSorted = schedule.sorted { (lhs: Habit.Hour, rhs: Habit.Hour) in
+                                        return (lhs.date < rhs.date)
+                                    }
+                                    if let hour = scheduleSorted.last {
+                                        var dateComponents = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: hour.date)
+                                        dateComponents.hour = (dateComponents.hour ?? 9) + 1
+                                        dateComponents.minute = dateComponents.minute
+                                        
+                                        mainDateComponents = dateComponents
+                                    }
+                                }
+                                
+                                if let newDate = calendar.date(from: mainDateComponents) {
+                                    date = newDate
+                                }
+                                
+                                schedule.append(Habit.Hour(eventId: "", date: date))
                             }) {
                                 Image(systemName: "plus")
                             }

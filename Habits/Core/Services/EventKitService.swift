@@ -7,6 +7,7 @@
 
 import Foundation
 import EventKit
+import SwiftUI
 
 struct EventKitService {
     private let eventStore: EKEventStore = EKEventStore()
@@ -35,6 +36,34 @@ struct EventKitService {
             print("ERROR CREATING CALENDAR EVENT")
             return ""
         }
+    }
+      
+    func createCalendarEvents(_ habit: Habit, schedule: [Habit.Hour]) async throws -> [Habit.Hour] {
+        guard try await verifyAuthStatus() else { return schedule }
+        var newSchedule = schedule
+        
+        for hour in schedule {
+            let calendar = Calendar.current
+            let newEvent = habit.getEKEvent(store: self.eventStore)
+            newEvent.startDate = hour.date
+            
+            var components = DateComponents()
+            components.minute = 30
+            let newEndDate = calendar.date(byAdding: components, to: hour.date)
+            newEvent.endDate = newEndDate
+            
+            do {
+                try self.eventStore.save(newEvent, span: .thisEvent)
+                
+                if let index = newSchedule.firstIndex(of: hour) {
+                    newSchedule[index].eventId = newEvent.eventIdentifier
+                }
+            } catch {
+                print("ERROR CREATING CALENDAR EVENT")
+            }
+        }
+        
+        return newSchedule
     }
     
     func getEventById(eventId: String) -> EKEvent? {

@@ -79,7 +79,7 @@ class MainState: ObservableObject {
                     endDate: habit.endDate,
                     category: habit.category.rawValue,
                     schedule: habit.schedule.map { hour in
-                        return HabitEntity.Hour(date: hour.date)
+                        return HabitEntity.Hour(date: hour.date, eventId: "")// TODO: EVENT ID UPDATE
                     }
                 )
                 
@@ -116,7 +116,15 @@ class MainState: ObservableObject {
                 
                 store.habitsArchived.append(deleteHabit)
                 store.habits.remove(at: index)
-                eventKitService.deleteEventById(eventId: deleteHabit.eventId)
+                
+                if deleteHabit.schedule.isEmpty {
+                    eventKitService.deleteEventById(eventId: deleteHabit.eventId)
+                } else {
+                    for hour in deleteHabit.schedule {
+                        eventKitService.deleteEventById(eventId: hour.eventId)
+                    }
+                }
+                
                 try await storeService.save(store)
                 try await loadHabits(date: self.selectedDate)
             }
@@ -125,8 +133,14 @@ class MainState: ObservableObject {
     
     func addHabit(_ habit: Habit) async throws {
         do {
+            var eventId: String = ""
+            var schedule: [Habit.Hour] = habit.schedule
             
-            let eventId = try await eventKitService.createCalendarEvent(habit)
+            if habit.schedule.isEmpty {
+                eventId = try await eventKitService.createCalendarEvent(habit)
+            } else {
+                schedule = try await eventKitService.createCalendarEvents(habit, schedule: habit.schedule)
+            }
             
             var store: StoreEntity = try await load()
             store.habits.append(
@@ -137,8 +151,8 @@ class MainState: ObservableObject {
                     endDate: habit.endDate,
                     frequency: habit.frequency.rawValue, 
                     category: habit.category.rawValue,
-                    schedule: habit.schedule.map { hour in
-                        return HabitEntity.Hour(date: hour.date)
+                    schedule: schedule.map { hour in
+                        return HabitEntity.Hour(date: hour.date, eventId: hour.eventId)
                     }
                 )
             )

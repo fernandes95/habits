@@ -91,6 +91,7 @@ struct HabitDetailView: View {
     private func updateHabit() {
         Task {
             do {
+                //TODO: Update & remove schedule events on calendar
                 editingHabit.endDate = editingEndDate
                 try await state.updateHabit(habit: editingHabit)
             } catch {}
