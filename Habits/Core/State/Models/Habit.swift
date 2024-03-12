@@ -68,12 +68,17 @@ struct Habit: Identifiable, Equatable {
         event.title = self.name
         event.startDate = self.startDate
         event.endDate = self.startDate
+        
+        if self.schedule.isEmpty {
+            event.isAllDay = true
+        }
+        
         event.calendar = store.defaultCalendarForNewEvents
         event.recurrenceRules = [
             EKRecurrenceRule(
                 recurrenceWith: EKRecurrenceFrequency.daily,
                 interval: 1,
-                end: EKRecurrenceEnd.init(end: self.endDate)
+                end: EKRecurrenceEnd.init(end: self.endDate.endOfDay)
             )
         ]
         

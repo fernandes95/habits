@@ -99,6 +99,7 @@ class MainState: ObservableObject {
                 
                 updatedHabit.successRate = updatedHabit.getSuccessRate()
                 
+                eventKitService.editEvent(habit)
                 store.habits[index] = updatedHabit
             }
             
@@ -115,7 +116,7 @@ class MainState: ObservableObject {
                 
                 store.habitsArchived.append(deleteHabit)
                 store.habits.remove(at: index)
-                
+                eventKitService.deleteEventById(eventId: deleteHabit.eventId)
                 try await storeService.save(store)
                 try await loadHabits(date: self.selectedDate)
             }

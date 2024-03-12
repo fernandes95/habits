@@ -37,20 +37,36 @@ struct EventKitService {
         }
     }
     
+    func getEventById(eventId: String) -> EKEvent? {
+          return self.eventStore.event(withIdentifier: eventId)
+    }
+    
     func deleteEventById(eventId: String) {
-        if let eventToDelete = self.eventStore.event(withIdentifier: eventId) {
+        if let eventToDelete = self.getEventById(eventId: eventId) {
             do {
-                try  self.eventStore.remove(eventToDelete, span: .thisEvent)
+                try self.eventStore.remove(eventToDelete, span: .futureEvents)
             } catch {
                 print("Error deleting event: \(error.localizedDescription)")
             }
         }
     }
     
-    func getEventById(eventId: String) -> EKEvent? {
-          return self.eventStore.event(withIdentifier: eventId)
-    }
-    
-    func editEventById(evendId: String) {
+    func editEvent(_ habit: Habit) {
+        if let eventToEdit = self.getEventById(eventId: habit.eventId) {
+            do {
+                eventToEdit.title = habit.name
+                eventToEdit.recurrenceRules = [
+                    EKRecurrenceRule(
+                        recurrenceWith: EKRecurrenceFrequency.daily,
+                        interval: 1,
+                        end: EKRecurrenceEnd.init(end: habit.endDate.endOfDay)
+                    )
+                ]
+                
+                try self.eventStore.save(eventToEdit, span: .futureEvents)
+            } catch {
+                print("Error editing event: \(error.localizedDescription)")
+            }
+        }
     }
 }
