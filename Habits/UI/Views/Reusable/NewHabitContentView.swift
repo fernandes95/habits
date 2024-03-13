@@ -17,35 +17,35 @@ struct NewHabitContentView: View {
     @Binding var isEdit: Bool
     let isNew: Bool
     var startDateIn: Date = Date.now
-    var successRate: String? = nil
-    
+    var successRate: String?
+
     @State private var hoursDate: Date = Date.now
-    
+
     var body: some View {
         Form {
             Section(header: Text("habit_new_section_habit_info")) {
                 TextField("habit_name", text: $name)
                     .disabled(!isEdit)
-                
+
                 Picker("habit_category", selection: $category) {
                     ForEach(Habit.Category.allCases) { category in
                         Text(category.rawValue).tag(category)
                     }
                 }
                 .disabled(!isEdit)
-                
+
                 DatePicker("habit_start_date", selection: $startDate,
                            in: startDateIn...,
                            displayedComponents: .date
                 )
                 .disabled(!isNew)
-                
+
                 DatePicker("habit_end_date", selection: $endDate,
                            in: startDate...,
                            displayedComponents: .date)
                 .disabled(!isEdit)
             }
-            
+
             Section(header: Text("habit_new_section_habit_frequency")) {
                 Picker("habit_frequency", selection: $frequency) {
                     ForEach(Habit.Frequency.allCases) { frequency in
@@ -54,16 +54,16 @@ struct NewHabitContentView: View {
                 }
                 .disabled(!isEdit)
             }
-            
-            if schedule.count > 0 || schedule.count == 0 && isEdit  {
+
+            if schedule.count > 0 || schedule.count == 0 && isEdit {
                 Section {
                     ForEach($schedule) { $hour in
-                        if let index = schedule.firstIndex(of: hour){
+                        if let index = schedule.firstIndex(of: hour) {
                             let datePicker = DatePicker("Hour #\(index + 1)",
                                                         selection: $hour.date,
                                                         displayedComponents: .hourAndMinute
                             )
-                            
+
                             if !isEdit {
                                 datePicker
                             } else {
@@ -88,13 +88,13 @@ struct NewHabitContentView: View {
                                 let calendar = Calendar.current
                                 var date: Date = Date.now
                                 var mainDateComponents: DateComponents = DateComponents()
-                                
+
                                 if schedule.isEmpty {
                                     var dateComponents = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: self.startDate)
                                     dateComponents.hour = 09
                                     dateComponents.minute = 00
                                     dateComponents.second = 00
-                                    
+
                                     mainDateComponents = dateComponents
                                 } else {
                                     let scheduleSorted = schedule.sorted { (lhs: Habit.Hour, rhs: Habit.Hour) in
@@ -104,15 +104,15 @@ struct NewHabitContentView: View {
                                         var dateComponents = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: hour.date)
                                         dateComponents.hour = (dateComponents.hour ?? 9) + 1
                                         dateComponents.minute = dateComponents.minute
-                                        
+
                                         mainDateComponents = dateComponents
                                     }
                                 }
-                                
+
                                 if let newDate = calendar.date(from: mainDateComponents) {
                                     date = newDate
                                 }
-                                
+
                                 schedule.append(Habit.Hour(eventId: "", date: date))
                             }) {
                                 Image(systemName: "plus")

@@ -12,7 +12,7 @@ struct DatePickerSheetContent: View {
     var todayAction: () -> Void
     var doneAction: () -> Void
     var todayButtonDisabled: Bool
-    
+
     var body: some View {
         VStack(alignment: .trailing) {
             HStack {
@@ -24,7 +24,7 @@ struct DatePickerSheetContent: View {
                 .buttonStyle(.borderless)
             }
             .padding([.top, .horizontal])
-            
+
             DatePicker(
                 "",
                 selection: $datePickerDate,

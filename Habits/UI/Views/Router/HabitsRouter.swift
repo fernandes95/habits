@@ -11,7 +11,7 @@ internal class HabitsRouter: ObservableObject {
 
     internal struct Root: View {
         private let view: AnyView
-        
+
         @EnvironmentObject
         private var router: HabitsRouter
 
@@ -24,12 +24,12 @@ internal class HabitsRouter: ObservableObject {
                 }
             }
         }
-        
+
         internal init<V: View>(_ view: V) {
             self.view = AnyView(view)
         }
     }
-    
+
     internal struct Route: View, Identifiable, Hashable {
         internal let id: UUID = UUID()
         private let view: AnyView
@@ -53,18 +53,17 @@ internal class HabitsRouter: ObservableObject {
             return lhs.id == rhs.id
         }
     }
-    
+
     @Published
     internal private(set) var root: Root = Root(EmptyView())
-    
+
     @Published
     private var navigationPaths: [Route] = []
-    
 
     internal init() {
         replaceRoot(HabitsView())
     }
-    
+
     internal func replaceRoot<V: View>(_ view: V) {
         self.root = Root(view)
     }

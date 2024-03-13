@@ -21,8 +21,21 @@ struct Habit: Identifiable, Equatable {
     var successRate: String
     let createdDate: Date
     var updatedDate: Date
-    
-    init(id: UUID, eventId: String, name: String, startDate: Date, endDate: Date, frequency: String, category: String, schedule: [Hour], isChecked: Bool, successRate: String, createdDate: Date, updatedDate: Date) {
+
+    init(
+        id: UUID,
+        eventId: String,
+        name: String,
+        startDate: Date,
+        endDate: Date,
+        frequency: String,
+        category: String,
+        schedule: [Hour],
+        isChecked: Bool,
+        successRate: String,
+        createdDate: Date,
+        updatedDate: Date
+    ) {
         self.id = id
         self.eventId = eventId
         self.name = name
@@ -36,7 +49,7 @@ struct Habit: Identifiable, Equatable {
         self.updatedDate = updatedDate
         self.schedule = schedule
     }
-    
+
     init(habitEntity: HabitEntity, selectedDate: Date? = nil) {
         self.id = habitEntity.id
         self.eventId = habitEntity.eventId
@@ -45,16 +58,16 @@ struct Habit: Identifiable, Equatable {
         self.endDate = habitEntity.endDate
         self.frequency = getFrequency(habitEntity.frequency)
         self.category = getCategory(habitEntity.category)
-        
+
         self.schedule = habitEntity.schedule.map { hourEntity in
             return Hour(id: hourEntity.id, eventId: hourEntity.eventId, date: hourEntity.date)
         }
-        
+
         self.isChecked = false
         self.successRate = "\(habitEntity.successRate)%"
         self.createdDate = habitEntity.createdDate
         self.updatedDate = habitEntity.updatedDate
-        
+
         if selectedDate != nil {
             if let status: HabitEntity.Status = habitEntity.statusList.first(
                 where: { $0.date.formatDate() == selectedDate!.formatDate()}
@@ -64,17 +77,17 @@ struct Habit: Identifiable, Equatable {
             }
         }
     }
-    
+
     func getEKEvent(store: EKEventStore) -> EKEvent {
         let event = EKEvent(eventStore: store)
         event.title = self.name
         event.startDate = self.startDate
         event.endDate = self.startDate
-        
+
         if self.schedule.isEmpty {
             event.isAllDay = true
         }
-        
+
         event.calendar = store.defaultCalendarForNewEvents
         event.recurrenceRules = [
             EKRecurrenceRule(
@@ -83,7 +96,7 @@ struct Habit: Identifiable, Equatable {
                 end: EKRecurrenceEnd.init(end: self.endDate.endOfDay)
             )
         ]
-        
+
         return event
     }
 
@@ -91,30 +104,30 @@ struct Habit: Identifiable, Equatable {
         case new = "New habit"
         case maintain = "Keep habit"
         case bad = "Bad habit"
-        
+
         var id: String {
             rawValue.capitalized
         }
     }
-    
+
     enum Frequency: String, Identifiable, CaseIterable {
         case daily = "Daily"
         case weekly = "Weekly"
         case monthly = "Monthly"
         case yearly = "Yearly"
 //        case Custom
-        
+
         var id: String {
             rawValue.capitalized
         }
     }
-    
+
     struct Hour: Identifiable, Equatable {
         let id: UUID
         var eventId: String
         var date: Date
         var hour: String
-        
+
         init(id: UUID = UUID(), eventId: String, date: Date) {
             self.id = id
             self.eventId = eventId
@@ -130,7 +143,7 @@ func getFrequency(_ frequency: String) -> Habit.Frequency {
         .weekly
     case Habit.Frequency.monthly.rawValue:
         .monthly
-    case Habit.Frequency.monthly.rawValue:
+    case Habit.Frequency.yearly.rawValue:
         .yearly
     default:
         .daily

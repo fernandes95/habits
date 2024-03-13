@@ -10,13 +10,13 @@ import SwiftUI
 struct HabitsView: View {
     @EnvironmentObject
     private var router: HabitsRouter
-    
+
     @EnvironmentObject
     private var state: MainState
-    
+
     @State private var isPresentingNewHabit = false
     @State private var didLoadData = false
-    
+
     var body: some View {
         VStack {
             HeaderView(
@@ -30,7 +30,7 @@ struct HabitsView: View {
                 }
             )
             .padding([.top, .horizontal])
-            
+
             ContentView(
                 list: $state.habits,
                 onItemStatusAction: { habit in
@@ -57,9 +57,9 @@ struct HabitsView: View {
         }
         .navigationTitle("habits_title")
         .toolbar {
-            Button(action: { isPresentingNewHabit = true }) {
+            Button(action: { isPresentingNewHabit = true }, label: {
                 Image(systemName: "plus")
-            }
+            })
             .accessibilityLabel("habits_accessibility_new_habit")
         }
         .sheet(isPresented: $isPresentingNewHabit) {
@@ -77,10 +77,10 @@ private struct HeaderView: View {
     @State private var showDatePicker = false
     @State private var datePickerDate = Date.now
     private let todayDate = Date.now.formatDate()
-    
+
     var body: some View {
         HStack {
-            Button(action: { changeDate(dateOption: DateOption.Previous) }) {
+            Button(action: { changeDate(dateOption: .previous) }) {
                 Image(systemName: "chevron.left")
             }
             .accessibilityLabel("habits_accessibility_previous_day")
@@ -88,8 +88,7 @@ private struct HeaderView: View {
             HStack {
                 if date.formatDate() == todayDate {
                     Text("general_today")
-                }
-                else {
+                } else {
                     Text(date, style: .date)
                 }
             }
@@ -114,13 +113,13 @@ private struct HeaderView: View {
                 )
             }
             Spacer()
-            Button(action: { changeDate(dateOption: DateOption.Next) }) {
+            Button(action: { changeDate(dateOption: .next) }, label: {
                 Image(systemName: "chevron.right")
-            }
+            })
             .accessibilityLabel("habits_accessibility_next_day")
         }
     }
-    
+
     private func changeDate(dateOption: DateOption) {
         var dateComponent = DateComponents()
         dateComponent.day = dateOption.rawValue
@@ -130,10 +129,10 @@ private struct HeaderView: View {
             changeDateAction()
         }
     }
-    
+
     private enum DateOption: Int {
-        case Previous = -1
-        case Next = 1
+        case previous = -1
+        case next = 1
     }
 }
 
@@ -141,13 +140,13 @@ private struct ContentView: View {
     @Binding var list: [Habit]
     var onItemStatusAction: (Habit) -> Void
     var onItemAction: (Habit) -> Void
-    
+
     var body: some View {
         List {
             ForEach($list) { $habit in
                 let dividerColor = $list.count == 1 ?
                     Color.black.opacity(0.0) : nil
-                
+
                 ListItem(
                     name: habit.name,
                     status: $habit.isChecked,

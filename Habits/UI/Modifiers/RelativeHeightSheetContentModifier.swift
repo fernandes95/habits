@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-struct RelativeHeightSheetContent : ViewModifier {
+struct RelativeHeightSheetContent: ViewModifier {
     @State var detentHeight: CGFloat = 0
-    
+
     private var sizeView: some View {
         GeometryReader { geometry in
             Color.clear.preference(key: HeightPreferenceKey.self, value: geometry.size.height)
         }
     }
-    
+
     internal func body(content: Content) -> some View {
         content
             .background(sizeView)

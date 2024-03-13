@@ -20,7 +20,7 @@ struct HabitEntity: Codable {
     var successRate: Int = 0
     var updatedDate: Date
     let createdDate: Date
-    
+
     init(id: UUID = UUID(),
          eventId: String,
          name: String,
@@ -45,7 +45,7 @@ struct HabitEntity: Codable {
         self.createdDate = Date.now
         self.successRate = getSuccessRateValue(statusList: self.statusList, startDate: self.startDate)
     }
-    
+
     internal func with(
         eventId: String? = nil,
         name: String? = nil,
@@ -70,13 +70,13 @@ struct HabitEntity: Codable {
             updatedDate: updatedDate ?? self.updatedDate
         )
     }
-    
+
     internal struct Status: Codable {
         let id: UUID
         var date: Date
         var updatedDate: Date
         var isChecked: Bool
-        
+
         init(id: UUID = UUID(), date: Date, updatedDate: Date = Date.now, isChecked: Bool = false) {
             self.id = id
             self.date = date
@@ -84,12 +84,12 @@ struct HabitEntity: Codable {
             self.isChecked = isChecked
         }
     }
-    
+
     internal struct Hour: Codable {
         let id: UUID
         let date: Date
         var eventId: String
-        
+
         init(id: UUID = UUID(), date: Date, eventId: String) {
             self.id = id
             self.date = date
@@ -103,10 +103,10 @@ extension HabitEntity {
         let checkedAmount = statusList.filter { $0.date <= Date.now.endOfDay && $0.isChecked }.count
         let dayDiff = DateHelper.numberOfDaysBetween(startDate.startOfDay, and: Date.now.endOfDay) + 1
         let percentage = checkedAmount == 0 ? 0 : (Double(checkedAmount) / Double(dayDiff)) * 100.0
-        
+
         return Int(percentage)
     }
-    
+
     func getSuccessRate() -> Int {
         return getSuccessRateValue(statusList: self.statusList, startDate: self.startDate)
     }

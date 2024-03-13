@@ -12,9 +12,9 @@ import EventKitUI
 struct NewHabitView: View {
     @EnvironmentObject
     private var state: MainState
-    
+
     var store = EKEventStore()
-    
+
     @Binding var isPresentingNewHabit: Bool
     @State private var name: String = ""
     @State var startDate: Date
@@ -22,15 +22,15 @@ struct NewHabitView: View {
     @State private var frequency: Habit.Frequency = .daily
     @State private var category: Habit.Category = .new
     @State private var schedule: [Habit.Hour] = []
-    
+
     var body: some View {
         NavigationStack {
             NewHabitContentView(
                 name: $name,
                 startDate: $startDate,
-                endDate: $endDate, 
+                endDate: $endDate,
                 frequency: $frequency,
-                category: $category, 
+                category: $category,
                 schedule: $schedule,
                 isEdit: .constant(true),
                 isNew: true,
@@ -49,11 +49,11 @@ struct NewHabitView: View {
                 }
             }
         }
-        .onAppear() {
+        .onAppear {
             endDate = startDate
         }
     }
-    
+
     private func addHabit() {
         Task {
             if startDate >= endDate {
@@ -64,9 +64,9 @@ struct NewHabitView: View {
                 eventId: "",
                 name: name,
                 startDate: startDate,
-                endDate: endDate, 
-                frequency: frequency.rawValue, 
-                category: category.rawValue, 
+                endDate: endDate,
+                frequency: frequency.rawValue,
+                category: category.rawValue,
                 schedule: schedule,
                 isChecked: false,
                 successRate: "0",
@@ -74,7 +74,7 @@ struct NewHabitView: View {
                 updatedDate: Date.now
             )
             try await state.addHabit(newHabit)
-            
+
             isPresentingNewHabit = false
         }
     }

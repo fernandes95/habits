@@ -15,7 +15,7 @@ class DefaultStoreService: StoreService {
                                     create: false)
         .appendingPathComponent("habits.data")
     }
-    
+
     func load() async throws -> StoreEntity {
         let task = Task<StoreEntity, Error> {
             let fileURL = try self.fileURL()
@@ -27,7 +27,7 @@ class DefaultStoreService: StoreService {
         }
         return try await task.value
     }
-    
+
     func save(_ store: StoreEntity) async throws {
         let task = Task {
             let data = try JSONEncoder().encode(store)

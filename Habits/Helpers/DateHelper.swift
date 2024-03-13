@@ -13,7 +13,7 @@ struct DateHelper {
         let fromDate = calendar.startOfDay(for: from)
         let toDate = calendar.startOfDay(for: to)
         let numberOfDays = calendar.dateComponents([.day], from: fromDate, to: toDate).day
-        
+
         return numberOfDays!
     }
 }
@@ -24,7 +24,7 @@ extension Date {
         dateFormatter.setLocalizedDateFormatFromTemplate("dd-MM-yyyy")
         return dateFormatter.string(from: self)
     }
-    
+
     var startOfDay: Date {
         return Calendar.current.startOfDay(for: self)
     }
@@ -35,12 +35,12 @@ extension Date {
         components.second = -1
         return Calendar.current.date(byAdding: components, to: startOfDay)!
     }
-    
+
     func getHourAndMinutes() -> String {
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: self)
         let minute = calendar.component(.minute, from: self)
-        
+
         return "\(hour):\(minute)"
     }
 }

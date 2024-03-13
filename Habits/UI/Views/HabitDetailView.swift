@@ -11,37 +11,37 @@ import EventKitUI
 struct HabitDetailView: View {
     @EnvironmentObject
     private var router: HabitsRouter
-    
+
     @EnvironmentObject
     private var state: MainState
-    
+
     @State private var habit: Habit
-    
+
     @State private var isEditing: Bool = false
     @State private var editingHabit: Habit
     @State private var showingAlert = false
     @State private var editingEndDate: Date
-    
+
     init(habit: Habit) {
         self.habit = habit
         self._editingHabit = State(initialValue: habit)
         self._editingEndDate = State(initialValue: habit.endDate)
     }
-    
+
     var body: some View {
         VStack {
             NewHabitContentView(
                 name: $editingHabit.name,
                 startDate: $editingHabit.startDate,
-                endDate: $editingEndDate, 
-                frequency: $editingHabit.frequency, 
-                category: $editingHabit.category, 
+                endDate: $editingEndDate,
+                frequency: $editingHabit.frequency,
+                category: $editingHabit.category,
                 schedule: $editingHabit.schedule,
                 isEdit: $isEditing,
                 isNew: false,
                 successRate: editingHabit.successRate
             )
-            
+
             Button(role: .destructive) {
                 showingAlert = true
             } label: {
@@ -86,7 +86,7 @@ struct HabitDetailView: View {
             }
         }
     }
-    
+
     private func updateHabit() {
         Task {
             do {
@@ -98,7 +98,7 @@ struct HabitDetailView: View {
             } catch {}
         }
     }
-    
+
     private func cancelEditHabit() {
         editingHabit = habit
         editingEndDate = habit.endDate
@@ -115,7 +115,7 @@ struct HabitDetailView: View {
             startDate: Date.now,
             endDate: Date.now,
             frequency: "Weekly",
-            category: "newHabit", 
+            category: "newHabit",
             schedule: [],
             isChecked: false,
             successRate: "0%",

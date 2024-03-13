@@ -12,7 +12,6 @@ struct ListItem: View {
     @Binding var status: Bool
     let statusAction: () -> Void
     let itemAction: () -> Void
-    
     var body: some View {
         HStack {
             Toggle(isOn: $status) {
@@ -20,21 +19,19 @@ struct ListItem: View {
                     .lineLimit(1)
             }
             .padding([.vertical, .trailing])
-            .toggleStyle(checkBoxStyle())
+            .toggleStyle(CheckBoxStyle())
             .onTapGesture { statusAction() }
-            
             Spacer()
-            
-            Button(action: { itemAction() }) {
+            Button(action: { itemAction() }, label: {
                 Image(systemName: "chevron.right")
                     .padding(.leading)
-            }
+            })
             .padding([.vertical, .leading])
         }
     }
 }
 
-struct checkBoxStyle: ToggleStyle {
+struct CheckBoxStyle: ToggleStyle {
     func makeBody(configuration: Configuration) -> some View {
         HStack {
             Image(systemName: configuration.isOn ? "checkmark.circle.fill" : "circle")
@@ -47,7 +44,12 @@ struct checkBoxStyle: ToggleStyle {
 
 #Preview {
     VStack {
-        ListItem(name: "LONG NAMEEEEEEEEEEEEEEEEEEEEE shfsjdfnsjdfbsljdfbs", status: .constant(false), statusAction: {}, itemAction: {})
+        ListItem(
+            name: "LONG NAMEEEEEEEEEEEEEEEEEEEEE shfsjdfnsjdfbsljdfbs",
+            status: .constant(false),
+            statusAction: {},
+            itemAction: {}
+        )
         ListItem(name: "Test 1", status: .constant(true), statusAction: {}, itemAction: {})
     }
 }
