@@ -15,8 +15,7 @@ struct HabitDetailView: View {
     @EnvironmentObject
     private var state: MainState
     
-    private let habit: Habit
-    private var store = EKEventStore()
+    @State private var habit: Habit
     
     @State private var isEditing: Bool = false
     @State private var editingHabit: Habit
@@ -91,9 +90,11 @@ struct HabitDetailView: View {
     private func updateHabit() {
         Task {
             do {
-                //TODO: Update & remove schedule events on calendar
                 editingHabit.endDate = editingEndDate
                 try await state.updateHabit(habit: editingHabit)
+                let habitEdited = try await state.getHabit(habit: editingHabit)
+                habit = habitEdited
+                editingHabit = habitEdited
             } catch {}
         }
     }

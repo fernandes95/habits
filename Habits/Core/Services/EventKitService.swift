@@ -38,11 +38,11 @@ struct EventKitService {
         }
     }
       
-    func createCalendarEvents(_ habit: Habit, schedule: [Habit.Hour]) async throws -> [Habit.Hour] {
-        guard try await verifyAuthStatus() else { return schedule }
-        var newSchedule = schedule
+    func createScheduleCalendarEvents(_ habit: Habit) async throws -> [Habit.Hour] {
+        guard try await verifyAuthStatus() else { return habit.schedule }
+        var newSchedule = habit.schedule
         
-        for hour in schedule {
+        for hour in habit.schedule {
             let calendar = Calendar.current
             let newEvent = habit.getEKEvent(store: self.eventStore)
             newEvent.startDate = hour.date
@@ -66,6 +66,63 @@ struct EventKitService {
         return newSchedule
     }
     
+    func manageScheduleEvents(_ habit: Habit, oldHabit: Habit) async throws -> [Habit.Hour] {
+        guard try await verifyAuthStatus() else { return habit.schedule }
+        var newSchedule = habit.schedule
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.minute = 30
+        
+        //REMOVE HOURS FROM SCHEDULE THAT WERE DELETED
+        for hour in oldHabit.schedule {
+            if !habit.schedule.contains(where: {$0.id == hour.id}) {
+                deleteEventById(eventId: hour.eventId)
+            }
+        }
+        
+        //MANAGE EDITED AND NEW HOURS IN SCHEDULE
+        for hour in habit.schedule {
+            let newEndDate = calendar.date(byAdding: components, to: hour.date)
+            
+            if hour.eventId.isEmpty {
+                let newEvent = habit.getEKEvent(store: self.eventStore)
+                newEvent.startDate = hour.date
+                newEvent.endDate = newEndDate
+                
+                do {
+                    try self.eventStore.save(newEvent, span: .thisEvent)
+                    
+                    if let index = newSchedule.firstIndex(of: hour) {
+                        newSchedule[index].eventId = newEvent.eventIdentifier
+                    }
+                } catch {
+                    print("ERROR CREATING CALENDAR EVENT")
+                }
+            } else {
+                if let event = self.getEventById(eventId: hour.eventId) {
+                    event.title = habit.name
+                    event.startDate = hour.date
+                    event.endDate = newEndDate
+                    event.recurrenceRules = [
+                        EKRecurrenceRule(
+                            recurrenceWith: EKRecurrenceFrequency.daily,
+                            interval: 1,
+                            end: EKRecurrenceEnd.init(end: habit.endDate.endOfDay)
+                        )
+                    ]
+                    
+                    do {
+                        try self.eventStore.save(event, span: .futureEvents)
+                    } catch {
+                        print("ERROR CREATING CALENDAR EVENT")
+                    }
+                }
+            }
+        }
+        
+        return newSchedule
+    }
+      
     func getEventById(eventId: String) -> EKEvent? {
           return self.eventStore.event(withIdentifier: eventId)
     }

@@ -47,6 +47,7 @@ struct HabitEntity: Codable {
     }
     
     internal func with(
+        eventId: String? = nil,
         name: String? = nil,
         startDate: Date? = nil,
         endDate: Date? = nil,
@@ -58,7 +59,7 @@ struct HabitEntity: Codable {
     ) -> Self {
         return Self(
             id: self.id,
-            eventId: self.eventId,
+            eventId: eventId ?? self.eventId,
             name: name ?? self.name,
             startDate: self.startDate,
             endDate: endDate ?? self.endDate,

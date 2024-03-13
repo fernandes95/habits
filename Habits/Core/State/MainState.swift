@@ -70,16 +70,28 @@ class MainState: ObservableObject {
         self.habits = uncheckedList + checkedList
     }
     
+    func getHabit(habit: Habit) async throws -> Habit {
+        let store: StoreEntity = try await load()
+        if let habitEntity = store.habits.first(where: { $0.id == habit.id }) {
+            return Habit(habitEntity: habitEntity, selectedDate: Date.now)
+        } else {
+            return habit
+        }
+    }
+    
     func updateHabit(habit: Habit) async throws {
         do {
             var store: StoreEntity = try await load()
             if let index = store.habits.firstIndex(where: { $0.id == habit.id}) {
+                let oldHabit = Habit(habitEntity: store.habits[index])
+                let eventsHabit = try await manageUpdateEvents(habit: habit, oldHabit: oldHabit)
                 var updatedHabit: HabitEntity = store.habits[index].with(
-                    name: habit.name,
-                    endDate: habit.endDate,
-                    category: habit.category.rawValue,
-                    schedule: habit.schedule.map { hour in
-                        return HabitEntity.Hour(date: hour.date, eventId: "")// TODO: EVENT ID UPDATE
+                    eventId: eventsHabit.eventId,
+                    name: eventsHabit.name,
+                    endDate: eventsHabit.endDate,
+                    category: eventsHabit.category.rawValue,
+                    schedule: eventsHabit.schedule.map { hour in
+                        return HabitEntity.Hour(date: hour.date, eventId: hour.eventId)
                     }
                 )
                 
@@ -99,13 +111,29 @@ class MainState: ObservableObject {
                 
                 updatedHabit.successRate = updatedHabit.getSuccessRate()
                 
-                eventKitService.editEvent(habit)
                 store.habits[index] = updatedHabit
             }
             
             try await storeService.save(store)
             try await loadHabits(date: self.selectedDate)
-        } catch {}
+        } catch { }
+    }
+    
+    private func manageUpdateEvents(habit: Habit, oldHabit: Habit) async throws -> Habit {
+        var habitUpdated = habit
+        habitUpdated.schedule = try await eventKitService.manageScheduleEvents(habit, oldHabit: oldHabit)
+        
+        if habitUpdated.eventId.isEmpty && habitUpdated.schedule.isEmpty {
+            let eventId = try await eventKitService.createCalendarEvent(habitUpdated)
+            habitUpdated.eventId = eventId
+        } else if !habitUpdated.eventId.isEmpty && !habitUpdated.schedule.isEmpty && oldHabit.schedule.isEmpty {
+            eventKitService.deleteEventById(eventId: habitUpdated.eventId)
+            habitUpdated.eventId = ""
+        } else {
+            eventKitService.editEvent(habitUpdated)
+        }
+        
+        return habitUpdated
     }
     
     func removeHabit(habitId: UUID) async throws {
@@ -139,7 +167,7 @@ class MainState: ObservableObject {
             if habit.schedule.isEmpty {
                 eventId = try await eventKitService.createCalendarEvent(habit)
             } else {
-                schedule = try await eventKitService.createCalendarEvents(habit, schedule: habit.schedule)
+                schedule = try await eventKitService.createScheduleCalendarEvents(habit)
             }
             
             var store: StoreEntity = try await load()

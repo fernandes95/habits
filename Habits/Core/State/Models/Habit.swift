@@ -37,7 +37,7 @@ struct Habit: Identifiable, Equatable {
         self.schedule = schedule
     }
     
-    init(habitEntity: HabitEntity, selectedDate: Date) {
+    init(habitEntity: HabitEntity, selectedDate: Date? = nil) {
         self.id = habitEntity.id
         self.eventId = habitEntity.eventId
         self.name = habitEntity.name
@@ -47,7 +47,7 @@ struct Habit: Identifiable, Equatable {
         self.category = getCategory(habitEntity.category)
         
         self.schedule = habitEntity.schedule.map { hourEntity in
-            return Hour(id: hourEntity.id, eventId: "", date: hourEntity.date)
+            return Hour(id: hourEntity.id, eventId: hourEntity.eventId, date: hourEntity.date)
         }
         
         self.isChecked = false
@@ -55,11 +55,13 @@ struct Habit: Identifiable, Equatable {
         self.createdDate = habitEntity.createdDate
         self.updatedDate = habitEntity.updatedDate
         
-        if let status: HabitEntity.Status = habitEntity.statusList.first(
-            where: { $0.date.formatDate() == selectedDate.formatDate()}
-        ) {
-            self.isChecked = status.isChecked
-            self.updatedDate = status.updatedDate
+        if selectedDate != nil {
+            if let status: HabitEntity.Status = habitEntity.statusList.first(
+                where: { $0.date.formatDate() == selectedDate!.formatDate()}
+            ) {
+                self.isChecked = status.isChecked
+                self.updatedDate = status.updatedDate
+            }
         }
     }
     
