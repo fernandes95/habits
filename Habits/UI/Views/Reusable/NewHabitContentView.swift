@@ -90,7 +90,10 @@ struct NewHabitContentView: View {
                                 var mainDateComponents: DateComponents = DateComponents()
 
                                 if schedule.isEmpty {
-                                    var dateComponents = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: self.startDate)
+                                    var dateComponents = calendar.dateComponents(
+                                        [.day, .month, .year, .hour, .minute],
+                                        from: self.startDate
+                                    )
                                     dateComponents.hour = 09
                                     dateComponents.minute = 00
                                     dateComponents.second = 00
@@ -101,7 +104,10 @@ struct NewHabitContentView: View {
                                         return (lhs.date < rhs.date)
                                     }
                                     if let hour = scheduleSorted.last {
-                                        var dateComponents = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: hour.date)
+                                        var dateComponents = calendar.dateComponents(
+                                            [.day, .month, .year, .hour, .minute],
+                                            from: hour.date
+                                        )
                                         dateComponents.hour = (dateComponents.hour ?? 9) + 1
                                         dateComponents.minute = dateComponents.minute
 
@@ -113,10 +119,12 @@ struct NewHabitContentView: View {
                                     date = newDate
                                 }
 
-                                schedule.append(Habit.Hour(eventId: "", date: date))
-                            }) {
+                                schedule.append(
+                                    Habit.Hour(eventId: "", date: date)
+                                )
+                            }, label: {
                                 Image(systemName: "plus")
-                            }
+                            })
                             .accessibilityLabel("habits_accessibility_new_schedule_hour")
                         }
                     }

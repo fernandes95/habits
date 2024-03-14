@@ -80,9 +80,11 @@ private struct HeaderView: View {
 
     var body: some View {
         HStack {
-            Button(action: { changeDate(dateOption: .previous) }) {
-                Image(systemName: "chevron.left")
-            }
+            Button(action: { changeDate(dateOption: .previous) },
+                label: {
+                    Image(systemName: "chevron.left")
+                }
+            )
             .accessibilityLabel("habits_accessibility_previous_day")
             Spacer()
             HStack {

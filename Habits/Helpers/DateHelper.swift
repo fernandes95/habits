@@ -8,6 +8,7 @@
 import Foundation
 
 struct DateHelper {
+    // swiftlint:disable:next identifier_name
     static func numberOfDaysBetween(_ from: Date, and to: Date) -> Int {
         let calendar = Calendar.current
         let fromDate = calendar.startOfDay(for: from)

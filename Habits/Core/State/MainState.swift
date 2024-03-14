@@ -95,7 +95,9 @@ class MainState: ObservableObject {
                     }
                 )
 
-                if let statusIndex = updatedHabit.statusList.firstIndex(where: { $0.date.startOfDay == self.selectedDate.startOfDay }) {
+                if let statusIndex = updatedHabit.statusList.firstIndex(where: {
+                    $0.date.startOfDay == self.selectedDate.startOfDay
+                }) {
                     var status = updatedHabit.statusList[statusIndex]
                     status.isChecked = habit.isChecked
                     status.updatedDate = Date.now
