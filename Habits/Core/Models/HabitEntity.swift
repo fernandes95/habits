@@ -14,6 +14,7 @@ struct HabitEntity: Codable {
     var startDate: Date
     var endDate: Date
     var frequency: String
+    var frequencyType: Ocurrence
     var category: String
     var statusList: [Status]
     var schedule: [Hour]
@@ -27,6 +28,7 @@ struct HabitEntity: Codable {
          startDate: Date,
          endDate: Date,
          frequency: String,
+         frequencyType: Ocurrence,
          category: String,
          statusList: [Status] = [],
          schedule: [Hour] = [],
@@ -38,6 +40,7 @@ struct HabitEntity: Codable {
         self.startDate = startDate
         self.endDate = endDate
         self.frequency = frequency
+        self.frequencyType = frequencyType
         self.category = category
         self.statusList = statusList
         self.schedule = schedule
@@ -52,6 +55,7 @@ struct HabitEntity: Codable {
         startDate: Date? = nil,
         endDate: Date? = nil,
         frequency: String? = nil,
+        frequencyType: Ocurrence? = nil,
         category: String? = nil,
         statusList: [Status]? = nil,
         schedule: [Hour]? = nil,
@@ -64,6 +68,7 @@ struct HabitEntity: Codable {
             startDate: self.startDate,
             endDate: endDate ?? self.endDate,
             frequency: frequency ?? self.frequency,
+            frequencyType: frequencyType ?? self.frequencyType,
             category: category ?? self.category,
             statusList: statusList ?? self.statusList,
             schedule: schedule ?? self.schedule,

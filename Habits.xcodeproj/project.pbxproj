@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		AE30E1582B9F7428009E10CD /* EventKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1572B9F7428009E10CD /* EventKitService.swift */; };
+		AE30E1602BA4C182009E10CD /* Ocurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E15F2BA4C182009E10CD /* Ocurrence.swift */; };
+		AE30E1622BA88B5B009E10CD /* WeekDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1612BA88B5B009E10CD /* WeekDay.swift */; };
 		AE448A812B84E99F0034898F /* HabitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A802B84E99F0034898F /* HabitDetailView.swift */; };
 		AE448A842B85238E0034898F /* NewHabitContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A832B85238E0034898F /* NewHabitContentView.swift */; };
 		AE448A872B86632E0034898F /* HabitRouteIdEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A862B86632E0034898F /* HabitRouteIdEnvironmentKey.swift */; };
@@ -32,6 +34,8 @@
 
 /* Begin PBXFileReference section */
 		AE30E1572B9F7428009E10CD /* EventKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventKitService.swift; sourceTree = "<group>"; };
+		AE30E15F2BA4C182009E10CD /* Ocurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ocurrence.swift; sourceTree = "<group>"; };
+		AE30E1612BA88B5B009E10CD /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
 		AE448A802B84E99F0034898F /* HabitDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailView.swift; sourceTree = "<group>"; };
 		AE448A832B85238E0034898F /* NewHabitContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitContentView.swift; sourceTree = "<group>"; };
 		AE448A862B86632E0034898F /* HabitRouteIdEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRouteIdEnvironmentKey.swift; sourceTree = "<group>"; };
@@ -141,6 +145,8 @@
 			isa = PBXGroup;
 			children = (
 				AE448A9B2B8DEC970034898F /* Habit.swift */,
+				AE30E15F2BA4C182009E10CD /* Ocurrence.swift */,
+				AE30E1612BA88B5B009E10CD /* WeekDay.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -331,6 +337,7 @@
 			files = (
 				AE448A9A2B8D228C0034898F /* MainState.swift in Sources */,
 				AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */,
+				AE30E1622BA88B5B009E10CD /* WeekDay.swift in Sources */,
 				AEA3D6CA2B5E8BE000A08F31 /* HabitEntity.swift in Sources */,
 				AE448A872B86632E0034898F /* HabitRouteIdEnvironmentKey.swift in Sources */,
 				AE448A812B84E99F0034898F /* HabitDetailView.swift in Sources */,
@@ -341,6 +348,7 @@
 				AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */,
 				AE448A902B8CECF60034898F /* DateHelper.swift in Sources */,
 				AE30E1582B9F7428009E10CD /* EventKitService.swift in Sources */,
+				AE30E1602BA4C182009E10CD /* Ocurrence.swift in Sources */,
 				AE448A842B85238E0034898F /* NewHabitContentView.swift in Sources */,
 				AEA3D6BD2B5E85B700A08F31 /* HabitsView.swift in Sources */,
 				AEA3D6BB2B5E85B700A08F31 /* HabitsApp.swift in Sources */,

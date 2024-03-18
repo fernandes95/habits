@@ -101,16 +101,11 @@ struct EventKitService {
                 }
             } else {
                 if let event = self.getEventById(eventId: hour.eventId) {
+                    let recurrenceRule = habit.getEKRecurrenceRule()
                     event.title = habit.name
                     event.startDate = hour.date
                     event.endDate = newEndDate
-                    event.recurrenceRules = [
-                        EKRecurrenceRule(
-                            recurrenceWith: EKRecurrenceFrequency.daily,
-                            interval: 1,
-                            end: EKRecurrenceEnd.init(end: habit.endDate.endOfDay)
-                        )
-                    ]
+                    event.recurrenceRules = [recurrenceRule]
 
                     do {
                         try self.eventStore.save(event, span: .futureEvents)
@@ -141,14 +136,9 @@ struct EventKitService {
     func editEvent(_ habit: Habit) {
         if let eventToEdit = self.getEventById(eventId: habit.eventId) {
             do {
+                let recurrenceRule = habit.getEKRecurrenceRule()
                 eventToEdit.title = habit.name
-                eventToEdit.recurrenceRules = [
-                    EKRecurrenceRule(
-                        recurrenceWith: EKRecurrenceFrequency.daily,
-                        interval: 1,
-                        end: EKRecurrenceEnd.init(end: habit.endDate.endOfDay)
-                    )
-                ]
+                eventToEdit.recurrenceRules = [recurrenceRule]
 
                 try self.eventStore.save(eventToEdit, span: .futureEvents)
             } catch {

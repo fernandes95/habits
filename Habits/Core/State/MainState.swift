@@ -180,6 +180,7 @@ class MainState: ObservableObject {
                     startDate: habit.startDate,
                     endDate: habit.endDate,
                     frequency: habit.frequency.rawValue,
+                    frequencyType: habit.frequencyType,
                     category: habit.category.rawValue,
                     schedule: schedule.map { hour in
                         return HabitEntity.Hour(date: hour.date, eventId: hour.eventId)

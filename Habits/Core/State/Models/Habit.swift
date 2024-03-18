@@ -15,6 +15,7 @@ struct Habit: Identifiable, Equatable {
     var startDate: Date
     var endDate: Date
     var frequency: Frequency
+    var frequencyType: Ocurrence
     var category: Category
     var schedule: [Hour]
     var isChecked: Bool
@@ -29,6 +30,7 @@ struct Habit: Identifiable, Equatable {
         startDate: Date,
         endDate: Date,
         frequency: String,
+        frequencyType: Ocurrence,
         category: String,
         schedule: [Hour],
         isChecked: Bool,
@@ -42,6 +44,7 @@ struct Habit: Identifiable, Equatable {
         self.startDate = startDate
         self.endDate = endDate
         self.frequency = getFrequency(frequency)
+        self.frequencyType = frequencyType
         self.category = getCategory(category)
         self.isChecked = isChecked
         self.successRate = successRate
@@ -57,6 +60,7 @@ struct Habit: Identifiable, Equatable {
         self.startDate = habitEntity.startDate
         self.endDate = habitEntity.endDate
         self.frequency = getFrequency(habitEntity.frequency)
+        self.frequencyType = habitEntity.frequencyType
         self.category = getCategory(habitEntity.category)
 
         self.schedule = habitEntity.schedule.map { hourEntity in
@@ -78,8 +82,60 @@ struct Habit: Identifiable, Equatable {
         }
     }
 
+    private func getEKRecurrenceDaysOfWeek() -> [EKRecurrenceDayOfWeek] {
+        let list = self.frequencyType.weekFrequency
+        var weekDays: [EKRecurrenceDayOfWeek] = []
+
+        for day in list {
+            let weekDay: EKWeekday = switch day {
+            case WeekDay.monday:
+                EKWeekday.monday
+            case WeekDay.tuesday:
+                EKWeekday.tuesday
+            case WeekDay.wednesday:
+                EKWeekday.wednesday
+            case WeekDay.thursday:
+                EKWeekday.thursday
+            case WeekDay.friday:
+                EKWeekday.friday
+            case WeekDay.saturday:
+                EKWeekday.saturday
+            default:
+                EKWeekday.sunday
+            }
+            weekDays.append(EKRecurrenceDayOfWeek(weekDay))
+        }
+        return weekDays
+    }
+
+    func getEKRecurrenceRule() -> EKRecurrenceRule {
+        let daysOfTheWeek = getEKRecurrenceDaysOfWeek()
+        let recurrenceEnd: EKRecurrenceEnd = EKRecurrenceEnd.init(end: self.endDate.endOfDay)
+        return if self.frequency == .weekly {
+            EKRecurrenceRule(
+                recurrenceWith: .weekly,
+                interval: 1,
+                daysOfTheWeek: daysOfTheWeek,
+                daysOfTheMonth: nil,
+                monthsOfTheYear: nil,
+                weeksOfTheYear: nil,
+                daysOfTheYear: nil,
+                setPositions: nil,
+                end: recurrenceEnd
+            )
+        } else {
+            EKRecurrenceRule(
+                recurrenceWith: .daily,
+                interval: 1,
+                end: recurrenceEnd
+            )
+        }
+    }
+
     func getEKEvent(store: EKEventStore) -> EKEvent {
         let event = EKEvent(eventStore: store)
+        let recurrenceRule = getEKRecurrenceRule()
+
         event.title = self.name
         event.startDate = self.startDate
         event.endDate = self.startDate
@@ -89,13 +145,7 @@ struct Habit: Identifiable, Equatable {
         }
 
         event.calendar = store.defaultCalendarForNewEvents
-        event.recurrenceRules = [
-            EKRecurrenceRule(
-                recurrenceWith: EKRecurrenceFrequency.daily,
-                interval: 1,
-                end: EKRecurrenceEnd.init(end: self.endDate.endOfDay)
-            )
-        ]
+        event.recurrenceRules = [recurrenceRule]
 
         return event
     }

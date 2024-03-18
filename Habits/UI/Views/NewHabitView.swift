@@ -20,6 +20,7 @@ struct NewHabitView: View {
     @State var startDate: Date
     @State private var endDate: Date = Date.now
     @State private var frequency: Habit.Frequency = .daily
+    @State private var weekFrequency: [WeekDay] = []
     @State private var category: Habit.Category = .new
     @State private var schedule: [Habit.Hour] = []
 
@@ -30,6 +31,7 @@ struct NewHabitView: View {
                 startDate: $startDate,
                 endDate: $endDate,
                 frequency: $frequency,
+                weekFrequency: $weekFrequency,
                 category: $category,
                 schedule: $schedule,
                 isEdit: .constant(true),
@@ -66,6 +68,7 @@ struct NewHabitView: View {
                 startDate: startDate,
                 endDate: endDate,
                 frequency: frequency.rawValue,
+                frequencyType: Ocurrence(weekFrequency: weekFrequency),
                 category: category.rawValue,
                 schedule: schedule,
                 isChecked: false,

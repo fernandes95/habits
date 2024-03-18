@@ -12,9 +12,11 @@ struct NewHabitContentView: View {
     @Binding var startDate: Date
     @Binding var endDate: Date
     @Binding var frequency: Habit.Frequency
+    @Binding var weekFrequency: [WeekDay]
     @Binding var category: Habit.Category
     @Binding var schedule: [Habit.Hour]
     @Binding var isEdit: Bool
+
     let isNew: Bool
     var startDateIn: Date = Date.now
     var successRate: String?
@@ -50,9 +52,36 @@ struct NewHabitContentView: View {
                 Picker("habit_frequency", selection: $frequency) {
                     ForEach(Habit.Frequency.allCases) { frequency in
                         Text(frequency.rawValue).tag(frequency)
+                            .onTapGesture {
+                                if frequency != .weekly {
+                                    weekFrequency.removeAll()
+                                }
+                            }
                     }
                 }
                 .disabled(!isEdit)
+
+                if frequency == .weekly {
+                    Spacer()
+                    ForEach(WeekDay.allCases, id: \.self) { day in
+                        HStack {
+                            Text(day.rawValue).tag(day)
+                            Spacer()
+                            if weekFrequency.contains(day) {
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            if weekFrequency.contains(day) {
+                                weekFrequency.removeAll(where: {$0 == day})
+                            } else {
+                                weekFrequency.append(day)
+                            }
+                        }
+                    }
+                    .disabled(!isEdit)
+                }
             }
 
             if schedule.count > 0 || schedule.count == 0 && isEdit {
@@ -145,6 +174,7 @@ struct NewHabitContentView: View {
         startDate: .constant(Date.now),
         endDate: .constant(Date.now),
         frequency: .constant(.daily),
+        weekFrequency: .constant([]),
         category: .constant(.new),
         schedule: .constant([]),
         isEdit: .constant(true),
