@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import EventKit
 
 @MainActor
 class MainState: ObservableObject {
@@ -16,8 +17,8 @@ class MainState: ObservableObject {
 
     @Published
     var selectedDate: Date = Date.now
-    private let storeService = DefaultStoreService()
-    private let eventKitService = EventKitService()
+    private let storeService: DefaultStoreService = DefaultStoreService()
+    private let eventKitService: EventKitService = EventKitService()
 
     private func load() async throws -> StoreEntity {
         return try await storeService.load()
@@ -38,41 +39,43 @@ class MainState: ObservableObject {
         let habitsWeekly: [Habit] = habits
             .filter { $0.frequency == .weekly }
             .compactMap { habit in
-                let daysDiff = DateHelper.numberOfDaysBetween(habit.startDate, and: self.selectedDate)
+                let weekDayRaw: Int = Calendar.current.component(.weekday, from: date)
+                guard let ekWeekday: EKWeekday = EKWeekday(rawValue: weekDayRaw) else { return nil }
+                let weekday: WeekDay = getWeekDay(ekWeekday: ekWeekday)
 
-                return if (daysDiff % 7) == 0 {
+                return if habit.frequencyType.weekFrequency.contains(weekday) {
                     habit
                 } else {
                     nil
                 }
             }
 
-        let uncheckedDailyList = habitsDaily
+        let uncheckedDailyList: [Habit]  = habitsDaily
             .filter { !$0.isChecked }
-        let uncheckedWeeklyList = habitsWeekly
+        let uncheckedWeeklyList: [Habit]  = habitsWeekly
             .filter { !$0.isChecked }
 
-        let uncheckedList = uncheckedDailyList + uncheckedWeeklyList
+        let uncheckedList: [Habit] = uncheckedDailyList + uncheckedWeeklyList
 
-        let checkedDailyList = habitsDaily
+        let checkedDailyList: [Habit]  = habitsDaily
           .filter { $0.isChecked }
           .sorted { (lhs: Habit, rhs: Habit) in
               return (lhs.updatedDate < rhs.updatedDate)
           }
-        let checkedWeeklyList = habitsWeekly
+        let checkedWeeklyList: [Habit]  = habitsWeekly
           .filter { $0.isChecked }
           .sorted { (lhs: Habit, rhs: Habit) in
               return (lhs.updatedDate < rhs.updatedDate)
           }
 
-        let checkedList = checkedDailyList + checkedWeeklyList
+        let checkedList: [Habit]  = checkedDailyList + checkedWeeklyList
 
         self.habits = uncheckedList + checkedList
     }
 
     func getHabit(habit: Habit) async throws -> Habit {
         let store: StoreEntity = try await load()
-        if let habitEntity = store.habits.first(where: { $0.id == habit.id }) {
+        if let habitEntity: HabitEntity = store.habits.first(where: { $0.id == habit.id }) {
             return Habit(habitEntity: habitEntity, selectedDate: Date.now)
         } else {
             return habit
@@ -82,20 +85,22 @@ class MainState: ObservableObject {
     func updateHabit(habit: Habit) async throws {
         do {
             var store: StoreEntity = try await load()
-            if let index = store.habits.firstIndex(where: { $0.id == habit.id}) {
-                let oldHabit = Habit(habitEntity: store.habits[index])
-                let eventsHabit = try await manageUpdateEvents(habit: habit, oldHabit: oldHabit)
+            if let index: Int = store.habits.firstIndex(where: { $0.id == habit.id}) {
+                let oldHabit: Habit = Habit(habitEntity: store.habits[index])
+                let eventsHabit: Habit = try await manageUpdateEvents(habit: habit, oldHabit: oldHabit)
                 var updatedHabit: HabitEntity = store.habits[index].with(
                     eventId: eventsHabit.eventId,
                     name: eventsHabit.name,
                     endDate: eventsHabit.endDate,
+                    frequency: eventsHabit.frequency.rawValue,
+                    frequencyType: eventsHabit.frequencyType,
                     category: eventsHabit.category.rawValue,
                     schedule: eventsHabit.schedule.map { hour in
                         return HabitEntity.Hour(date: hour.date, eventId: hour.eventId)
                     }
                 )
 
-                if let statusIndex = updatedHabit.statusList.firstIndex(where: {
+                if let statusIndex: Int = updatedHabit.statusList.firstIndex(where: {
                     $0.date.startOfDay == self.selectedDate.startOfDay
                 }) {
                     var status = updatedHabit.statusList[statusIndex]
@@ -122,11 +127,11 @@ class MainState: ObservableObject {
     }
 
     private func manageUpdateEvents(habit: Habit, oldHabit: Habit) async throws -> Habit {
-        var habitUpdated = habit
+        var habitUpdated: Habit = habit
         habitUpdated.schedule = try await eventKitService.manageScheduleEvents(habit, oldHabit: oldHabit)
 
         if habitUpdated.eventId.isEmpty && habitUpdated.schedule.isEmpty {
-            let eventId = try await eventKitService.createCalendarEvent(habitUpdated)
+            let eventId: String = try await eventKitService.createCalendarEvent(habitUpdated)
             habitUpdated.eventId = eventId
         } else if !habitUpdated.eventId.isEmpty && !habitUpdated.schedule.isEmpty && oldHabit.schedule.isEmpty {
             eventKitService.deleteEventById(eventId: habitUpdated.eventId)
@@ -141,8 +146,8 @@ class MainState: ObservableObject {
     func removeHabit(habitId: UUID) async throws {
         do {
             var store: StoreEntity = try await load()
-            if let index = store.habits.firstIndex(where: { $0.id == habitId }) {
-                let deleteHabit = store.habits[index]
+            if let index: Int = store.habits.firstIndex(where: { $0.id == habitId }) {
+                let deleteHabit: HabitEntity = store.habits[index]
 
                 store.habitsArchived.append(deleteHabit)
                 store.habits.remove(at: index)

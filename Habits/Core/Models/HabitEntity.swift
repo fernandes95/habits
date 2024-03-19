@@ -105,9 +105,9 @@ struct HabitEntity: Codable {
 
 extension HabitEntity {
     private func getSuccessRateValue(statusList: [Status], startDate: Date) -> Int {
-        let checkedAmount = statusList.filter { $0.date <= Date.now.endOfDay && $0.isChecked }.count
-        let dayDiff = DateHelper.numberOfDaysBetween(startDate.startOfDay, and: Date.now.endOfDay) + 1
-        let percentage = checkedAmount == 0 ? 0 : (Double(checkedAmount) / Double(dayDiff)) * 100.0
+        let checkedAmount: Int = statusList.filter { $0.date <= Date.now.endOfDay && $0.isChecked }.count
+        let dayDiff: Int = DateHelper.numberOfDaysBetween(startDate.startOfDay, and: Date.now.endOfDay) + 1
+        let percentage: Double = checkedAmount == 0 ? 0 : (Double(checkedAmount) / Double(dayDiff)) * 100.0
 
         return Int(percentage)
     }

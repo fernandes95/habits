@@ -13,7 +13,7 @@ struct EventKitService {
     private let eventStore: EKEventStore = EKEventStore()
 
     private func verifyAuthStatus() async throws -> Bool {
-        let status = EKEventStore.authorizationStatus(for: .event)
+        let status: EKAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
         if status == .notDetermined {
             return if #available(iOS 17.0, *) {
                 try await self.eventStore.requestFullAccessToEvents()
@@ -27,7 +27,7 @@ struct EventKitService {
     func createCalendarEvent(_ habit: Habit) async throws -> String {
         guard try await verifyAuthStatus() else { return "" }
 
-        let newEvent = habit.getEKEvent(store: self.eventStore)
+        let newEvent: EKEvent = habit.getEKEvent(store: self.eventStore)
 
         do {
             try self.eventStore.save(newEvent, span: .thisEvent)
@@ -40,14 +40,14 @@ struct EventKitService {
 
     func createScheduleCalendarEvents(_ habit: Habit) async throws -> [Habit.Hour] {
         guard try await verifyAuthStatus() else { return habit.schedule }
-        var newSchedule = habit.schedule
+        var newSchedule: [Habit.Hour] = habit.schedule
 
         for hour in habit.schedule {
-            let calendar = Calendar.current
-            let newEvent = habit.getEKEvent(store: self.eventStore)
+            let calendar: Calendar = Calendar.current
+            let newEvent: EKEvent = habit.getEKEvent(store: self.eventStore)
             newEvent.startDate = hour.date
 
-            var components = DateComponents()
+            var components: DateComponents = DateComponents()
             components.minute = 30
             let newEndDate = calendar.date(byAdding: components, to: hour.date)
             newEvent.endDate = newEndDate
@@ -68,9 +68,9 @@ struct EventKitService {
 
     func manageScheduleEvents(_ habit: Habit, oldHabit: Habit) async throws -> [Habit.Hour] {
         guard try await verifyAuthStatus() else { return habit.schedule }
-        var newSchedule = habit.schedule
-        let calendar = Calendar.current
-        var components = DateComponents()
+        var newSchedule: [Habit.Hour] = habit.schedule
+        let calendar: Calendar = Calendar.current
+        var components: DateComponents = DateComponents()
         components.minute = 30
 
         // REMOVE HOURS FROM SCHEDULE THAT WERE DELETED
@@ -83,25 +83,25 @@ struct EventKitService {
 
         // MANAGE EDITED AND NEW HOURS IN SCHEDULE
         for hour in habit.schedule {
-            let newEndDate = calendar.date(byAdding: components, to: hour.date)
+            let newEndDate: Date? = calendar.date(byAdding: components, to: hour.date)
 
             if hour.eventId.isEmpty {
-                let newEvent = habit.getEKEvent(store: self.eventStore)
+                let newEvent: EKEvent = habit.getEKEvent(store: self.eventStore)
                 newEvent.startDate = hour.date
                 newEvent.endDate = newEndDate
 
                 do {
                     try self.eventStore.save(newEvent, span: .thisEvent)
 
-                    if let index = newSchedule.firstIndex(of: hour) {
+                    if let index: Int = newSchedule.firstIndex(of: hour) {
                         newSchedule[index].eventId = newEvent.eventIdentifier
                     }
                 } catch {
                     print("ERROR CREATING CALENDAR EVENT")
                 }
             } else {
-                if let event = self.getEventById(eventId: hour.eventId) {
-                    let recurrenceRule = habit.getEKRecurrenceRule()
+                if let event: EKEvent = self.getEventById(eventId: hour.eventId) {
+                    let recurrenceRule: EKRecurrenceRule = habit.getEKRecurrenceRule()
                     event.title = habit.name
                     event.startDate = hour.date
                     event.endDate = newEndDate
@@ -124,7 +124,7 @@ struct EventKitService {
     }
 
     func deleteEventById(eventId: String) {
-        if let eventToDelete = self.getEventById(eventId: eventId) {
+        if let eventToDelete: EKEvent = self.getEventById(eventId: eventId) {
             do {
                 try self.eventStore.remove(eventToDelete, span: .futureEvents)
             } catch {
@@ -134,9 +134,9 @@ struct EventKitService {
     }
 
     func editEvent(_ habit: Habit) {
-        if let eventToEdit = self.getEventById(eventId: habit.eventId) {
+        if let eventToEdit: EKEvent = self.getEventById(eventId: habit.eventId) {
             do {
-                let recurrenceRule = habit.getEKRecurrenceRule()
+                let recurrenceRule: EKRecurrenceRule = habit.getEKRecurrenceRule()
                 eventToEdit.title = habit.name
                 eventToEdit.recurrenceRules = [recurrenceRule]
 

@@ -83,25 +83,25 @@ struct Habit: Identifiable, Equatable {
     }
 
     private func getEKRecurrenceDaysOfWeek() -> [EKRecurrenceDayOfWeek] {
-        let list = self.frequencyType.weekFrequency
+        let list: [WeekDay] = self.frequencyType.weekFrequency
         var weekDays: [EKRecurrenceDayOfWeek] = []
 
         for day in list {
             let weekDay: EKWeekday = switch day {
             case WeekDay.monday:
-                EKWeekday.monday
+                .monday
             case WeekDay.tuesday:
-                EKWeekday.tuesday
+                .tuesday
             case WeekDay.wednesday:
-                EKWeekday.wednesday
+                .wednesday
             case WeekDay.thursday:
-                EKWeekday.thursday
+                .thursday
             case WeekDay.friday:
-                EKWeekday.friday
+                .friday
             case WeekDay.saturday:
-                EKWeekday.saturday
+                .saturday
             default:
-                EKWeekday.sunday
+                .sunday
             }
             weekDays.append(EKRecurrenceDayOfWeek(weekDay))
         }
@@ -109,7 +109,7 @@ struct Habit: Identifiable, Equatable {
     }
 
     func getEKRecurrenceRule() -> EKRecurrenceRule {
-        let daysOfTheWeek = getEKRecurrenceDaysOfWeek()
+        let daysOfTheWeek: [EKRecurrenceDayOfWeek] = getEKRecurrenceDaysOfWeek()
         let recurrenceEnd: EKRecurrenceEnd = EKRecurrenceEnd.init(end: self.endDate.endOfDay)
         return if self.frequency == .weekly {
             EKRecurrenceRule(
@@ -133,8 +133,8 @@ struct Habit: Identifiable, Equatable {
     }
 
     func getEKEvent(store: EKEventStore) -> EKEvent {
-        let event = EKEvent(eventStore: store)
-        let recurrenceRule = getEKRecurrenceRule()
+        let event: EKEvent = EKEvent(eventStore: store)
+        let recurrenceRule: EKRecurrenceRule = getEKRecurrenceRule()
 
         event.title = self.name
         event.startDate = self.startDate
@@ -163,8 +163,8 @@ struct Habit: Identifiable, Equatable {
     enum Frequency: String, Identifiable, CaseIterable {
         case daily = "Daily"
         case weekly = "Weekly"
-        case monthly = "Monthly"
-        case yearly = "Yearly"
+//        case monthly = "Monthly"
+//        case yearly = "Yearly"
 //        case Custom
 
         var id: String {
@@ -191,10 +191,10 @@ func getFrequency(_ frequency: String) -> Habit.Frequency {
     return switch frequency {
     case Habit.Frequency.weekly.rawValue:
         .weekly
-    case Habit.Frequency.monthly.rawValue:
-        .monthly
-    case Habit.Frequency.yearly.rawValue:
-        .yearly
+//    case Habit.Frequency.monthly.rawValue:
+//        .monthly
+//    case Habit.Frequency.yearly.rawValue:
+//        .yearly
     default:
         .daily
     }

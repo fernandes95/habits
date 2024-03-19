@@ -21,16 +21,11 @@ struct HabitDetailView: View {
     @State private var editingHabit: Habit
     @State private var showingAlert = false
     @State private var editingEndDate: Date
-//    @State private var weekFrequency: [WeekDay] = []
 
     init(habit: Habit) {
         self.habit = habit
         self._editingHabit = State(initialValue: habit)
         self._editingEndDate = State(initialValue: habit.endDate)
-
-//        if (habit.frequencyType?.weekFrequency) != nil {
-//            self._weekFrequency = State(initialValue: habit.frequencyType?.weekFrequency ?? [])
-//        }
     }
 
     var body: some View {

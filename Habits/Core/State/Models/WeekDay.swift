@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import EventKit
 
 enum WeekDay: String, Identifiable, CaseIterable, Codable {
     case sunday = "Sunday"
@@ -19,4 +20,23 @@ enum WeekDay: String, Identifiable, CaseIterable, Codable {
     var id: String {
         rawValue.capitalized
     }
+}
+
+func getWeekDay(ekWeekday: EKWeekday) -> WeekDay {
+    return switch ekWeekday {
+            case .monday:
+                WeekDay.monday
+            case .tuesday:
+                WeekDay.tuesday
+            case .wednesday:
+                WeekDay.wednesday
+            case .thursday:
+                WeekDay.thursday
+            case .friday:
+                WeekDay.friday
+            case .saturday:
+                WeekDay.saturday
+            default:
+                WeekDay.sunday
+            }
 }

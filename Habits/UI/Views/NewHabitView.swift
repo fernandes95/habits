@@ -13,7 +13,7 @@ struct NewHabitView: View {
     @EnvironmentObject
     private var state: MainState
 
-    var store = EKEventStore()
+    var store: EKEventStore = EKEventStore()
 
     @Binding var isPresentingNewHabit: Bool
     @State private var name: String = ""
