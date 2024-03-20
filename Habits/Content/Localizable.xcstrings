@@ -158,6 +158,17 @@
         }
       }
     },
+    "habit_has_alarm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Has alarm"
+          }
+        }
+      }
+    },
     "habit_name" : {
       "extractionState" : "manual",
       "localizations" : {

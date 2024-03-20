@@ -16,6 +16,7 @@ struct NewHabitContentView: View {
     @Binding var category: Habit.Category
     @Binding var schedule: [Habit.Hour]
     @Binding var isEdit: Bool
+    @Binding var hasAlarm: Bool
 
     let isNew: Bool
     var startDateIn: Date = Date.now
@@ -100,6 +101,10 @@ struct NewHabitContentView: View {
                                     .swipeActions(edge: .trailing) {
                                         Button(role: .destructive) {
                                             schedule.remove(at: index)
+
+                                            if schedule.isEmpty {
+                                                hasAlarm = false
+                                            }
                                         } label: {
                                             Label("habit_schedule_delete", systemImage: "trash")
                                         }
@@ -128,6 +133,8 @@ struct NewHabitContentView: View {
                                     dateComponents.second = 00
 
                                     mainDateComponents = dateComponents
+
+                                    hasAlarm = true
                                 } else {
                                     let scheduleSorted = schedule.sorted { (lhs: Habit.Hour, rhs: Habit.Hour) in
                                         return (lhs.date < rhs.date)
@@ -158,6 +165,10 @@ struct NewHabitContentView: View {
                         }
                     }
                 }
+
+                let isDisabled = $schedule.isEmpty ? true : !isEdit
+                    Toggle("habit_has_alarm", isOn: $hasAlarm)
+                    .disabled(isDisabled)
             }
 
             if !isNew && successRate != nil {
@@ -178,6 +189,7 @@ struct NewHabitContentView: View {
         category: .constant(.new),
         schedule: .constant([]),
         isEdit: .constant(true),
+        hasAlarm: .constant(false),
         isNew: true,
         successRate: "70%"
     )

@@ -23,6 +23,7 @@ struct NewHabitView: View {
     @State private var weekFrequency: [WeekDay] = []
     @State private var category: Habit.Category = .new
     @State private var schedule: [Habit.Hour] = []
+    @State private var hasAlarm: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -35,6 +36,7 @@ struct NewHabitView: View {
                 category: $category,
                 schedule: $schedule,
                 isEdit: .constant(true),
+                hasAlarm: $hasAlarm,
                 isNew: true,
                 startDateIn: state.selectedDate
             )
@@ -72,6 +74,7 @@ struct NewHabitView: View {
                 category: category.rawValue,
                 schedule: schedule,
                 isChecked: false,
+                hasAlarm: hasAlarm,
                 successRate: "0",
                 createdDate: Date.now,
                 updatedDate: Date.now

@@ -19,6 +19,7 @@ struct HabitEntity: Codable {
     var statusList: [Status]
     var schedule: [Hour]
     var successRate: Int = 0
+    var hasAlarm: Bool
     var updatedDate: Date
     let createdDate: Date
 
@@ -32,6 +33,7 @@ struct HabitEntity: Codable {
          category: String,
          statusList: [Status] = [],
          schedule: [Hour] = [],
+         hasAlarm: Bool = false,
          updatedDate: Date = Date.now
     ) {
         self.id = id
@@ -44,6 +46,7 @@ struct HabitEntity: Codable {
         self.category = category
         self.statusList = statusList
         self.schedule = schedule
+        self.hasAlarm = hasAlarm
         self.updatedDate = updatedDate
         self.createdDate = Date.now
         self.successRate = getSuccessRateValue(statusList: self.statusList, startDate: self.startDate)
@@ -59,6 +62,7 @@ struct HabitEntity: Codable {
         category: String? = nil,
         statusList: [Status]? = nil,
         schedule: [Hour]? = nil,
+        hasAlarm: Bool? = nil,
         updatedDate: Date? = nil
     ) -> Self {
         return Self(
@@ -72,6 +76,7 @@ struct HabitEntity: Codable {
             category: category ?? self.category,
             statusList: statusList ?? self.statusList,
             schedule: schedule ?? self.schedule,
+            hasAlarm: hasAlarm ?? self.hasAlarm,
             updatedDate: updatedDate ?? self.updatedDate
         )
     }

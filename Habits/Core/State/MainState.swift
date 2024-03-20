@@ -97,7 +97,8 @@ class MainState: ObservableObject {
                     category: eventsHabit.category.rawValue,
                     schedule: eventsHabit.schedule.map { hour in
                         return HabitEntity.Hour(date: hour.date, eventId: hour.eventId)
-                    }
+                    },
+                    hasAlarm: eventsHabit.hasAlarm
                 )
 
                 if let statusIndex: Int = updatedHabit.statusList.firstIndex(where: {
@@ -189,7 +190,8 @@ class MainState: ObservableObject {
                     category: habit.category.rawValue,
                     schedule: schedule.map { hour in
                         return HabitEntity.Hour(date: hour.date, eventId: hour.eventId)
-                    }
+                    },
+                    hasAlarm: habit.hasAlarm
                 )
             )
 

@@ -39,6 +39,7 @@ struct HabitDetailView: View {
                 category: $editingHabit.category,
                 schedule: $editingHabit.schedule,
                 isEdit: $isEditing,
+                hasAlarm: $editingHabit.hasAlarm,
                 isNew: false,
                 successRate: editingHabit.successRate
             )
@@ -120,6 +121,7 @@ struct HabitDetailView: View {
             category: "newHabit",
             schedule: [],
             isChecked: false,
+            hasAlarm: true,
             successRate: "0%",
             createdDate: Date.now,
             updatedDate: Date.now

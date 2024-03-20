@@ -51,6 +51,7 @@ struct EventKitService {
             components.minute = 30
             let newEndDate = calendar.date(byAdding: components, to: hour.date)
             newEvent.endDate = newEndDate
+            newEvent.addAlarm(EKAlarm(absoluteDate: hour.date))
 
             do {
                 try self.eventStore.save(newEvent, span: .thisEvent)
@@ -66,6 +67,15 @@ struct EventKitService {
         return newSchedule
     }
 
+    private func removeEvents(habit: Habit, schedule: [Habit.Hour]) {
+        for hour in schedule {
+            // swiftlint:disable:next for_where
+            if !habit.schedule.contains(where: {$0.id == hour.id}) {
+                deleteEventById(eventId: hour.eventId)
+            }
+        }
+    }
+
     func manageScheduleEvents(_ habit: Habit, oldHabit: Habit) async throws -> [Habit.Hour] {
         guard try await verifyAuthStatus() else { return habit.schedule }
         var newSchedule: [Habit.Hour] = habit.schedule
@@ -74,12 +84,7 @@ struct EventKitService {
         components.minute = 30
 
         // REMOVE HOURS FROM SCHEDULE THAT WERE DELETED
-        for hour in oldHabit.schedule {
-            // swiftlint:disable:next for_where
-            if !habit.schedule.contains(where: {$0.id == hour.id}) {
-                deleteEventById(eventId: hour.eventId)
-            }
-        }
+        removeEvents(habit: habit, schedule: oldHabit.schedule)
 
         // MANAGE EDITED AND NEW HOURS IN SCHEDULE
         for hour in habit.schedule {
@@ -89,6 +94,10 @@ struct EventKitService {
                 let newEvent: EKEvent = habit.getEKEvent(store: self.eventStore)
                 newEvent.startDate = hour.date
                 newEvent.endDate = newEndDate
+
+                if habit.hasAlarm {
+                    newEvent.addAlarm(EKAlarm(absoluteDate: hour.date))
+                }
 
                 do {
                     try self.eventStore.save(newEvent, span: .thisEvent)
@@ -106,6 +115,16 @@ struct EventKitService {
                     event.startDate = hour.date
                     event.endDate = newEndDate
                     event.recurrenceRules = [recurrenceRule]
+
+                    if let alarms = event.alarms {
+                        for alarm in alarms {
+                            event.removeAlarm(alarm)
+                        }
+                    }
+
+                    if habit.hasAlarm {
+                        event.addAlarm(EKAlarm(absoluteDate: hour.date))
+                    }
 
                     do {
                         try self.eventStore.save(event, span: .futureEvents)

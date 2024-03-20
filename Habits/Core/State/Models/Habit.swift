@@ -19,6 +19,7 @@ struct Habit: Identifiable, Equatable {
     var category: Category
     var schedule: [Hour]
     var isChecked: Bool
+    var hasAlarm: Bool
     var successRate: String
     let createdDate: Date
     var updatedDate: Date
@@ -34,6 +35,7 @@ struct Habit: Identifiable, Equatable {
         category: String,
         schedule: [Hour],
         isChecked: Bool,
+        hasAlarm: Bool,
         successRate: String,
         createdDate: Date,
         updatedDate: Date
@@ -47,6 +49,7 @@ struct Habit: Identifiable, Equatable {
         self.frequencyType = frequencyType
         self.category = getCategory(category)
         self.isChecked = isChecked
+        self.hasAlarm = hasAlarm
         self.successRate = successRate
         self.createdDate = createdDate
         self.updatedDate = updatedDate
@@ -68,6 +71,7 @@ struct Habit: Identifiable, Equatable {
         }
 
         self.isChecked = false
+        self.hasAlarm = habitEntity.hasAlarm
         self.successRate = "\(habitEntity.successRate)%"
         self.createdDate = habitEntity.createdDate
         self.updatedDate = habitEntity.updatedDate
