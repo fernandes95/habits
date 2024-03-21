@@ -11,17 +11,19 @@ import SwiftUI
 
 struct EventKitService {
     private let eventStore: EKEventStore = EKEventStore()
+    private let authService: AuthorizationService = AuthorizationService()
 
     private func verifyAuthStatus() async throws -> Bool {
-        let status: EKAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
+        var auth: Bool = false
+        let status = try await authService.eventStoreAuth()
         if status == .notDetermined {
-            return if #available(iOS 17.0, *) {
-                try await self.eventStore.requestFullAccessToEvents()
+            if #available(iOS 17.0, *) {
+                auth = try await self.eventStore.requestFullAccessToEvents()
             } else {
-                try await self.eventStore.requestAccess(to: .event)
+                auth = try await self.eventStore.requestAccess(to: .event)
             }
         }
-        return true
+        return auth
     }
 
     func createCalendarEvent(_ habit: Habit) async throws -> String {
@@ -39,7 +41,8 @@ struct EventKitService {
     }
 
     func createScheduleCalendarEvents(_ habit: Habit) async throws -> [Habit.Hour] {
-        guard try await verifyAuthStatus() else { return habit.schedule }
+        guard try await verifyAuthStatus() else { return try await manageLocalReminders(habit: habit) }
+
         var newSchedule: [Habit.Hour] = habit.schedule
 
         for hour in habit.schedule {
@@ -62,6 +65,34 @@ struct EventKitService {
             } catch {
                 print("ERROR CREATING CALENDAR EVENT")
             }
+        }
+
+        return newSchedule
+    }
+
+    func manageLocalReminders(habit: Habit) async throws -> [Habit.Hour] {
+        guard try await authService.notificationsAuth() else { return habit.schedule }
+
+        var newSchedule = habit.schedule
+        for hour in habit.schedule {
+            // TODO: SET CORRECT CONTENT
+            let requestId = UUID().uuidString
+            let notificationContent = UNMutableNotificationContent()
+            notificationContent.title = habit.name
+            notificationContent.subtitle = "test"
+            notificationContent.sound = UNNotificationSound.default
+            notificationContent.setValue(true, forKey: "shouldAlwaysAlertWhileAppIsForeground")
+
+            // TODO: SET CORRECT TIME
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+
+            let request = UNNotificationRequest(identifier: requestId, content: notificationContent, trigger: trigger)
+
+            if let index = newSchedule.firstIndex(of: hour) {
+                newSchedule[index].notificationId = requestId
+            }
+
+            try await UNUserNotificationCenter.current().add(request)
         }
 
         return newSchedule

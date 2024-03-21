@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AE2B2A3D2BAC5107004669B6 /* AuthorizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2B2A3C2BAC5107004669B6 /* AuthorizationService.swift */; };
 		AE30E1582B9F7428009E10CD /* EventKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1572B9F7428009E10CD /* EventKitService.swift */; };
 		AE30E1602BA4C182009E10CD /* Ocurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E15F2BA4C182009E10CD /* Ocurrence.swift */; };
 		AE30E1622BA88B5B009E10CD /* WeekDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1612BA88B5B009E10CD /* WeekDay.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AE2B2A3C2BAC5107004669B6 /* AuthorizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationService.swift; sourceTree = "<group>"; };
 		AE30E1572B9F7428009E10CD /* EventKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventKitService.swift; sourceTree = "<group>"; };
 		AE30E15F2BA4C182009E10CD /* Ocurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ocurrence.swift; sourceTree = "<group>"; };
 		AE30E1612BA88B5B009E10CD /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				AE448A942B8D20700034898F /* DefaultStoreService.swift */,
 				AE448A922B8D20160034898F /* StoreService.swift */,
 				AE30E1572B9F7428009E10CD /* EventKitService.swift */,
+				AE2B2A3C2BAC5107004669B6 /* AuthorizationService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -341,6 +344,7 @@
 				AEA3D6CA2B5E8BE000A08F31 /* HabitEntity.swift in Sources */,
 				AE448A872B86632E0034898F /* HabitRouteIdEnvironmentKey.swift in Sources */,
 				AE448A812B84E99F0034898F /* HabitDetailView.swift in Sources */,
+				AE2B2A3D2BAC5107004669B6 /* AuthorizationService.swift in Sources */,
 				AED732D52B61584E00CD750D /* NewHabitView.swift in Sources */,
 				AE448A932B8D20160034898F /* StoreService.swift in Sources */,
 				AE51BD592B9612E3005DCBC7 /* StoreEntity.swift in Sources */,

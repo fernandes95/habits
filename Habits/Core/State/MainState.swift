@@ -19,6 +19,7 @@ class MainState: ObservableObject {
     var selectedDate: Date = Date.now
     private let storeService: DefaultStoreService = DefaultStoreService()
     private let eventKitService: EventKitService = EventKitService()
+    private let authService: AuthorizationService = AuthorizationService()
 
     private func load() async throws -> StoreEntity {
         return try await storeService.load()
