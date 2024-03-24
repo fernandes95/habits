@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct NewHabitContentView: View {
     @Binding var name: String
@@ -22,7 +23,14 @@ struct NewHabitContentView: View {
     var startDateIn: Date = Date.now
     var successRate: String?
 
+    @State private var mapLocations: [CLLocationCoordinate2D] = []
+    @State private var hasLocationReminder: Bool = false
     @State private var hoursDate: Date = Date.now
+
+    // TODO: CHANGE THIS TO MAP POSITION
+    @State private var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 38.736946, longitude: -9.142685),
+        span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5))
 
     var body: some View {
         Form {
@@ -169,6 +177,28 @@ struct NewHabitContentView: View {
                 let isDisabled = $schedule.isEmpty ? true : !isEdit
                     Toggle("habit_has_alarm", isOn: $hasAlarm)
                     .disabled(isDisabled)
+            }
+
+            Section(header: Text("Location Reminder")) {
+                VStack {
+                    Toggle("hasLocationReminder", isOn: $hasLocationReminder)
+                        .disabled(!isEdit)
+
+                    if #available(iOS 17.0, *) {
+                        MapReader { proxy in
+                            Map() // TODO: ADD CORRECT POSITION
+                            .frame(height: 250)
+                            .mapControlVisibility(.hidden)
+                            .onTapGesture { position in
+                                if let coordinate: CLLocationCoordinate2D = proxy.convert(position, from: .local) {
+                                    print(coordinate)
+                                }
+                            }
+                        }
+                    } else {
+                        // TODO: Fallback on earlier versions
+                    }
+                }
             }
 
             if !isNew && successRate != nil {

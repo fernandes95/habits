@@ -290,7 +290,13 @@
         }
       }
     },
+    "hasLocationReminder" : {
+
+    },
     "Hour #%lld" : {
+
+    },
+    "Location Reminder" : {
 
     }
   },
