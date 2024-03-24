@@ -12,6 +12,7 @@ import SwiftUI
 struct EventKitService {
     private let eventStore: EKEventStore = EKEventStore()
     private let authService: AuthorizationService = AuthorizationService()
+    private let notificationService: NotificationService = NotificationService()
 
     private func verifyAuthStatus() async throws -> Bool {
         var auth: Bool = false
@@ -41,7 +42,7 @@ struct EventKitService {
     }
 
     func createScheduleCalendarEvents(_ habit: Habit) async throws -> [Habit.Hour] {
-        guard try await verifyAuthStatus() else { return try await manageLocalReminders(habit: habit) }
+        guard try await verifyAuthStatus() else { return try await manageLocalNotifications(habit: habit) }
 
         var newSchedule: [Habit.Hour] = habit.schedule
 
@@ -70,29 +71,18 @@ struct EventKitService {
         return newSchedule
     }
 
-    func manageLocalReminders(habit: Habit) async throws -> [Habit.Hour] {
+    func manageLocalNotifications(habit: Habit) async throws -> [Habit.Hour] {
         guard try await authService.notificationsAuth() else { return habit.schedule }
 
         var newSchedule = habit.schedule
         for hour in habit.schedule {
-            // TODO: SET CORRECT CONTENT
             let requestId = UUID().uuidString
-            let notificationContent = UNMutableNotificationContent()
-            notificationContent.title = habit.name
-            notificationContent.subtitle = "test"
-            notificationContent.sound = UNNotificationSound.default
-            notificationContent.setValue(true, forKey: "shouldAlwaysAlertWhileAppIsForeground")
 
-            // TODO: SET CORRECT TIME
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-
-            let request = UNNotificationRequest(identifier: requestId, content: notificationContent, trigger: trigger)
+            try await notificationService.sendNotification(subTitle: habit.name, date: hour.date, identifier: requestId)
 
             if let index = newSchedule.firstIndex(of: hour) {
                 newSchedule[index].notificationId = requestId
             }
-
-            try await UNUserNotificationCenter.current().add(request)
         }
 
         return newSchedule
