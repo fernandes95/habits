@@ -67,7 +67,12 @@ struct Habit: Identifiable, Equatable {
         self.category = getCategory(habitEntity.category)
 
         self.schedule = habitEntity.schedule.map { hourEntity in
-            return Hour(id: hourEntity.id, eventId: hourEntity.eventId, date: hourEntity.date)
+            return Hour(
+                id: hourEntity.id,
+                eventId: hourEntity.eventId,
+                notificationId: hourEntity.notificationId,
+                date: hourEntity.date
+            )
         }
 
         self.isChecked = false

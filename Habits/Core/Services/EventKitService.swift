@@ -42,7 +42,9 @@ struct EventKitService {
     }
 
     func createScheduleCalendarEvents(_ habit: Habit) async throws -> [Habit.Hour] {
-        guard try await verifyAuthStatus() else { return try await manageLocalNotifications(habit: habit) }
+        guard try await verifyAuthStatus() else {
+            return try await notificationService.manageLocalNotifications(habit: habit)
+        }
 
         var newSchedule: [Habit.Hour] = habit.schedule
 
@@ -71,23 +73,6 @@ struct EventKitService {
         return newSchedule
     }
 
-    func manageLocalNotifications(habit: Habit) async throws -> [Habit.Hour] {
-        guard try await authService.notificationsAuth() else { return habit.schedule }
-
-        var newSchedule = habit.schedule
-        for hour in habit.schedule {
-            let requestId = UUID().uuidString
-
-            try await notificationService.sendNotification(subTitle: habit.name, date: hour.date, identifier: requestId)
-
-            if let index = newSchedule.firstIndex(of: hour) {
-                newSchedule[index].notificationId = requestId
-            }
-        }
-
-        return newSchedule
-    }
-
     private func removeEvents(habit: Habit, schedule: [Habit.Hour]) {
         for hour in schedule {
             // swiftlint:disable:next for_where
@@ -98,7 +83,10 @@ struct EventKitService {
     }
 
     func manageScheduleEvents(_ habit: Habit, oldHabit: Habit) async throws -> [Habit.Hour] {
-        guard try await verifyAuthStatus() else { return habit.schedule }
+        guard try await verifyAuthStatus() else {
+            return try await notificationService.manageScheduledNotifications(habit, oldHabit: oldHabit)
+        }
+
         var newSchedule: [Habit.Hour] = habit.schedule
         let calendar: Calendar = Calendar.current
         var components: DateComponents = DateComponents()

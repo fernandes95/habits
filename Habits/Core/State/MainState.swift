@@ -20,6 +20,7 @@ class MainState: ObservableObject {
     private let storeService: DefaultStoreService = DefaultStoreService()
     private let eventKitService: EventKitService = EventKitService()
     private let authService: AuthorizationService = AuthorizationService()
+    private let notificationService: NotificationService = NotificationService()
 
     private func load() async throws -> StoreEntity {
         return try await storeService.load()
@@ -97,7 +98,11 @@ class MainState: ObservableObject {
                     frequencyType: eventsHabit.frequencyType,
                     category: eventsHabit.category.rawValue,
                     schedule: eventsHabit.schedule.map { hour in
-                        return HabitEntity.Hour(date: hour.date, eventId: hour.eventId)
+                        return HabitEntity.Hour(
+                            date: hour.date,
+                            eventId: hour.eventId,
+                            notificationId: hour.notificationId
+                        )
                     },
                     hasAlarm: eventsHabit.hasAlarm
                 )
@@ -159,6 +164,7 @@ class MainState: ObservableObject {
                 } else {
                     for hour in deleteHabit.schedule {
                         eventKitService.deleteEventById(eventId: hour.eventId)
+                        notificationService.removePendingNotification(identifer: hour.notificationId)
                     }
                 }
 
@@ -190,7 +196,11 @@ class MainState: ObservableObject {
                     frequencyType: habit.frequencyType,
                     category: habit.category.rawValue,
                     schedule: schedule.map { hour in
-                        return HabitEntity.Hour(date: hour.date, eventId: hour.eventId)
+                        return HabitEntity.Hour(
+                            date: hour.date,
+                            eventId: hour.eventId,
+                            notificationId: hour.notificationId
+                        )
                     },
                     hasAlarm: habit.hasAlarm
                 )

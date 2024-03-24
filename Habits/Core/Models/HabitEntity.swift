@@ -99,11 +99,13 @@ struct HabitEntity: Codable {
         let id: UUID
         let date: Date
         var eventId: String
+        var notificationId: String?
 
-        init(id: UUID = UUID(), date: Date, eventId: String) {
+        init(id: UUID = UUID(), date: Date, eventId: String, notificationId: String?) {
             self.id = id
             self.date = date
             self.eventId = eventId
+            self.notificationId = notificationId
         }
     }
 }
