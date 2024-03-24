@@ -11,6 +11,7 @@ import UserNotifications
 struct NotificationService {
     private let notificationCenter: UNUserNotificationCenter = UNUserNotificationCenter.current()
     private let authorizationService: AuthorizationService = AuthorizationService()
+    private let notificationDelegate: NotificationDelegate = NotificationDelegate()
 
     func requestNotification(subTitle: String, date: Date, identifier: String? = nil) async throws {
         let notificationContent = UNMutableNotificationContent()
@@ -115,4 +116,15 @@ struct NotificationService {
     }
 
 }
+
+extension NotificationService {
+    class NotificationDelegate: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
+        func userNotificationCenter(
+            _ center: UNUserNotificationCenter,
+            willPresent notification: UNNotification,
+            withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+        ) {
+            completionHandler([.badge, .banner, .sound])
+        }
+    }
 }

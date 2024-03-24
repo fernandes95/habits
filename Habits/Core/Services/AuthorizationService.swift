@@ -15,9 +15,14 @@ struct AuthorizationService {
         return EKEventStore.authorizationStatus(for: .event)
     }
 
-    func notificationsAuth() async throws -> Bool {
+    func notificationsAuth(delegate: NotificationService.NotificationDelegate) async throws -> Bool {
         do {
-            return try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound])
+            var hasAuthorization: Bool = false
+            hasAuthorization = try await UNUserNotificationCenter.current()
+                .requestAuthorization(options: [.alert, .badge, .sound])
+            UNUserNotificationCenter.current().delegate = delegate
+
+            return hasAuthorization
         } catch {
             return false
         }
