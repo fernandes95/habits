@@ -23,14 +23,8 @@ struct NewHabitContentView: View {
     var startDateIn: Date = Date.now
     var successRate: String?
 
-    @State private var mapLocations: [CLLocationCoordinate2D] = []
     @State private var hasLocationReminder: Bool = false
     @State private var hoursDate: Date = Date.now
-
-    // TODO: CHANGE THIS TO MAP POSITION
-    @State private var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 38.736946, longitude: -9.142685),
-        span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5))
 
     var body: some View {
         Form {
@@ -185,18 +179,9 @@ struct NewHabitContentView: View {
                         .disabled(!isEdit)
 
                     if #available(iOS 17.0, *) {
-                        MapReader { proxy in
-                            Map() // TODO: ADD CORRECT POSITION
-                            .frame(height: 250)
-                            .mapControlVisibility(.hidden)
-                            .onTapGesture { position in
-                                if let coordinate: CLLocationCoordinate2D = proxy.convert(position, from: .local) {
-                                    print(coordinate)
-                                }
-                            }
-                        }
+                        MapView()
                     } else {
-                        // TODO: Fallback on earlier versions
+
                     }
                 }
             }

@@ -27,6 +27,7 @@
 		AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E192B5FD91B002C7EEB /* ListItem.swift */; };
 		AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */; };
 		AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */; };
+		AE9D9A0F2BB1814000CF3498 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9D9A0E2BB1814000CF3498 /* MapView.swift */; };
 		AEA3D6BB2B5E85B700A08F31 /* HabitsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3D6BA2B5E85B700A08F31 /* HabitsApp.swift */; };
 		AEA3D6BD2B5E85B700A08F31 /* HabitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3D6BC2B5E85B700A08F31 /* HabitsView.swift */; };
 		AEA3D6BF2B5E85B900A08F31 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEA3D6BE2B5E85B900A08F31 /* Assets.xcassets */; };
@@ -57,6 +58,7 @@
 		AE744E192B5FD91B002C7EEB /* ListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItem.swift; sourceTree = "<group>"; };
 		AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelativeHeightSheetContentModifier.swift; sourceTree = "<group>"; };
 		AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerSheetContent.swift; sourceTree = "<group>"; };
+		AE9D9A0E2BB1814000CF3498 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		AEA3D6B72B5E85B700A08F31 /* Habits.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Habits.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEA3D6BA2B5E85B700A08F31 /* HabitsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsApp.swift; sourceTree = "<group>"; };
 		AEA3D6BC2B5E85B700A08F31 /* HabitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsView.swift; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 		AE448A822B85237A0034898F /* Reusable */ = {
 			isa = PBXGroup;
 			children = (
+				AE9D9A0D2BB1813100CF3498 /* Map */,
 				AE448A832B85238E0034898F /* NewHabitContentView.swift */,
 			);
 			path = Reusable;
@@ -198,6 +201,14 @@
 				AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */,
 			);
 			path = Modifiers;
+			sourceTree = "<group>";
+		};
+		AE9D9A0D2BB1813100CF3498 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				AE9D9A0E2BB1814000CF3498 /* MapView.swift */,
+			);
+			path = Map;
 			sourceTree = "<group>";
 		};
 		AEA3D6AE2B5E85B700A08F31 = {
@@ -345,6 +356,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE2B2A482BB0712A004669B6 /* BackgroundTaskService.swift in Sources */,
+				AE9D9A0F2BB1814000CF3498 /* MapView.swift in Sources */,
 				AE448A9A2B8D228C0034898F /* MainState.swift in Sources */,
 				AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */,
 				AE30E1622BA88B5B009E10CD /* WeekDay.swift in Sources */,
