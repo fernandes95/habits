@@ -22,6 +22,8 @@ struct HabitEntity: Codable {
     var hasAlarm: Bool
     var updatedDate: Date
     let createdDate: Date
+    var hasLocationReminder: Bool
+    var location: Location?
 
     init(id: UUID = UUID(),
          eventId: String,
@@ -34,7 +36,9 @@ struct HabitEntity: Codable {
          statusList: [Status] = [],
          schedule: [Hour] = [],
          hasAlarm: Bool = false,
-         updatedDate: Date = Date.now
+         updatedDate: Date = Date.now,
+         hasLocationReminder: Bool = false,
+         location: Location? = nil
     ) {
         self.id = id
         self.eventId = eventId
@@ -48,6 +52,8 @@ struct HabitEntity: Codable {
         self.schedule = schedule
         self.hasAlarm = hasAlarm
         self.updatedDate = updatedDate
+        self.hasLocationReminder = hasLocationReminder
+        self.location = location
         self.createdDate = Date.now
         self.successRate = getSuccessRateValue(statusList: self.statusList, startDate: self.startDate)
     }
@@ -63,7 +69,9 @@ struct HabitEntity: Codable {
         statusList: [Status]? = nil,
         schedule: [Hour]? = nil,
         hasAlarm: Bool? = nil,
-        updatedDate: Date? = nil
+        updatedDate: Date? = nil,
+        hasLocationReminder: Bool? = nil,
+        location: Location? = nil
     ) -> Self {
         return Self(
             id: self.id,
@@ -77,7 +85,9 @@ struct HabitEntity: Codable {
             statusList: statusList ?? self.statusList,
             schedule: schedule ?? self.schedule,
             hasAlarm: hasAlarm ?? self.hasAlarm,
-            updatedDate: updatedDate ?? self.updatedDate
+            updatedDate: updatedDate ?? self.updatedDate,
+            hasLocationReminder: hasLocationReminder ?? self.hasLocationReminder,
+            location: location ?? self.location
         )
     }
 
@@ -107,6 +117,11 @@ struct HabitEntity: Codable {
             self.eventId = eventId
             self.notificationId = notificationId
         }
+    }
+
+    internal struct Location: Codable {
+        var latitude: Double
+        var longitude: Double
     }
 }
 

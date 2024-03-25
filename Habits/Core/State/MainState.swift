@@ -178,11 +178,19 @@ class MainState: ObservableObject {
         do {
             var eventId: String = ""
             var schedule: [Habit.Hour] = habit.schedule
+            var location: HabitEntity.Location?
 
             if habit.schedule.isEmpty {
                 eventId = try await eventKitService.createCalendarEvent(habit)
             } else {
                 schedule = try await eventKitService.createScheduleCalendarEvents(habit)
+            }
+
+            if habit.location != nil {
+                location = HabitEntity.Location(
+                    latitude: habit.location!.latitude,
+                    longitude: habit.location!.longitude
+                )
             }
 
             var store: StoreEntity = try await load()
@@ -202,7 +210,9 @@ class MainState: ObservableObject {
                             notificationId: hour.notificationId
                         )
                     },
-                    hasAlarm: habit.hasAlarm
+                    hasAlarm: habit.hasAlarm,
+                    hasLocationReminder: habit.hasLocationReminder,
+                    location: location
                 )
             )
 

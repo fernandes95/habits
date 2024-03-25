@@ -18,12 +18,13 @@ struct NewHabitContentView: View {
     @Binding var schedule: [Habit.Hour]
     @Binding var isEdit: Bool
     @Binding var hasAlarm: Bool
+    @Binding var hasLocationReminder: Bool
+    @Binding var location: Habit.Location?
 
     let isNew: Bool
     var startDateIn: Date = Date.now
     var successRate: String?
 
-    @State private var hasLocationReminder: Bool = false
     @State private var hoursDate: Date = Date.now
 
     var body: some View {
@@ -178,10 +179,12 @@ struct NewHabitContentView: View {
                     Toggle("hasLocationReminder", isOn: $hasLocationReminder)
                         .disabled(!isEdit)
 
-                    if #available(iOS 17.0, *) {
-                        MapView()
-                    } else {
-
+                    if hasLocationReminder {
+                        if #available(iOS 17.0, *) {
+                            MapView(location: $location)
+                        } else {
+                            // TODO: FALLBACK UIVIEWREPRESENTABLE
+                        }
                     }
                 }
             }
@@ -205,6 +208,8 @@ struct NewHabitContentView: View {
         schedule: .constant([]),
         isEdit: .constant(true),
         hasAlarm: .constant(false),
+        hasLocationReminder: .constant(false),
+        location: .constant(nil),
         isNew: true,
         successRate: "70%"
     )

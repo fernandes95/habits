@@ -21,6 +21,8 @@ struct HabitDetailView: View {
     @State private var editingHabit: Habit
     @State private var showingAlert = false
     @State private var editingEndDate: Date
+    @State private var hasLocationReminder: Bool = false
+    @State private var location: Habit.Location?
 
     init(habit: Habit) {
         self.habit = habit
@@ -40,6 +42,8 @@ struct HabitDetailView: View {
                 schedule: $editingHabit.schedule,
                 isEdit: $isEditing,
                 hasAlarm: $editingHabit.hasAlarm,
+                hasLocationReminder: $editingHabit.hasLocationReminder,
+                location: $editingHabit.location,
                 isNew: false,
                 successRate: editingHabit.successRate
             )

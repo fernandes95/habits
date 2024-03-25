@@ -23,6 +23,8 @@ struct Habit: Identifiable, Equatable {
     var successRate: String
     let createdDate: Date
     var updatedDate: Date
+    var hasLocationReminder: Bool
+    var location: Location?
 
     init(
         id: UUID,
@@ -38,7 +40,9 @@ struct Habit: Identifiable, Equatable {
         hasAlarm: Bool,
         successRate: String,
         createdDate: Date,
-        updatedDate: Date
+        updatedDate: Date,
+        hasLocationReminder: Bool = false,
+        location: Location? = nil
     ) {
         self.id = id
         self.eventId = eventId
@@ -54,6 +58,8 @@ struct Habit: Identifiable, Equatable {
         self.createdDate = createdDate
         self.updatedDate = updatedDate
         self.schedule = schedule
+        self.hasLocationReminder = hasLocationReminder
+        self.location = location
     }
 
     init(habitEntity: HabitEntity, selectedDate: Date? = nil) {
@@ -77,6 +83,8 @@ struct Habit: Identifiable, Equatable {
 
         self.isChecked = false
         self.hasAlarm = habitEntity.hasAlarm
+        self.hasLocationReminder = habitEntity.hasLocationReminder
+        self.location = getLocation(location: habitEntity.location)
         self.successRate = "\(habitEntity.successRate)%"
         self.createdDate = habitEntity.createdDate
         self.updatedDate = habitEntity.updatedDate
@@ -196,6 +204,23 @@ struct Habit: Identifiable, Equatable {
             self.hour = date.getHourAndMinutes()
         }
     }
+
+    struct Location: Equatable {
+        static func == (lhs: Habit.Location, rhs: Habit.Location) -> Bool {
+            return lhs.locationCoordinate.latitude == rhs.locationCoordinate.latitude &&
+            lhs.locationCoordinate.longitude == rhs.locationCoordinate.longitude
+        }
+
+        var latitude: CLLocationDegrees
+        var longitude: CLLocationDegrees
+        var locationCoordinate: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
+
+        init(latitude: Double, longitude: Double) {
+            self.latitude = latitude
+            self.longitude = longitude
+            self.locationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        }
+    }
 }
 
 func getFrequency(_ frequency: String) -> Habit.Frequency {
@@ -220,4 +245,10 @@ func getCategory(_ category: String) -> Habit.Category {
     default:
         .new
     }
+}
+
+func getLocation(location: HabitEntity.Location?) -> Habit.Location? {
+    guard location != nil else { return nil }
+
+    return Habit.Location(latitude: location!.latitude, longitude: location!.longitude)
 }

@@ -11,8 +11,9 @@ import MapKit
 
 @available(iOS 17.0, *)
 struct MapView: View {
-    @State private var locationSelected: CLLocationCoordinate2D = 
-        CLLocationCoordinate2D(latitude: 38.736946, longitude: -9.142685)
+
+    @Binding var location: Habit.Location?
+
     @State private var cameraPosition: MapCameraPosition = .camera(
             MapCamera(
                 centerCoordinate: CLLocationCoordinate2D(latitude: 38.736946, longitude: -9.142685),
@@ -24,16 +25,20 @@ struct MapView: View {
 
     var body: some View {
         MapReader { proxy in
-            Map(
-                position: $cameraPosition
-            ) {
-                Marker("", coordinate: $locationSelected.wrappedValue)
+            Map(position: $cameraPosition) {
+                if let location {
+                    Marker("", coordinate: location.locationCoordinate)
+                }
+
             }
             .frame(height: 250)
             .mapControlVisibility(.hidden)
             .onTapGesture { position in
                 if let coordinate: CLLocationCoordinate2D = proxy.convert(position, from: .local) {
-                    locationSelected = coordinate
+                    location = Habit.Location(
+                        latitude: coordinate.latitude,
+                        longitude: coordinate.longitude
+                    )
                     print(coordinate)
                 }
             }

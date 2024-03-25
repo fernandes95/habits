@@ -24,6 +24,8 @@ struct NewHabitView: View {
     @State private var category: Habit.Category = .new
     @State private var schedule: [Habit.Hour] = []
     @State private var hasAlarm: Bool = false
+    @State private var hasLocationReminder: Bool = false
+    @State private var location: Habit.Location?
 
     var body: some View {
         NavigationStack {
@@ -37,6 +39,8 @@ struct NewHabitView: View {
                 schedule: $schedule,
                 isEdit: .constant(true),
                 hasAlarm: $hasAlarm,
+                hasLocationReminder: $hasLocationReminder,
+                location: $location,
                 isNew: true,
                 startDateIn: state.selectedDate
             )
@@ -66,18 +70,20 @@ struct NewHabitView: View {
             let newHabit = Habit(
                 id: UUID(),
                 eventId: "",
-                name: name,
-                startDate: startDate,
-                endDate: endDate,
-                frequency: frequency.rawValue,
-                frequencyType: Ocurrence(weekFrequency: weekFrequency),
-                category: category.rawValue,
-                schedule: schedule,
+                name: self.name,
+                startDate: self.startDate,
+                endDate: self.endDate,
+                frequency: self.frequency.rawValue,
+                frequencyType: Ocurrence(weekFrequency: self.weekFrequency),
+                category: self.category.rawValue,
+                schedule: self.schedule,
                 isChecked: false,
-                hasAlarm: hasAlarm,
+                hasAlarm: self.hasAlarm,
                 successRate: "0",
                 createdDate: Date.now,
-                updatedDate: Date.now
+                updatedDate: Date.now,
+                hasLocationReminder: self.hasLocationReminder,
+                location: self.location
             )
             try await state.addHabit(newHabit)
 
