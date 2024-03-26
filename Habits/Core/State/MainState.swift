@@ -21,6 +21,7 @@ class MainState: ObservableObject {
     private let eventKitService: EventKitService = EventKitService()
     private let authService: AuthorizationService = AuthorizationService()
     private let notificationService: NotificationService = NotificationService()
+    private let locationService: LocationService = LocationService()
 
     private func load() async throws -> StoreEntity {
         return try await storeService.load()
@@ -219,5 +220,9 @@ class MainState: ObservableObject {
             try await storeService.save(store)
             try await loadHabits(date: self.selectedDate)
         } catch { }
+    }
+
+    func getLocationAuthorization() {
+        self.locationService.locationAuthorization()
     }
 }

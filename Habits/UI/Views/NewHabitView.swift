@@ -42,7 +42,12 @@ struct NewHabitView: View {
                 hasLocationReminder: $hasLocationReminder,
                 location: $location,
                 isNew: true,
-                startDateIn: state.selectedDate
+                startDateIn: state.selectedDate,
+                locationAction: {
+                    Task {
+                        try await state.getLocationAuthorization()
+                    }
+                }
             )
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

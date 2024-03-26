@@ -24,6 +24,7 @@ struct NewHabitContentView: View {
     let isNew: Bool
     var startDateIn: Date = Date.now
     var successRate: String?
+    let locationAction: () -> Void
 
     @State private var hoursDate: Date = Date.now
 
@@ -178,6 +179,11 @@ struct NewHabitContentView: View {
                 VStack {
                     Toggle("hasLocationReminder", isOn: $hasLocationReminder)
                         .disabled(!isEdit)
+                        .onTapGesture {
+                            if !hasLocationReminder {
+                                locationAction()
+                            }
+                        }
 
                     if hasLocationReminder {
                         MapView(location: $location)
@@ -209,6 +215,7 @@ struct NewHabitContentView: View {
         hasLocationReminder: .constant(false),
         location: .constant(nil),
         isNew: true,
-        successRate: "70%"
+        successRate: "70%",
+        locationAction: {}
     )
 }
