@@ -180,11 +180,9 @@ struct NewHabitContentView: View {
                         .disabled(!isEdit)
 
                     if hasLocationReminder {
-                        if #available(iOS 17.0, *) {
-                            MapView(location: $location)
-                        } else {
-                            // TODO: FALLBACK UIVIEWREPRESENTABLE
-                        }
+                        MapView(location: $location)
+                            .frame(height: 250)
+                            .cornerRadius(10)
                     }
                 }
             }
