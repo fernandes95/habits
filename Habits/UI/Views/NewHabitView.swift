@@ -45,7 +45,7 @@ struct NewHabitView: View {
                 startDateIn: state.selectedDate,
                 locationAction: {
                     Task {
-                        try await state.getLocationAuthorization()
+                        state.getLocationAuthorization()
                     }
                 }
             )
