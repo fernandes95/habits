@@ -25,21 +25,15 @@ struct MapView: View {
 private struct MapViewRecent: View {
     @Binding var location: Habit.Location?
 
-    @State private var cameraPosition: MapCameraPosition = .camera(
-        MapCamera(
-            centerCoordinate: CLLocationCoordinate2D(latitude: 38.736946, longitude: -9.142685),
-            distance: 3729,
-            heading: 92,
-            pitch: 0
-        )
-    )
-
     var body: some View {
         MapReader { proxy in
-            Map(position: $cameraPosition) {
+            Map(position: .constant(.region(location!.region))) {
                 if let location {
                     Marker("", coordinate: location.locationCoordinate)
                 }
+            }
+            .onMapCameraChange {
+                location?.region = $0.region
             }
 //            .mapControls {
 //                MapUserLocationButton()
@@ -49,7 +43,12 @@ private struct MapViewRecent: View {
                 if let coordinate: CLLocationCoordinate2D = proxy.convert(position, from: .local) {
                     location = Habit.Location(
                         latitude: coordinate.latitude,
-                        longitude: coordinate.longitude
+                        longitude: coordinate.longitude,
+                        region: MKCoordinateRegion(
+                            center: coordinate,
+                            latitudinalMeters: .mapDistance,
+                            longitudinalMeters: .mapDistance
+                        )
                     )
                     print(coordinate)
                 }
@@ -60,12 +59,59 @@ private struct MapViewRecent: View {
 
 private struct MapViewFallback: UIViewRepresentable {
     @Binding var location: Habit.Location?
-
-    private let initialRegion = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 38.736946, longitude: -9.142685),
-        latitudinalMeters: CLLocationDistance(exactly: 3000)!,
-        longitudinalMeters: CLLocationDistance(exactly: 3000)!
+    private let initialLocation: MKCoordinateRegion = MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 38.736946, longitude: -9.142685),
+            latitudinalMeters: .mapDistance,
+            longitudinalMeters: .mapDistance
     )
+
+    func makeCoordinator() -> MapViewCoordinator {
+        MapViewCoordinator(self)
+    }
+
+    class MapViewCoordinator: NSObject, MKMapViewDelegate {
+        var parent: MapViewFallback
+
+        init(_ parent: MapViewFallback) {
+            self.parent = parent
+        }
+
+        @objc func onTap(_ sender: UITapGestureRecognizer? = nil) {
+            let location = sender?.location(in: sender?.view)
+            let mapView: MKMapView? = sender?.view as? MKMapView
+
+            if let location {
+                if let newCoord: CLLocationCoordinate2D = mapView?.convert(location, toCoordinateFrom: mapView) {
+                    parent.location = Habit.Location(
+                        latitude: newCoord.latitude,
+                        longitude: newCoord.longitude,
+                        region: MKCoordinateRegion(
+                            center: newCoord,
+                            latitudinalMeters: .mapDistance,
+                            longitudinalMeters: .mapDistance
+                        )
+                    )
+                    print("\(newCoord)")
+                }
+            }
+        }
+
+        func mapView(_ mapView: MKMapView, viewFor annotation: any MKAnnotation) -> MKAnnotationView? {
+            guard annotation is MKPointAnnotation else { return nil }
+
+                let identifier = "Annotation"
+                var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+
+                if annotationView == nil {
+                    annotationView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                    annotationView!.canShowCallout = true
+                } else {
+                    annotationView!.annotation = annotation
+                }
+
+                return annotationView
+        }
+    }
 
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView()
@@ -75,13 +121,29 @@ private struct MapViewFallback: UIViewRepresentable {
             marker.coordinate = location.locationCoordinate
         }
 
+        mapView.delegate = context.coordinator
         mapView.preferredConfiguration = MKHybridMapConfiguration()
         mapView.addAnnotation(marker)
-        mapView.setRegion(mapView.regionThatFits(initialRegion), animated: true)
+        mapView.setRegion(mapView.regionThatFits(location?.region ?? initialLocation), animated: true)
+        mapView.addGestureRecognizer(
+            UITapGestureRecognizer(
+                target: context.coordinator,
+                action: #selector(context.coordinator.onTap)
+            )
+        )
+
         return mapView
     }
 
     func updateUIView(_ mapView: MKMapView, context: Context) {
-        mapView.centerCoordinate = location?.locationCoordinate ?? initialRegion.center
+        let marker = MKPointAnnotation()
+
+        if let location {
+            marker.coordinate = location.locationCoordinate
+
+            mapView.centerCoordinate = location.locationCoordinate
+            mapView.removeAnnotations(mapView.annotations)
+            mapView.addAnnotation(marker)
+        }
     }
 }

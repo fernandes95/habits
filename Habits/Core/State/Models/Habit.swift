@@ -7,6 +7,7 @@
 
 import Foundation
 import EventKit
+import MapKit
 
 struct Habit: Identifiable, Equatable {
     var id: UUID
@@ -208,17 +209,21 @@ struct Habit: Identifiable, Equatable {
     struct Location: Equatable {
         static func == (lhs: Habit.Location, rhs: Habit.Location) -> Bool {
             return lhs.locationCoordinate.latitude == rhs.locationCoordinate.latitude &&
-            lhs.locationCoordinate.longitude == rhs.locationCoordinate.longitude
+            lhs.locationCoordinate.longitude == rhs.locationCoordinate.longitude &&
+            lhs.region.center.latitude == rhs.region.center.latitude &&
+            lhs.region.center.longitude == rhs.region.center.longitude
         }
 
         var latitude: CLLocationDegrees
         var longitude: CLLocationDegrees
         var locationCoordinate: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
+        var region: MKCoordinateRegion
 
-        init(latitude: Double, longitude: Double) {
+        init(latitude: Double, longitude: Double, region: MKCoordinateRegion) {
             self.latitude = latitude
             self.longitude = longitude
             self.locationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            self.region = region
         }
     }
 }
@@ -250,5 +255,12 @@ func getCategory(_ category: String) -> Habit.Category {
 func getLocation(location: HabitEntity.Location?) -> Habit.Location? {
     guard location != nil else { return nil }
 
-    return Habit.Location(latitude: location!.latitude, longitude: location!.longitude)
+    return Habit.Location(
+        latitude: location!.latitude,
+        longitude: location!.longitude,
+        region: MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: location!.latitude, longitude: location!.longitude),
+            latitudinalMeters: .mapDistance,
+            longitudinalMeters: .mapDistance)
+    )
 }

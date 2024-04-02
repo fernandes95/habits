@@ -189,6 +189,7 @@ struct NewHabitContentView: View {
                         MapView(location: $location)
                             .frame(height: 250)
                             .cornerRadius(10)
+                            .disabled(!isEdit)
                     }
                 }
             }

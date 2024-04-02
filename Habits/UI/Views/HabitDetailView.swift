@@ -22,7 +22,6 @@ struct HabitDetailView: View {
     @State private var showingAlert = false
     @State private var editingEndDate: Date
     @State private var hasLocationReminder: Bool = false
-    @State private var location: Habit.Location?
 
     init(habit: Habit) {
         self.habit = habit

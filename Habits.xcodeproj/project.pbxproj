@@ -27,6 +27,7 @@
 		AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E192B5FD91B002C7EEB /* ListItem.swift */; };
 		AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */; };
 		AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */; };
+		AE98C7F52BBC6C9A00EAE2A5 /* CLLocationDistance+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE98C7F42BBC6C9A00EAE2A5 /* CLLocationDistance+Utils.swift */; };
 		AE9D9A0F2BB1814000CF3498 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9D9A0E2BB1814000CF3498 /* MapView.swift */; };
 		AE9D9A112BB3328400CF3498 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9D9A102BB3328400CF3498 /* LocationService.swift */; };
 		AEA3D6BB2B5E85B700A08F31 /* HabitsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA3D6BA2B5E85B700A08F31 /* HabitsApp.swift */; };
@@ -59,6 +60,7 @@
 		AE744E192B5FD91B002C7EEB /* ListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItem.swift; sourceTree = "<group>"; };
 		AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelativeHeightSheetContentModifier.swift; sourceTree = "<group>"; };
 		AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerSheetContent.swift; sourceTree = "<group>"; };
+		AE98C7F42BBC6C9A00EAE2A5 /* CLLocationDistance+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocationDistance+Utils.swift"; sourceTree = "<group>"; };
 		AE9D9A0E2BB1814000CF3498 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		AE9D9A102BB3328400CF3498 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		AEA3D6B72B5E85B700A08F31 /* Habits.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Habits.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -206,6 +208,14 @@
 			path = Modifiers;
 			sourceTree = "<group>";
 		};
+		AE98C7F32BBC6C7F00EAE2A5 /* Lib */ = {
+			isa = PBXGroup;
+			children = (
+				AE98C7F42BBC6C9A00EAE2A5 /* CLLocationDistance+Utils.swift */,
+			);
+			path = Lib;
+			sourceTree = "<group>";
+		};
 		AE9D9A0D2BB1813100CF3498 /* Map */ = {
 			isa = PBXGroup;
 			children = (
@@ -233,6 +243,7 @@
 		AEA3D6B92B5E85B700A08F31 /* Habits */ = {
 			isa = PBXGroup;
 			children = (
+				AE98C7F32BBC6C7F00EAE2A5 /* Lib */,
 				AE6CC09A2B9F02DE00873D03 /* Info.plist */,
 				AE448A962B8D224F0034898F /* Core */,
 				AE448A8E2B8CECE40034898F /* Helpers */,
@@ -382,6 +393,7 @@
 				AE2B2A4A2BB07223004669B6 /* NotificationService.swift in Sources */,
 				AE448A9C2B8DEC970034898F /* Habit.swift in Sources */,
 				AE448A952B8D20700034898F /* DefaultStoreService.swift in Sources */,
+				AE98C7F52BBC6C9A00EAE2A5 /* CLLocationDistance+Utils.swift in Sources */,
 				AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
