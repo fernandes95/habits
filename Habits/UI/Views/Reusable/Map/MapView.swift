@@ -24,10 +24,15 @@ struct MapView: View {
 @available(iOS 17.0, *)
 private struct MapViewRecent: View {
     @Binding var location: Habit.Location?
+    private let initialRegion = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 38.736946, longitude: -9.142685),
+        latitudinalMeters: .mapDistance,
+        longitudinalMeters: .mapDistance
+    )
 
     var body: some View {
         MapReader { proxy in
-            Map(position: .constant(.region(location!.region))) {
+            Map(position: .constant(.region(location?.region ?? initialRegion))) {
                 if let location {
                     Marker("", coordinate: location.locationCoordinate)
                 }
