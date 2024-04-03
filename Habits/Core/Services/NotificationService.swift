@@ -13,19 +13,26 @@ struct NotificationService {
     private let authorizationService: AuthorizationService = AuthorizationService()
     private let notificationDelegate: NotificationDelegate = NotificationDelegate()
 
-    func requestNotification(subTitle: String, date: Date, identifier: String? = nil) async throws {
+    private func notificationContent(subTitle: String, date: Date?, identifier: String? = nil) async throws {
         let notificationContent = UNMutableNotificationContent()
         let requestIndentifer = identifier ?? UUID().uuidString
-        let dateComponents = Calendar.current.dateComponents(
-            [.day, .month, .year, .hour, .minute],
-            from: date
-        )
 
         notificationContent.title = "Habits"
         notificationContent.subtitle = subTitle
         notificationContent.sound = UNNotificationSound.default
 
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+        var trigger: UNNotificationTrigger {
+            if let date {
+                let dateComponents = Calendar.current.dateComponents(
+                    [.day, .month, .year, .hour, .minute],
+                    from: date
+                )
+
+                return UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            }
+
+            return UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        }
 
         let request = UNNotificationRequest(
             identifier: requestIndentifer,
@@ -35,6 +42,14 @@ struct NotificationService {
 
         // TODO: MANAGE ERRORS IN THE FUTURE
         try await notificationCenter.add(request)
+    }
+
+    func requestNotification(subTitle: String, date: Date, identifier: String? = nil) async throws {
+        try await notificationContent(subTitle: subTitle, date: date, identifier: identifier)
+    }
+
+    func requestInstantNotification(subTitle: String, identifier: String? = nil) async throws {
+        try await notificationContent(subTitle: subTitle, date: nil, identifier: identifier)
     }
 
     func removePendingNotification(identifer: String?) {

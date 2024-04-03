@@ -19,26 +19,25 @@ class LocationService: NSObject, ObservableObject {
     override init() {
         super.init()
         self.locationManager.delegate = self
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
 
     func locationAuthorization() {
         self.locationManager.requestWhenInUseAuthorization()
     }
 
-// TODO:
-//    func monitorRegionAtLocation(center: CLLocationCoordinate2D, identifier: String) {
-//        // Make sure the devices supports region monitoring.
-//        if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
-//            // Register the region.
-//            let maxDistance = self.locationManager.maximumRegionMonitoringDistance
-//            let region = CLCircularRegion(center: center,
-//                 radius: maxDistance, identifier: identifier)
-//            region.notifyOnEntry = true
-//            region.notifyOnExit = false
-//
-//            self.locationManager.startMonitoring(for: region)
-//        }
-//    }
+    func monitorRegionAtLocation(center: CLLocationCoordinate2D, identifier: String) {
+        if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
+            let region = CLCircularRegion(
+                center: center,
+                radius: 20,
+                identifier: identifier)
+            region.notifyOnEntry = true
+            region.notifyOnExit = true
+
+            self.locationManager.startMonitoring(for: region)
+        }
+    }
 }
 
 extension LocationService: CLLocationManagerDelegate {
@@ -49,11 +48,29 @@ extension LocationService: CLLocationManagerDelegate {
         }
     }
 
-    // TODO:
-//    private func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) async throws {
-//        if let region = region as? CLCircularRegion {
-//
-//            try await notificationService.requestNotification(subTitle: "CHEGASTE AO LOCAL", date: Date.now)
-//        }
-//    }
+    func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
+        print("Started monitoring region with IDENTIFIER: \(region.identifier)")
+    }
+
+    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        if let region = region as? CLCircularRegion {
+//            Task {
+//                try await notificationService.requestInstantNotification(
+//                    subTitle: "Entered region with IDENTIFIER: \(region.identifier)"
+//                )
+//            }
+            print("Entered region with IDENTIFIER: \(region.identifier)")
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        if let region = region as? CLCircularRegion {
+//            Task {
+//                try await notificationService.requestInstantNotification(
+//                    subTitle: "Exited region with IDENTIFIER: \(region.identifier)"
+//                )
+//            }
+            print("Exited region with IDENTIFIER: \(region.identifier)")
+        }
+    }
 }
