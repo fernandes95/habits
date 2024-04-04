@@ -30,7 +30,7 @@ class LocationService: NSObject, ObservableObject {
         if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
             let region = CLCircularRegion(
                 center: center,
-                radius: 20,
+                radius: 5,
                 identifier: identifier)
             region.notifyOnEntry = true
             region.notifyOnExit = true

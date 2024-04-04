@@ -24,40 +24,55 @@ struct MapView: View {
 @available(iOS 17.0, *)
 private struct MapViewRecent: View {
     @Binding var location: Habit.Location?
+    @Namespace var mapScope
+
     private let initialRegion = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 38.736946, longitude: -9.142685),
         latitudinalMeters: .mapDistance,
         longitudinalMeters: .mapDistance
     )
-
     var body: some View {
         MapReader { proxy in
-            Map(position: .constant(.region(location?.region ?? initialRegion))) {
-                if let location {
-                    Marker("", coordinate: location.locationCoordinate)
+            ZStack(alignment: .topTrailing) {
+                Map(position: .constant(.region(location?.region ?? initialRegion)), scope: mapScope) {
+                    if let location {
+                        Marker("", coordinate: location.locationCoordinate)
+                        MapCircle(center: location.locationCoordinate, radius: CLLocationDistance(5))
+                                .foregroundStyle(.white.opacity(0.10))
+                                .stroke(.red)
+                                .mapOverlayLevel(level: .aboveLabels)
+                    }
+
                 }
-            }
-            .onMapCameraChange {
-                location?.region = $0.region
-            }
-//            .mapControls {
-//                MapUserLocationButton()
-//            }
-            .mapControlVisibility(.hidden)
-            .onTapGesture { position in
-                if let coordinate: CLLocationCoordinate2D = proxy.convert(position, from: .local) {
-                    location = Habit.Location(
-                        latitude: coordinate.latitude,
-                        longitude: coordinate.longitude,
-                        region: MKCoordinateRegion(
+                .onMapCameraChange {
+                    location?.region = $0.region
+                }
+                .mapControlVisibility(.hidden)
+                .onTapGesture { position in
+                    if let coordinate: CLLocationCoordinate2D = proxy.convert(position, from: .local) {
+                        var newRegion = location?.region ?? MKCoordinateRegion(
                             center: coordinate,
                             latitudinalMeters: .mapDistance,
                             longitudinalMeters: .mapDistance
                         )
-                    )
-                    print(coordinate)
+                        newRegion.center = coordinate
+
+                        withAnimation(.easeOut) {
+                            location = Habit.Location(
+                                latitude: coordinate.latitude,
+                                longitude: coordinate.longitude,
+                                region: newRegion
+                            )
+                         }
+
+                        print(coordinate)
+                    }
                 }
+                MapUserLocationButton(scope: mapScope)
+                    .buttonBorderShape(.circle)
+                    .padding(10)
             }
+            .mapScope(mapScope)
         }
     }
 }
@@ -87,7 +102,7 @@ private struct MapViewFallback: UIViewRepresentable {
 
             if let location {
                 if let newCoord: CLLocationCoordinate2D = mapView?.convert(location, toCoordinateFrom: mapView) {
-                    parent.location = Habit.Location(
+                    self.parent.location = Habit.Location(
                         latitude: newCoord.latitude,
                         longitude: newCoord.longitude,
                         region: MKCoordinateRegion(
@@ -116,18 +131,36 @@ private struct MapViewFallback: UIViewRepresentable {
 
                 return annotationView
         }
+
+        func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+            let circleRenderer = MKCircleRenderer(overlay: overlay)
+            circleRenderer.fillColor = UIColor.white.withAlphaComponent(0.10)
+            circleRenderer.strokeColor = UIColor.red
+            circleRenderer.lineWidth = 1.0
+            return circleRenderer
+        }
     }
 
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView()
+//        let mapView = MKUserTrackingButton(mapView: oldMapView)
         let marker = MKPointAnnotation()
 
         if let location {
             marker.coordinate = location.locationCoordinate
         }
 
+        var trackingButton = MKUserTrackingButton(mapView: mapView)
+
+        mapView.addSubview(trackingButton)
+        trackingButton.layer.cornerRadius = trackingButton.frame.height / 2
+        trackingButton.layer.backgroundColor = UIColor.systemBackground.cgColor
+        trackingButton.translatesAutoresizingMaskIntoConstraints = false
+        trackingButton.topAnchor.constraint(equalTo: mapView.topAnchor, constant: 10).isActive = true
+        mapView.trailingAnchor.constraint(equalTo: trackingButton.trailingAnchor, constant: 10).isActive = true
+
         mapView.delegate = context.coordinator
-        mapView.preferredConfiguration = MKHybridMapConfiguration()
+        mapView.preferredConfiguration = MKStandardMapConfiguration(elevationStyle: .flat)
         mapView.addAnnotation(marker)
         mapView.setRegion(mapView.regionThatFits(location?.region ?? initialLocation), animated: true)
         mapView.addGestureRecognizer(
@@ -144,11 +177,15 @@ private struct MapViewFallback: UIViewRepresentable {
         let marker = MKPointAnnotation()
 
         if let location {
+            let circle = MKCircle(center: location.locationCoordinate, radius: 5.0)
+
             marker.coordinate = location.locationCoordinate
 
-            mapView.centerCoordinate = location.locationCoordinate
+            mapView.setCenter(location.locationCoordinate, animated: true)
             mapView.removeAnnotations(mapView.annotations)
             mapView.addAnnotation(marker)
+            mapView.removeOverlays(mapView.overlays)
+            mapView.addOverlay(circle)
         }
     }
 }
