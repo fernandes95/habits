@@ -143,23 +143,24 @@ private struct MapViewFallback: UIViewRepresentable {
 
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView()
-//        let mapView = MKUserTrackingButton(mapView: oldMapView)
         let marker = MKPointAnnotation()
+        let trackingButton = MKUserTrackingButton(mapView: mapView)
 
         if let location {
             marker.coordinate = location.locationCoordinate
         }
 
-        var trackingButton = MKUserTrackingButton(mapView: mapView)
-
         mapView.addSubview(trackingButton)
+
         trackingButton.layer.cornerRadius = trackingButton.frame.height / 2
+        trackingButton.layer.masksToBounds = true
         trackingButton.layer.backgroundColor = UIColor.systemBackground.cgColor
         trackingButton.translatesAutoresizingMaskIntoConstraints = false
         trackingButton.topAnchor.constraint(equalTo: mapView.topAnchor, constant: 10).isActive = true
-        mapView.trailingAnchor.constraint(equalTo: trackingButton.trailingAnchor, constant: 10).isActive = true
 
+        mapView.trailingAnchor.constraint(equalTo: trackingButton.trailingAnchor, constant: 10).isActive = true
         mapView.delegate = context.coordinator
+        mapView.showsCompass = false
         mapView.preferredConfiguration = MKStandardMapConfiguration(elevationStyle: .flat)
         mapView.addAnnotation(marker)
         mapView.setRegion(mapView.regionThatFits(location?.region ?? initialLocation), animated: true)
