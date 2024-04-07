@@ -235,6 +235,9 @@
         }
       }
     },
+    "habits_accessibility_change_view" : {
+
+    },
     "habits_accessibility_new_habit" : {
       "extractionState" : "manual",
       "localizations" : {

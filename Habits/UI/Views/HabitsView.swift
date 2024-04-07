@@ -16,34 +16,41 @@ struct HabitsView: View {
 
     @State private var isPresentingNewHabit = false
     @State private var didLoadData = false
+    @State private var viewType: ViewType = .list
 
     var body: some View {
         VStack {
-            HeaderView(
-                date: $state.selectedDate,
-                changeDateAction: {
-                    Task {
-                        do {
-                            try await state.loadHabits(date: state.selectedDate)
-                        } catch { }
+            if viewType == .list {
+                HeaderView(
+                    date: $state.selectedDate,
+                    changeDateAction: {
+                        Task {
+                            do {
+                                try await state.loadHabits(date: state.selectedDate)
+                            } catch { }
+                        }
                     }
-                }
-            )
-            .padding([.top, .horizontal])
+                )
+                .padding([.top, .horizontal])
+            }
 
-            ContentView(
-                list: $state.habits,
-                onItemStatusAction: { habit in
-                    Task {
-                        do {
-                            try await state.updateHabit(habit: habit)
-                        } catch { }
+            if viewType == .list {
+                ContentView(
+                    list: $state.habits,
+                    onItemStatusAction: { habit in
+                        Task {
+                            do {
+                                try await state.updateHabit(habit: habit)
+                            } catch { }
+                        }
+                    },
+                    onItemAction: { habit in
+                        router.push(HabitDetailView(habit: habit))
                     }
-                },
-                onItemAction: { habit in
-                    router.push(HabitDetailView(habit: habit))
-                }
-            )
+                )
+            } else {
+                CalendarView()
+            }
         }
         .task {
             if !didLoadData {
@@ -57,10 +64,21 @@ struct HabitsView: View {
         }
         .navigationTitle("habits_title")
         .toolbar {
-            Button(action: { isPresentingNewHabit = true }, label: {
-                Image(systemName: "plus")
-            })
-            .accessibilityLabel("habits_accessibility_new_habit")
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: { viewType = viewType == .calendar ? .list : .calendar },
+                       label: {
+                    let systemName = getViewTypeSystemName(viewType: viewType)
+                    Image(systemName: systemName)
+                })
+                .accessibilityLabel("habits_accessibility_change_view")
+            }
+
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: { isPresentingNewHabit = true }, label: {
+                    Image(systemName: "plus")
+                })
+                .accessibilityLabel("habits_accessibility_new_habit")
+            }
         }
         .sheet(isPresented: $isPresentingNewHabit) {
             NewHabitView(
