@@ -11,10 +11,3 @@ enum ViewType: Int {
     case list = 0
     case calendar = 1
 }
-
-func getViewTypeSystemName(viewType: ViewType) -> String {
-    return switch viewType {
-        case .calendar: "list.bullet"
-        default: "calendar"
-    }
-}

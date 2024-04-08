@@ -16,11 +16,11 @@ struct HabitsView: View {
 
     @State private var isPresentingNewHabit = false
     @State private var didLoadData = false
-    @State private var viewType: ViewType = .list
+//    @State private var viewType: ViewType = .list
 
     var body: some View {
         VStack {
-            if viewType == .list {
+//            if viewType == .list {
                 HeaderView(
                     date: $state.selectedDate,
                     changeDateAction: {
@@ -32,9 +32,14 @@ struct HabitsView: View {
                     }
                 )
                 .padding([.top, .horizontal])
-            }
+//            }
 
-            if viewType == .list {
+//            VStack {
+//                if viewType == .calendar {
+//                    CalendarView()
+//                        .frame(minHeight: 0, maxHeight: .infinity)
+//                }
+
                 ContentView(
                     list: $state.habits,
                     onItemStatusAction: { habit in
@@ -48,9 +53,8 @@ struct HabitsView: View {
                         router.push(HabitDetailView(habit: habit))
                     }
                 )
-            } else {
-                CalendarView()
-            }
+//                .frame(minHeight: 0, maxHeight: .infinity)
+//            }
         }
         .task {
             if !didLoadData {
@@ -64,14 +68,22 @@ struct HabitsView: View {
         }
         .navigationTitle("habits_title")
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: { viewType = viewType == .calendar ? .list : .calendar },
-                       label: {
-                    let systemName = getViewTypeSystemName(viewType: viewType)
-                    Image(systemName: systemName)
-                })
-                .accessibilityLabel("habits_accessibility_change_view")
-            }
+//            ToolbarItem(placement: .topBarLeading) {
+//                let action = { viewType = viewType == .calendar ? .list : .calendar }
+//                let systemName = "list.bullet.below.rectangle"
+//                if viewType == .calendar {
+//                    Button(action: action, label: { Image(systemName: systemName) })
+//                        .buttonStyle(.borderedProminent)
+//                        .accessibilityLabel("habits_accessibility_change_view")
+//                } else {
+//                    Button(action: action, label: { Image(systemName: systemName) })
+//                        .buttonStyle(.borderedProminent)
+//                        .tint(.clear)
+//                        .foregroundStyle(Color.accentColor)
+//                        .accessibilityLabel("habits_accessibility_change_view")
+//                }
+//
+//            }
 
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: { isPresentingNewHabit = true }, label: {
