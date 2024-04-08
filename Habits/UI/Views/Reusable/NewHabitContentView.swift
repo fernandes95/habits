@@ -186,7 +186,7 @@ struct NewHabitContentView: View {
                         }
 
                     if hasLocationReminder {
-                        MapView(location: $location)
+                        MapView(location: $location, canEdit: $isEdit)
                             .frame(height: 250)
                             .cornerRadius(10)
                             .disabled(!isEdit)

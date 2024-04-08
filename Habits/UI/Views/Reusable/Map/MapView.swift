@@ -11,12 +11,13 @@ import MapKit
 
 struct MapView: View {
     @Binding var location: Habit.Location?
+    @Binding var canEdit: Bool
 
     var body: some View {
         if #available(iOS 17.0, *) {
-            MapViewRecent(location: $location)
+            MapViewRecent(location: $location, canEdit: $canEdit)
         } else {
-            MapViewFallback(location: $location)
+            MapViewFallback(location: $location, canEdit: $canEdit)
         }
     }
 }
@@ -24,6 +25,7 @@ struct MapView: View {
 @available(iOS 17.0, *)
 private struct MapViewRecent: View {
     @Binding var location: Habit.Location?
+    @Binding var canEdit: Bool
     @Namespace var mapScope
 
     private let initialRegion = MKCoordinateRegion(
@@ -68,9 +70,11 @@ private struct MapViewRecent: View {
                         print(coordinate)
                     }
                 }
-                MapUserLocationButton(scope: mapScope)
-                    .buttonBorderShape(.circle)
-                    .padding(10)
+                if canEdit {
+                    MapUserLocationButton(scope: mapScope)
+                        .buttonBorderShape(.circle)
+                        .padding(10)
+                }
             }
             .mapScope(mapScope)
         }
@@ -79,6 +83,8 @@ private struct MapViewRecent: View {
 
 private struct MapViewFallback: UIViewRepresentable {
     @Binding var location: Habit.Location?
+    @Binding var canEdit: Bool
+
     private let initialLocation: MKCoordinateRegion = MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 38.736946, longitude: -9.142685),
             latitudinalMeters: .mapDistance,
@@ -144,21 +150,13 @@ private struct MapViewFallback: UIViewRepresentable {
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView()
         let marker = MKPointAnnotation()
-        let trackingButton = MKUserTrackingButton(mapView: mapView)
 
         if let location {
             marker.coordinate = location.locationCoordinate
         }
 
-        mapView.addSubview(trackingButton)
+        manageTrackingButton(mapView: mapView)
 
-        trackingButton.layer.cornerRadius = trackingButton.frame.height / 2
-        trackingButton.layer.masksToBounds = true
-        trackingButton.layer.backgroundColor = UIColor.systemBackground.cgColor
-        trackingButton.translatesAutoresizingMaskIntoConstraints = false
-        trackingButton.topAnchor.constraint(equalTo: mapView.topAnchor, constant: 10).isActive = true
-
-        mapView.trailingAnchor.constraint(equalTo: trackingButton.trailingAnchor, constant: 10).isActive = true
         mapView.delegate = context.coordinator
         mapView.showsCompass = false
         mapView.preferredConfiguration = MKStandardMapConfiguration(elevationStyle: .flat)
@@ -180,6 +178,8 @@ private struct MapViewFallback: UIViewRepresentable {
         if let location {
             let circle = MKCircle(center: location.locationCoordinate, radius: 5.0)
 
+            manageTrackingButton(mapView: mapView)
+
             marker.coordinate = location.locationCoordinate
 
             mapView.setCenter(location.locationCoordinate, animated: true)
@@ -187,6 +187,26 @@ private struct MapViewFallback: UIViewRepresentable {
             mapView.addAnnotation(marker)
             mapView.removeOverlays(mapView.overlays)
             mapView.addOverlay(circle)
+        }
+    }
+
+    private func manageTrackingButton(mapView: MKMapView) {
+        let trackingButton = MKUserTrackingButton(mapView: mapView)
+
+        if canEdit {
+            mapView.addSubview(trackingButton)
+
+            trackingButton.layer.cornerRadius = trackingButton.frame.height / 2
+            trackingButton.layer.masksToBounds = true
+            trackingButton.layer.backgroundColor = UIColor.systemBackground.cgColor
+            trackingButton.translatesAutoresizingMaskIntoConstraints = false
+            trackingButton.topAnchor.constraint(equalTo: mapView.topAnchor, constant: 10).isActive = true
+
+            mapView.trailingAnchor.constraint(equalTo: trackingButton.trailingAnchor, constant: 10).isActive = true
+        } else {
+            for subView in mapView.subviews where subView is MKUserTrackingButton {
+                subView.removeFromSuperview()
+            }
         }
     }
 }
