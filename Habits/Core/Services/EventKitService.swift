@@ -9,7 +9,7 @@ import Foundation
 import EventKit
 import SwiftUI
 
-struct EventKitService {
+class EventKitService {
     private let eventStore: EKEventStore = EKEventStore()
     private let authService: AuthorizationService = AuthorizationService()
     private let notificationService: NotificationService = NotificationService()

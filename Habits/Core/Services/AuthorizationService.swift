@@ -9,8 +9,7 @@ import Foundation
 import EventKit
 import UserNotifications
 
-struct AuthorizationService {
-
+class AuthorizationService {
     func eventStoreAuth() async throws -> EKAuthorizationStatus {
         return EKEventStore.authorizationStatus(for: .event)
     }

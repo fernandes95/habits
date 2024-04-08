@@ -8,7 +8,7 @@
 import Foundation
 import UserNotifications
 
-struct NotificationService {
+class NotificationService {
     private let notificationCenter: UNUserNotificationCenter = UNUserNotificationCenter.current()
     private let authorizationService: AuthorizationService = AuthorizationService()
     private let notificationDelegate: NotificationDelegate = NotificationDelegate()

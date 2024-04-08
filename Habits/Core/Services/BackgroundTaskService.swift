@@ -8,7 +8,7 @@
 import Foundation
 import BackgroundTasks
 
-struct BackgroundTaskService {
+class BackgroundTaskService {
     private let taskScheduler: BGTaskScheduler = BGTaskScheduler.shared
 
     func registerBackgroundTask(identifier: String, launchHandler: @escaping (BGTask) -> Void) {

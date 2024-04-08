@@ -72,7 +72,7 @@ private struct CalendarViewRepresentable: UIViewRepresentable {
         calendarView.delegate = context.coordinator
         calendarView.calendar = gregorianCalendar
         calendarView.locale = Locale(identifier: Locale.current.language.languageCode?.identifier ?? "en_US")
-        calendarView.fontDesign = .round
+        calendarView.fontDesign = .rounded
         calendarView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         calendarView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
