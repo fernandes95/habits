@@ -28,6 +28,7 @@
 		AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E192B5FD91B002C7EEB /* ListItem.swift */; };
 		AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */; };
 		AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */; };
+		AE901D0A2BC54A2300DA674A /* RegionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE901D092BC54A2300DA674A /* RegionService.swift */; };
 		AE901D0C2BC5791A00DA674A /* HabitsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE901D0B2BC5791A00DA674A /* HabitsService.swift */; };
 		AE98C7F52BBC6C9A00EAE2A5 /* CLLocationDistance+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE98C7F42BBC6C9A00EAE2A5 /* CLLocationDistance+Utils.swift */; };
 		AE9D9A0F2BB1814000CF3498 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9D9A0E2BB1814000CF3498 /* MapView.swift */; };
@@ -64,6 +65,7 @@
 		AE744E192B5FD91B002C7EEB /* ListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItem.swift; sourceTree = "<group>"; };
 		AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelativeHeightSheetContentModifier.swift; sourceTree = "<group>"; };
 		AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerSheetContent.swift; sourceTree = "<group>"; };
+		AE901D092BC54A2300DA674A /* RegionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionService.swift; sourceTree = "<group>"; };
 		AE901D0B2BC5791A00DA674A /* HabitsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsService.swift; sourceTree = "<group>"; };
 		AE98C7F42BBC6C9A00EAE2A5 /* CLLocationDistance+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocationDistance+Utils.swift"; sourceTree = "<group>"; };
 		AE9D9A0E2BB1814000CF3498 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 				AE2B2A472BB0712A004669B6 /* BackgroundTaskService.swift */,
 				AE2B2A492BB07223004669B6 /* NotificationService.swift */,
 				AE9D9A102BB3328400CF3498 /* LocationService.swift */,
+				AE901D092BC54A2300DA674A /* RegionService.swift */,
 				AE901D0B2BC5791A00DA674A /* HabitsService.swift */,
 			);
 			path = Services;
@@ -401,6 +404,7 @@
 				AED732D52B61584E00CD750D /* NewHabitView.swift in Sources */,
 				AE448A932B8D20160034898F /* StoreService.swift in Sources */,
 				AE51BD592B9612E3005DCBC7 /* StoreEntity.swift in Sources */,
+				AE901D0A2BC54A2300DA674A /* RegionService.swift in Sources */,
 				AE448A8A2B8664B40034898F /* HabitsRouter.swift in Sources */,
 				AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */,
 				AE302EA32BC2F646002C8DC1 /* ViewType.swift in Sources */,

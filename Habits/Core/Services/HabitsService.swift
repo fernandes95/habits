@@ -193,6 +193,7 @@ class HabitsService {
             return []
         }
 
+        // TODO: ALSO INCLUDE THE DAY OF CREATION EVEN IF IS NOT IN THE SELECTED WEEKDAYS
         return habits.filter { $0.frequency == .weekly }
             .compactMap { habit in
                 let weekDayRaw: Int = Calendar.current.component(.weekday, from: date)

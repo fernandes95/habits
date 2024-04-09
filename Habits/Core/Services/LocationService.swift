@@ -11,6 +11,7 @@ import CoreLocation
 
 class LocationService: NSObject, ObservableObject {
     private let notificationService: NotificationService = NotificationService()
+    private let regionService: RegionService = RegionService()
     private var locationManager: CLLocationManager = CLLocationManager()
 
     @Published
@@ -74,16 +75,10 @@ extension LocationService: CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
-            let latitude = location.coordinate.latitude
-            let longitude = location.coordinate.longitude
-            let message = "Changed location"
-
+            print("Changed location")
             Task {
-                try await notificationService.requestInstantNotification(
-                    subTitle: message
-                )
+                try await regionService.manageRegions(currentLocation: location)
             }
-            print(message)
         }
     }
 
