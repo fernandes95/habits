@@ -87,7 +87,7 @@ struct HabitEntity: Codable {
             hasAlarm: hasAlarm ?? self.hasAlarm,
             updatedDate: updatedDate ?? self.updatedDate,
             hasLocationReminder: hasLocationReminder ?? self.hasLocationReminder,
-            location: location ?? self.location
+            location: location
         )
     }
 

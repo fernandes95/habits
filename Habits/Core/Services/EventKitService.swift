@@ -15,16 +15,22 @@ class EventKitService {
     private let notificationService: NotificationService = NotificationService()
 
     private func verifyAuthStatus() async throws -> Bool {
-        var auth: Bool = false
         let status = try await authService.eventStoreAuth()
-        if status == .notDetermined {
+
+        return switch status {
+        case .notDetermined:
             if #available(iOS 17.0, *) {
-                auth = try await self.eventStore.requestFullAccessToEvents()
+                try await self.eventStore.requestFullAccessToEvents()
             } else {
-                auth = try await self.eventStore.requestAccess(to: .event)
+                try await self.eventStore.requestAccess(to: .event)
             }
+        case .fullAccess,
+             .restricted,
+             .writeOnly:
+            true
+        default:
+            false
         }
-        return auth
     }
 
     func createCalendarEvent(_ habit: Habit) async throws -> String {
