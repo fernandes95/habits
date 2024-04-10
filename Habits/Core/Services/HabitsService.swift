@@ -39,6 +39,11 @@ class HabitsService {
         return habits.first(where: { $0.id == id }) ?? nil
     }
 
+    func getHabit(id: String) async throws -> HabitEntity? {
+        let habits: [HabitEntity] = try await getHabits()
+        return habits.first(where: { $0.id.uuidString == id }) ?? nil
+    }
+
     func addHabit(_ habit: Habit) async throws -> UUID {
         var eventId: String = ""
         var schedule: [Habit.Hour] = habit.schedule
@@ -194,7 +199,7 @@ class HabitsService {
             return []
         }
 
-        // TODO: ALSO INCLUDE THE DAY OF CREATION EVEN IF IS NOT IN THE SELECTED WEEKDAYS
+        // FIXME: ALSO INCLUDE THE DAY OF CREATION EVEN IF IS NOT IN THE SELECTED WEEKDAYS
         return habits.filter { $0.frequency == .weekly }
             .compactMap { habit in
                 let weekDayRaw: Int = Calendar.current.component(.weekday, from: date)
@@ -245,7 +250,8 @@ class HabitsService {
         return checkedList
     }
 
-    func getHabitsByDistance(currentLocation: CLLocation) async throws -> [Habit] {
+    // TODO: FOR TESTINGS PORPUSES MAXHABITS IS 5 BUT LIMIT SHOULD BE 20
+    func getHabitsByDistance(currentLocation: CLLocation, maxHabits: Int = 5) async throws -> [Habit] {
         guard let habits: [Habit] = try? await loadUncheckedHabits(date: Date.now) else { return [] }
 
         let habitsByDistance: [Habit] = habits
@@ -263,6 +269,22 @@ class HabitsService {
                 return currentLocation.distance(from: lhsLocation) < currentLocation.distance(from: rhsLocation)
             }
 
-        return habitsByDistance
+        // DEBUG LOGS
+        print("\n **** Habits by Distance ****")
+        print(" **** Limit Lenght: \(maxHabits) ****")
+        print(" **** Count: \(habits.count) **** \n")
+        for habit in Array(habitsByDistance.prefix(maxHabits)) {
+            let closestLocation: CLLocation = CLLocation(
+                latitude: habit.location!.latitude,
+                longitude: habit.location!.longitude
+            )
+            let distance = currentLocation.distance(from: closestLocation)
+
+            print("● Name: \(habit.name), Distance: \(distance)")
+        }
+        print("\n **** End of Habits by Distance ****")
+        // END OF DEBUG LOGS
+
+        return maxHabits == 0 ? habitsByDistance : Array(habitsByDistance.prefix(maxHabits))
     }
 }

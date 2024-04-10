@@ -28,12 +28,11 @@ class RegionServiceNew: RegionService {
         for try await event in await monitor.events {
                 switch event.state {
                 case .satisfied: // callback when user ENTERS any of the registered regions.
-                    print("CL MONITOR ENTERED REGION")
+                    print("⬆️ CL MONITOR ENTERED REGION")
                 case .unknown, .unsatisfied: // callback when user EXITS any of the registered regions.
-                    print("CL MONITOR EXITED REGION")
+                    print("⬇️ CL MONITOR EXITED REGION")
                     if try await validateRegion(identifier: event.identifier) {
                         await stopMonitoringRegion(identifier: event.identifier)
-                        print("Stoped monitoring region: \(event.identifier)")
                     }
 
                 default:
@@ -48,10 +47,24 @@ class RegionServiceNew: RegionService {
             identifier: identifier,
             assuming: .unsatisfied
         )
+
+        // FIXME: fix this
+        var habitName: String = ""
+        do {
+            habitName = try await habitsService.getHabit(id: identifier)?.name ?? ""
+        } catch {}
+        print("🔎✅ CL MONITOR Started monitoring region for HABIT: \(habitName)")
     }
 
     func stopMonitoringRegion(identifier: String) async {
         await monitor?.remove(identifier)
+
+        // FIXME: fix this
+        var habitName: String = ""
+        do {
+            habitName = try await habitsService.getHabit(id: identifier)?.name ?? ""
+        } catch {}
+        print("🔎🛑 CL MONITOR Started monitoring region for HABIT: \(habitName)")
     }
 
     func validateRegion(identifier: String) async throws -> Bool {
@@ -62,17 +75,38 @@ class RegionServiceNew: RegionService {
         return habitIsChecked ?? false
     }
 
+    // TODO: REMOVING ALL NOT WORKING BECAUSE ASYNC
+    private func removeAllEvents() async throws {
+        if let monitor {
+            for try await event in await monitor.events {
+                await monitor.remove(event.identifier)
+            }
+        }
+    }
+
     func manageRegions(currentLocation: CLLocation) async throws {
         guard let habits: [Habit] = try? await habitsService.getHabitsByDistance(
             currentLocation: currentLocation
         ) else {
-            if let monitor {
-                for try await event in await monitor.events {
-                    await monitor.remove(event.identifier)
-                }
-            }
-
+            try await removeAllEvents()
             return
         }
+
+        // delete all events before adding all again
+        try await removeAllEvents()
+
+        for habit in habits {
+            await monitorRegion(center: habit.location!.locationCoordinate, identifier: habit.id.uuidString)
+        }
+
+            // DEBUG LOGS
+//            print("\n **** Regions being monitored ****")
+//            for event in events {
+//                let habitName: String = try await self.habitsService.getHabit(id: event.identifier)?.name ?? ""
+//                print("► Name: \(habitName)")
+//                return event
+//            }
+//            print("\n **** End of Regions being monitored ****")
+            // END OF DEBUG LOGS
     }
 }

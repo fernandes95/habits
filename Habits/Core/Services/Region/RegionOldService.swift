@@ -44,24 +44,24 @@ class RegionServiceOld: RegionService {
         return habitIsChecked ?? false
     }
 
+    private func stopMonitoringAll() async throws {
+        for region in self.locationManager.monitoredRegions {
+            self.locationManager.stopMonitoring(for: region)
+        }
+    }
+
     func manageRegions(currentLocation: CLLocation) async throws {
         guard let habits: [Habit] =
                 try? await habitsService.getHabitsByDistance(currentLocation: currentLocation) else {
-                for region in self.locationManager.monitoredRegions {
-                    self.locationManager.stopMonitoring(for: region)
-                    }
+                try await stopMonitoringAll()
                 return
             }
 
-        let regions: [CLCircularRegion] = habits
-            .map { habit in
-                return CLCircularRegion(
-                    center: habit.location!.locationCoordinate,
-                    radius: 5,
-                    identifier: habit.id.uuidString
-                )
-            }
+        // stop monitoring all regions before starting monitoring all again
+        try await stopMonitoringAll()
 
-        return
+        for habit in habits {
+            await monitorRegion(center: habit.location!.locationCoordinate, identifier: habit.id.uuidString)
+        }
     }
 }

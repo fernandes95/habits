@@ -27,7 +27,7 @@ class LocationService: NSObject, ObservableObject {
         self.locationManager.pausesLocationUpdatesAutomatically = false
 
         self.locationManager.startUpdatingLocation()
-        
+
         self.regionService = BackwardsCompactability.regionService(locationManager: self.locationManager)
     }
 
@@ -75,12 +75,12 @@ extension LocationService: CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
-            print("Changed location")
+            print("🏃🏻‍♂️‍➡️ Changed location")
             Task {
                 try await regionService?.manageRegions(currentLocation: location)
             }
 
-            print("Regions being monitored count: \(manager.monitoredRegions.count)")
+            print(" Regions being monitored count: \(manager.monitoredRegions.count)")
         }
     }
 
@@ -89,22 +89,22 @@ extension LocationService: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-        print("Started monitoring region with IDENTIFIER: \(region.identifier)")
+        print("🔎✅ Started monitoring region with IDENTIFIER: \(region.identifier)")
     }
 
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         if let region = region as? CLCircularRegion {
-            print("Entered region with IDENTIFIER: \(region.identifier)")
+            print("⬆️ Entered region with IDENTIFIER: \(region.identifier)")
         }
     }
 
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         if let region = region as? CLCircularRegion {
-            print("Exited region with IDENTIFIER: \(region.identifier)")
+            print("⬇️ Exited region with IDENTIFIER: \(region.identifier)")
             Task {
                 if try await regionService?.validateRegion(identifier: region.identifier) ?? false {
                         locationManager.stopMonitoring(for: region)
-                    print("Stoped monitoring region: \(region.identifier)")
+                    print("🔎🛑 Stoped monitoring region: \(region.identifier)")
                 }
             }
         }
