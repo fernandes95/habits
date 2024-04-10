@@ -21,11 +21,10 @@ class LocationService: NSObject, ObservableObject {
         super.init()
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-        self.locationManager.distanceFilter = 10
+        self.locationManager.distanceFilter = 5
         self.locationManager.activityType = .otherNavigation
         self.locationManager.allowsBackgroundLocationUpdates = true
         self.locationManager.pausesLocationUpdatesAutomatically = false
-//        self.locationManager.stopUpdatingLocation()
 
         self.locationManager.startUpdatingLocation()
     }
@@ -34,17 +33,12 @@ class LocationService: NSObject, ObservableObject {
         self.locationManager.requestWhenInUseAuthorization()
     }
 
-    func monitorRegionAtLocation(center: CLLocationCoordinate2D, identifier: String) {
-        if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
-            let region = CLCircularRegion(
-                center: center,
-                radius: 5,
-                identifier: identifier)
-            region.notifyOnEntry = true
-            region.notifyOnExit = true
+    func startMonitoringRegion(location: CLLocationCoordinate2D, identifier: String) {
+        regionService.monitorRegion(locationManager: self.locationManager, center: location, identifier: identifier)
+    }
 
-            self.locationManager.startMonitoring(for: region)
-        }
+    func stopMonitoringRegion(identifier: String) {
+        regionService.stopMonitoringRegion(locationManager: self.locationManager, identifier: identifier)
     }
 }
 
@@ -79,6 +73,8 @@ extension LocationService: CLLocationManagerDelegate {
             Task {
                 try await regionService.manageRegions(currentLocation: location)
             }
+
+            print("Regions being monitored count: \(manager.monitoredRegions.count)")
         }
     }
 
@@ -92,23 +88,19 @@ extension LocationService: CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         if let region = region as? CLCircularRegion {
-            Task {
-                try await notificationService.requestInstantNotification(
-                    subTitle: "Entered region with IDENTIFIER: \(region.identifier)"
-                )
-            }
             print("Entered region with IDENTIFIER: \(region.identifier)")
         }
     }
 
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         if let region = region as? CLCircularRegion {
-            Task {
-                try await notificationService.requestInstantNotification(
-                    subTitle: "Exited region with IDENTIFIER: \(region.identifier)"
-                )
-            }
             print("Exited region with IDENTIFIER: \(region.identifier)")
+            Task {
+                if try await regionService.validateRegion(identifier: region.identifier) {
+                    locationManager.stopMonitoring(for: region)
+                    print("Stoped monitoring region: \(region.identifier)")
+                }
+            }
         }
     }
 }

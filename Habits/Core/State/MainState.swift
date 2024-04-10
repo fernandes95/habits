@@ -48,13 +48,21 @@ class MainState: ObservableObject {
     func removeHabit(habitId: UUID) async throws {
         do {
             try await habitsService.removeHabit(habitId: habitId)
+            locationService.stopMonitoringRegion(identifier: habitId.uuidString)
             try await loadHabits(date: self.selectedDate)
         } catch {}
     }
 
     func addHabit(_ habit: Habit) async throws {
         do {
-            try await habitsService.addHabit(habit)
+            let newHabitId: UUID = try await habitsService.addHabit(habit)
+
+            if let location = habit.location {
+                locationService.startMonitoringRegion(
+                    location: location.locationCoordinate,
+                    identifier: newHabitId.uuidString
+                )
+            }
             try await loadHabits(date: self.selectedDate)
         } catch { }
     }

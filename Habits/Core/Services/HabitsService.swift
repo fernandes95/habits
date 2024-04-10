@@ -39,7 +39,7 @@ class HabitsService {
         return habits.first(where: { $0.id == id }) ?? nil
     }
 
-    func addHabit(_ habit: Habit) async throws {
+    func addHabit(_ habit: Habit) async throws -> UUID {
         var eventId: String = ""
         var schedule: [Habit.Hour] = habit.schedule
         var location: HabitEntity.Location?
@@ -58,29 +58,30 @@ class HabitsService {
         }
 
         var store: StoreEntity = try await load()
-        store.habits.append(
-            HabitEntity(
-                eventId: eventId,
-                name: habit.name,
-                startDate: habit.startDate,
-                endDate: habit.endDate,
-                frequency: habit.frequency.rawValue,
-                frequencyType: habit.frequencyType,
-                category: habit.category.rawValue,
-                schedule: schedule.map { hour in
-                    return HabitEntity.Hour(
-                        date: hour.date,
-                        eventId: hour.eventId,
-                        notificationId: hour.notificationId
-                    )
-                },
-                hasAlarm: habit.hasAlarm,
-                hasLocationReminder: habit.hasLocationReminder,
-                location: location
-            )
+        let newHabit: HabitEntity = HabitEntity(
+            eventId: eventId,
+            name: habit.name,
+            startDate: habit.startDate,
+            endDate: habit.endDate,
+            frequency: habit.frequency.rawValue,
+            frequencyType: habit.frequencyType,
+            category: habit.category.rawValue,
+            schedule: schedule.map { hour in
+                return HabitEntity.Hour(
+                    date: hour.date,
+                    eventId: hour.eventId,
+                    notificationId: hour.notificationId
+                )
+            },
+            hasAlarm: habit.hasAlarm,
+            hasLocationReminder: habit.hasLocationReminder,
+            location: location
         )
 
+        store.habits.append(newHabit)
         try await storeService.save(store)
+
+        return newHabit.id
     }
 
     func updateHabit(_ habit: Habit, selectedDate: Date) async throws {

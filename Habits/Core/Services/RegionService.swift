@@ -10,7 +10,34 @@ import CoreLocation
 
 class RegionService {
     private var habitsService: HabitsService = HabitsService()
-    private var locationManager: CLLocationManager?
+
+    func monitorRegion(locationManager: CLLocationManager, center: CLLocationCoordinate2D, identifier: String) {
+        if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
+            let region = CLCircularRegion(
+                center: center,
+                radius: 5,
+                identifier: identifier)
+            region.notifyOnEntry = true
+            region.notifyOnExit = true
+
+            locationManager.startMonitoring(for: region)
+            locationManager.startUpdatingLocation()
+        }
+    }
+
+    func stopMonitoringRegion(locationManager: CLLocationManager, identifier: String) {
+        if let region = locationManager.monitoredRegions.first(where: { $0.identifier == identifier }) {
+            locationManager.stopMonitoring(for: region)
+        }
+    }
+
+    func validateRegion(identifier: String) async throws -> Bool {
+        guard let habits: [Habit] = try? await habitsService.loadCheckedHabits(date: Date.now) else { return false }
+
+        let habitIsChecked = habits.first(where: { $0.id.uuidString == identifier })?.isChecked
+
+        return habitIsChecked ?? false
+    }
 
     func manageRegions(currentLocation: CLLocation) async throws -> [CLCircularRegion] {
         guard let habits: [Habit] = try? await habitsService.loadUncheckedHabits(date: Date.now) else { return [] }
