@@ -244,4 +244,25 @@ class HabitsService {
 
         return checkedList
     }
+
+    func getHabitsByDistance(currentLocation: CLLocation) async throws -> [Habit] {
+        guard let habits: [Habit] = try? await loadUncheckedHabits(date: Date.now) else { return [] }
+
+        let habitsByDistance: [Habit] = habits
+            .filter({ $0.location != nil })
+            .sorted { (lhs: Habit, rhs: Habit) in
+                let lhsLocation: CLLocation = CLLocation(
+                    latitude: lhs.location!.latitude,
+                    longitude: lhs.location!.longitude
+                )
+                let rhsLocation: CLLocation = CLLocation(
+                    latitude: rhs.location!.latitude,
+                    longitude: rhs.location!.longitude
+                )
+
+                return currentLocation.distance(from: lhsLocation) < currentLocation.distance(from: rhsLocation)
+            }
+
+        return habitsByDistance
+    }
 }

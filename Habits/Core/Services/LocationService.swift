@@ -11,7 +11,7 @@ import CoreLocation
 
 class LocationService: NSObject, ObservableObject {
     private let notificationService: NotificationService = NotificationService()
-    private let regionService: RegionService = RegionService()
+    private var regionService: RegionService?
     private var locationManager: CLLocationManager = CLLocationManager()
 
     @Published
@@ -27,6 +27,8 @@ class LocationService: NSObject, ObservableObject {
         self.locationManager.pausesLocationUpdatesAutomatically = false
 
         self.locationManager.startUpdatingLocation()
+        
+        self.regionService = BackwardsCompactability.regionService(locationManager: self.locationManager)
     }
 
     func locationAuthorization() {
@@ -34,11 +36,15 @@ class LocationService: NSObject, ObservableObject {
     }
 
     func startMonitoringRegion(location: CLLocationCoordinate2D, identifier: String) {
-        regionService.monitorRegion(locationManager: self.locationManager, center: location, identifier: identifier)
+        Task {
+            await regionService?.monitorRegion(center: location, identifier: identifier)
+        }
     }
 
     func stopMonitoringRegion(identifier: String) {
-        regionService.stopMonitoringRegion(locationManager: self.locationManager, identifier: identifier)
+        Task {
+            await regionService?.stopMonitoringRegion(identifier: identifier)
+        }
     }
 }
 
@@ -71,7 +77,7 @@ extension LocationService: CLLocationManagerDelegate {
         if let location = locations.first {
             print("Changed location")
             Task {
-                try await regionService.manageRegions(currentLocation: location)
+                try await regionService?.manageRegions(currentLocation: location)
             }
 
             print("Regions being monitored count: \(manager.monitoredRegions.count)")
@@ -96,8 +102,8 @@ extension LocationService: CLLocationManagerDelegate {
         if let region = region as? CLCircularRegion {
             print("Exited region with IDENTIFIER: \(region.identifier)")
             Task {
-                if try await regionService.validateRegion(identifier: region.identifier) {
-                    locationManager.stopMonitoring(for: region)
+                if try await regionService?.validateRegion(identifier: region.identifier) ?? false {
+                        locationManager.stopMonitoring(for: region)
                     print("Stoped monitoring region: \(region.identifier)")
                 }
             }
