@@ -76,14 +76,14 @@ extension LocationService: CLLocationManagerDelegate {
     private func setDistanceFilter(distance: Double) {
         let newDistance: Double =
         switch distance {
-        case ..<70:
+        case ...70:
             5.0
-        case ..<150:
+        case ...150:
             10.0
-        case ..<500:
+        case ...500:
             50.0
         default:
-            distance / 3
+            200
         }
 
         self.locationManager.distanceFilter = newDistance
@@ -96,20 +96,21 @@ extension LocationService: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
             print("🏃🏻‍♂️‍➡️ Changed location")
-//            Task {
-//                guard let distance: Double = try await regionService?.manageRegions(currentLocation: location)
-//                else {
-//                    return
-//                }
-//
-//                setDistanceFilter(distance: distance)
-//            }
+            Task {
+                guard let distance: Double = try await regionService?.manageRegions(currentLocation: location)
+                else {
+                    return
+                }
+
+                setDistanceFilter(distance: distance)
+            }
 
             print(" Regions being monitored count: \(manager.monitoredRegions.count)")
         }
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("ERROR: \(error.localizedDescription)")
         // Handle failure to get a user’s location
     }
 

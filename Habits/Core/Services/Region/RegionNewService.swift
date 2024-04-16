@@ -90,7 +90,8 @@ class RegionServiceNew: RegionService {
     }
 
     func manageRegions(currentLocation: CLLocation) async throws -> Double {
-        guard let result: ([Habit], Double) = try? await habitsService.getHabitsByDistance(
+        var habitsMonitored: [String] = []
+        guard let (habits, distance): ([Habit], Double) = try? await habitsService.getHabitsByDistance(
             currentLocation: currentLocation,
             maxHabits: 5
         ) else {
@@ -98,7 +99,24 @@ class RegionServiceNew: RegionService {
             return 10000.0
         }
 
-        for habit in result.0 {
+        if let monitor {
+            for identifier in await monitor.identifiers {
+                guard let habitEntity = try await self.habitsService.getHabit(id: identifier) else {
+                    try await stopMonitoringRegion(identifier: identifier)
+                    return distance
+                }
+
+                let habit: Habit = Habit(habitEntity: habitEntity)
+
+                if !habits.contains(where: { $0.id.uuidString == identifier }) {
+                    try await stopMonitoringRegion(identifier: identifier)
+                } else {
+                    habitsMonitored.append(habit.id.uuidString)
+                }
+            }
+        }
+
+        for habit in habits where !habitsMonitored.contains(where: { $0 == habit.id.uuidString }) {
             try await monitorRegion(center: habit.location!.locationCoordinate, identifier: habit.id.uuidString)
         }
 
@@ -116,6 +134,6 @@ class RegionServiceNew: RegionService {
         print("\n **** End of Regions being monitored ****")
         // END OF DEBUG LOGS
 
-        return result.1
+        return distance
     }
 }

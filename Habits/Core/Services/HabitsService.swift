@@ -253,7 +253,9 @@ class HabitsService {
     func getHabitsByDistance(currentLocation: CLLocation, maxHabits: Int = 20) async throws -> ([Habit], Double) {
         var distanceFromClosest: Double = 10000.0
 
-        guard let habits: [Habit] = try? await loadUncheckedHabits(date: Date.now) else { return ([], distanceFromClosest) }
+        guard let habits: [Habit] = try? await loadUncheckedHabits(date: Date.now) else {
+            return ([], distanceFromClosest)
+        }
 
         let habitsByDistance: [Habit] = habits
             .filter({ $0.location != nil })

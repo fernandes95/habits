@@ -53,6 +53,7 @@
 		AE30E1572B9F7428009E10CD /* EventKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventKitService.swift; sourceTree = "<group>"; };
 		AE30E15F2BA4C182009E10CD /* Ocurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ocurrence.swift; sourceTree = "<group>"; };
 		AE30E1612BA88B5B009E10CD /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
+		AE381DD22BCEE2950038B689 /* gpxchicago.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = gpxchicago.gpx; path = ../../../Downloads/gpxchicago.gpx; sourceTree = "<group>"; };
 		AE448A802B84E99F0034898F /* HabitDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailView.swift; sourceTree = "<group>"; };
 		AE448A832B85238E0034898F /* NewHabitContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitContentView.swift; sourceTree = "<group>"; };
 		AE448A862B86632E0034898F /* HabitRouteIdEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRouteIdEnvironmentKey.swift; sourceTree = "<group>"; };
@@ -265,6 +266,7 @@
 		AEA3D6AE2B5E85B700A08F31 = {
 			isa = PBXGroup;
 			children = (
+				AE381DD22BCEE2950038B689 /* gpxchicago.gpx */,
 				AEE2E5E02BBDA7C000DD9BC2 /* gpxgenerator_path.gpx */,
 				AEA3D6B92B5E85B700A08F31 /* Habits */,
 				AEA3D6B82B5E85B700A08F31 /* Products */,
