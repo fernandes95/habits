@@ -45,7 +45,8 @@ struct HabitDetailView: View {
                 location: $editingHabit.location,
                 isNew: false,
                 successRate: editingHabit.successRate,
-                locationAction: { }
+                locationAction: { },
+                notificationAction: { }
             )
 
             Button(role: .destructive) {

@@ -16,7 +16,7 @@ class RegionServiceOld: RegionService {
         self.locationManager = locationManager
     }
 
-    func monitorRegion(center: CLLocationCoordinate2D, identifier: String) async {
+    func monitorRegion(center: CLLocationCoordinate2D, identifier: String) async throws {
         if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
             let region = CLCircularRegion(
                 center: center,
@@ -30,7 +30,7 @@ class RegionServiceOld: RegionService {
         }
     }
 
-    func stopMonitoringRegion(identifier: String) async {
+    func stopMonitoringRegion(identifier: String) async throws {
         if let region = self.locationManager.monitoredRegions.first(where: { $0.identifier == identifier }) {
             self.locationManager.stopMonitoring(for: region)
         }
@@ -50,18 +50,21 @@ class RegionServiceOld: RegionService {
         }
     }
 
-    func manageRegions(currentLocation: CLLocation) async throws {
-        guard let habits: [Habit] =
-                try? await habitsService.getHabitsByDistance(currentLocation: currentLocation) else {
+    func manageRegions(currentLocation: CLLocation) async throws -> Double {
+        guard let result: ([Habit], Double) =
+                try? await habitsService.getHabitsByDistance(currentLocation: currentLocation)
+            else {
                 try await stopMonitoringAll()
-                return
+                return 10000.0
             }
 
         // stop monitoring all regions before starting monitoring all again
         try await stopMonitoringAll()
 
-        for habit in habits {
-            await monitorRegion(center: habit.location!.locationCoordinate, identifier: habit.id.uuidString)
+        for habit in result.0 {
+            try await monitorRegion(center: habit.location!.locationCoordinate, identifier: habit.id.uuidString)
         }
+
+        return result.1
     }
 }

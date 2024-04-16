@@ -13,6 +13,7 @@ import EventKit
 class MainState: ObservableObject {
     private let habitsService: HabitsService = HabitsService()
     private let locationService: LocationService = LocationService()
+    private let notificationService: NotificationService = NotificationService()
 
     @Published
     var habits: [Habit] = []
@@ -24,14 +25,14 @@ class MainState: ObservableObject {
         self.habits = []
         self.selectedDate = date
 
-        let uncheckedList: [Habit] = try await habitsService.loadUncheckedHabits(date: self.selectedDate)
-        let checkedList: [Habit] = try await habitsService.loadCheckedHabits(date: self.selectedDate)
+        let uncheckedList: [Habit] = try await self.habitsService.loadUncheckedHabits(date: self.selectedDate)
+        let checkedList: [Habit] = try await self.habitsService.loadCheckedHabits(date: self.selectedDate)
 
         self.habits = uncheckedList + checkedList
     }
 
     func getHabit(habit: Habit) async throws -> Habit {
-        if let habitEntity: HabitEntity = try await habitsService.getHabit(id: habit.id) {
+        if let habitEntity: HabitEntity = try await self.habitsService.getHabit(id: habit.id) {
             return Habit(habitEntity: habitEntity, selectedDate: Date.now)
         } else {
             return habit
@@ -40,7 +41,14 @@ class MainState: ObservableObject {
 
     func updateHabit(habit: Habit) async throws {
         do {
-            try await habitsService.updateHabit(habit, selectedDate: self.selectedDate)
+            try await self.habitsService.updateHabit(habit, selectedDate: self.selectedDate)
+
+            if let location = habit.location {
+                self.locationService.startMonitoringRegion(
+                    location: location.locationCoordinate,
+                    identifier: habit.id.uuidString
+                )
+            }
             try await loadHabits(date: self.selectedDate)
         } catch { }
     }
@@ -48,7 +56,7 @@ class MainState: ObservableObject {
     func removeHabit(habitId: UUID) async throws {
         do {
             try await habitsService.removeHabit(habitId: habitId)
-            locationService.stopMonitoringRegion(identifier: habitId.uuidString)
+            self.locationService.stopMonitoringRegion(identifier: habitId.uuidString)
             try await loadHabits(date: self.selectedDate)
         } catch {}
     }
@@ -58,7 +66,7 @@ class MainState: ObservableObject {
             let newHabitId: UUID = try await habitsService.addHabit(habit)
 
             if let location = habit.location {
-                locationService.startMonitoringRegion(
+                self.locationService.startMonitoringRegion(
                     location: location.locationCoordinate,
                     identifier: newHabitId.uuidString
                 )
@@ -69,5 +77,9 @@ class MainState: ObservableObject {
 
     func getLocationAuthorization() {
         self.locationService.locationAuthorization()
+    }
+
+    func getNotificationsAuthorization() async throws -> Bool {
+        return try await self.notificationService.notificationAuthorization()
     }
 }

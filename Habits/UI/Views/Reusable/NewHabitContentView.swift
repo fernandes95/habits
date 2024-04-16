@@ -25,8 +25,10 @@ struct NewHabitContentView: View {
     var startDateIn: Date = Date.now
     var successRate: String?
     let locationAction: () -> Void
+    let notificationAction: () -> Void
 
     @State private var hoursDate: Date = Date.now
+    @State private var notificationAuth: Bool = false
 
     var body: some View {
         Form {
@@ -186,6 +188,13 @@ struct NewHabitContentView: View {
                         }
 
                     if hasLocationReminder {
+                        Toggle("notificationAuth", isOn: $notificationAuth)
+                            .onTapGesture {
+//                                if !notificationAuth {
+                                    notificationAction()
+//                                }
+                            }
+
                         MapView(location: $location, canEdit: $isEdit)
                             .frame(height: 250)
                             .cornerRadius(10)
@@ -217,6 +226,7 @@ struct NewHabitContentView: View {
         location: .constant(nil),
         isNew: true,
         successRate: "70%",
-        locationAction: {}
+        locationAction: {},
+        notificationAction: {}
     )
 }

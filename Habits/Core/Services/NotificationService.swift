@@ -13,6 +13,10 @@ class NotificationService {
     private let authorizationService: AuthorizationService = AuthorizationService()
     private let notificationDelegate: NotificationDelegate = NotificationDelegate()
 
+    func notificationAuthorization() async throws -> Bool {
+        return try await authorizationService.notificationsAuth(delegate: self.notificationDelegate)
+    }
+
     private func notificationContent(subTitle: String, date: Date?, identifier: String? = nil) async throws {
         let notificationContent = UNMutableNotificationContent()
         let requestIndentifer = identifier ?? UUID().uuidString
@@ -60,7 +64,7 @@ class NotificationService {
     }
 
     func manageLocalNotifications(habit: Habit) async throws -> [Habit.Hour] {
-        guard try await authorizationService.notificationsAuth(delegate: self.notificationDelegate) else {
+        guard try await self.notificationAuthorization() else {
             return habit.schedule
         }
 
@@ -90,7 +94,7 @@ class NotificationService {
     }
 
     func manageScheduledNotifications(_ habit: Habit, oldHabit: Habit) async throws -> [Habit.Hour] {
-        guard try await authorizationService.notificationsAuth(delegate: self.notificationDelegate) else {
+        guard try await self.notificationAuthorization() else {
             return habit.schedule
         }
 

@@ -250,9 +250,10 @@ class HabitsService {
         return checkedList
     }
 
-    // TODO: FOR TESTINGS PORPUSES MAXHABITS IS 5 BUT LIMIT SHOULD BE 20
-    func getHabitsByDistance(currentLocation: CLLocation, maxHabits: Int = 5) async throws -> [Habit] {
-        guard let habits: [Habit] = try? await loadUncheckedHabits(date: Date.now) else { return [] }
+    func getHabitsByDistance(currentLocation: CLLocation, maxHabits: Int = 20) async throws -> ([Habit], Double) {
+        var distanceFromClosest: Double = 10000.0
+
+        guard let habits: [Habit] = try? await loadUncheckedHabits(date: Date.now) else { return ([], distanceFromClosest) }
 
         let habitsByDistance: [Habit] = habits
             .filter({ $0.location != nil })
@@ -268,6 +269,15 @@ class HabitsService {
 
                 return currentLocation.distance(from: lhsLocation) < currentLocation.distance(from: rhsLocation)
             }
+
+        if let closestHabit: Habit = habitsByDistance.first {
+            let closestHabitLocation: CLLocation = CLLocation(
+                latitude: closestHabit.location!.latitude,
+                longitude: closestHabit.location!.longitude
+            )
+
+            distanceFromClosest = currentLocation.distance(from: closestHabitLocation)
+        }
 
         // DEBUG LOGS
         print("\n **** Habits by Distance ****")
@@ -285,6 +295,8 @@ class HabitsService {
         print("\n **** End of Habits by Distance ****")
         // END OF DEBUG LOGS
 
-        return maxHabits == 0 ? habitsByDistance : Array(habitsByDistance.prefix(maxHabits))
+        let habitsToReturn: [Habit] = maxHabits == 0 ? (habitsByDistance) : Array(habitsByDistance.prefix(maxHabits))
+
+        return (habitsToReturn, distanceFromClosest)
     }
 }

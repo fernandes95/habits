@@ -37,13 +37,13 @@ class LocationService: NSObject, ObservableObject {
 
     func startMonitoringRegion(location: CLLocationCoordinate2D, identifier: String) {
         Task {
-            await regionService?.monitorRegion(center: location, identifier: identifier)
+            try await regionService?.monitorRegion(center: location, identifier: identifier)
         }
     }
 
     func stopMonitoringRegion(identifier: String) {
         Task {
-            await regionService?.stopMonitoringRegion(identifier: identifier)
+            try await regionService?.stopMonitoringRegion(identifier: identifier)
         }
     }
 }
@@ -73,12 +73,37 @@ extension LocationService: CLLocationManagerDelegate {
         }
     }
 
+    private func setDistanceFilter(distance: Double) {
+        let newDistance: Double =
+        switch distance {
+        case ..<70:
+            5.0
+        case ..<150:
+            10.0
+        case ..<500:
+            50.0
+        default:
+            distance / 3
+        }
+
+        self.locationManager.distanceFilter = newDistance
+
+        print("New distance received: \(String(describing: distance))")
+        print("New distance to set: \(newDistance)")
+        print("Distance Filter: \(self.locationManager.distanceFilter)")
+    }
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
             print("🏃🏻‍♂️‍➡️ Changed location")
-            Task {
-                try await regionService?.manageRegions(currentLocation: location)
-            }
+//            Task {
+//                guard let distance: Double = try await regionService?.manageRegions(currentLocation: location)
+//                else {
+//                    return
+//                }
+//
+//                setDistanceFilter(distance: distance)
+//            }
 
             print(" Regions being monitored count: \(manager.monitoredRegions.count)")
         }

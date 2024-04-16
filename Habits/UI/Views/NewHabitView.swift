@@ -47,6 +47,11 @@ struct NewHabitView: View {
                     Task {
                         state.getLocationAuthorization()
                     }
+                },
+                notificationAction: {
+                    Task {
+                        try await state.getNotificationsAuthorization()
+                    }
                 }
             )
             .toolbar {

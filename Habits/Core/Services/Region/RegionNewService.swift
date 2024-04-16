@@ -11,6 +11,7 @@ import CoreLocation
 @available(iOS 17.0, *)
 class RegionServiceNew: RegionService {
     private let habitsService: HabitsService = HabitsService()
+    private let notificationService: NotificationService = NotificationService()
     private var monitor: CLMonitor?
 
     init() {
@@ -29,42 +30,46 @@ class RegionServiceNew: RegionService {
                 switch event.state {
                 case .satisfied: // callback when user ENTERS any of the registered regions.
                     print("⬆️ CL MONITOR ENTERED REGION")
+                    try await remindUser(id: event.identifier)
                 case .unknown, .unsatisfied: // callback when user EXITS any of the registered regions.
                     print("⬇️ CL MONITOR EXITED REGION")
                     if try await validateRegion(identifier: event.identifier) {
-                        await stopMonitoringRegion(identifier: event.identifier)
+                        try await stopMonitoringRegion(identifier: event.identifier)
                     }
-
                 default:
                     print("CL MONITOR No Location Registered")
                 }
         }
     }
 
-    func monitorRegion(center: CLLocationCoordinate2D, identifier: String) async {
+    private func remindUser(id: String) async throws {
+        guard let habitName: String = try await self.habitsService.getHabit(id: id)?.name else {
+            try await stopMonitoringRegion(identifier: id)
+            return
+        }
+
+        try await notificationService.requestInstantNotification(subTitle: "Don't forget to: \(habitName)")
+    }
+
+    func monitorRegion(center: CLLocationCoordinate2D, identifier: String) async throws {
+        let habitName: String = try await self.habitsService.getHabit(id: identifier)?.name ?? ""
+
+        // making sure to remove if habit is being updated
+        // CLMonitor.add doesn't update if it exists
+        try await stopMonitoringRegion(identifier: identifier)
         await monitor?.add(
             CLMonitor.CircularGeographicCondition(center: center, radius: 5),
             identifier: identifier,
             assuming: .unsatisfied
         )
-
-        // FIXME: fix this
-        var habitName: String = ""
-        do {
-            habitName = try await habitsService.getHabit(id: identifier)?.name ?? ""
-        } catch {}
         print("🔎✅ CL MONITOR Started monitoring region for HABIT: \(habitName)")
     }
 
-    func stopMonitoringRegion(identifier: String) async {
-        await monitor?.remove(identifier)
+    func stopMonitoringRegion(identifier: String) async throws {
+        let habitName: String = try await self.habitsService.getHabit(id: identifier)?.name ?? ""
 
-        // FIXME: fix this
-        var habitName: String = ""
-        do {
-            habitName = try await habitsService.getHabit(id: identifier)?.name ?? ""
-        } catch {}
-        print("🔎🛑 CL MONITOR Started monitoring region for HABIT: \(habitName)")
+        await monitor?.remove(identifier)
+        print("🔎🛑 CL MONITOR Stoped monitoring region for HABIT: \(habitName)")
     }
 
     func validateRegion(identifier: String) async throws -> Bool {
@@ -75,38 +80,42 @@ class RegionServiceNew: RegionService {
         return habitIsChecked ?? false
     }
 
-    // TODO: REMOVING ALL NOT WORKING BECAUSE ASYNC
     private func removeAllEvents() async throws {
         if let monitor {
-            for try await event in await monitor.events {
-                await monitor.remove(event.identifier)
+            for identifier in await monitor.identifiers {
+                try await stopMonitoringRegion(identifier: identifier)
             }
         }
+        print("🔎🛑✅ CL MONITOR All regions are being removed")
     }
 
-    func manageRegions(currentLocation: CLLocation) async throws {
-        guard let habits: [Habit] = try? await habitsService.getHabitsByDistance(
-            currentLocation: currentLocation
+    func manageRegions(currentLocation: CLLocation) async throws -> Double {
+        guard let result: ([Habit], Double) = try? await habitsService.getHabitsByDistance(
+            currentLocation: currentLocation,
+            maxHabits: 5
         ) else {
             try await removeAllEvents()
-            return
+            return 10000.0
         }
 
-        // delete all events before adding all again
-        try await removeAllEvents()
-
-        for habit in habits {
-            await monitorRegion(center: habit.location!.locationCoordinate, identifier: habit.id.uuidString)
+        for habit in result.0 {
+            try await monitorRegion(center: habit.location!.locationCoordinate, identifier: habit.id.uuidString)
         }
 
-            // DEBUG LOGS
-//            print("\n **** Regions being monitored ****")
-//            for event in events {
-//                let habitName: String = try await self.habitsService.getHabit(id: event.identifier)?.name ?? ""
-//                print("► Name: \(habitName)")
-//                return event
-//            }
-//            print("\n **** End of Regions being monitored ****")
-            // END OF DEBUG LOGS
+        // DEBUG LOGS
+        print("\n **** Regions being monitored ****")
+        if let monitor {
+            for identifier in await monitor.identifiers {
+                if let habit = try await self.habitsService.getHabit(id: identifier) {
+                    print("► Name: \(habit.name)")
+                } else {
+                    print("► Identifier: \(identifier)")
+                }
+            }
+        }
+        print("\n **** End of Regions being monitored ****")
+        // END OF DEBUG LOGS
+
+        return result.1
     }
 }

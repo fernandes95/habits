@@ -9,8 +9,8 @@ import Foundation
 import CoreLocation
 
 protocol RegionService {
-    func monitorRegion(center: CLLocationCoordinate2D, identifier: String) async
-    func stopMonitoringRegion(identifier: String) async
+    func monitorRegion(center: CLLocationCoordinate2D, identifier: String) async throws
+    func stopMonitoringRegion(identifier: String) async throws
     func validateRegion(identifier: String) async throws -> Bool
-    func manageRegions(currentLocation: CLLocation) async throws
+    func manageRegions(currentLocation: CLLocation) async throws -> Double
 }
