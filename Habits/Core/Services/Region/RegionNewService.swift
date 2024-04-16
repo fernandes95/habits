@@ -96,7 +96,7 @@ class RegionServiceNew: RegionService {
             maxHabits: 5
         ) else {
             try await removeAllEvents()
-            return 10000.0
+            return 200
         }
 
         if let monitor {

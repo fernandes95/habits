@@ -51,20 +51,20 @@ class RegionServiceOld: RegionService {
     }
 
     func manageRegions(currentLocation: CLLocation) async throws -> Double {
-        guard let result: ([Habit], Double) =
+        guard let (habits, distance): ([Habit], Double) =
                 try? await habitsService.getHabitsByDistance(currentLocation: currentLocation)
             else {
                 try await stopMonitoringAll()
-                return 10000.0
+                return 200
             }
 
         // stop monitoring all regions before starting monitoring all again
         try await stopMonitoringAll()
 
-        for habit in result.0 {
+        for habit in habits {
             try await monitorRegion(center: habit.location!.locationCoordinate, identifier: habit.id.uuidString)
         }
 
-        return result.1
+        return distance
     }
 }

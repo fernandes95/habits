@@ -11,6 +11,7 @@ import CoreLocation
 
 class LocationService: NSObject, ObservableObject {
     private let notificationService: NotificationService = NotificationService()
+    private let habitsService: HabitsService = HabitsService()
     private var regionService: RegionService?
     private var locationManager: CLLocationManager = CLLocationManager()
 
@@ -35,15 +36,23 @@ class LocationService: NSObject, ObservableObject {
         self.locationManager.requestWhenInUseAuthorization()
     }
 
+    private func forceUpdateLocation() {
+        self.locationManager.stopUpdatingLocation()
+        self.locationManager.distanceFilter = 1
+        self.locationManager.startUpdatingLocation()
+    }
+
     func startMonitoringRegion(location: CLLocationCoordinate2D, identifier: String) {
         Task {
             try await regionService?.monitorRegion(center: location, identifier: identifier)
+            self.forceUpdateLocation()
         }
     }
 
     func stopMonitoringRegion(identifier: String) {
         Task {
             try await regionService?.stopMonitoringRegion(identifier: identifier)
+            self.forceUpdateLocation()
         }
     }
 }
@@ -73,22 +82,32 @@ extension LocationService: CLLocationManagerDelegate {
         }
     }
 
+    private func remindUser(id: String) async throws {
+        guard let habitName: String = try await self.habitsService.getHabit(id: id)?.name else {
+            try await self.regionService?.stopMonitoringRegion(identifier: id)
+            return
+        }
+
+        // FIXME: FOR SOME REASON THIS NOTIFICATION IS NOT WORKING ON IOS 16
+        try await notificationService.requestInstantNotification(subTitle: "Don't forget to: \(habitName)")
+    }
+
     private func setDistanceFilter(distance: Double) {
         let newDistance: Double =
-        switch distance {
-        case ...70:
-            5.0
-        case ...150:
-            10.0
-        case ...500:
-            50.0
-        default:
-            200
-        }
+            switch distance {
+            case ...70:
+                5
+            case ...150:
+                10
+            case ...500:
+                50
+            default:
+                200
+            }
 
         self.locationManager.distanceFilter = newDistance
 
-        print("New distance received: \(String(describing: distance))")
+        print("\n New distance received: \(String(describing: distance))")
         print("New distance to set: \(newDistance)")
         print("Distance Filter: \(self.locationManager.distanceFilter)")
     }
@@ -102,7 +121,7 @@ extension LocationService: CLLocationManagerDelegate {
                     return
                 }
 
-                setDistanceFilter(distance: distance)
+                self.setDistanceFilter(distance: distance)
             }
 
             print(" Regions being monitored count: \(manager.monitoredRegions.count)")
@@ -121,6 +140,9 @@ extension LocationService: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         if let region = region as? CLCircularRegion {
             print("⬆️ Entered region with IDENTIFIER: \(region.identifier)")
+            Task {
+                try await self.remindUser(id: region.identifier)
+            }
         }
     }
 
