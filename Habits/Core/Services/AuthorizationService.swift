@@ -14,14 +14,10 @@ class AuthorizationService {
         return EKEventStore.authorizationStatus(for: .event)
     }
 
-    func notificationsAuth(delegate: NotificationService.NotificationDelegate) async throws -> Bool {
+    func notificationsAuth() async throws -> Bool {
         do {
-            var hasAuthorization: Bool = false
-            hasAuthorization = try await UNUserNotificationCenter.current()
+            return try await UNUserNotificationCenter.current()
                 .requestAuthorization(options: [.alert, .badge, .sound])
-            UNUserNotificationCenter.current().delegate = delegate
-
-            return hasAuthorization
         } catch {
             return false
         }

@@ -13,8 +13,12 @@ class NotificationService {
     private let authorizationService: AuthorizationService = AuthorizationService()
     private let notificationDelegate: NotificationDelegate = NotificationDelegate()
 
+    init() {
+        self.notificationCenter.delegate = self.notificationDelegate
+    }
+
     func notificationAuthorization() async throws -> Bool {
-        return try await authorizationService.notificationsAuth(delegate: self.notificationDelegate)
+        return try await authorizationService.notificationsAuth()
     }
 
     private func notificationContent(subTitle: String, date: Date?, identifier: String? = nil) async throws {
@@ -28,7 +32,7 @@ class NotificationService {
         var trigger: UNNotificationTrigger {
             if let date {
                 let dateComponents = Calendar.current.dateComponents(
-                    [.day, .month, .year, .hour, .minute],
+                    [.day, .month, .year, .hour, .minute, .second],
                     from: date
                 )
 
@@ -44,8 +48,11 @@ class NotificationService {
             trigger: trigger
         )
 
-        // TODO: MANAGE ERRORS IN THE FUTURE
-        try await notificationCenter.add(request)
+        do {
+            try await notificationCenter.add(request)
+        } catch let error as LocalizedError {
+            print(error)
+        }
     }
 
     func requestNotification(subTitle: String, date: Date, identifier: String? = nil) async throws {

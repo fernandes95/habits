@@ -88,8 +88,7 @@ extension LocationService: CLLocationManagerDelegate {
             return
         }
 
-        // FIXME: FOR SOME REASON THIS NOTIFICATION IS NOT WORKING ON IOS 16
-        try await notificationService.requestInstantNotification(subTitle: "Don't forget to: \(habitName)")
+        try await notificationService.requestInstantNotification(subTitle: "Dont forget to: \(habitName)")
     }
 
     private func setDistanceFilter(distance: Double) {
