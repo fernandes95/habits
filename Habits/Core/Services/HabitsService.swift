@@ -199,14 +199,14 @@ class HabitsService {
             return []
         }
 
-        // FIXME: ALSO INCLUDE THE DAY OF CREATION EVEN IF IS NOT IN THE SELECTED WEEKDAYS
         return habits.filter { $0.frequency == .weekly }
             .compactMap { habit in
                 let weekDayRaw: Int = Calendar.current.component(.weekday, from: date)
                 guard let ekWeekday: EKWeekday = EKWeekday(rawValue: weekDayRaw) else { return nil }
                 let weekday: WeekDay = getWeekDay(ekWeekday: ekWeekday)
 
-                return if habit.frequencyType.weekFrequency.contains(weekday) {
+                return if habit.startDate.startOfDay == date.startOfDay ||
+                        habit.frequencyType.weekFrequency.contains(weekday) {
                     habit
                 } else {
                     nil
