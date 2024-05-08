@@ -13,18 +13,28 @@ class HabitsService {
     private let calendarService: CalendarService = CalendarService()
     private let notificationService: NotificationService = NotificationService()
 
-    private func load() async throws -> StoreEntity {
-        return try await storeService.load()
-    }
-
-    func getHabits() async throws -> [HabitEntity] {
-        let store: StoreEntity = try await load()
+    private var store: StoreEntity = StoreEntity(habits: [], habitsArchived: [])
+    private var habits: [HabitEntity] {
         return store.habits
     }
 
+    init() {
+        Task {
+            try await load()
+        }
+    }
+
+    private func load() async throws {
+        self.store = try await storeService.load()
+    }
+
+    private func save() async throws {
+        try await storeService.save(self.store)
+        try await self.load()
+    }
+
     func getHabits(date: Date) async throws -> [Habit] {
-        let habits: [HabitEntity] = try await getHabits()
-        let habitsFilterted = habits
+        let habitsFilterted = self.habits
             .filter { ($0.startDate.startOfDay ... $0.endDate.endOfDay) ~= date }
             .map { habitEntity in
                 let habit = Habit(habitEntity: habitEntity, selectedDate: date)
@@ -35,13 +45,11 @@ class HabitsService {
     }
 
     func getHabit(id: UUID) async throws -> HabitEntity? {
-        let habits: [HabitEntity] = try await getHabits()
-        return habits.first(where: { $0.id == id }) ?? nil
+        return self.habits.first(where: { $0.id == id }) ?? nil
     }
 
     func getHabit(id: String) async throws -> HabitEntity? {
-        let habits: [HabitEntity] = try await getHabits()
-        return habits.first(where: { $0.id.uuidString == id }) ?? nil
+        return self.habits.first(where: { $0.id.uuidString == id }) ?? nil
     }
 
     func addHabit(_ habit: Habit) async throws -> UUID {
@@ -62,7 +70,6 @@ class HabitsService {
             )
         }
 
-        var store: StoreEntity = try await load()
         let newHabit: HabitEntity = HabitEntity(
             eventId: eventId,
             name: habit.name,
@@ -83,18 +90,17 @@ class HabitsService {
             location: location
         )
 
-        store.habits.append(newHabit)
-        try await storeService.save(store)
+        self.store.habits.append(newHabit)
+        try await self.save()
 
         return newHabit.id
     }
 
     func updateHabit(_ habit: Habit, selectedDate: Date) async throws {
-        var store: StoreEntity = try await load()
-        if let index: Int = store.habits.firstIndex(where: { $0.id == habit.id}) {
-            let oldHabit: Habit = Habit(habitEntity: store.habits[index])
+        if let index: Int = self.store.habits.firstIndex(where: { $0.id == habit.id}) {
+            let oldHabit: Habit = Habit(habitEntity: self.habits[index])
             let eventsHabit: Habit = try await manageUpdateEvents(habit: habit, oldHabit: oldHabit)
-            var updatedHabit: HabitEntity = store.habits[index].with(
+            var updatedHabit: HabitEntity = self.habits[index].with(
                 eventId: eventsHabit.eventId,
                 name: eventsHabit.name,
                 endDate: eventsHabit.endDate,
@@ -136,10 +142,10 @@ class HabitsService {
 
             updatedHabit.successRate = updatedHabit.getSuccessRate()
 
-            store.habits[index] = updatedHabit
+            self.store.habits[index] = updatedHabit
         }
 
-        try await storeService.save(store)
+        try await self.save()
     }
 
     private func manageUpdateEvents(habit: Habit, oldHabit: Habit) async throws -> Habit {
@@ -160,12 +166,11 @@ class HabitsService {
     }
 
     func removeHabit(habitId: UUID) async throws {
-        var store: StoreEntity = try await load()
-        if let index: Int = store.habits.firstIndex(where: { $0.id == habitId }) {
-            let deleteHabit: HabitEntity = store.habits[index]
+        if let index: Int = self.habits.firstIndex(where: { $0.id == habitId }) {
+            let deleteHabit: HabitEntity = self.habits[index]
 
-            store.habitsArchived.append(deleteHabit)
-            store.habits.remove(at: index)
+            self.store.habitsArchived.append(deleteHabit)
+            self.store.habits.remove(at: index)
 
             if deleteHabit.schedule.isEmpty {
                 calendarService.deleteEventById(eventId: deleteHabit.eventId)
@@ -176,7 +181,7 @@ class HabitsService {
                 }
             }
 
-            try await storeService.save(store)
+            try await self.save()
         }
     }
 

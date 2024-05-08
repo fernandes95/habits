@@ -106,6 +106,7 @@ class CalendarService {
             let newEndDate: Date? = calendar.date(byAdding: components, to: hour.date)
 
             if hour.eventId.isEmpty {
+                // creating new calendar event
                 let newEvent: EKEvent = habit.getCalendarEvent(store: self.eventStore)
                 newEvent.startDate = hour.date
                 newEvent.endDate = newEndDate
@@ -124,6 +125,7 @@ class CalendarService {
                     print("ERROR CREATING CALENDAR EVENT")
                 }
             } else {
+                // getting existing calendar event
                 if let event: EKEvent = self.getEventById(eventId: hour.eventId) {
                     let recurrenceRule: EKRecurrenceRule = habit.getEKRecurrenceRule()
                     event.title = habit.name
@@ -131,12 +133,14 @@ class CalendarService {
                     event.endDate = newEndDate
                     event.recurrenceRules = [recurrenceRule]
 
+                    // removing all alarms in calendar event
                     if let alarms = event.alarms {
                         for alarm in alarms {
                             event.removeAlarm(alarm)
                         }
                     }
 
+                    // adding new alarm in calendar event
                     if habit.hasAlarm {
                         event.addAlarm(EKAlarm(absoluteDate: hour.date))
                     }
