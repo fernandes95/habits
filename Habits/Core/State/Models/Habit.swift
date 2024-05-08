@@ -150,7 +150,7 @@ struct Habit: Identifiable, Equatable {
         }
     }
 
-    func getEKEvent(store: EKEventStore) -> EKEvent {
+    func getCalendarEvent(store: EKEventStore) -> EKEvent {
         let event: EKEvent = EKEvent(eventStore: store)
         let recurrenceRule: EKRecurrenceRule = getEKRecurrenceRule()
 

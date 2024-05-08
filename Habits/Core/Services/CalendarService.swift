@@ -1,5 +1,5 @@
 //
-//  EventKitService.swift
+//  CalendarService.swift
 //  Habits
 //
 //  Created by Tiago Fernandes on 11/03/2024.
@@ -9,7 +9,7 @@ import Foundation
 import EventKit
 import SwiftUI
 
-class EventKitService {
+class CalendarService {
     private let eventStore: EKEventStore = EKEventStore()
     private let authService: AuthorizationService = AuthorizationService()
     private let notificationService: NotificationService = NotificationService()
@@ -36,7 +36,7 @@ class EventKitService {
     func createCalendarEvent(_ habit: Habit) async throws -> String {
         guard try await verifyAuthStatus() else { return "" }
 
-        let newEvent: EKEvent = habit.getEKEvent(store: self.eventStore)
+        let newEvent: EKEvent = habit.getCalendarEvent(store: self.eventStore)
 
         do {
             try self.eventStore.save(newEvent, span: .thisEvent)
@@ -56,7 +56,7 @@ class EventKitService {
 
         for hour in habit.schedule {
             let calendar: Calendar = Calendar.current
-            let newEvent: EKEvent = habit.getEKEvent(store: self.eventStore)
+            let newEvent: EKEvent = habit.getCalendarEvent(store: self.eventStore)
             newEvent.startDate = hour.date
 
             var components: DateComponents = DateComponents()
@@ -106,7 +106,7 @@ class EventKitService {
             let newEndDate: Date? = calendar.date(byAdding: components, to: hour.date)
 
             if hour.eventId.isEmpty {
-                let newEvent: EKEvent = habit.getEKEvent(store: self.eventStore)
+                let newEvent: EKEvent = habit.getCalendarEvent(store: self.eventStore)
                 newEvent.startDate = hour.date
                 newEvent.endDate = newEndDate
 

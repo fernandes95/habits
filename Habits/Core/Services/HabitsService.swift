@@ -10,7 +10,7 @@ import EventKit
 
 class HabitsService {
     private let storeService: DefaultStoreService = DefaultStoreService()
-    private let eventKitService: EventKitService = EventKitService()
+    private let calendarService: CalendarService = CalendarService()
     private let notificationService: NotificationService = NotificationService()
 
     private func load() async throws -> StoreEntity {
@@ -50,9 +50,9 @@ class HabitsService {
         var location: HabitEntity.Location?
 
         if habit.schedule.isEmpty {
-            eventId = try await eventKitService.createCalendarEvent(habit)
+            eventId = try await calendarService.createCalendarEvent(habit)
         } else {
-            schedule = try await eventKitService.createScheduleCalendarEvents(habit)
+            schedule = try await calendarService.createScheduleCalendarEvents(habit)
         }
 
         if habit.location != nil {
@@ -144,16 +144,16 @@ class HabitsService {
 
     private func manageUpdateEvents(habit: Habit, oldHabit: Habit) async throws -> Habit {
         var habitUpdated: Habit = habit
-        habitUpdated.schedule = try await eventKitService.manageScheduleEvents(habit, oldHabit: oldHabit)
+        habitUpdated.schedule = try await calendarService.manageScheduleEvents(habit, oldHabit: oldHabit)
 
         if habitUpdated.eventId.isEmpty && habitUpdated.schedule.isEmpty {
-            let eventId: String = try await eventKitService.createCalendarEvent(habitUpdated)
+            let eventId: String = try await calendarService.createCalendarEvent(habitUpdated)
             habitUpdated.eventId = eventId
         } else if !habitUpdated.eventId.isEmpty && !habitUpdated.schedule.isEmpty && oldHabit.schedule.isEmpty {
-            eventKitService.deleteEventById(eventId: habitUpdated.eventId)
+            calendarService.deleteEventById(eventId: habitUpdated.eventId)
             habitUpdated.eventId = ""
         } else {
-            eventKitService.editEvent(habitUpdated)
+            calendarService.editEvent(habitUpdated)
         }
 
         return habitUpdated
@@ -168,10 +168,10 @@ class HabitsService {
             store.habits.remove(at: index)
 
             if deleteHabit.schedule.isEmpty {
-                eventKitService.deleteEventById(eventId: deleteHabit.eventId)
+                calendarService.deleteEventById(eventId: deleteHabit.eventId)
             } else {
                 for hour in deleteHabit.schedule {
-                    eventKitService.deleteEventById(eventId: hour.eventId)
+                    calendarService.deleteEventById(eventId: hour.eventId)
                     notificationService.removePendingNotification(identifer: hour.notificationId)
                 }
             }
