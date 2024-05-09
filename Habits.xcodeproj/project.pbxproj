@@ -14,6 +14,7 @@
 		AE30E1582B9F7428009E10CD /* CalendarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1572B9F7428009E10CD /* CalendarService.swift */; };
 		AE30E1602BA4C182009E10CD /* Ocurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E15F2BA4C182009E10CD /* Ocurrence.swift */; };
 		AE30E1622BA88B5B009E10CD /* WeekDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1612BA88B5B009E10CD /* WeekDay.swift */; };
+		AE32F8102BED08BD0095DD1A /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE32F80F2BED08BD0095DD1A /* ViewModifiers.swift */; };
 		AE448A812B84E99F0034898F /* HabitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A802B84E99F0034898F /* HabitDetailView.swift */; };
 		AE448A842B85238E0034898F /* NewHabitContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A832B85238E0034898F /* NewHabitContentView.swift */; };
 		AE448A872B86632E0034898F /* HabitRouteIdEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A862B86632E0034898F /* HabitRouteIdEnvironmentKey.swift */; };
@@ -53,6 +54,7 @@
 		AE30E1572B9F7428009E10CD /* CalendarService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarService.swift; sourceTree = "<group>"; };
 		AE30E15F2BA4C182009E10CD /* Ocurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ocurrence.swift; sourceTree = "<group>"; };
 		AE30E1612BA88B5B009E10CD /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
+		AE32F80F2BED08BD0095DD1A /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		AE381DD22BCEE2950038B689 /* gpxchicago.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = gpxchicago.gpx; path = ../../../Downloads/gpxchicago.gpx; sourceTree = "<group>"; };
 		AE448A802B84E99F0034898F /* HabitDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailView.swift; sourceTree = "<group>"; };
 		AE448A832B85238E0034898F /* NewHabitContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitContentView.swift; sourceTree = "<group>"; };
@@ -224,6 +226,7 @@
 			isa = PBXGroup;
 			children = (
 				AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */,
+				AE32F80F2BED08BD0095DD1A /* ViewModifiers.swift */,
 			);
 			path = Modifiers;
 			sourceTree = "<group>";
@@ -423,6 +426,7 @@
 				AE9D9A0F2BB1814000CF3498 /* MapView.swift in Sources */,
 				AE448A9A2B8D228C0034898F /* MainState.swift in Sources */,
 				AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */,
+				AE32F8102BED08BD0095DD1A /* ViewModifiers.swift in Sources */,
 				AE901D102BC6D03B00DA674A /* RegionOldService.swift in Sources */,
 				AE30E1622BA88B5B009E10CD /* WeekDay.swift in Sources */,
 				AEA3D6CA2B5E8BE000A08F31 /* HabitEntity.swift in Sources */,

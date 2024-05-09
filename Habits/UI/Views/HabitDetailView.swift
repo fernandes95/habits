@@ -74,21 +74,18 @@ struct HabitDetailView: View {
         .navigationTitle("habit_detail_title")
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                if isEditing {
-                    Button("general_cancel") {
-                        cancelEditHabit()
-                    }
+                Button("general_cancel") {
+                    cancelEditHabit()
                 }
+                .isHidden(!isEditing)
             }
             ToolbarItem(placement: .confirmationAction) {
                 let title = isEditing ? "general_done" : "general_edit"
                 Button(LocalizedStringKey(title)) {
                     if isEditing {
                         updateHabit()
-                        isEditing = false
-                    } else {
-                        isEditing = true
                     }
+                    isEditing = !isEditing
                 }
             }
         }

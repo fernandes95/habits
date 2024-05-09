@@ -68,114 +68,115 @@ struct NewHabitContentView: View {
                 }
                 .disabled(!isEdit)
 
-                if frequency == .weekly {
-                    Spacer()
-                    ForEach(WeekDay.allCases, id: \.self) { day in
-                        HStack {
-                            Text(day.rawValue).tag(day)
-                            Spacer()
-                            if weekFrequency.contains(day) {
-                                Image(systemName: "checkmark")
-                            }
-                        }
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            if weekFrequency.contains(day) {
-                                weekFrequency.removeAll(where: {$0 == day})
-                            } else {
-                                weekFrequency.append(day)
-                            }
-                        }
-                    }
-                    .disabled(!isEdit)
-                }
-            }
-
-            if schedule.count > 0 || schedule.count == 0 && isEdit {
-                Section {
-                    ForEach($schedule) { $hour in
-                        if let index = schedule.firstIndex(of: hour) {
-                            let datePicker = DatePicker("Hour #\(index + 1)",
-                                                        selection: $hour.date,
-                                                        displayedComponents: .hourAndMinute
-                            )
-
-                            if !isEdit {
-                                datePicker
-                            } else {
-                                datePicker
-                                    .swipeActions(edge: .trailing) {
-                                        Button(role: .destructive) {
-                                            schedule.remove(at: index)
-
-                                            if schedule.isEmpty {
-                                                hasAlarm = false
-                                            }
-                                        } label: {
-                                            Label("habit_schedule_delete", systemImage: "trash")
-                                        }
-                                    }
-                            }
-                        }
-                    }
-                    .disabled(!isEdit)
-                } header: {
+                let weeklyValidation: Bool = frequency != .weekly
+                Spacer()
+                    .isHidden(weeklyValidation)
+                ForEach(WeekDay.allCases, id: \.self) { day in
                     HStack {
-                        Text("habit_new_section_habit_schedule")
+                        Text(day.rawValue).tag(day)
                         Spacer()
-                        if isEdit {
-                            Button(action: {
-                                let calendar = Calendar.current
-                                var date: Date = Date.now
-                                var mainDateComponents: DateComponents = DateComponents()
-
-                                if schedule.isEmpty {
-                                    var dateComponents = calendar.dateComponents(
-                                        [.day, .month, .year, .hour, .minute],
-                                        from: self.startDate
-                                    )
-                                    dateComponents.hour = 09
-                                    dateComponents.minute = 00
-                                    dateComponents.second = 00
-
-                                    mainDateComponents = dateComponents
-
-                                    hasAlarm = true
-                                } else {
-                                    let scheduleSorted = schedule.sorted { (lhs: Habit.Hour, rhs: Habit.Hour) in
-                                        return (lhs.date < rhs.date)
-                                    }
-                                    if let hour = scheduleSorted.last {
-                                        var dateComponents = calendar.dateComponents(
-                                            [.day, .month, .year, .hour, .minute],
-                                            from: hour.date
-                                        )
-                                        dateComponents.hour = (dateComponents.hour ?? 9) + 1
-                                        dateComponents.minute = dateComponents.minute
-
-                                        mainDateComponents = dateComponents
-                                    }
-                                }
-
-                                if let newDate = calendar.date(from: mainDateComponents) {
-                                    date = newDate
-                                }
-
-                                schedule.append(
-                                    Habit.Hour(eventId: "", date: date)
-                                )
-                            }, label: {
-                                Image(systemName: "plus")
-                            })
-                            .accessibilityLabel("habits_accessibility_new_schedule_hour")
+                        if weekFrequency.contains(day) {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        if weekFrequency.contains(day) {
+                            weekFrequency.removeAll(where: {$0 == day})
+                        } else {
+                            weekFrequency.append(day)
                         }
                     }
                 }
-
-                let isDisabled = $schedule.isEmpty ? true : !isEdit
-                    Toggle("habit_has_alarm", isOn: $hasAlarm)
-                    .disabled(isDisabled)
+                .isHidden(weeklyValidation)
+                .disabled(!isEdit)
             }
+
+            let scheduleValidation: Bool = schedule.count > 0 || schedule.count == 0 && isEdit
+            Section {
+                ForEach($schedule) { $hour in
+                    if let index = schedule.firstIndex(of: hour) {
+                        let datePicker = DatePicker("Hour #\(index + 1)",
+                                                    selection: $hour.date,
+                                                    displayedComponents: .hourAndMinute
+                        )
+
+                        if !isEdit {
+                            datePicker
+                        } else {
+                            datePicker
+                                .swipeActions(edge: .trailing) {
+                                    Button(role: .destructive) {
+                                        schedule.remove(at: index)
+
+                                        if schedule.isEmpty {
+                                            hasAlarm = false
+                                        }
+                                    } label: {
+                                        Label("habit_schedule_delete", systemImage: "trash")
+                                    }
+                                }
+                        }
+                    }
+                }
+                .disabled(!isEdit)
+            } header: {
+                HStack {
+                    Text("habit_new_section_habit_schedule")
+                    Spacer()
+                    Button(action: {
+                        let calendar = Calendar.current
+                        var date: Date = Date.now
+                        var mainDateComponents: DateComponents = DateComponents()
+
+                        if schedule.isEmpty {
+                            var dateComponents = calendar.dateComponents(
+                                [.day, .month, .year, .hour, .minute],
+                                from: self.startDate
+                            )
+                            dateComponents.hour = 09
+                            dateComponents.minute = 00
+                            dateComponents.second = 00
+
+                            mainDateComponents = dateComponents
+
+                            hasAlarm = true
+                        } else {
+                            let scheduleSorted = schedule.sorted { (lhs: Habit.Hour, rhs: Habit.Hour) in
+                                return (lhs.date < rhs.date)
+                            }
+                            if let hour = scheduleSorted.last {
+                                var dateComponents = calendar.dateComponents(
+                                    [.day, .month, .year, .hour, .minute],
+                                    from: hour.date
+                                )
+                                dateComponents.hour = (dateComponents.hour ?? 9) + 1
+                                dateComponents.minute = dateComponents.minute
+
+                                mainDateComponents = dateComponents
+                            }
+                        }
+
+                        if let newDate = calendar.date(from: mainDateComponents) {
+                            date = newDate
+                        }
+
+                        schedule.append(
+                            Habit.Hour(eventId: "", date: date)
+                        )
+                    }, label: {
+                        Image(systemName: "plus")
+                    })
+                    .isHidden(!isEdit)
+                    .accessibilityLabel("habits_accessibility_new_schedule_hour")
+                }
+            }
+            .isHidden(!scheduleValidation)
+
+            let isDisabled = $schedule.isEmpty ? true : !isEdit
+            Toggle("habit_has_alarm", isOn: $hasAlarm)
+                .isHidden(!scheduleValidation)
+                .disabled(isDisabled)
 
             Section(header: Text("Location Reminder")) {
                 VStack {
@@ -187,26 +188,23 @@ struct NewHabitContentView: View {
                             }
                         }
 
-                    if hasLocationReminder {
-                        Toggle("notificationAuth", isOn: $notificationAuth)
-                            .onTapGesture {
-//                                if !notificationAuth {
-                                    notificationAction()
-//                                }
-                            }
+                    Toggle("notificationAuth", isOn: $notificationAuth)
+                        .isHidden(!hasLocationReminder)
+                        .onTapGesture {
+                            notificationAction()
+                        }
 
-                        MapView(location: $location, canEdit: $isEdit)
-                            .frame(height: 250)
-                            .cornerRadius(10)
-                            .disabled(!isEdit)
-                    }
+                    MapView(location: $location, canEdit: $isEdit)
+                        .frame(height: 250)
+                        .cornerRadius(10)
+                        .isHidden(!hasLocationReminder)
+                        .disabled(!isEdit)
                 }
             }
 
-            if !isNew && successRate != nil {
-                Text(successRate!)
-                    .disabled(true)
-            }
+            Text(successRate ?? "")
+                .isHidden(!(!isNew && successRate != nil))
+                .disabled(true)
         }
     }
 }
