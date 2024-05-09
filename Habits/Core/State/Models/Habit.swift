@@ -150,13 +150,21 @@ struct Habit: Identifiable, Equatable {
         }
     }
 
-    func getCalendarEvent(store: EKEventStore) -> EKEvent {
+    func getCalendarEvent(
+        store: EKEventStore,
+        startDate: Date? = nil,
+        endDate: Date? = nil,
+        alarmHour: Date? = nil) -> EKEvent {
         let event: EKEvent = EKEvent(eventStore: store)
         let recurrenceRule: EKRecurrenceRule = getEKRecurrenceRule()
 
         event.title = self.name
-        event.startDate = self.startDate
-        event.endDate = self.startDate
+        event.startDate = startDate ?? self.startDate
+        event.endDate = endDate ?? self.endDate
+
+        if let alarmHour {
+            event.addAlarm(EKAlarm(absoluteDate: alarmHour))
+        }
 
         if self.schedule.isEmpty {
             event.isAllDay = true

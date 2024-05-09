@@ -55,15 +55,15 @@ class CalendarService {
         var newSchedule: [Habit.Hour] = habit.schedule
 
         for hour in habit.schedule {
-            let calendar: Calendar = Calendar.current
-            let newEvent: EKEvent = habit.getCalendarEvent(store: self.eventStore)
-            newEvent.startDate = hour.date
-
             var components: DateComponents = DateComponents()
             components.minute = 30
-            let newEndDate = calendar.date(byAdding: components, to: hour.date)
-            newEvent.endDate = newEndDate
-            newEvent.addAlarm(EKAlarm(absoluteDate: hour.date))
+            let newEndDate = Calendar.current.date(byAdding: components, to: hour.date)
+            let newEvent: EKEvent = habit.getCalendarEvent(
+                store: self.eventStore,
+                startDate: hour.date,
+                endDate: newEndDate,
+                alarmHour: hour.date
+            )
 
             do {
                 try self.eventStore.save(newEvent, span: .thisEvent)
@@ -94,7 +94,6 @@ class CalendarService {
         }
 
         var newSchedule: [Habit.Hour] = habit.schedule
-        let calendar: Calendar = Calendar.current
         var components: DateComponents = DateComponents()
         components.minute = 30
 
@@ -103,17 +102,16 @@ class CalendarService {
 
         // MANAGE EDITED AND NEW HOURS IN SCHEDULE
         for hour in habit.schedule {
-            let newEndDate: Date? = calendar.date(byAdding: components, to: hour.date)
+            let newEndDate: Date? = Calendar.current.date(byAdding: components, to: hour.date)
 
             if hour.eventId.isEmpty {
                 // creating new calendar event
-                let newEvent: EKEvent = habit.getCalendarEvent(store: self.eventStore)
-                newEvent.startDate = hour.date
-                newEvent.endDate = newEndDate
-
-                if habit.hasAlarm {
-                    newEvent.addAlarm(EKAlarm(absoluteDate: hour.date))
-                }
+                let newEvent: EKEvent = habit.getCalendarEvent(
+                    store: self.eventStore,
+                    startDate: hour.date,
+                    endDate: newEndDate,
+                    alarmHour: habit.hasAlarm ? hour.date : nil
+                )
 
                 do {
                     try self.eventStore.save(newEvent, span: .thisEvent)
