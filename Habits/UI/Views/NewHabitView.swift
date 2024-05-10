@@ -14,31 +14,19 @@ struct NewHabitView: View {
     private var state: MainState
 
     @Binding var isPresentingNewHabit: Bool
-    @State private var name: String = ""
+
     @State var startDate: Date
-    @State private var endDate: Date = Date.now
-    @State private var frequency: Habit.Frequency = .daily
-    @State private var weekFrequency: [WeekDay] = []
-    @State private var category: Habit.Category = .new
-    @State private var schedule: [Habit.Hour] = []
-    @State private var hasAlarm: Bool = false
-    @State private var hasLocationReminder: Bool = false
-    @State private var location: Habit.Location?
+    @State private var habit: Habit = Habit(
+        id: UUID(), eventId: "", name: "", startDate: Date.now, endDate: Date.now,
+        frequency: Habit.Frequency.daily.rawValue, frequencyType: Ocurrence(weekFrequency: []),
+        category: Habit.Category.new.rawValue, schedule: [], isChecked: false,
+        hasAlarm: false, successRate: "0", createdDate: Date.now, updatedDate: Date.now)
 
     var body: some View {
         NavigationStack {
             NewHabitContentView(
-                name: $name,
-                startDate: $startDate,
-                endDate: $endDate,
-                frequency: $frequency,
-                weekFrequency: $weekFrequency,
-                category: $category,
-                schedule: $schedule,
+                habit: $habit,
                 isEdit: .constant(true),
-                hasAlarm: $hasAlarm,
-                hasLocationReminder: $hasLocationReminder,
-                location: $location,
                 isNew: true,
                 startDateIn: state.selectedDate,
                 locationAction: {
@@ -61,45 +49,33 @@ struct NewHabitView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("general_add") {
                         addHabit()
-                    }.disabled(name.isEmpty)
+                    }.disabled(habit.name.isEmpty)
                 }
             }
         }
         .onAppear {
-            endDate = startDate
+            habit.startDate = startDate
+            habit.endDate = startDate
         }
     }
 
     private func addHabit() {
         Task {
-            if startDate >= endDate {
-                endDate = startDate
+            if habit.startDate >= habit.endDate {
+                habit.endDate = habit.startDate
             }
-            let newHabit = Habit(
-                id: UUID(),
-                eventId: "",
-                name: self.name,
-                startDate: self.startDate,
-                endDate: self.endDate,
-                frequency: self.frequency.rawValue,
-                frequencyType: Ocurrence(weekFrequency: self.weekFrequency),
-                category: self.category.rawValue,
-                schedule: self.schedule,
-                isChecked: false,
-                hasAlarm: self.hasAlarm,
-                successRate: "0",
-                createdDate: Date.now,
-                updatedDate: Date.now,
-                hasLocationReminder: self.hasLocationReminder,
-                location: self.location
-            )
+            let newHabit = self.habit
+            // FIXME:
+//            newHabit.createdDate = Date.now
+//            newHabit.updatedDate = Date.now
+
             try await state.addHabit(newHabit)
 
             isPresentingNewHabit = false
         }
     }
 }
-
-#Preview {
-    NewHabitView(isPresentingNewHabit: .constant(false), startDate: Date.now)
-}
+//
+// #Preview {
+//    NewHabitView(isPresentingNewHabit: .constant(false), startDate: Date.now)
+// }

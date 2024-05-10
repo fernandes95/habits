@@ -20,31 +20,19 @@ struct HabitDetailView: View {
     @State private var isEditing: Bool = false
     @State private var editingHabit: Habit
     @State private var showingAlert = false
-    @State private var editingEndDate: Date
     @State private var hasLocationReminder: Bool = false
 
     init(habit: Habit) {
         self.habit = habit
         self._editingHabit = State(initialValue: habit)
-        self._editingEndDate = State(initialValue: habit.endDate)
     }
 
     var body: some View {
         VStack {
             NewHabitContentView(
-                name: $editingHabit.name,
-                startDate: $editingHabit.startDate,
-                endDate: $editingEndDate,
-                frequency: $editingHabit.frequency,
-                weekFrequency: $editingHabit.frequencyType.weekFrequency,
-                category: $editingHabit.category,
-                schedule: $editingHabit.schedule,
+                habit: $editingHabit,
                 isEdit: $isEditing,
-                hasAlarm: $editingHabit.hasAlarm,
-                hasLocationReminder: $editingHabit.hasLocationReminder,
-                location: $editingHabit.location,
                 isNew: false,
-                successRate: editingHabit.successRate,
                 locationAction: { },
                 notificationAction: { }
             )
@@ -94,7 +82,6 @@ struct HabitDetailView: View {
     private func updateHabit() {
         Task {
             do {
-                editingHabit.endDate = editingEndDate
                 try await state.updateHabit(habit: editingHabit)
                 let habitEdited = try await state.getHabit(habit: editingHabit)
                 habit = habitEdited
@@ -105,7 +92,7 @@ struct HabitDetailView: View {
 
     private func cancelEditHabit() {
         editingHabit = habit
-        editingEndDate = habit.endDate
+//        editingEndDate = habit.endDate
         isEditing = false
     }
 }

@@ -9,17 +9,8 @@ import SwiftUI
 import MapKit
 
 struct NewHabitContentView: View {
-    @Binding var name: String
-    @Binding var startDate: Date
-    @Binding var endDate: Date
-    @Binding var frequency: Habit.Frequency
-    @Binding var weekFrequency: [WeekDay]
-    @Binding var category: Habit.Category
-    @Binding var schedule: [Habit.Hour]
+    @Binding var habit: Habit
     @Binding var isEdit: Bool
-    @Binding var hasAlarm: Bool
-    @Binding var hasLocationReminder: Bool
-    @Binding var location: Habit.Location?
 
     let isNew: Bool
     var startDateIn: Date = Date.now
@@ -33,58 +24,59 @@ struct NewHabitContentView: View {
     var body: some View {
         Form {
             Section(header: Text("habit_new_section_habit_info")) {
-                TextField("habit_name", text: $name)
+                TextField("habit_name", text: $habit.name)
                     .disabled(!isEdit)
 
-                Picker("habit_category", selection: $category) {
+                Picker("habit_category", selection: $habit.category) {
                     ForEach(Habit.Category.allCases) { category in
                         Text(category.rawValue).tag(category)
                     }
                 }
                 .disabled(!isEdit)
 
-                DatePicker("habit_start_date", selection: $startDate,
+                DatePicker("habit_start_date", selection: $habit.startDate,
                            in: startDateIn...,
                            displayedComponents: .date
                 )
                 .disabled(!isNew)
 
-                DatePicker("habit_end_date", selection: $endDate,
-                           in: startDate...,
+                DatePicker("habit_end_date", selection: $habit.endDate,
+                           in: habit.startDate...,
                            displayedComponents: .date)
                 .disabled(!isEdit)
             }
 
             Section(header: Text("habit_new_section_habit_frequency")) {
-                Picker("habit_frequency", selection: $frequency) {
+                Picker("habit_frequency", selection: $habit.frequency) {
                     ForEach(Habit.Frequency.allCases) { frequency in
                         Text(frequency.rawValue).tag(frequency)
                             .onTapGesture {
                                 if frequency != .weekly {
-                                    weekFrequency.removeAll()
+//                                    $habit.weekFrequency.removeAll()
+                                    habit.frequencyType.weekFrequency.removeAll()
                                 }
                             }
                     }
                 }
                 .disabled(!isEdit)
 
-                let weeklyValidation: Bool = frequency != .weekly
+                let weeklyValidation: Bool = habit.frequency != .weekly
                 Spacer()
                     .isHidden(weeklyValidation)
                 ForEach(WeekDay.allCases, id: \.self) { day in
                     HStack {
                         Text(day.rawValue).tag(day)
                         Spacer()
-                        if weekFrequency.contains(day) {
+                        if habit.frequencyType.weekFrequency.contains(day) {
                             Image(systemName: "checkmark")
                         }
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        if weekFrequency.contains(day) {
-                            weekFrequency.removeAll(where: {$0 == day})
+                        if habit.frequencyType.weekFrequency.contains(day) {
+                            habit.frequencyType.weekFrequency.removeAll(where: {$0 == day})
                         } else {
-                            weekFrequency.append(day)
+                            habit.frequencyType.weekFrequency.append(day)
                         }
                     }
                 }
@@ -92,10 +84,10 @@ struct NewHabitContentView: View {
                 .disabled(!isEdit)
             }
 
-            let scheduleValidation: Bool = schedule.count > 0 || schedule.count == 0 && isEdit
+            let scheduleValidation: Bool = habit.schedule.count > 0 || habit.schedule.count == 0 && isEdit
             Section {
-                ForEach($schedule) { $hour in
-                    if let index = schedule.firstIndex(of: hour) {
+                ForEach($habit.schedule) { $hour in
+                    if let index = habit.schedule.firstIndex(of: hour) {
                         let datePicker = DatePicker("Hour #\(index + 1)",
                                                     selection: $hour.date,
                                                     displayedComponents: .hourAndMinute
@@ -107,10 +99,10 @@ struct NewHabitContentView: View {
                             datePicker
                                 .swipeActions(edge: .trailing) {
                                     Button(role: .destructive) {
-                                        schedule.remove(at: index)
+                                        habit.schedule.remove(at: index)
 
-                                        if schedule.isEmpty {
-                                            hasAlarm = false
+                                        if habit.schedule.isEmpty {
+                                            habit.hasAlarm = false
                                         }
                                     } label: {
                                         Label("habit_schedule_delete", systemImage: "trash")
@@ -129,10 +121,10 @@ struct NewHabitContentView: View {
                         var date: Date = Date.now
                         var mainDateComponents: DateComponents = DateComponents()
 
-                        if schedule.isEmpty {
+                        if habit.schedule.isEmpty {
                             var dateComponents = calendar.dateComponents(
                                 [.day, .month, .year, .hour, .minute],
-                                from: self.startDate
+                                from: habit.startDate
                             )
                             dateComponents.hour = 09
                             dateComponents.minute = 00
@@ -140,9 +132,9 @@ struct NewHabitContentView: View {
 
                             mainDateComponents = dateComponents
 
-                            hasAlarm = true
+                            habit.hasAlarm = true
                         } else {
-                            let scheduleSorted = schedule.sorted { (lhs: Habit.Hour, rhs: Habit.Hour) in
+                            let scheduleSorted = habit.schedule.sorted { (lhs: Habit.Hour, rhs: Habit.Hour) in
                                 return (lhs.date < rhs.date)
                             }
                             if let hour = scheduleSorted.last {
@@ -161,7 +153,7 @@ struct NewHabitContentView: View {
                             date = newDate
                         }
 
-                        schedule.append(
+                        habit.schedule.append(
                             Habit.Hour(eventId: "", date: date)
                         )
                     }, label: {
@@ -173,31 +165,31 @@ struct NewHabitContentView: View {
             }
             .isHidden(!scheduleValidation)
 
-            let isDisabled = $schedule.isEmpty ? true : !isEdit
-            Toggle("habit_has_alarm", isOn: $hasAlarm)
+            let isDisabled = $habit.schedule.isEmpty ? true : !isEdit
+            Toggle("habit_has_alarm", isOn: $habit.hasAlarm)
                 .isHidden(!scheduleValidation)
                 .disabled(isDisabled)
 
             Section(header: Text("Location Reminder")) {
                 VStack {
-                    Toggle("hasLocationReminder", isOn: $hasLocationReminder)
+                    Toggle("hasLocationReminder", isOn: $habit.hasLocationReminder)
                         .disabled(!isEdit)
                         .onTapGesture {
-                            if !hasLocationReminder {
+                            if !habit.hasLocationReminder {
                                 locationAction()
                             }
                         }
 
                     Toggle("notificationAuth", isOn: $notificationAuth)
-                        .isHidden(!hasLocationReminder)
+                        .isHidden(!habit.hasLocationReminder)
                         .onTapGesture {
                             notificationAction()
                         }
 
-                    MapView(location: $location, canEdit: $isEdit)
+                    MapView(location: $habit.location, canEdit: $isEdit)
                         .frame(height: 250)
                         .cornerRadius(10)
-                        .isHidden(!hasLocationReminder)
+                        .isHidden(!habit.hasLocationReminder)
                         .disabled(!isEdit)
                 }
             }
@@ -209,22 +201,23 @@ struct NewHabitContentView: View {
     }
 }
 
-#Preview {
-    NewHabitContentView(
-        name: .constant("cenas"),
-        startDate: .constant(Date.now),
-        endDate: .constant(Date.now),
-        frequency: .constant(.daily),
-        weekFrequency: .constant([]),
-        category: .constant(.new),
-        schedule: .constant([]),
-        isEdit: .constant(true),
-        hasAlarm: .constant(false),
-        hasLocationReminder: .constant(false),
-        location: .constant(nil),
-        isNew: true,
-        successRate: "70%",
-        locationAction: {},
-        notificationAction: {}
-    )
-}
+// #Preview {
+//    NewHabitContentView(
+//        
+//        name: .constant("cenas"),
+//        startDate: .constant(Date.now),
+//        endDate: .constant(Date.now),
+//        frequency: .constant(.daily),
+//        weekFrequency: .constant([]),
+//        category: .constant(.new),
+//        schedule: .constant([]),
+//        isEdit: .constant(true),
+//        hasAlarm: .constant(false),
+//        hasLocationReminder: .constant(false),
+//        location: .constant(nil),
+//        isNew: true,
+//        successRate: "70%",
+//        locationAction: {},
+//        notificationAction: {}
+//    )
+// }
