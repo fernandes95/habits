@@ -24,15 +24,21 @@ class HabitsService {
         }
     }
 
+    /// Gets store from local file
     private func load() async throws {
         self.store = try await storeService.load()
     }
 
+    /// Saves store into local file and then loads data from said file
     private func save() async throws {
         try await storeService.save(self.store)
         try await self.load()
     }
 
+    /// Gets Habit by selected date
+    ///
+    /// - Parameter date: Date to filter Habits
+    /// - Returns: Array of Habits
     func getHabits(date: Date) async throws -> [Habit] {
         let habitsFilterted = self.habits
             .filter { ($0.startDate.startOfDay ... $0.endDate.endOfDay) ~= date }
@@ -44,14 +50,26 @@ class HabitsService {
         return habitsFilterted
     }
 
+    /// Gets Habit Entity by UUID
+    ///
+    /// - Parameter id: UUID from Habit
+    /// - Returns: Habit Entity if any else nil
     func getHabit(id: UUID) async throws -> HabitEntity? {
         return self.habits.first(where: { $0.id == id }) ?? nil
     }
 
+    /// Gets Habit Entity by UUID as String
+    ///
+    /// - Parameter id: UUID as String from Habit
+    /// - Returns: Habit Entity if any else nil
     func getHabit(id: String) async throws -> HabitEntity? {
         return self.habits.first(where: { $0.id.uuidString == id }) ?? nil
     }
 
+    /// Adds new Habit and creates calendar event/s if any
+    ///
+    /// - Parameter habit: Habit to add
+    /// - Returns: New Habit UUID
     func addHabit(_ habit: Habit) async throws -> UUID {
         var eventId: String = ""
         var schedule: [Habit.Hour] = habit.schedule
@@ -96,6 +114,10 @@ class HabitsService {
         return newHabit.id
     }
 
+    /// Updates existing Habit
+    /// - Parameters:
+    ///   - habit: Habit to update
+    ///   - selectedDate: Selected Date to update habit status
     func updateHabit(_ habit: Habit, selectedDate: Date) async throws {
         if let index: Int = self.store.habits.firstIndex(where: { $0.id == habit.id}) {
             let oldHabit: Habit = Habit(habitEntity: self.habits[index])
@@ -124,6 +146,7 @@ class HabitsService {
                 : nil
             )
 
+            /// If status exists updates based on `habit` else will create new status based on `habit`
             if let statusIndex: Int = updatedHabit.statusList.firstIndex(where: {
                 $0.date.startOfDay == selectedDate.startOfDay
             }) {
@@ -165,6 +188,8 @@ class HabitsService {
         return habitUpdated
     }
 
+    /// Transfers Habit to Habits Archived list
+    /// and deletes all calendar and notifications related to the habit
     func removeHabit(habitId: UUID) async throws {
         if let index: Int = self.habits.firstIndex(where: { $0.id == habitId }) {
             let deleteHabit: HabitEntity = self.habits[index]
@@ -185,6 +210,12 @@ class HabitsService {
         }
     }
 
+    /// Get Habits with frequency type .daily
+    ///
+    /// /// - Parameters:
+    ///   - date: Selected Date to filter
+    ///   - existingHabits: List of all habits
+    /// - Returns: Array of Habits
     private func getDailyHabits(date: Date, existingHabits: [Habit]?) async throws -> [Habit] {
         guard let habits: [Habit] = existingHabits != nil
                 ? existingHabits
@@ -196,6 +227,12 @@ class HabitsService {
         return habits.filter { $0.frequency == .daily }
     }
 
+    /// Get Habits with frequency type .weekly
+    ///
+    /// - Parameters:
+    ///   - date: Selected Date to filter
+    ///   - existingHabits: List of all habits
+    /// - Returns: Array of Habits
     private func getWeeklyHabits(date: Date, existingHabits: [Habit]?) async throws -> [Habit] {
         guard let habits: [Habit] = existingHabits != nil
                 ? existingHabits
@@ -219,6 +256,9 @@ class HabitsService {
             }
     }
 
+    /// Get all unchecked habits from selected date
+    /// - Parameter date: Selected date
+    /// - Returns: Array of Habits
     func loadUncheckedHabits(date: Date) async throws -> [Habit] {
         let habits = try await getHabits(date: date)
         let habitsDaily: [Habit] = try await getDailyHabits(date: date, existingHabits: habits)
@@ -234,6 +274,9 @@ class HabitsService {
         return uncheckedList
     }
 
+    /// Get all checked habits from selected date
+    /// - Parameter date: Selected date
+    /// - Returns: Array of Habits
     func loadCheckedHabits(date: Date) async throws -> [Habit] {
         let habits = try await getHabits(date: date)
         let habitsDaily: [Habit] = try await getDailyHabits(date: date, existingHabits: habits)
@@ -255,6 +298,12 @@ class HabitsService {
         return checkedList
     }
 
+    /// Get habits and closest habit distance from current location
+    ///
+    /// - Parameters:
+    ///   - currentLocation: User current location
+    ///   - maxHabits: Limit of habits to be returned
+    /// - Returns: Array of habits and Distance from closest habit
     func getHabitsByDistance(currentLocation: CLLocation, maxHabits: Int = 20) async throws -> ([Habit], Double) {
         var distanceFromClosest: Double = 200
 

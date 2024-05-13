@@ -11,11 +11,16 @@ import SwiftUI
 
 class CalendarService {
     private let eventStore: EKEventStore = EKEventStore()
-    private let authService: AuthorizationService = AuthorizationService()
     private let notificationService: NotificationService = NotificationService()
 
+    private func getEventStoreAuthStatus() async throws -> EKAuthorizationStatus {
+        return EKEventStore.authorizationStatus(for: .event)
+    }
+
+    /// Verifies Calendar Authorization
+    /// Requests Authorization if status is .notDetermined
     private func verifyAuthStatus() async throws -> Bool {
-        let status = try await authService.eventStoreAuth()
+        let status = try await getEventStoreAuthStatus()
 
         return switch status {
         case .notDetermined:
@@ -33,6 +38,11 @@ class CalendarService {
         }
     }
 
+    /// Creates new Calendar event
+    ///
+    /// - Parameters:
+    ///   - habit: Habit to create event from
+    ///
     func createCalendarEvent(_ habit: Habit) async throws -> String {
         guard try await verifyAuthStatus() else { return "" }
 
@@ -47,6 +57,11 @@ class CalendarService {
         }
     }
 
+    /// Creates new Calendar event for each Hour in Habit Schedule field.
+    ///
+    /// - Parameters:
+    ///   - habit: Habit to create events from
+    ///
     func createScheduleCalendarEvents(_ habit: Habit) async throws -> [Habit.Hour] {
         guard try await verifyAuthStatus() else {
             return try await notificationService.manageLocalNotifications(habit: habit)
@@ -155,10 +170,17 @@ class CalendarService {
         return newSchedule
     }
 
+    /// Get existing calendar event
+    ///
+    /// - Parameter eventId: Event Id as string from existing Calendar Event
+    /// - Returns: EkEvent
     func getEventById(eventId: String) -> EKEvent? {
           return self.eventStore.event(withIdentifier: eventId)
     }
 
+    /// Removes Event from Calendar
+    ///
+    /// - Parameter eventId: Event Id as string from existing Calendar Event
     func deleteEventById(eventId: String) {
         if let eventToDelete: EKEvent = self.getEventById(eventId: eventId) {
             do {

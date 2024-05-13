@@ -8,6 +8,7 @@
 import Foundation
 
 class DefaultStoreService: StoreService {
+    /// Data file path
     internal func fileURL() throws -> URL {
         try FileManager.default.url(for: .documentDirectory,
                                     in: .userDomainMask,
@@ -16,6 +17,7 @@ class DefaultStoreService: StoreService {
         .appendingPathComponent("habits.data")
     }
 
+    /// Load all Data from local file
     func load() async throws -> StoreEntity {
         let task = Task<StoreEntity, Error> {
             let fileURL = try self.fileURL()
@@ -28,6 +30,7 @@ class DefaultStoreService: StoreService {
         return try await task.value
     }
 
+    /// Save all Data into local file
     func save(_ store: StoreEntity) async throws {
         let task = Task {
             let data = try JSONEncoder().encode(store)

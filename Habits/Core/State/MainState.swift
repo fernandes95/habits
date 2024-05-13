@@ -21,6 +21,9 @@ class MainState: ObservableObject {
     @Published
     var selectedDate: Date = Date.now
 
+    /// Get all habits from `Selected Date`\
+    ///
+    /// - Parameter date: Selected date
     func loadHabits(date: Date) async throws {
         self.habits = []
         self.selectedDate = date
@@ -31,6 +34,10 @@ class MainState: ObservableObject {
         self.habits = uncheckedList + checkedList
     }
 
+    /// Get original habit if it doesn't exists returns itself
+    ///
+    /// - Parameter habit: Habit to get id
+    /// - Returns: Habit
     func getHabit(habit: Habit) async throws -> Habit {
         if let habitEntity: HabitEntity = try await self.habitsService.getHabit(id: habit.id) {
             return Habit(habitEntity: habitEntity, selectedDate: Date.now)
@@ -39,6 +46,9 @@ class MainState: ObservableObject {
         }
     }
 
+    /// Updates Habit and loads all habits from selected date
+    ///
+    /// - Parameter habit: Habit to update
     func updateHabit(habit: Habit) async throws {
         do {
             try await self.habitsService.updateHabit(habit, selectedDate: self.selectedDate)
@@ -53,6 +63,9 @@ class MainState: ObservableObject {
         } catch { }
     }
 
+    /// Removes Habit, stops monitoring if needed and loads all habits from selected date
+    ///
+    /// - Parameter habit: Habit UUID to remove
     func removeHabit(habitId: UUID) async throws {
         do {
             try await habitsService.removeHabit(habitId: habitId)
@@ -61,6 +74,9 @@ class MainState: ObservableObject {
         } catch {}
     }
 
+    /// Adds new Habit and loads all habits from selected date
+    ///
+    /// - Parameter habit: Habit UUID to remove
     func addHabit(_ habit: Habit) async throws {
         do {
             let newHabitId: UUID = try await habitsService.addHabit(habit)
@@ -75,10 +91,12 @@ class MainState: ObservableObject {
         } catch { }
     }
 
+    /// Get Location Authorization
     func getLocationAuthorization() {
         self.locationService.locationAuthorization()
     }
 
+    /// Get Notifications Authorization
     func getNotificationsAuthorization() async throws -> Bool {
         return try await self.notificationService.notificationAuthorization()
     }

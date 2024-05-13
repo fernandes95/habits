@@ -10,17 +10,29 @@ import UserNotifications
 
 class NotificationService {
     private let notificationCenter: UNUserNotificationCenter = UNUserNotificationCenter.current()
-    private let authorizationService: AuthorizationService = AuthorizationService()
     private let notificationDelegate: NotificationDelegate = NotificationDelegate()
 
     init() {
         self.notificationCenter.delegate = self.notificationDelegate
     }
 
+    /// Request notification Authorizatoion
     func notificationAuthorization() async throws -> Bool {
-        return try await authorizationService.notificationsAuth()
+        do {
+            return try await UNUserNotificationCenter.current()
+                .requestAuthorization(options: [.alert, .badge, .sound])
+        } catch {
+            return false
+        }
     }
 
+    /// Creates notification
+    ///
+    /// If no set date, the notification will be scheduled to 5 seconds later
+    ///
+    /// - Parameter subTitle: Notification content text
+    /// - Parameter date: Date when the notification will me shown
+    /// - Parameter identifier: Notification identifier
     private func notificationContent(subTitle: String, date: Date?, identifier: String? = nil) async throws {
         let notificationContent = UNMutableNotificationContent()
         let requestIndentifer = identifier ?? UUID().uuidString
@@ -55,14 +67,26 @@ class NotificationService {
         }
     }
 
-    func requestNotification(subTitle: String, date: Date, identifier: String? = nil) async throws {
+    /// Creates notification
+    ///
+    /// - Parameter subTitle: Notification content text
+    /// - Parameter date: Date when the notification will me shown
+    /// - Parameter identifier: Notification identifier
+    private func requestNotification(subTitle: String, date: Date, identifier: String? = nil) async throws {
         try await notificationContent(subTitle: subTitle, date: date, identifier: identifier)
     }
 
+    /// Creates a notification to sent in 5 seconds
+    ///
+    /// - Parameter subTitle: Notification contente text
+    /// - Parameter identifier: Notification identifier
     func requestInstantNotification(subTitle: String, identifier: String? = nil) async throws {
         try await notificationContent(subTitle: subTitle, date: nil, identifier: identifier)
     }
 
+    /// Remove pending notification by identifier
+    ///
+    /// - Parameter identifier: Notification identifier
     func removePendingNotification(identifer: String?) {
         guard identifer != nil else { return }
 
@@ -70,6 +94,11 @@ class NotificationService {
         notificationCenter.removePendingNotificationRequests(withIdentifiers: identifiers)
     }
 
+    /// Creates notifications from Schedule in Habit
+    ///
+    /// Creates notification for each item in Schedule with the Habit name as Notification Content Title
+    ///
+    /// - Parameter habit: Habit populate notification
     func manageLocalNotifications(habit: Habit) async throws -> [Habit.Hour] {
         guard try await self.notificationAuthorization() else {
             return habit.schedule
@@ -91,15 +120,27 @@ class NotificationService {
         return newSchedule
     }
 
-    private func removeNotifications(habit: Habit, schedule: [Habit.Hour]) {
-        for hour in schedule {
+    /// Removes pending notifications where items from `Old Schedule` aren't in the `New Schedule`
+    ///
+    /// - Parameter newSchedule: New Habit Schedule
+    /// - Parameter oldSchedule: Old Habit Schedule
+    private func removeNotifications(newSchedule: [Habit.Hour], oldSchedule: [Habit.Hour]) {
+        for hour in oldSchedule {
             // swiftlint:disable:next for_where
-            if !habit.schedule.contains(where: {$0.id == hour.id}) {
+            if !newSchedule.contains(where: {$0.id == hour.id}) {
                 self.removePendingNotification(identifer: hour.notificationId)
             }
         }
     }
 
+    /// Managing Pending Notifications 
+    ///
+    /// First: Removes pending notification that where removed from `Old Habit`
+    /// Second: Verifies if hours in `New Habit` Schedule where updated, if true removes pending notification
+    /// Third: Creates new notifications
+    ///
+    /// - Parameter habit: New habit
+    /// - Parameter oldHabit: Old habit
     func manageScheduledNotifications(_ habit: Habit, oldHabit: Habit) async throws -> [Habit.Hour] {
         guard try await self.notificationAuthorization() else {
             return habit.schedule
@@ -108,7 +149,7 @@ class NotificationService {
         var newSchedule: [Habit.Hour] = habit.schedule
 
         // REMOVE NOTIFICATIONS FROM SCHEDULE THAT WERE DELETED
-        self.removeNotifications(habit: habit, schedule: oldHabit.schedule)
+        self.removeNotifications(newSchedule: habit.schedule, oldSchedule: oldHabit.schedule)
 
         // MANAGE EDITED AND NEW HOURS IN SCHEDULE
         for hour in habit.schedule {
@@ -144,6 +185,7 @@ class NotificationService {
 }
 
 extension NotificationService {
+    /// Delegate so that app can receive notifications while app’s life cycle on FOREGROUND ACTIVE
     class NotificationDelegate: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
         func userNotificationCenter(
             _ center: UNUserNotificationCenter,
