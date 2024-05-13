@@ -21,7 +21,7 @@ class MainState: ObservableObject {
     @Published
     var selectedDate: Date = Date.now
 
-    /// Get all habits from `Selected Date`\
+    /// Get all habits from `Selected Date`
     ///
     /// - Parameter date: Selected date
     func loadHabits(date: Date) async throws {
