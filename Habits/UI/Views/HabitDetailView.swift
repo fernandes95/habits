@@ -48,12 +48,7 @@ struct HabitDetailView: View {
                 titleVisibility: .visible
             ) {
                 Button("habit_delete_dialog_single", role: .destructive) {
-                    Task {
-                        do {
-                            try await state.removeHabit(habitId: editingHabit.id)
-                        } catch {}
-                    }
-                    router.pop()
+                    deleteHabit()
                 }
                 Button("general_cancel", role: .cancel) { }
             }
@@ -79,6 +74,15 @@ struct HabitDetailView: View {
         }
     }
 
+    private func deleteHabit() {
+        Task {
+            do {
+                try await state.removeHabit(habitId: editingHabit.id)
+            } catch {}
+        }
+        router.pop()
+    }
+
     private func updateHabit() {
         Task {
             do {
@@ -92,30 +96,12 @@ struct HabitDetailView: View {
 
     private func cancelEditHabit() {
         editingHabit = habit
-//        editingEndDate = habit.endDate
         isEditing = false
     }
 }
 
 #Preview {
-    HabitDetailView(
-        habit: Habit(
-            id: UUID(),
-            eventId: "",
-            name: "CENAS",
-            startDate: Date.now,
-            endDate: Date.now,
-            frequency: "Weekly",
-            frequencyType: Ocurrence(weekFrequency: []),
-            category: "newHabit",
-            schedule: [],
-            isChecked: false,
-            hasAlarm: true,
-            successRate: "0%",
-            createdDate: Date.now,
-            updatedDate: Date.now
-        )
-    )
-    .environmentObject(HabitsRouter())
-    .environmentObject(MainState())
+    HabitDetailView(habit: .empty)
+        .environmentObject(HabitsRouter())
+        .environmentObject(MainState())
 }

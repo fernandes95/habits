@@ -16,11 +16,7 @@ struct NewHabitView: View {
     @Binding var isPresentingNewHabit: Bool
 
     @State var startDate: Date
-    @State private var habit: Habit = Habit(
-        id: UUID(), eventId: "", name: "", startDate: Date.now, endDate: Date.now,
-        frequency: Habit.Frequency.daily.rawValue, frequencyType: Ocurrence(weekFrequency: []),
-        category: Habit.Category.new.rawValue, schedule: [], isChecked: false,
-        hasAlarm: false, successRate: "0", createdDate: Date.now, updatedDate: Date.now)
+    @State private var habit: Habit = .empty
 
     var body: some View {
         NavigationStack {
@@ -65,9 +61,10 @@ struct NewHabitView: View {
                 habit.endDate = habit.startDate
             }
             let newHabit = self.habit
-            // FIXME:
-//            newHabit.createdDate = Date.now
-//            newHabit.updatedDate = Date.now
+                .with(
+                    createdDate: Date.now,
+                    updatedDate: Date.now
+                )
 
             try await state.addHabit(newHabit)
 
@@ -75,7 +72,7 @@ struct NewHabitView: View {
         }
     }
 }
-//
-// #Preview {
-//    NewHabitView(isPresentingNewHabit: .constant(false), startDate: Date.now)
-// }
+
+ #Preview {
+    NewHabitView(isPresentingNewHabit: .constant(false), startDate: Date.now)
+ }

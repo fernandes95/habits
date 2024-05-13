@@ -63,6 +63,42 @@ struct Habit: Identifiable, Equatable {
         self.location = location
     }
 
+    internal func with(
+        eventId: String? = nil,
+        name: String? = nil,
+        startDate: Date? = nil,
+        endDate: Date? = nil,
+        frequency: String? = nil,
+        frequencyType: Ocurrence? = nil,
+        category: String? = nil,
+        schedule: [Hour]? = nil,
+        isChecked: Bool? = nil,
+        hasAlarm: Bool? = nil,
+        successRate: String? = nil,
+        createdDate: Date? = nil,
+        updatedDate: Date? = nil,
+        hasLocationReminder: Bool? = nil,
+        location: Location? = nil
+    ) -> Self {
+        return Self(
+            id: self.id,
+            eventId: eventId ?? self.eventId,
+            name: name ?? self.name,
+            startDate: startDate ?? self.startDate,
+            endDate: endDate ?? self.endDate,
+            frequency: frequency ?? self.frequency.rawValue,
+            frequencyType: frequencyType ?? self.frequencyType,
+            category: category ?? self.category.rawValue,
+            schedule: schedule ?? self.schedule,
+            isChecked: isChecked ?? self.isChecked,
+            hasAlarm: hasAlarm ?? self.hasAlarm,
+            successRate: successRate ?? self.successRate,
+            createdDate: createdDate ?? self.createdDate,
+            updatedDate: updatedDate ?? self.updatedDate
+        )
+
+    }
+
     init(habitEntity: HabitEntity, selectedDate: Date? = nil) {
         self.id = habitEntity.id
         self.eventId = habitEntity.eventId
