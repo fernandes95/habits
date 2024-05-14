@@ -21,6 +21,14 @@ internal final class DefaultStoreServiceTests: XCTestCase {
         try await super.tearDown()
     }
     
+    internal func test_file_url() async throws {
+        let sut: DefaultStoreService = DefaultStoreService()
+        
+        let path = try sut.fileURL()
+        
+        XCTAssertTrue(path.isFileURL)
+    }
+    
     internal func test_save_and_load() async throws {
         let sut: DefaultStoreService = DefaultStoreService()
         let emptyStore: StoreEntity = StoreEntity(habits: [], habitsArchived: [])

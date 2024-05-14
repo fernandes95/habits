@@ -14,11 +14,19 @@ struct HabitsApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                self.router.root
-                    .environmentObject(self.state)
-                    .environmentObject(self.router)
+
+            // Bypassing normal app launch for Unit Testing
+            if isProduction {
+                ZStack {
+                    self.router.root
+                        .environmentObject(self.state)
+                        .environmentObject(self.router)
+                }
             }
         }
+    }
+
+    private var isProduction: Bool {
+        NSClassFromString("XCTestCase") == nil
     }
 }
