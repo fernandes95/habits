@@ -173,7 +173,10 @@ class HabitsService {
 
     private func manageUpdateEvents(habit: Habit, oldHabit: Habit) async throws -> Habit {
         var habitUpdated: Habit = habit
-        habitUpdated.schedule = try await calendarService.manageScheduleEvents(habit, oldHabit: oldHabit)
+
+        if habit.schedule.count > 0 || oldHabit.schedule.count > 0 {
+            habitUpdated.schedule = try await calendarService.manageScheduleEvents(habit, oldHabit: oldHabit)
+        }
 
         if habitUpdated.eventId.isEmpty && habitUpdated.schedule.isEmpty {
             let eventId: String = try await calendarService.createCalendarEvent(habitUpdated)
