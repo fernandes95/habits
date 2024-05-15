@@ -8,6 +8,7 @@
 @testable import Habits
 import XCTest
 import EventKit
+import MapKit
 
 internal final class HabitsServiceTests: XCTestCase {
     private var sut: HabitsService!
@@ -106,6 +107,93 @@ internal final class HabitsServiceTests: XCTestCase {
         XCTAssertNil(habitRemoved)
     }
     
+    internal func test_load_unchecked_habits() async throws {
+        let habitUncheckedAdded: Habit = testHabit.with(name: "Habit Unchecked")
+        var habit: Habit
+        calendarAuthorizationMock()
+        
+        // Add Habit Checked
+        let habitId: UUID = try await addHabit(testHabit)
+        if let habitEntity: HabitEntity = try await getHabit(habitId) {
+            habit = Habit(habitEntity: habitEntity)
+            try await sut.updateHabit(habit.with(isChecked: true), selectedDate: Date.now)
+        }
+        
+        // Add Habit Unchecked
+        let habitUncheckedId = try await addHabit(habitUncheckedAdded)
+        
+        // Load Unchecked Habits
+        let habitsUnchecked: [Habit] = try await sut.loadUncheckedHabits(date: Date.now)
+        
+        // Get added unchecked Habit
+        let habitUnchecked: Habit? = habitsUnchecked.first(where: { $0.id == habitUncheckedId })
+        
+        XCTAssertNotNil(habitUnchecked)
+        XCTAssert(habitUnchecked?.isChecked == false)
+    }
+    
+    internal func test_load_checked_habits() async throws {
+        let habitCheckedAdded: Habit = testHabit.with(name: "Habit Checked")
+        var habit: Habit
+        calendarAuthorizationMock()
+        
+        // Add Habit Checked
+        let habitCheckedId: UUID = try await addHabit(habitCheckedAdded)
+        if let habitEntity: HabitEntity = try await getHabit(habitCheckedId) {
+            habit = Habit(habitEntity: habitEntity)
+            try await sut.updateHabit(habit.with(isChecked: true), selectedDate: Date.now)
+        }
+        
+        // Add Habit Unchecked
+        _ = try await addHabit(testHabit)
+        
+        // Load Checked Habits
+        let habitsChecked: [Habit] = try await sut.loadCheckedHabits(date: Date.now)
+        
+        // Get added checked Habit
+        let habitChecked: Habit? = habitsChecked.first(where: { $0.id == habitCheckedId })
+        
+        XCTAssertNotNil(habitChecked)
+        XCTAssert(habitChecked?.isChecked == true)
+    }
+    
+    internal func test_get_habits_by_distance() async throws {
+        calendarAuthorizationMock()
+        
+        //Add Four Habits from furthest to closest
+        let furthestHabitId: UUID = try await addHabit(
+            testHabit.with(
+                location: getMockHabitLocation(lat: 38.799582, long: -9.232582)
+            )
+        )
+        _ = try await addHabit(testHabit.with(
+                location: getMockHabitLocation(lat: 38.734015, long: -9.155403)
+            )
+        )
+        _ = try await addHabit(testHabit.with(
+                location: getMockHabitLocation(lat: 38.725539, long: -9.149830)
+            )
+        )
+        let closestHabitId: UUID = try await addHabit(testHabit.with(
+                location: getMockHabitLocation(lat: 38.716605, long: -9.1424020)
+            )
+        )
+        
+        //Get Only Three Habits by Distance
+        let (habits, distance): ([Habit], Double) = try await sut.getHabitsByDistance(
+            currentLocation: CLLocation(latitude: 38.714042, longitude: -9.132921),
+            maxHabits: 3
+        )
+        
+        let furthestHabit: Habit? = habits.first(where: { $0.id == furthestHabitId })
+        let closestHabit: Habit? = habits.first(where: { $0.id == closestHabitId })
+        
+        XCTAssert(habits.count == 3)
+        XCTAssertNil(furthestHabit)
+        XCTAssertNotNil(closestHabit)
+        XCTAssertEqual(closestHabit, habits.first)
+    }
+    
     // MARK: - ABSTRACTIONS
     private func calendarAuthorizationMock() {
         // set up
@@ -123,5 +211,17 @@ internal final class HabitsServiceTests: XCTestCase {
     
     private func getHabit(_ habitId: UUID) async throws -> HabitEntity? {
         return try await sut.getHabit(id: habitId)
+    }
+    
+    private func getMockHabitLocation(lat: Double, long: Double) -> Habit.Location {
+        return Habit.Location(
+            latitude: lat,
+            longitude: long,
+            region: MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: lat, longitude: long),
+                latitudinalMeters: 3000,
+                longitudinalMeters: 3000
+            )
+        )
     }
 }
