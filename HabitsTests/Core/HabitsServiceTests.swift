@@ -67,6 +67,45 @@ internal final class HabitsServiceTests: XCTestCase {
         XCTAssertNotNil(habitEntity)
     }
     
+    internal func test_update_habit() async throws {
+        calendarAuthorizationMock()
+        
+        let habitUpdatedName: String = "Name updated"
+        var habit: Habit
+        
+        // Add Habit
+        let habitId: UUID = try await addHabit(testHabit)
+        
+        // Get Habit
+        if let habitEntity: HabitEntity = try await getHabit(habitId) {
+            habit = Habit(habitEntity: habitEntity)
+            habit.name = habitUpdatedName
+            
+            // Update habit
+            try await sut.updateHabit(habit, selectedDate: Date.now)
+        }
+        
+        let habitUpdated: HabitEntity? = try await getHabit(habitId)
+        
+        XCTAssertNotNil(habitUpdated)
+        XCTAssertNotEqual(testHabit.name, habitUpdated!.name)
+    }
+    
+    internal func test_remove_habit() async throws {
+        calendarAuthorizationMock()
+        
+        // Add Habit
+        let habitId: UUID = try await addHabit(testHabit)
+        
+        // Remove habit
+        try await sut.removeHabit(habitId: habitId)
+        
+        // Get habit
+        let habitRemoved: HabitEntity? = try await getHabit(habitId)
+        
+        XCTAssertNil(habitRemoved)
+    }
+    
     // MARK: - ABSTRACTIONS
     private func calendarAuthorizationMock() {
         // set up
@@ -77,7 +116,6 @@ internal final class HabitsServiceTests: XCTestCase {
             EKEventStore.restore()
         }
     }
-    
     
     private func addHabit(_ habit: Habit) async throws -> UUID {
         return try await sut.addHabit(habit)
