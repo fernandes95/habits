@@ -94,9 +94,10 @@ struct Habit: Identifiable, Equatable {
             hasAlarm: hasAlarm ?? self.hasAlarm,
             successRate: successRate ?? self.successRate,
             createdDate: createdDate ?? self.createdDate,
-            updatedDate: updatedDate ?? self.updatedDate
+            updatedDate: updatedDate ?? self.updatedDate,
+            hasLocationReminder: hasLocationReminder ?? self.hasLocationReminder,
+            location: location ?? self.location
         )
-
     }
 
     init(habitEntity: HabitEntity, selectedDate: Date? = nil) {
