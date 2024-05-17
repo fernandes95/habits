@@ -180,7 +180,7 @@ internal final class HabitsServiceTests: XCTestCase {
         )
         
         //Get Only Three Habits by Distance
-        let (habits, distance): ([Habit], Double) = try await sut.getHabitsByDistance(
+        let (habits, _): ([Habit], Double) = try await sut.getHabitsByDistance(
             currentLocation: CLLocation(latitude: 38.714042, longitude: -9.132921),
             maxHabits: 3
         )
@@ -188,7 +188,7 @@ internal final class HabitsServiceTests: XCTestCase {
         let furthestHabit: Habit? = habits.first(where: { $0.id == furthestHabitId })
         let closestHabit: Habit? = habits.first(where: { $0.id == closestHabitId })
         
-        XCTAssert(habits.count == 3)
+        XCTAssertEqual(habits.count, 3)
         XCTAssertNil(furthestHabit)
         XCTAssertNotNil(closestHabit)
         XCTAssertEqual(closestHabit, habits.first)
