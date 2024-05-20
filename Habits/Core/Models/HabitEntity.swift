@@ -10,6 +10,7 @@ import Foundation
 struct HabitEntity: Codable {
     var id: UUID
     var eventId: String
+    var reminderId: String
     var name: String
     var startDate: Date
     var endDate: Date
@@ -27,6 +28,7 @@ struct HabitEntity: Codable {
 
     init(id: UUID = UUID(),
          eventId: String,
+         reminderId: String,
          name: String,
          startDate: Date,
          endDate: Date,
@@ -42,6 +44,7 @@ struct HabitEntity: Codable {
     ) {
         self.id = id
         self.eventId = eventId
+        self.reminderId = reminderId
         self.name = name
         self.startDate = startDate
         self.endDate = endDate
@@ -60,6 +63,7 @@ struct HabitEntity: Codable {
 
     internal func with(
         eventId: String? = nil,
+        reminderId: String? = nil,
         name: String? = nil,
         startDate: Date? = nil,
         endDate: Date? = nil,
@@ -76,6 +80,7 @@ struct HabitEntity: Codable {
         return Self(
             id: self.id,
             eventId: eventId ?? self.eventId,
+            reminderId: reminderId ?? self.reminderId,
             name: name ?? self.name,
             startDate: self.startDate,
             endDate: endDate ?? self.endDate,

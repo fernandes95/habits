@@ -12,6 +12,7 @@ import MapKit
 struct Habit: Identifiable, Equatable {
     var id: UUID
     var eventId: String
+    var reminderId: String
     var name: String
     var startDate: Date
     var endDate: Date
@@ -30,6 +31,7 @@ struct Habit: Identifiable, Equatable {
     init(
         id: UUID,
         eventId: String,
+        reminderId: String,
         name: String,
         startDate: Date,
         endDate: Date,
@@ -47,6 +49,7 @@ struct Habit: Identifiable, Equatable {
     ) {
         self.id = id
         self.eventId = eventId
+        self.reminderId = reminderId
         self.name = name
         self.startDate = startDate
         self.endDate = endDate
@@ -65,6 +68,7 @@ struct Habit: Identifiable, Equatable {
 
     internal func with(
         eventId: String? = nil,
+        reminderId: String? = nil,
         name: String? = nil,
         startDate: Date? = nil,
         endDate: Date? = nil,
@@ -83,6 +87,7 @@ struct Habit: Identifiable, Equatable {
         return Self(
             id: self.id,
             eventId: eventId ?? self.eventId,
+            reminderId: reminderId ?? self.reminderId,
             name: name ?? self.name,
             startDate: startDate ?? self.startDate,
             endDate: endDate ?? self.endDate,
@@ -103,6 +108,7 @@ struct Habit: Identifiable, Equatable {
     init(habitEntity: HabitEntity, selectedDate: Date? = nil) {
         self.id = habitEntity.id
         self.eventId = habitEntity.eventId
+        self.reminderId = habitEntity.reminderId
         self.name = habitEntity.name
         self.startDate = habitEntity.startDate
         self.endDate = habitEntity.endDate
@@ -203,6 +209,13 @@ struct Habit: Identifiable, Equatable {
             event.addAlarm(EKAlarm(absoluteDate: alarmHour))
         }
 
+        if let location: Habit.Location = self.location {
+            let structuredLocation = EKStructuredLocation(title: self.name) // TODO: GET CORRECT LOCATION NAME
+            structuredLocation.geoLocation = CLLocation(latitude: location.latitude, longitude: location.longitude)
+            structuredLocation.radius = 5.0
+            event.structuredLocation = structuredLocation
+        }
+
         if self.schedule.isEmpty {
             event.isAllDay = true
         }
@@ -211,6 +224,35 @@ struct Habit: Identifiable, Equatable {
         event.recurrenceRules = [recurrenceRule]
 
         return event
+    }
+
+    func getReminder(
+        store: EKEventStore,
+        startDate: Date? = nil,
+        endDate: Date? = nil
+    ) -> EKReminder {
+        let reminder: EKReminder = EKReminder(eventStore: store)
+        let recurrenceRule: EKRecurrenceRule = getEKRecurrenceRule()
+
+        reminder.title = self.name
+        reminder.startDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: self.startDate)
+        reminder.dueDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: self.endDate)
+
+        if let location: Habit.Location = self.location {
+            let alarm = EKAlarm()
+            let structuredLocation = EKStructuredLocation(title: self.name) // TODO: GET CORRECT LOCATION NAME
+            structuredLocation.geoLocation = CLLocation(latitude: location.latitude, longitude: location.longitude)
+            structuredLocation.radius = 5.0
+
+            alarm.structuredLocation = structuredLocation
+            alarm.proximity = .enter
+            reminder.addAlarm(alarm)
+        }
+
+        reminder.calendar = store.defaultCalendarForNewReminders()
+        reminder.recurrenceRules = [recurrenceRule]
+
+        return reminder
     }
 
     enum Category: String, Identifiable, CaseIterable {

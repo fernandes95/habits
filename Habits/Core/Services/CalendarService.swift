@@ -198,6 +198,18 @@ class CalendarService {
                 eventToEdit.title = habit.name
                 eventToEdit.recurrenceRules = [recurrenceRule]
 
+                if habit.hasLocationReminder {
+                    if let location: Habit.Location = habit.location {
+                        let structuredLocation = EKStructuredLocation(title: habit.name) // TODO: GET CORRECT LOCATION NAME
+                        structuredLocation.geoLocation = CLLocation(latitude: location.latitude,
+                                                                    longitude: location.longitude)
+                        structuredLocation.radius = 5.0
+                        eventToEdit.structuredLocation = structuredLocation
+                    }
+                } else {
+                    eventToEdit.structuredLocation = nil
+                }
+
                 try self.eventStore.save(eventToEdit, span: .futureEvents)
             } catch {
                 print("Error editing event: \(error.localizedDescription)")
