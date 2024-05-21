@@ -235,8 +235,7 @@ struct Habit: Identifiable, Equatable {
         let recurrenceRule: EKRecurrenceRule = getEKRecurrenceRule()
 
         reminder.title = self.name
-        reminder.startDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: self.startDate)
-        reminder.dueDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: self.endDate)
+        reminder.dueDateComponents = Calendar.current.dateComponents([.year, .month, .day], from: self.endDate)
 
         if let location: Habit.Location = self.location {
             let alarm = EKAlarm()
