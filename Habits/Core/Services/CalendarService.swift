@@ -12,6 +12,7 @@ import SwiftUI
 class CalendarService {
     private let eventStore: EKEventStore = EKEventStore()
     private let notificationService: NotificationService = NotificationService()
+    private let calendarsService: CalendarsService = CalendarsService()
 
     private func getEventStoreAuthStatus() async throws -> EKAuthorizationStatus {
         return EKEventStore.authorizationStatus(for: .event)
@@ -46,7 +47,8 @@ class CalendarService {
     func createCalendarEvent(_ habit: Habit) async throws -> String {
         guard try await verifyAuthStatus() else { return "" }
 
-        let newEvent: EKEvent = habit.getCalendarEvent(store: self.eventStore)
+        var newEvent: EKEvent = habit.getCalendarEvent(store: self.eventStore)
+        newEvent.calendar = try await self.getCalendar()
 
         do {
             try self.eventStore.save(newEvent, span: .thisEvent)
@@ -79,6 +81,7 @@ class CalendarService {
                 endDate: newEndDate,
                 alarmHour: hour.date
             )
+            newEvent.calendar = try await self.getCalendar()
 
             do {
                 try self.eventStore.save(newEvent, span: .thisEvent)
@@ -127,6 +130,7 @@ class CalendarService {
                     endDate: newEndDate,
                     alarmHour: habit.hasAlarm ? hour.date : nil
                 )
+                newEvent.calendar = try await self.getCalendar()
 
                 do {
                     try self.eventStore.save(newEvent, span: .thisEvent)
@@ -200,7 +204,8 @@ class CalendarService {
 
                 if habit.hasLocationReminder {
                     if let location: Habit.Location = habit.location {
-                        let structuredLocation = EKStructuredLocation(title: habit.name) // TODO: GET CORRECT LOCATION NAME
+                        // TODO: GET CORRECT LOCATION NAME
+                        let structuredLocation = EKStructuredLocation(title: habit.name)
                         structuredLocation.geoLocation = CLLocation(latitude: location.latitude,
                                                                     longitude: location.longitude)
                         structuredLocation.radius = 5.0
@@ -215,5 +220,9 @@ class CalendarService {
                 print("Error editing event: \(error.localizedDescription)")
             }
         }
+    }
+
+    private func getCalendar() async throws -> EKCalendar? {
+        try await calendarsService.getCalendar(calendarType: .event)
     }
 }
