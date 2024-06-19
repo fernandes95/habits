@@ -10,4 +10,6 @@ import Foundation
 struct StoreEntity: Codable {
     var habits: [HabitEntity]
     var habitsArchived: [HabitEntity]
+    var calendarEventId: String?
+    var calendarReminderId: String?
 }

@@ -47,7 +47,7 @@ class CalendarService {
     func createCalendarEvent(_ habit: Habit) async throws -> String {
         guard try await verifyAuthStatus() else { return "" }
 
-        var newEvent: EKEvent = habit.getCalendarEvent(store: self.eventStore)
+        let newEvent: EKEvent = habit.getCalendarEvent(store: self.eventStore)
         newEvent.calendar = try await self.getCalendar()
 
         do {

@@ -83,6 +83,10 @@ class HabitsService {
             schedule = try await calendarService.createScheduleCalendarEvents(habit)
         }
 
+        if !eventId.isEmpty || !schedule.isEmpty {
+            try await self.load()
+        }
+
         if habit.location != nil {
             location = HabitEntity.Location(
                 latitude: habit.location!.latitude,

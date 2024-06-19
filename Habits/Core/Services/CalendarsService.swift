@@ -6,30 +6,49 @@
 //
 
 import EventKit
+import UIKit
 
 class CalendarsService {
+    private let storeService: DefaultStoreService = DefaultStoreService()
     private let eventStore: EKEventStore = EKEventStore()
-    private let calendarProperties: (name: String, color: CGColor) =
-        ("Habits", CGColor(red: 188, green: 178, blue: 183, alpha: 0.52))
-    private var store: StoreEntity = StoreEntity(habits: [], habitsArchived: [])
+    private let calendarProperties: (name: String, color: UIColor) =
+    ("Habits", UIColor(cgColor: CGColor(red: 0.188, green: 0.178, blue: 0.183, alpha: 1)))
+
+    private var store: StoreEntity = StoreEntity(habits: [], habitsArchived: [], calendarEventId: nil, calendarReminderId: nil)
+
+    init() {
+        Task {
+            try await load()
+        }
+    }
+
+    /// Gets store from local file
+    private func load() async throws {
+        self.store = try await storeService.load()
+    }
 
     internal func getCalendar(calendarType: EKEntityType) async throws -> EKCalendar? {
-        guard let existingCalendar: EKCalendar = self.getExistingCalendar() else {
+        guard let existingCalendar: EKCalendar = try await self.getExistingCalendar() else {
             return try await createNewCalendar(calendarType: calendarType)
         }
 
         return existingCalendar
     }
 
-    private func getExistingCalendar() -> EKCalendar? {
+    private func getExistingCalendar() async throws -> EKCalendar? {
         var returnableCalendar: EKCalendar?
+
+        try await self.load()
+
+        guard self.store.calendarEventId != nil else {
+            return nil
+        }
 
         let calendars = self.eventStore.calendars(for: .event)
         for calendar in calendars {
-            print(calendar.title)
-            if calendar.title == self.calendarProperties.name &&
-                calendar.cgColor == self.calendarProperties.color {
+            if calendar.calendarIdentifier == self.store.calendarEventId {
                 returnableCalendar = calendar
+                break
             }
         }
 
@@ -43,13 +62,27 @@ class CalendarsService {
             self.eventStore.defaultCalendarForNewReminders()?.source
         }
 
-        let calendar: EKCalendar = EKCalendar(for: calendarType, eventStore: self.eventStore)
-        calendar.title = self.calendarProperties.name
-        calendar.cgColor = self.calendarProperties.color
-        calendar.source = source
+        var newCalendar: EKCalendar = EKCalendar(for: calendarType, eventStore: self.eventStore)
+        newCalendar.title = self.calendarProperties.name
+        newCalendar.cgColor = self.calendarProperties.color.cgColor
+        newCalendar.source = source
 
-        try self.eventStore.saveCalendar(calendar, commit: true)
+        try self.eventStore.saveCalendar(newCalendar, commit: true)
+        self.store.calendarEventId = newCalendar.calendarIdentifier
+        try await storeService.save(self.store)
+        try await self.load()
 
-        return calendar
+//        let calendars = self.eventStore.calendars(for: calendarType)
+//        for calendar in calendars {
+//            if calendar.title == self.calendarProperties.name {
+//                self.store.calendarEventId = calendar.calendarIdentifier
+//                try await storeService.save(self.store)
+//                try await self.load()
+//                newCalendar = calendar
+//                break
+//            }
+//        }
+
+        return newCalendar
     }
 }
