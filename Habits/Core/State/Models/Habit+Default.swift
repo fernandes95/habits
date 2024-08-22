@@ -12,7 +12,6 @@ extension Habit {
         return Habit(
             id: UUID(),
             eventId: "",
-            reminderId: "",
             name: "",
             startDate: Date.now,
             endDate: Date.now,

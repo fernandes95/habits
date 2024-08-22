@@ -11,7 +11,6 @@ import EventKit
 class HabitsService {
     private let storeService: DefaultStoreService = DefaultStoreService()
     private let calendarService: CalendarService = CalendarService()
-    private let reminderService: ReminderService = ReminderService()
     private let notificationService: NotificationService = NotificationService()
 
     private var store: StoreEntity = StoreEntity(habits: [], habitsArchived: [])
@@ -73,7 +72,6 @@ class HabitsService {
     /// - Returns: New Habit UUID
     func addHabit(_ habit: Habit) async throws -> UUID {
         var eventId: String = ""
-        var reminderId: String = ""
         var schedule: [Habit.Hour] = habit.schedule
         var location: HabitEntity.Location?
 
@@ -83,10 +81,6 @@ class HabitsService {
             schedule = try await calendarService.createScheduleCalendarEvents(habit)
         }
 
-        if !eventId.isEmpty || !schedule.isEmpty {
-            try await self.load()
-        }
-
         if habit.location != nil {
             location = HabitEntity.Location(
                 latitude: habit.location!.latitude,
@@ -94,13 +88,8 @@ class HabitsService {
             )
         }
 
-        if habit.hasLocationReminder {
-            reminderId = try await reminderService.createReminder(habit)
-        }
-
         let newHabit: HabitEntity = HabitEntity(
             eventId: eventId,
-            reminderId: reminderId,
             name: habit.name,
             startDate: habit.startDate,
             endDate: habit.endDate,

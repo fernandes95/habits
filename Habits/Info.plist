@@ -6,8 +6,6 @@
 	<string></string>
 	<key>NSCalendarsFullAccessUsageDescription</key>
 	<string>Fetch events in all your calendars</string>
-	<key>NSRemindersFullAccessUsageDescription</key>
-	<string>Let me remind you</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
