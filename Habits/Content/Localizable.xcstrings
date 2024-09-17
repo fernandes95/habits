@@ -4,6 +4,15 @@
     "" : {
 
     },
+    "Continue" : {
+
+    },
+    "Do you want to create a schedule?" : {
+
+    },
+    "Do you want to get reminders based on your location?" : {
+
+    },
     "general_add" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -296,10 +305,19 @@
     "Hour #%lld" : {
 
     },
+    "How long do you want this habit to be?" : {
+
+    },
     "Location Reminder" : {
 
     },
     "notificationAuth" : {
+
+    },
+    "Random quote here" : {
+
+    },
+    "What habit do you want to start?" : {
 
     }
   },

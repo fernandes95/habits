@@ -9,6 +9,9 @@ import SwiftUI
 import MapKit
 
 struct NewHabitContentView: View {
+    @EnvironmentObject
+    private var state: MainState
+
     @Binding var habit: Habit
     @Binding var isEdit: Bool
 
@@ -201,23 +204,14 @@ struct NewHabitContentView: View {
     }
 }
 
-// #Preview {
-//    NewHabitContentView(
-//        
-//        name: .constant("cenas"),
-//        startDate: .constant(Date.now),
-//        endDate: .constant(Date.now),
-//        frequency: .constant(.daily),
-//        weekFrequency: .constant([]),
-//        category: .constant(.new),
-//        schedule: .constant([]),
-//        isEdit: .constant(true),
-//        hasAlarm: .constant(false),
-//        hasLocationReminder: .constant(false),
-//        location: .constant(nil),
-//        isNew: true,
-//        successRate: "70%",
-//        locationAction: {},
-//        notificationAction: {}
-//    )
-// }
+ #Preview {
+     NewHabitContentView(
+        habit: .constant(Habit.empty),
+        isEdit: .constant(true),
+        isNew: true,
+        startDateIn: Date.now,
+        successRate: nil,
+        locationAction: {},
+        notificationAction: {}
+     )
+ }
