@@ -4,15 +4,6 @@
     "" : {
 
     },
-    "Continue" : {
-
-    },
-    "Do you want to create a schedule?" : {
-
-    },
-    "Do you want to get reminders based on your location?" : {
-
-    },
     "general_add" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -31,6 +22,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "general_continue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue"
           }
         }
       }
@@ -305,19 +307,123 @@
     "Hour #%lld" : {
 
     },
-    "How long do you want this habit to be?" : {
-
-    },
     "Location Reminder" : {
 
+    },
+    "new_habit_duration_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How long do you want this habit to be?"
+          }
+        }
+      }
+    },
+    "new_habit_location_info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To use this feature we'll need permissions to notifications and location (While using app and then Always allow while offline)."
+          }
+        }
+      }
+    },
+    "new_habit_location_section_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location Reminder (Optional)"
+          }
+        }
+      }
+    },
+    "new_habit_location_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do you want to get reminders based on your location?"
+          }
+        }
+      }
+    },
+    "new_habit_name_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What habit do you want to start?"
+          }
+        }
+      }
+    },
+    "new_habit_resume_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create"
+          }
+        }
+      }
+    },
+    "new_habit_resume_duration_section_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration"
+          }
+        }
+      }
+    },
+    "new_habit_resume_location_section_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location"
+          }
+        }
+      }
+    },
+    "new_habit_resume_schedule_section_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schedule"
+          }
+        }
+      }
+    },
+    "new_habit_schedule_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do you want to create a schedule?"
+          }
+        }
+      }
     },
     "notificationAuth" : {
 
     },
     "Random quote here" : {
-
-    },
-    "What habit do you want to start?" : {
 
     }
   },

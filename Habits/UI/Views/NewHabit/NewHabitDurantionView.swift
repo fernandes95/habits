@@ -8,31 +8,35 @@
 import SwiftUI
 
 struct NewHabitDurantionView: View {
-    @Binding var habit: Habit
+    @EnvironmentObject
+    private var router: HabitsRouter
+
+    @Binding
+    var habit: Habit
 
     var startDateIn: Date = Date.now
 
     var body: some View {
         VStack {
-            Text("How long do you want this habit to be?")
+            Text("new_habit_duration_title")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.top)
             Form {
                 Section(header: Text("habit_new_section_habit_info")) {
                     DatePicker("habit_start_date", selection: $habit.startDate,
-                               in: startDateIn...,
+                               in: self.startDateIn...,
                                displayedComponents: .date
                     )
 
-                    DatePicker("habit_end_date", selection: $habit.endDate,
-                               in: habit.startDate...,
+                    DatePicker("habit_end_date", selection: self.$habit.endDate,
+                               in: self.habit.startDate...,
                                displayedComponents: .date)
                 }
             }
 
-            Button("Continue") {
-
+            Button("general_continue") {
+                self.router.push(NewHabitScheduleView(habit: self.$habit))
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)

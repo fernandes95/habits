@@ -36,6 +36,7 @@
 		AE448A9A2B8D228C0034898F /* MainState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A992B8D228C0034898F /* MainState.swift */; };
 		AE448A9C2B8DEC970034898F /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A9B2B8DEC970034898F /* Habit.swift */; };
 		AE51BD592B9612E3005DCBC7 /* StoreEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE51BD582B9612E3005DCBC7 /* StoreEntity.swift */; };
+		AE5845F12CB974BA0038E322 /* NewHabitResumeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5845F02CB974BA0038E322 /* NewHabitResumeView.swift */; };
 		AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E192B5FD91B002C7EEB /* ListItem.swift */; };
 		AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */; };
 		AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */; };
@@ -98,6 +99,7 @@
 		AE448A992B8D228C0034898F /* MainState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainState.swift; sourceTree = "<group>"; };
 		AE448A9B2B8DEC970034898F /* Habit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
 		AE51BD582B9612E3005DCBC7 /* StoreEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreEntity.swift; sourceTree = "<group>"; };
+		AE5845F02CB974BA0038E322 /* NewHabitResumeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitResumeView.swift; sourceTree = "<group>"; };
 		AE6CC09A2B9F02DE00873D03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AE744E192B5FD91B002C7EEB /* ListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItem.swift; sourceTree = "<group>"; };
 		AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelativeHeightSheetContentModifier.swift; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 				AE14909B2C98882800F9BD58 /* NewHabitDurantionView.swift */,
 				AE14909D2C995F0600F9BD58 /* NewHabitScheduleView.swift */,
 				AE14909F2C9994CA00F9BD58 /* NewHabitLocationView.swift */,
+				AE5845F02CB974BA0038E322 /* NewHabitResumeView.swift */,
 			);
 			path = NewHabit;
 			sourceTree = "<group>";
@@ -593,6 +596,7 @@
 				AE448A842B85238E0034898F /* NewHabitContentView.swift in Sources */,
 				AEA3D6BD2B5E85B700A08F31 /* HabitsView.swift in Sources */,
 				AEA3D6BB2B5E85B700A08F31 /* HabitsApp.swift in Sources */,
+				AE5845F12CB974BA0038E322 /* NewHabitResumeView.swift in Sources */,
 				AE43FF052BF28F4C008A7085 /* Habit+Default.swift in Sources */,
 				AE2B2A4A2BB07223004669B6 /* NotificationService.swift in Sources */,
 				AE448A9C2B8DEC970034898F /* Habit.swift in Sources */,

@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct NewHabitQuoteView: View {
+    @EnvironmentObject
+    private var router: HabitsRouter
+
     var body: some View {
         VStack {
             Spacer()
@@ -16,8 +19,8 @@ struct NewHabitQuoteView: View {
 
             Spacer()
 
-            Button("Continue") {
-
+            Button("general_continue") {
+                self.router.push(NewHabitNameView())
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)

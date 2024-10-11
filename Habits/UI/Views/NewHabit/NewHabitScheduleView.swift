@@ -8,57 +8,60 @@
 import SwiftUI
 
 struct NewHabitScheduleView: View {
-    @Binding var habit: Habit
+    @EnvironmentObject
+    private var router: HabitsRouter
+
+    @Binding
+    var habit: Habit
 
     var startDateIn: Date = Date.now
 
     var body: some View {
         VStack {
-            Text("Do you want to create a schedule?")
+            Text("new_habit_schedule_title")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.top)
             Form {
                 Section(header: Text("habit_new_section_habit_frequency")) {
-                    Picker("habit_frequency", selection: $habit.frequency) {
+                    Picker("habit_frequency", selection: self.$habit.frequency) {
                         ForEach(Habit.Frequency.allCases) { frequency in
                             Text(frequency.rawValue).tag(frequency)
                                 .onTapGesture {
                                     if frequency != .weekly {
-                                        //                                    $habit.weekFrequency.removeAll()
-                                        habit.frequencyType.weekFrequency.removeAll()
+                                        self.habit.frequencyType.weekFrequency.removeAll()
                                     }
                                 }
                         }
                     }
 
-                    let weeklyValidation: Bool = habit.frequency != .weekly
+                    let weeklyValidation: Bool = self.habit.frequency != .weekly
                     Spacer()
                         .isHidden(weeklyValidation)
                     ForEach(WeekDay.allCases, id: \.self) { day in
                         HStack {
                             Text(day.rawValue).tag(day)
                             Spacer()
-                            if habit.frequencyType.weekFrequency.contains(day) {
+                            if self.habit.frequencyType.weekFrequency.contains(day) {
                                 Image(systemName: "checkmark")
                             }
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            if habit.frequencyType.weekFrequency.contains(day) {
-                                habit.frequencyType.weekFrequency.removeAll(where: {$0 == day})
+                            if self.habit.frequencyType.weekFrequency.contains(day) {
+                                self.habit.frequencyType.weekFrequency.removeAll(where: {$0 == day})
                             } else {
-                                habit.frequencyType.weekFrequency.append(day)
+                                self.habit.frequencyType.weekFrequency.append(day)
                             }
                         }
                     }
                     .isHidden(weeklyValidation)
                 }
 
-                let scheduleValidation: Bool = habit.schedule.count > 0 || habit.schedule.count == 0
+                let scheduleValidation: Bool = self.habit.schedule.count > 0 || self.habit.schedule.count == 0
                 Section {
-                    ForEach($habit.schedule) { $hour in
-                        if let index = habit.schedule.firstIndex(of: hour) {
+                    ForEach(self.$habit.schedule) { $hour in
+                        if let index = self.habit.schedule.firstIndex(of: hour) {
                             let datePicker = DatePicker("Hour #\(index + 1)",
                                                         selection: $hour.date,
                                                         displayedComponents: .hourAndMinute
@@ -67,10 +70,10 @@ struct NewHabitScheduleView: View {
                             datePicker
                                 .swipeActions(edge: .trailing) {
                                     Button(role: .destructive) {
-                                        habit.schedule.remove(at: index)
+                                        self.habit.schedule.remove(at: index)
 
-                                        if habit.schedule.isEmpty {
-                                            habit.hasAlarm = false
+                                        if self.habit.schedule.isEmpty {
+                                            self.habit.hasAlarm = false
                                         }
                                     } label: {
                                         Label("habit_schedule_delete", systemImage: "trash")
@@ -87,10 +90,10 @@ struct NewHabitScheduleView: View {
                             var date: Date = Date.now
                             var mainDateComponents: DateComponents = DateComponents()
 
-                            if habit.schedule.isEmpty {
+                            if self.habit.schedule.isEmpty {
                                 var dateComponents = calendar.dateComponents(
                                     [.day, .month, .year, .hour, .minute],
-                                    from: habit.startDate
+                                    from: self.habit.startDate
                                 )
                                 dateComponents.hour = 09
                                 dateComponents.minute = 00
@@ -98,9 +101,9 @@ struct NewHabitScheduleView: View {
 
                                 mainDateComponents = dateComponents
 
-                                habit.hasAlarm = true
+                                self.habit.hasAlarm = true
                             } else {
-                                let scheduleSorted = habit.schedule.sorted { (lhs: Habit.Hour, rhs: Habit.Hour) in
+                                let scheduleSorted = self.habit.schedule.sorted { (lhs: Habit.Hour, rhs: Habit.Hour) in
                                     return (lhs.date < rhs.date)
                                 }
                                 if let hour = scheduleSorted.last {
@@ -119,7 +122,7 @@ struct NewHabitScheduleView: View {
                                 date = newDate
                             }
 
-                            habit.schedule.append(
+                            self.habit.schedule.append(
                                 Habit.Hour(eventId: "", date: date)
                             )
                         }, label: {
@@ -131,8 +134,8 @@ struct NewHabitScheduleView: View {
                 .isHidden(!scheduleValidation)
             }
 
-            Button("Continue") {
-
+            Button("general_continue") {
+                self.router.push(NewHabitLocationView(habit: self.$habit))
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)

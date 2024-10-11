@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct NewHabitNameView: View {
-    @Binding var habit: Habit
+    @EnvironmentObject
+    private var router: HabitsRouter
+
+    @State
+    private var habit: Habit = Habit.empty
 
     var body: some View {
         VStack {
-            Text("What habit do you want to start?")
+            Text("new_habit_name_title")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.top)
@@ -23,9 +27,10 @@ struct NewHabitNameView: View {
 
             Spacer()
 
-            Button("Continue") {
-
+            Button("general_continue") {
+                self.router.push(NewHabitDurantionView(habit: self.$habit))
             }
+            .disabled(self.habit.name.isEmpty)
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .cornerRadius(15)
@@ -35,5 +40,5 @@ struct NewHabitNameView: View {
 }
 
 #Preview {
-    NewHabitNameView(habit: .constant(Habit.empty))
+    NewHabitNameView()
 }

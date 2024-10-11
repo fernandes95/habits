@@ -9,46 +9,41 @@ import SwiftUI
 
 struct NewHabitLocationView: View {
     @EnvironmentObject
+    private var router: HabitsRouter
+
+    @EnvironmentObject
     private var state: MainState
 
-    @Binding var habit: Habit
-
-    @State private var notificationAuth: Bool = false
+    @Binding
+    var habit: Habit
 
     var body: some View {
         VStack {
-            Text("Do you want to get reminders based on your location?")
+            Text("new_habit_location_title")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.top)
             Form {
-                Section(header: Text("Location Reminder")) {
+                Section(header: Text("new_habit_location_section_title")) {
                     VStack {
-                        Toggle("hasLocationReminder", isOn: $habit.hasLocationReminder)
-                            .onTapGesture {
-                                if !habit.hasLocationReminder {
-                                    state.getLocationAuthorization()
-                                }
-                            }
+                        Text("new_habit_location_info")
 
-                        Toggle("notificationAuth", isOn: $notificationAuth)
-//                            .isHidden(!habit.hasLocationReminder)
-                            .onTapGesture {
-                                Task {
-                                    try await state.getNotificationsAuthorization()
-                                }
-                            }
-
-                        MapView(location: $habit.location, canEdit: .constant(true))
+                        MapView(location: self.$habit.location, canEdit: .constant(true))
                             .frame(height: 250)
                             .cornerRadius(10)
-//                            .isHidden(!habit.hasLocationReminder)
                     }
                 }
             }
 
-            Button("Continue") {
+            Button("general_continue") {
+                Task {
+                    try await self.state.getNotificationsAuthorization()
+                }
+                if !self.habit.hasLocationReminder {
+                    self.state.getLocationAuthorization()
+                }
 
+                self.router.push(NewHabitResumeView(habit: self.$habit))
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
