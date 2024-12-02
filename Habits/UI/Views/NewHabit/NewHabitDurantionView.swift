@@ -21,7 +21,6 @@ struct NewHabitDurantionView: View {
             Text("new_habit_duration_title")
                 .font(.largeTitle)
                 .fontWeight(.bold)
-                .padding(.top)
             Form {
                 Section(header: Text("habit_new_section_habit_info")) {
                     DatePicker("habit_start_date", selection: $habit.startDate,
@@ -34,15 +33,15 @@ struct NewHabitDurantionView: View {
                                displayedComponents: .date)
                 }
             }
-
-            Button("general_continue") {
-                self.router.push(NewHabitScheduleView(habit: self.$habit))
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .cornerRadius(15)
         }
         .padding(.vertical)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("general_next") {
+                    self.router.push(NewHabitScheduleView(habit: self.$habit))
+                }
+            }
+        }
     }
 }
 

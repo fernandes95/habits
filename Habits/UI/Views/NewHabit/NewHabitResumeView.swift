@@ -42,6 +42,7 @@ struct NewHabitResumeView: View {
                         ForEach(Habit.Frequency.allCases) { frequency in
                             Text(frequency.rawValue).tag(frequency)
                         }
+                        .disabled(true)
                     }
                     .disabled(true)
 
@@ -72,8 +73,8 @@ struct NewHabitResumeView: View {
                                 )
                             }
                         }
-                        .disabled(true)
                     }
+                    .disabled(true)
                 }
 
                 if let location = self.habit.location {
@@ -85,20 +86,18 @@ struct NewHabitResumeView: View {
                     }
                 }
             }
-
-            Spacer()
-
-            Button("new_habit_resume_button") {
-                self.addHabit()
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .cornerRadius(15)
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("general_cancel") {
                     self.router.popToRoot()
+                }
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("new_habit_resume_button") {
+                    self.addHabit()
                 }
             }
         }

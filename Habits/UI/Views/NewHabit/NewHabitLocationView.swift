@@ -22,7 +22,6 @@ struct NewHabitLocationView: View {
             Text("new_habit_location_title")
                 .font(.largeTitle)
                 .fontWeight(.bold)
-                .padding(.top)
             Form {
                 Section(header: Text("new_habit_location_section_title")) {
                     VStack {
@@ -34,22 +33,22 @@ struct NewHabitLocationView: View {
                     }
                 }
             }
-
-            Button("general_continue") {
-                Task {
-                    try await self.state.getNotificationsAuthorization()
-                }
-                if !self.habit.hasLocationReminder {
-                    self.state.getLocationAuthorization()
-                }
-
-                self.router.push(NewHabitResumeView(habit: self.$habit))
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .cornerRadius(15)
         }
         .padding(.vertical)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("general_next") {
+                    Task {
+                        try await self.state.getNotificationsAuthorization()
+                    }
+                    if !self.habit.hasLocationReminder {
+                        self.state.getLocationAuthorization()
+                    }
+
+                    self.router.push(NewHabitResumeView(habit: self.$habit))
+                }
+            }
+        }
     }
 }
 

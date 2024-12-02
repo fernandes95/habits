@@ -21,7 +21,6 @@ struct NewHabitScheduleView: View {
             Text("new_habit_schedule_title")
                 .font(.largeTitle)
                 .fontWeight(.bold)
-                .padding(.top)
             Form {
                 Section(header: Text("habit_new_section_habit_frequency")) {
                     Picker("habit_frequency", selection: self.$habit.frequency) {
@@ -133,15 +132,15 @@ struct NewHabitScheduleView: View {
                 }
                 .isHidden(!scheduleValidation)
             }
-
-            Button("general_continue") {
-                self.router.push(NewHabitLocationView(habit: self.$habit))
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .cornerRadius(15)
         }
         .padding(.vertical)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("general_next") {
+                    self.router.push(NewHabitLocationView(habit: self.$habit))
+                }
+            }
+        }
     }
 }
 

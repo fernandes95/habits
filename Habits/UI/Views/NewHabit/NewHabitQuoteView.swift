@@ -18,15 +18,15 @@ struct NewHabitQuoteView: View {
             Text("Random quote here")
 
             Spacer()
-
-            Button("general_continue") {
-                self.router.push(NewHabitNameView())
-            }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .cornerRadius(15)
         }
         .padding(16)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("general_next") {
+                    self.router.push(NewHabitNameView())
+                }
+            }
+        }
     }
 }
 
