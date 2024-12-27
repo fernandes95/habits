@@ -21,6 +21,7 @@
 		AE319CEE2BF3AC3500754149 /* EKEventStore+Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE319CED2BF3AC3500754149 /* EKEventStore+Swizzle.swift */; };
 		AE319CF22BF505BE00754149 /* CalendarServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE319CF12BF505BE00754149 /* CalendarServiceTests.swift */; };
 		AE32F8102BED08BD0095DD1A /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE32F80F2BED08BD0095DD1A /* ViewModifiers.swift */; };
+		AE3FCFED2D1E315200E25F46 /* HabitFrequencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3FCFEC2D1E314D00E25F46 /* HabitFrequencyView.swift */; };
 		AE43FF052BF28F4C008A7085 /* Habit+Default.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43FF042BF28F4C008A7085 /* Habit+Default.swift */; };
 		AE43FF0E2BF291BB008A7085 /* HabitsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43FF0D2BF291BB008A7085 /* HabitsTests.swift */; };
 		AE43FF172BF29254008A7085 /* DefaultStoreServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43FF162BF29254008A7085 /* DefaultStoreServiceTests.swift */; };
@@ -82,6 +83,7 @@
 		AE319CF12BF505BE00754149 /* CalendarServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarServiceTests.swift; sourceTree = "<group>"; };
 		AE32F80F2BED08BD0095DD1A /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
 		AE381DD22BCEE2950038B689 /* gpxchicago.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = gpxchicago.gpx; path = ../../../Downloads/gpxchicago.gpx; sourceTree = "<group>"; };
+		AE3FCFEC2D1E314D00E25F46 /* HabitFrequencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitFrequencyView.swift; sourceTree = "<group>"; };
 		AE43FF042BF28F4C008A7085 /* Habit+Default.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+Default.swift"; sourceTree = "<group>"; };
 		AE43FF0B2BF291BB008A7085 /* HabitsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HabitsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE43FF0D2BF291BB008A7085 /* HabitsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsTests.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 		AE448A822B85237A0034898F /* Reusable */ = {
 			isa = PBXGroup;
 			children = (
+				AE3FCFEC2D1E314D00E25F46 /* HabitFrequencyView.swift */,
 				AEE2E5E12BC2EBA000DD9BC2 /* Calendar */,
 				AE9D9A0D2BB1813100CF3498 /* Map */,
 				AE448A832B85238E0034898F /* NewHabitContentView.swift */,
@@ -561,6 +564,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE901D0C2BC5791A00DA674A /* HabitsService.swift in Sources */,
+				AE3FCFED2D1E315200E25F46 /* HabitFrequencyView.swift in Sources */,
 				AE14909C2C98882800F9BD58 /* NewHabitDurantionView.swift in Sources */,
 				AE2B2A482BB0712A004669B6 /* BackgroundTaskService.swift in Sources */,
 				AE9D9A0F2BB1814000CF3498 /* MapView.swift in Sources */,
