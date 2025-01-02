@@ -29,22 +29,52 @@ struct HabitDetailView: View {
 
     var body: some View {
         VStack {
-            NewHabitContentView(
-                habit: $editingHabit,
-                isEdit: $isEditing,
-                isNew: false,
-                locationAction: { },
-                notificationAction: { }
-            )
+            Form {
+                Section(header: Text("habit_new_section_habit_info")) {
+                    TextField("habit_name", text: self.$editingHabit.name)
+                        .disabled(!self.isEditing)
+
+                    Picker("habit_category", selection: self.$habit.category) {
+                        ForEach(Habit.Category.allCases) { category in
+                            Text(category.rawValue).tag(category)
+                        }
+                    }
+                    .disabled(!self.isEditing)
+
+                    DatePicker("habit_start_date", selection: self.$habit.startDate,
+                               in: self.$habit.startDate.wrappedValue...,
+                               displayedComponents: .date
+                    )
+                    .disabled(true)
+
+                    DatePicker("habit_end_date", selection: self.$editingHabit.endDate,
+                               in: habit.startDate...,
+                               displayedComponents: .date)
+                    .disabled(!self.isEditing)
+                }
+
+                HabitFrequencyView(
+                    habit: self.$editingHabit,
+                    isEditing: self.$isEditing
+                )
+
+                Section(header: Text("Location Reminder")) {
+                    MapView(location: self.$editingHabit.location, canEdit: self.$isEditing)
+                        .frame(height: 250)
+                        .cornerRadius(10)
+                        .isHidden(!self.habit.hasLocationReminder)
+                        .disabled(!self.isEditing)
+                }
+            }
 
             Button(role: .destructive) {
-                showingAlert = true
+                self.showingAlert = true
             } label: {
                 Label("habit_detail_delete", systemImage: "trash")
             }
             .confirmationDialog(
                 "habit_delete_dialog_title",
-                isPresented: $showingAlert,
+                isPresented: self.$showingAlert,
                 titleVisibility: .visible
             ) {
                 Button("habit_delete_dialog_single", role: .destructive) {
@@ -53,22 +83,22 @@ struct HabitDetailView: View {
                 Button("general_cancel", role: .cancel) { }
             }
         }
-        .navigationBarBackButtonHidden(isEditing)
+        .navigationBarBackButtonHidden(self.isEditing)
         .navigationTitle("habit_detail_title")
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button("general_cancel") {
                     cancelEditHabit()
                 }
-                .isHidden(!isEditing)
+                .isHidden(!self.isEditing)
             }
             ToolbarItem(placement: .confirmationAction) {
-                let title = isEditing ? "general_done" : "general_edit"
+                let title = self.isEditing ? "general_done" : "general_edit"
                 Button(LocalizedStringKey(title)) {
-                    if isEditing {
+                    if self.isEditing {
                         updateHabit()
                     }
-                    isEditing = !isEditing
+                    self.isEditing = !self.isEditing
                 }
             }
         }
@@ -77,26 +107,26 @@ struct HabitDetailView: View {
     private func deleteHabit() {
         Task {
             do {
-                try await state.removeHabit(habitId: editingHabit.id)
+                try await self.state.removeHabit(habitId: self.habit.id)
             } catch {}
         }
-        router.pop()
+        self.router.pop()
     }
 
     private func updateHabit() {
         Task {
             do {
-                try await state.updateHabit(habit: editingHabit)
-                let habitEdited = try await state.getHabit(habit: editingHabit)
-                habit = habitEdited
-                editingHabit = habitEdited
+                try await self.state.updateHabit(habit: self.editingHabit)
+                let habitEdited = try await self.state.getHabit(habit: self.editingHabit)
+                self.habit = habitEdited
+                self.editingHabit = habitEdited
             } catch {}
         }
     }
 
     private func cancelEditHabit() {
-        editingHabit = habit
-        isEditing = false
+        self.editingHabit = self.habit
+        self.isEditing = false
     }
 }
 
