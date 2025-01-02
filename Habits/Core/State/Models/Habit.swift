@@ -196,8 +196,8 @@ struct Habit: Identifiable, Equatable {
         let recurrenceRule: EKRecurrenceRule = getEKRecurrenceRule()
 
         event.title = self.name
-        event.startDate = startDate ?? self.startDate
-        event.endDate = endDate ?? self.endDate
+        event.startDate = startDate
+        event.endDate = endDate
 
         if let alarmHour {
             event.addAlarm(EKAlarm(absoluteDate: alarmHour))

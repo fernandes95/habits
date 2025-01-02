@@ -25,14 +25,14 @@ struct NewHabitResumeView: View {
                 }
 
                 Section(header: Text("new_habit_resume_duration_section_title")) {
-                    DatePicker("habit_start_date", selection: $habit.startDate,
+                    DatePicker("habit_start_date", selection: self.$habit.startDate,
                                in: Date.now...,
                                displayedComponents: .date
                     )
                     .disabled(true)
 
-                    DatePicker("habit_end_date", selection: $habit.endDate,
-                               in: habit.startDate...,
+                    DatePicker("habit_end_date", selection: self.$habit.endDate,
+                               in: self.habit.startDate...,
                                displayedComponents: .date)
                     .disabled(true)
                 }
