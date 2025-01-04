@@ -27,7 +27,6 @@
 		AE43FF172BF29254008A7085 /* DefaultStoreServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43FF162BF29254008A7085 /* DefaultStoreServiceTests.swift */; };
 		AE43FF192BF34583008A7085 /* HabitsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43FF182BF34583008A7085 /* HabitsServiceTests.swift */; };
 		AE448A812B84E99F0034898F /* HabitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A802B84E99F0034898F /* HabitDetailView.swift */; };
-		AE448A842B85238E0034898F /* NewHabitContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A832B85238E0034898F /* NewHabitContentView.swift */; };
 		AE448A872B86632E0034898F /* HabitRouteIdEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A862B86632E0034898F /* HabitRouteIdEnvironmentKey.swift */; };
 		AE448A8A2B8664B40034898F /* HabitsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A892B8664B40034898F /* HabitsRouter.swift */; };
 		AE448A8D2B8925D80034898F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AE448A8C2B8925D80034898F /* Localizable.xcstrings */; };
@@ -90,7 +89,6 @@
 		AE43FF162BF29254008A7085 /* DefaultStoreServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultStoreServiceTests.swift; sourceTree = "<group>"; };
 		AE43FF182BF34583008A7085 /* HabitsServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsServiceTests.swift; sourceTree = "<group>"; };
 		AE448A802B84E99F0034898F /* HabitDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailView.swift; sourceTree = "<group>"; };
-		AE448A832B85238E0034898F /* NewHabitContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitContentView.swift; sourceTree = "<group>"; };
 		AE448A862B86632E0034898F /* HabitRouteIdEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRouteIdEnvironmentKey.swift; sourceTree = "<group>"; };
 		AE448A892B8664B40034898F /* HabitsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsRouter.swift; sourceTree = "<group>"; };
 		AE448A8C2B8925D80034898F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
@@ -204,7 +202,6 @@
 				AE3FCFEC2D1E314D00E25F46 /* HabitFrequencyView.swift */,
 				AEE2E5E12BC2EBA000DD9BC2 /* Calendar */,
 				AE9D9A0D2BB1813100CF3498 /* Map */,
-				AE448A832B85238E0034898F /* NewHabitContentView.swift */,
 			);
 			path = Reusable;
 			sourceTree = "<group>";
@@ -593,7 +590,6 @@
 				AE30E1582B9F7428009E10CD /* CalendarService.swift in Sources */,
 				AE30E1602BA4C182009E10CD /* Ocurrence.swift in Sources */,
 				AE9D9A112BB3328400CF3498 /* LocationService.swift in Sources */,
-				AE448A842B85238E0034898F /* NewHabitContentView.swift in Sources */,
 				AEA3D6BD2B5E85B700A08F31 /* HabitsView.swift in Sources */,
 				AEA3D6BB2B5E85B700A08F31 /* HabitsApp.swift in Sources */,
 				AE5845F12CB974BA0038E322 /* NewHabitResumeView.swift in Sources */,

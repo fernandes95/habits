@@ -58,12 +58,18 @@ struct HabitDetailView: View {
                     isEditing: self.$isEditing
                 )
 
-                Section(header: Text("Location Reminder")) {
-                    MapView(location: self.$editingHabit.location, canEdit: self.$isEditing)
-                        .frame(height: 250)
-                        .cornerRadius(10)
-                        .isHidden(!self.habit.hasLocationReminder)
-                        .disabled(!self.isEditing)
+                if self.isEditing || self.editingHabit.location != nil {
+                    Section(header: Text("Location Reminder")) {
+                            if self.isEditing && self.editingHabit.location != nil {
+                                Button("habit_detail_remove_pin", role: .destructive) {
+                                    self.editingHabit.location = nil
+                                }
+                            }
+                            MapView(location: self.$editingHabit.location, canEdit: self.$isEditing)
+                                .frame(height: 250)
+                                .cornerRadius(10)
+                                .disabled(!self.isEditing)
+                    }
                 }
             }
 

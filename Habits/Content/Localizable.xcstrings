@@ -147,6 +147,17 @@
         }
       }
     },
+    "habit_detail_remove_pin" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Pin"
+          }
+        }
+      }
+    },
     "habit_detail_title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -312,11 +323,11 @@
         }
       }
     },
-    "hasLocationReminder" : {
-
-    },
     "Hour #%lld" : {
 
+    },
+    "Key" : {
+      "extractionState" : "manual"
     },
     "Location Reminder" : {
 
