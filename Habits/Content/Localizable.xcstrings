@@ -329,6 +329,9 @@
     "Key" : {
       "extractionState" : "manual"
     },
+    "Key 1" : {
+      "extractionState" : "manual"
+    },
     "Location Reminder" : {
 
     },
@@ -442,11 +445,456 @@
         }
       }
     },
-    "notificationAuth" : {
-
+    "quote_eight" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“The great thing in this world is not so much where we are, but in what direction we are going.”\n\n―Oliver Wendell Holmes Jr."
+          }
+        }
+      }
     },
-    "Random quote here" : {
-
+    "quote_eighteen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Winners make a habit of manufacturing their own positive expectations in advance of the event.”\n\n―Brian Tracy"
+          }
+        }
+      }
+    },
+    "quote_eleven" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“I can and I will. Watch me.”\n\n―Carrie Green, Female Entrepreneur Association"
+          }
+        }
+      }
+    },
+    "quote_fifteen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“See yourself living in abundance and you will attract it.”\n\n―Rhonda Byrne"
+          }
+        }
+      }
+    },
+    "quote_five" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“He who has a why to live can bear almost any how.”\n\n―Nietzsche"
+          }
+        }
+      }
+    },
+    "quote_four" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“The mystery of human existence lies not in just staying alive, but in finding something to live for.”\n\n―Fyodor Dostoyevsky"
+          }
+        }
+      }
+    },
+    "quote_fourteen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Would you like me to give you a formula for success? It’s quite simple, really: Double your rate of failure. You are thinking of failure as the enemy of success. But it isn’t at all. You can be discouraged by failure or you can learn from it, so go ahead and make mistakes. Make all you can. Because remember that’s where you will find success.”\n\n―Thomas J. Watson"
+          }
+        }
+      }
+    },
+    "quote_fourty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Do not wait; the time will never be ‘just right.’ Start where you stand, and work with whatever tools you may have at your command, and better tools will be found as you go along.”\n\n―Napoleon Hill"
+          }
+        }
+      }
+    },
+    "quote_fourty_one" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Life is a journey, and if you fall in love with the journey, you will be in love forever.”\n\n―Peter Hagerty"
+          }
+        }
+      }
+    },
+    "quote_nine" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Success, like happiness, cannot be pursued. It must ensue. And it only does so as the unintended side of one’s personal dedication to a cause greater than oneself.”\n\n―Viktor Frankl"
+          }
+        }
+      }
+    },
+    "quote_nineteen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“You manifest what you believe, not what you want.”\n\n―Sonia Ricotti"
+          }
+        }
+      }
+    },
+    "quote_one" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Definiteness of purpose is the starting point from which one must begin”\n\n―Napoleon Hill"
+          }
+        }
+      }
+    },
+    "quote_seven" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“The two most important days in life are the day you born and the day you discover the reason why.”\n\n―Mark Twain"
+          }
+        }
+      }
+    },
+    "quote_seventeen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Set a goal, not only to follow world-class role models, but to become a world-class role model.”\n\n―Steve Siebold, Author"
+          }
+        }
+      }
+    },
+    "quote_six" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“The person without a purpose is like a ship without a rudder.”\n\n―Thomas Carlyle"
+          }
+        }
+      }
+    },
+    "quote_sixteen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Success is not to be pursued; it is attracted by the person you become.”\n\n―Jim Rohn"
+          }
+        }
+      }
+    },
+    "quote_ten" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“If you set your goals ridiculously high and it’s a failure, you will fail above everyone else’s success.”\n\n―James Cameron"
+          }
+        }
+      }
+    },
+    "quote_thirteen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Successful people do what unsuccessful people are not willing to do. Don’t wish it were easier; wish you were better.”\n\n―Jim Rohn"
+          }
+        }
+      }
+    },
+    "quote_thirty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“The law of life is the law of belief.”\n\n―Joseph Murphy, Ph.D."
+          }
+        }
+      }
+    },
+    "quote_thirty_eight" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Remember that the happiest people are not those getting more, but those giving more.”\n\n―H. Jackson Brown Jr."
+          }
+        }
+      }
+    },
+    "quote_thirty_five" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“At some point, the pain of not doing it becomes greater than the pain of doing it.”\n\n―Steven Pressfield, The War of Art"
+          }
+        }
+      }
+    },
+    "quote_thirty_four" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“The key to life is accepting challenges. Once someone stops doing this, he’s dead.”\n\n―Bette Davis"
+          }
+        }
+      }
+    },
+    "quote_thirty_nine" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“The only impossible journey is the one you never begin.”\n\n―Tony Robbins   "
+          }
+        }
+      }
+    },
+    "quote_thirty_one" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Go the extra mile, it’s never crowded.”\n\n―Jay Shetty"
+          }
+        }
+      }
+    },
+    "quote_thirty_seven" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Don’t be in the business of playing it safe. Be in the business of creating possibilities for greatness.”\n\n―Robert Iger, Chairman of Disney"
+          }
+        }
+      }
+    },
+    "quote_thirty_six" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“There is a place that you are to fill and no one else can fill, something you are to do, which no one else can do.”\n\n―Florence Scovel Shinn, The Game of Life"
+          }
+        }
+      }
+    },
+    "quote_thirty_three" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“One of the secrets of life is to make stepping stones out of stumbling blocks.”\n\n―Jack Penn"
+          }
+        }
+      }
+    },
+    "quote_thirty_two" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Wheresoever you go, go with all your heart.”\n\n―Confucius"
+          }
+        }
+      }
+    },
+    "quote_three" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“And actually, it’s not repetition that creates habits. It’s emotions that creates habits.”\n\n―Rangan Chatterjee"
+          }
+        }
+      }
+    },
+    "quote_twelve" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“To bring anything into your life, imagine that it’s already there.”\n\n―Richard Bach"
+          }
+        }
+      }
+    },
+    "quote_twenty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“We become what we think about. Energy flows where attention goes.”\n\n―Rhonda Byrne"
+          }
+        }
+      }
+    },
+    "quote_twenty_eight" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“As long as you live, keep learning how to live.”\n\n―Seneca"
+          }
+        }
+      }
+    },
+    "quote_twenty_five" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Whether you think you can or think you can’t, you’re right.”\n\n―Henry Ford"
+          }
+        }
+      }
+    },
+    "quote_twenty_four" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“The secret of getting ahead is getting started.”\n\n―Mark Twain"
+          }
+        }
+      }
+    },
+    "quote_twenty_nine" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“I think goals should never be easy, they should force you to work, even if they are uncomfortable at the time.”\n\n—Michael Phelps"
+          }
+        }
+      }
+    },
+    "quote_twenty_one" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“The price of greatness is responsibility.”\n\n―Winston Churchill"
+          }
+        }
+      }
+    },
+    "quote_twenty_seven" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Good things come to people who wait, but better things come to those who go out and get them.”\n\n―Abraham Lincoln"
+          }
+        }
+      }
+    },
+    "quote_twenty_six" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Destiny is not a matter of chance, it is a matter of choice.”\n\n―William Jennings Bryan"
+          }
+        }
+      }
+    },
+    "quote_twenty_three" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“What you do every day matters more than what you do once in a while”.\n\n―Gretchen Rubin"
+          }
+        }
+      }
+    },
+    "quote_twenty_two" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Each day is an opportunity to craft your best life. Each day brings a chance to choose your greatness.”\n\n―Robin Sharma"
+          }
+        }
+      }
+    },
+    "quote_two" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“It’s not about who you are today, it’s about who you want to become and the price you are willing to pay to get there.”\n\n―Tom Bilyeu, Founder Impact Theory"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
