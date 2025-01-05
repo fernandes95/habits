@@ -16,6 +16,13 @@ class NotificationService {
         self.notificationCenter.delegate = self.notificationDelegate
     }
 
+    func getNotificationStatus() async -> UNAuthorizationStatus {
+        let settings: UNNotificationSettings =
+        await UNUserNotificationCenter.current().notificationSettings()
+
+        return settings.authorizationStatus
+    }
+
     /// Request notification Authorizatoion
     func notificationAuthorization() async throws -> Bool {
         do {

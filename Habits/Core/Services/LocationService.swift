@@ -32,6 +32,10 @@ class LocationService: NSObject, ObservableObject {
         self.regionService = BackwardsCompactability.regionService(locationManager: self.locationManager)
     }
 
+    func getAuthorizationStatus() -> CLAuthorizationStatus {
+        return self.locationManager.authorizationStatus
+    }
+
     /// Request Location Authorization `When In Use`
     func locationAuthorization() {
         self.locationManager.requestWhenInUseAuthorization()

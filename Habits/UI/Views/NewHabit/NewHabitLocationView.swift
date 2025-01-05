@@ -17,20 +17,63 @@ struct NewHabitLocationView: View {
     @Binding
     var habit: Habit
 
+    @State private var hasLocationAuth: Bool = false
+    @State private var hasNotificationAuth: Bool = false
+
     var body: some View {
         VStack {
             Text("new_habit_location_title")
                 .font(.largeTitle)
                 .fontWeight(.bold)
-            Form {
-                Section(header: Text("new_habit_location_section_title")) {
-                    VStack {
-                        Text("new_habit_location_info")
 
-                        MapView(location: self.$habit.location, canEdit: .constant(true))
-                            .frame(height: 250)
-                            .cornerRadius(10)
+            ZStack {
+                Form {
+                    Section(header: Text("new_habit_location_section_title")) {
+                        VStack {
+                            Text("new_habit_location_info")
+
+                            MapView(location: self.$habit.location, canEdit: .constant(true))
+                                .frame(height: 250)
+                                .cornerRadius(10)
+                        }
                     }
+                }
+                // TODO: Improve this to update view (TimelineView maybe)
+                if !self.hasLocationAuth || !self.hasNotificationAuth {
+                    VStack(alignment: .center) {
+                        Text("This feature will send a notification based on the selected location.\n"
+                             + "We do not store any data regarding your location besides the selected location.")
+                        let txt = """
+                        Follow the following steps to enable location permissions:
+
+                        1. Open Settings
+                        2. Select ALWAYS allow location
+                        3. Select Precise Location toggle if not already selected
+
+
+                        Follow the following steps to enable notification permissions:
+
+                        1. Open Settings
+                        2. Select notification
+                        3. Select Allow notifications toggle
+                        """
+                        Text(txt)
+                        Spacer()
+                        Button(action: {
+                            Task {
+                                await self.state.openSettings()
+                            }
+                        }) {
+                            Text("Open Settings")
+                                .padding()
+                                .foregroundStyle(Color.white)
+                                .background(Color.blue)
+                                .cornerRadius(40)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.white)
+                    Spacer()
                 }
             }
         }
@@ -38,15 +81,14 @@ struct NewHabitLocationView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("general_next") {
-                    Task {
-                        try await self.state.getNotificationsAuthorization()
-                    }
-                    if !self.habit.hasLocationReminder {
-                        self.state.getLocationAuthorization()
-                    }
-
                     self.router.push(NewHabitResumeView(habit: self.$habit))
                 }
+            }
+        }
+        .onAppear {
+            Task {
+                self.hasLocationAuth = self.state.getLocationAuthorizationStatus()
+                self.hasNotificationAuth = try await self.state.getNotificationsAuthorizationStatus()
             }
         }
     }

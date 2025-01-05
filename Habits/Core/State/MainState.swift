@@ -14,9 +14,16 @@ class MainState: ObservableObject {
     private let habitsService: HabitsService = HabitsService()
     private let locationService: LocationService = LocationService()
     private let notificationService: NotificationService = NotificationService()
+    private var didRequestNotificationAuth: Bool = false // TODO: Improve this logic
 
     @Published
     var habits: [Habit] = []
+
+    @Published
+    var locationStatus: CLAuthorizationStatus = .notDetermined
+
+    @Published
+    var notificationStatus: UNAuthorizationStatus = .notDetermined
 
     @Published
     var selectedDate: Date = Date.now
@@ -91,13 +98,43 @@ class MainState: ObservableObject {
         } catch { }
     }
 
+    /// Get Location Authorization Status
+    func getLocationAuthorizationStatus() -> Bool {
+        let status = self.locationService.getAuthorizationStatus()
+        self.locationStatus = status
+        return status == .authorizedAlways
+    }
+
+    /// Get Notification Authorization Status
+    func getNotificationsAuthorizationStatus() async throws -> Bool {
+        let status = await self.notificationService.getNotificationStatus()
+        self.notificationStatus = status
+        return status == .authorized
+    }
+
     /// Get Location Authorization
-    func getLocationAuthorization() {
+    func getLocationAuthorizationStatus() {
         self.locationService.locationAuthorization()
     }
 
     /// Get Notifications Authorization
-    func getNotificationsAuthorization() async throws -> Bool {
-        return try await self.notificationService.notificationAuthorization()
+    func getNotificationsAuthorization() async throws {
+        if self.didRequestNotificationAuth ||
+            self.locationStatus == .denied {
+            if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
+                // Ask the system to open that URL.
+                await UIApplication.shared.open(url)
+            }
+        } else {
+            _ = try await self.notificationService.notificationAuthorization()
+            self.didRequestNotificationAuth = true
+        }
+    }
+
+    func openSettings() async {
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            // Ask the system to open that URL.
+            await UIApplication.shared.open(url)
+        }
     }
 }
