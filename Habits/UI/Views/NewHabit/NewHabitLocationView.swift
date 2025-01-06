@@ -13,6 +13,9 @@ struct NewHabitLocationView: View {
 
     @EnvironmentObject
     private var state: MainState
+    
+    @Environment(\.scenePhase)
+    private var scenePhase: ScenePhase
 
     @Binding
     var habit: Habit
@@ -38,7 +41,6 @@ struct NewHabitLocationView: View {
                         }
                     }
                 }
-                // TODO: Improve this to update view (TimelineView maybe)
                 if !self.hasLocationAuth || !self.hasNotificationAuth {
                     VStack(alignment: .center) {
                         Text("This feature will send a notification based on the selected location.\n"
@@ -86,10 +88,23 @@ struct NewHabitLocationView: View {
             }
         }
         .onAppear {
-            Task {
-                self.hasLocationAuth = self.state.getLocationAuthorizationStatus()
-                self.hasNotificationAuth = try await self.state.getNotificationsAuthorizationStatus()
+            updatePerms()
+        }
+        .onChange(of: self.scenePhase) { (newValue: ScenePhase) in
+            switch newValue {
+            case .active:
+                updatePerms()
+            default:
+                break
             }
+        }
+        
+    }
+    
+    func updatePerms() {
+        Task {
+            self.hasLocationAuth = self.state.getLocationAuthorizationStatus()
+            self.hasNotificationAuth = try await self.state.getNotificationsAuthorizationStatus()
         }
     }
 }
