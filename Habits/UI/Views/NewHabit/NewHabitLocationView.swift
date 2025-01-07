@@ -13,7 +13,7 @@ struct NewHabitLocationView: View {
 
     @EnvironmentObject
     private var state: MainState
-    
+
     @Environment(\.scenePhase)
     private var scenePhase: ScenePhase
 
@@ -43,35 +43,21 @@ struct NewHabitLocationView: View {
                 }
                 if !self.hasLocationAuth || !self.hasNotificationAuth {
                     VStack(alignment: .center) {
-                        Text("This feature will send a notification based on the selected location.\n"
-                             + "We do not store any data regarding your location besides the selected location.")
-                        let txt = """
-                        Follow the following steps to enable location permissions:
-
-                        1. Open Settings
-                        2. Select ALWAYS allow location
-                        3. Select Precise Location toggle if not already selected
-
-
-                        Follow the following steps to enable notification permissions:
-
-                        1. Open Settings
-                        2. Select notification
-                        3. Select Allow notifications toggle
-                        """
-                        Text(txt)
+                        Text("new_habit_location_setttings_info")
+                        Text("new_habit_location_settings")
                         Spacer()
                         Button(action: {
-                            Task {
-                                await self.state.openSettings()
+                                Task {
+                                    await self.state.openSettings()
+                                }
+                            }, label: {
+                                Text("Open Settings")
+                                    .padding()
+                                    .foregroundStyle(Color.white)
+                                    .background(Color.blue)
+                                    .cornerRadius(40)
                             }
-                        }) {
-                            Text("Open Settings")
-                                .padding()
-                                .foregroundStyle(Color.white)
-                                .background(Color.blue)
-                                .cornerRadius(40)
-                        }
+                        )
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.white)
@@ -98,9 +84,9 @@ struct NewHabitLocationView: View {
                 break
             }
         }
-        
+
     }
-    
+
     func updatePerms() {
         Task {
             self.hasLocationAuth = self.state.getLocationAuthorizationStatus()

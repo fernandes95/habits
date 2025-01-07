@@ -14,7 +14,6 @@ class MainState: ObservableObject {
     private let habitsService: HabitsService = HabitsService()
     private let locationService: LocationService = LocationService()
     private let notificationService: NotificationService = NotificationService()
-    private var didRequestNotificationAuth: Bool = false // TODO: Improve this logic
 
     @Published
     var habits: [Habit] = []
@@ -110,25 +109,6 @@ class MainState: ObservableObject {
         let status = await self.notificationService.getNotificationStatus()
         self.notificationStatus = status
         return status == .authorized
-    }
-
-    /// Get Location Authorization
-    func getLocationAuthorizationStatus() {
-        self.locationService.locationAuthorization()
-    }
-
-    /// Get Notifications Authorization
-    func getNotificationsAuthorization() async throws {
-        if self.didRequestNotificationAuth ||
-            self.locationStatus == .denied {
-            if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
-                // Ask the system to open that URL.
-                await UIApplication.shared.open(url)
-            }
-        } else {
-            _ = try await self.notificationService.notificationAuthorization()
-            self.didRequestNotificationAuth = true
-        }
     }
 
     func openSettings() async {

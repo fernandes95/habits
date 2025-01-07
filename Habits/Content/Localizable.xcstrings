@@ -368,6 +368,28 @@
         }
       }
     },
+    "new_habit_location_settings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Follow the following steps to enable location permissions:\n\n   1. Open Settings\n   2. Select ALWAYS allow location\n   3. Select Precise Location toggle if not already selected\n\nFollow the following steps to enable notification permissions:\n\n    1. Open Settings\n    2. Select notification\n    3. Select Allow notifications toggle"
+          }
+        }
+      }
+    },
+    "new_habit_location_setttings_info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This feature will send a notification based on the selected location.\nWe do not store any data regarding your location besides the selected location."
+          }
+        }
+      }
+    },
     "new_habit_location_title" : {
       "extractionState" : "manual",
       "localizations" : {
