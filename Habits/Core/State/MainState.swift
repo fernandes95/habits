@@ -19,6 +19,12 @@ class MainState: ObservableObject {
     var habits: [Habit] = []
 
     @Published
+    var locationStatus: CLAuthorizationStatus = .notDetermined
+
+    @Published
+    var notificationStatus: UNAuthorizationStatus = .notDetermined
+
+    @Published
     var selectedDate: Date = Date.now
 
     /// Get all habits from `Selected Date`
@@ -91,13 +97,24 @@ class MainState: ObservableObject {
         } catch { }
     }
 
-    /// Get Location Authorization
-    func getLocationAuthorization() {
-        self.locationService.locationAuthorization()
+    /// Get Location Authorization Status
+    func getLocationAuthorizationStatus() -> Bool {
+        let status = self.locationService.getAuthorizationStatus()
+        self.locationStatus = status
+        return status == .authorizedAlways
     }
 
-    /// Get Notifications Authorization
-    func getNotificationsAuthorization() async throws -> Bool {
-        return try await self.notificationService.notificationAuthorization()
+    /// Get Notification Authorization Status
+    func getNotificationsAuthorizationStatus() async throws -> Bool {
+        let status = await self.notificationService.getNotificationStatus()
+        self.notificationStatus = status
+        return status == .authorized
+    }
+
+    func openSettings() async {
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            // Ask the system to open that URL.
+            await UIApplication.shared.open(url)
+        }
     }
 }

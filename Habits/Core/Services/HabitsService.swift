@@ -138,7 +138,7 @@ class HabitsService {
                 },
                 hasAlarm: eventsHabit.hasAlarm,
                 hasLocationReminder: eventsHabit.hasLocationReminder,
-                location: eventsHabit.hasLocationReminder && eventsHabit.location != nil
+                location: eventsHabit.location != nil
                 ? HabitEntity.Location(
                     latitude: eventsHabit.location!.latitude,
                     longitude: eventsHabit.location!.longitude

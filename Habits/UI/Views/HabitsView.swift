@@ -14,7 +14,6 @@ struct HabitsView: View {
     @EnvironmentObject
     private var state: MainState
 
-    @State private var isPresentingNewHabit = false
     @State private var didLoadData = false
 //    @State private var viewType: ViewType = .list
 
@@ -86,17 +85,13 @@ struct HabitsView: View {
 //            }
 
             ToolbarItem(placement: .topBarTrailing) {
-                Button(action: { isPresentingNewHabit = true }, label: {
+                Button(action: {
+                    self.router.push(NewHabitQuoteView())
+                }, label: {
                     Image(systemName: "plus")
                 })
                 .accessibilityLabel("habits_accessibility_new_habit")
             }
-        }
-        .sheet(isPresented: $isPresentingNewHabit) {
-            NewHabitView(
-                isPresentingNewHabit: $isPresentingNewHabit,
-                startDate: state.selectedDate
-            )
         }
     }
 }
