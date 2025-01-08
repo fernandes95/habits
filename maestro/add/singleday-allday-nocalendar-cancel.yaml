@@ -1,0 +1,21 @@
+appId: ${appId}
+env:
+  habitname: "Habit Single Day All Day"
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+- launchApp:
+    clearState: true
+    permissions: 
+        all: deny
+
+- runFlow: subFlows/name-flow.yaml
+
+- runFlow: subFlows/single-day-flow.yaml
+
+# Cancel and verify if it's back on Home View
+- assertVisible: ${buttonNewHabitCancel}
+- tapOn: ${buttonNewHabitCancel}
+- assertNotVisible: ${buttonNewHabitCancel}
+- assertVisible: ${buttonHomeAdd}
+- assertNotVisible: ${habitname}

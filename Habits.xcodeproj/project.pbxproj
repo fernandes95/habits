@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -120,6 +120,10 @@
 		AEE2E5E02BBDA7C000DD9BC2 /* gpxgenerator_path.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = gpxgenerator_path.gpx; path = ../../../Downloads/gpxgenerator_path.gpx; sourceTree = "<group>"; };
 		AEE2E5E22BC2EBC800DD9BC2 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		AEE740F32D2D9B9200BB85FD /* maestro */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = maestro; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		AE43FF082BF291BB008A7085 /* Frameworks */ = {
@@ -364,6 +368,7 @@
 		AEA3D6AE2B5E85B700A08F31 = {
 			isa = PBXGroup;
 			children = (
+				AEE740F32D2D9B9200BB85FD /* maestro */,
 				AE381DD22BCEE2950038B689 /* gpxchicago.gpx */,
 				AEE2E5E02BBDA7C000DD9BC2 /* gpxgenerator_path.gpx */,
 				AEA3D6B92B5E85B700A08F31 /* Habits */,

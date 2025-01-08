@@ -1,0 +1,15 @@
+appId: ${appId}
+---
+# Open New Habit
+- assertVisible:  ${buttonHomeAdd}
+- tapOn: ${buttonHomeAdd}
+- assertVisible: ${buttonNewHabitNext}
+- tapOn: ${buttonNewHabitNext}
+
+# Fill New Habit name and go to next step
+- assertVisible: "What habit do you want to start?"
+- tapOn:
+    id: "new_habit_name"
+- inputText: ${habitname}
+- tapOn: ${buttonNewHabitNext}
+- assertVisible: "How long do you want this habit to be?"

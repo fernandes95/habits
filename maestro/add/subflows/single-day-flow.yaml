@@ -1,0 +1,8 @@
+appId: ${appId}
+---
+# Skip Schedule and Location steps with the defaults
+- tapOn: ${buttonNewHabitNext}
+- assertVisible: "Do you want to create a schedule?"
+- tapOn: ${buttonNewHabitNext}
+- assertVisible: "Do you want to get reminders based on your location?"
+- tapOn: ${buttonNewHabitNext}

@@ -1,0 +1,19 @@
+appId: ${appId}
+env:
+  habitname: "Habit Single Day All Day"
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+- launchApp:
+    clearState: true
+    permissions: 
+        all: deny
+
+- runFlow: subFlows/name-flow.yaml
+
+- runFlow: subFlows/single-day-flow.yaml
+
+# Create Habit
+- assertVisible: ${buttonNewHabitCreate}
+- tapOn: ${buttonGeneralCreate}
+- assertVisible: ${habitname}
