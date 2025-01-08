@@ -1,13 +1,13 @@
 appId: ${appId}
 env:
-  habitname: "Habit Single Day All Day"
+  habitname: "Test Permissions"
 onFlowStart:
   - runFlow: ../env.yaml
 ---
 - launchApp:
     clearState: true
     permissions: 
-        all: deny
+        all: unset
 
 - runFlow: subFlows/name-flow.yaml
 
@@ -16,5 +16,6 @@ onFlowStart:
 # Create Habit
 - assertVisible: ${buttonNewHabitCreate}
 - tapOn: ${buttonNewHabitCreate}
-- assertVisible: ${buttonHomeAdd}
-- assertVisible: ${habitname}
+
+# Accept Calendar Permissions
+- assertVisible: "Allow Full Access"

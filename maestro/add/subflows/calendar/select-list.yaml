@@ -1,0 +1,31 @@
+appId: ${appId}
+---
+- runFlow:
+    env:
+      containerId: "ListViewContainerView"
+    when:
+      visible: 
+        id: "ListViewContainerView"
+    file: select-container-back.yaml
+
+- runFlow:
+    env:
+      containerId: "MultiDayWeekViewContainerView"
+    when:
+      visible: 
+        id: "MultiDayWeekViewContainerView"
+    file: select-container-back.yaml
+
+- runFlow:
+    env:
+      containerId: "DayViewContainerView"
+    when:
+      visible: 
+        id: "DayViewContainerView"
+    file: select-container-back.yaml
+
+# Select List View option
+- tapOn:
+    id: "toggle-month-view"
+- assertVisible: "List"
+- tapOn: "List"

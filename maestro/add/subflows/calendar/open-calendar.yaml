@@ -1,0 +1,14 @@
+appId: ${appId}
+---
+#Open Calendar
+- openLink: calshow:/
+
+#Select current day
+- assertVisible: "Today"
+- tapOn: "Today"
+
+- runFlow:
+    when:
+      visible: 
+        id: "toggle-day-list-view"
+    file: select-list.yaml
