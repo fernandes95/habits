@@ -1,0 +1,14 @@
+appId: ${appId}
+---
+# Open New Habit Schedule
+- tapOn: ${buttonNewHabitNext}
+- assertVisible: ${titleNewHabitSchedule}
+
+# Add multiple hours for schedule
+- tapOn: ${buttonNewHabitScheduleAdd}
+- assertVisible: "Hour #1"
+- tapOn: ${buttonNewHabitScheduleAdd}
+- assertVisible: "Hour #2"
+- tapOn: ${buttonNewHabitScheduleAdd}
+- assertVisible: "Hour #3"
+- tapOn: ${buttonNewHabitNext}

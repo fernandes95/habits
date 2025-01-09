@@ -1,0 +1,8 @@
+appId: ${appId}
+---
+# Verify if event exist by name and index
+- assertVisible:
+    text: ${habitname}
+    index: ${eventIndex}
+    childOf:
+      id: "CompactMonthListViewTable"

@@ -1,0 +1,40 @@
+appId: ${appId}
+env:
+  habitname: "Habit Single Day Schedule"
+onFlowStart:
+  - runFlow: ../../env.yaml
+---
+- launchApp:
+    clearState: true
+    permissions: 
+        all: allow
+
+- runFlow: ../subFlows/FillName.yaml
+- runFlow: ../subFlows/SelectSchedule.yaml
+
+# Skip Location step with the defaults
+- assertVisible: ${titleNewHabitLocation}
+- tapOn: ${buttonNewHabitNext}
+
+# Create Habit
+- assertVisible: ${buttonNewHabitCreate}
+- tapOn: ${buttonNewHabitCreate}
+- assertVisible: ${buttonHomeAdd}
+- assertVisible: ${habitname}
+
+- runFlow: ../../common/calendar/OpenSystemCalendar.yaml
+
+- runFlow:
+    env:
+      eventIndex: 0
+    file: ../../common/calendar/VerifyEvent.yaml
+
+- runFlow:
+    env:
+      eventIndex: 1
+    file: ../../common/calendar/VerifyEvent.yaml
+
+- runFlow:
+    env:
+      eventIndex: 2
+    file: ../../common/calendar/VerifyEvent.yaml

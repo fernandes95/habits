@@ -1,15 +1,15 @@
 appId: ${appId}
 env:
-  habitname: "Habit Single Day All Day Calendar"
+  habitname: "Single Habit All Day Calendar"
 onFlowStart:
-  - runFlow: ../env.yaml
+  - runFlow: ../../env.yaml
 ---
 - launchApp:
     clearState: true
 
-- runFlow: subFlows/name-flow.yaml
+- runFlow: ../subFlows/FillName.yaml
 
-- runFlow: subFlows/single-day-flow.yaml
+- runFlow: ../subFlows/ScheduleAndLocationSteps.yaml
 
 # Create Habit
 - assertVisible: ${buttonNewHabitCreate}
@@ -19,7 +19,7 @@ onFlowStart:
 - assertVisible: ${buttonHomeAdd}
 - assertVisible: ${habitname}
 
-- runFlow: subFlows/calendar/open-calendar.yaml
+- runFlow: ../../common/calendar/OpenSystemCalendar.yaml
 
 # Verify that habit was added to Calendar
 - assertVisible: ${habitname}

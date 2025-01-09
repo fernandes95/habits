@@ -11,4 +11,4 @@ appId: ${appId}
     when:
       visible: 
         id: "toggle-day-list-view"
-    file: select-list.yaml
+    file: SelectListMode.yaml

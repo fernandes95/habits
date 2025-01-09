@@ -6,7 +6,7 @@ appId: ${appId}
     when:
       visible: 
         id: "ListViewContainerView"
-    file: select-container-back.yaml
+    file: SelectContainerBack.yaml
 
 - runFlow:
     env:
@@ -14,7 +14,7 @@ appId: ${appId}
     when:
       visible: 
         id: "MultiDayWeekViewContainerView"
-    file: select-container-back.yaml
+    file: SelectContainerBack.yaml
 
 - runFlow:
     env:
@@ -22,7 +22,7 @@ appId: ${appId}
     when:
       visible: 
         id: "DayViewContainerView"
-    file: select-container-back.yaml
+    file: SelectContainerBack.yaml
 
 # Select List View option
 - tapOn:
