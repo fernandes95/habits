@@ -10,6 +10,6 @@ appId: ${appId}
 - assertVisible: "What habit do you want to start?"
 - tapOn:
     id: "new_habit_name"
-- inputText: ${habitname}
+- inputText: ${output.habitName}
 - tapOn: ${buttonNewHabitNext}
 - assertVisible: "How long do you want this habit to be?"

@@ -1,6 +1,7 @@
 appId: ${appId}
 ---
 #Open Calendar
+#(THIS OPENS THE CALENDAR IN YEAR 2001)
 - openLink: calshow:/
 
 #Select current day

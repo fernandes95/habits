@@ -1,6 +1,4 @@
 appId: ${appId}
-env:
-  habitname: "Test Permissions"
 onFlowStart:
   - runFlow: ../../env.yaml
 ---

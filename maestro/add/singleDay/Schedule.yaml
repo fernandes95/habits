@@ -1,6 +1,4 @@
 appId: ${appId}
-env:
-  habitname: "Habit Single Day Schedule"
 onFlowStart:
   - runFlow: ../../env.yaml
 ---
@@ -20,7 +18,7 @@ onFlowStart:
 - assertVisible: ${buttonNewHabitCreate}
 - tapOn: ${buttonNewHabitCreate}
 - assertVisible: ${buttonHomeAdd}
-- assertVisible: ${habitname}
+- assertVisible: ${output.habitName}
 
 # Open Habit detail
 - tapOn: ${buttonHomeListItemArrow}

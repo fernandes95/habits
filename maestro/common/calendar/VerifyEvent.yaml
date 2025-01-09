@@ -2,7 +2,7 @@ appId: ${appId}
 ---
 # Verify if event exist by name and index
 - assertVisible:
-    text: ${habitname}
+    text: ${output.habitName}
     index: ${eventIndex}
     childOf:
       id: "CompactMonthListViewTable"
