@@ -22,7 +22,7 @@ onFlowStart:
 
 # Open Habit detail
 - tapOn: ${buttonHomeListItemArrow}
-- assertVisible: ${buttonDelete}
+- assertVisible: ${buttonHabitDetailDelete}
 - assertVisible: "Hour #1"
 - assertVisible: "Hour #2"
 - assertVisible: "Hour #3"

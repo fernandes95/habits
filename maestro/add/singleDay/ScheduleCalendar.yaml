@@ -25,14 +25,18 @@ onFlowStart:
 - runFlow:
     env:
       eventIndex: 0
+      eventExists: true
     file: ../../common/calendar/VerifyEvent.yaml
 
 - runFlow:
     env:
       eventIndex: 1
+      eventExists: true
     file: ../../common/calendar/VerifyEvent.yaml
 
 - runFlow:
     env:
       eventIndex: 2
+      eventExists: true
     file: ../../common/calendar/VerifyEvent.yaml
+

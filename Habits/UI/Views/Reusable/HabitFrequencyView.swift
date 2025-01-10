@@ -65,14 +65,16 @@ struct HabitFrequencyView: View {
 
                     datePicker
                         .swipeActions(edge: .trailing) {
-                            Button(role: .destructive) {
-                                self.habit.schedule.remove(at: index)
+                            if isEditing {
+                                Button(role: .destructive) {
+                                    self.habit.schedule.remove(at: index)
 
-                                if self.habit.schedule.isEmpty {
-                                    self.habit.hasAlarm = false
+                                    if self.habit.schedule.isEmpty {
+                                        self.habit.hasAlarm = false
+                                    }
+                                } label: {
+                                    Label("habit_schedule_delete", systemImage: "trash")
                                 }
-                            } label: {
-                                Label("habit_schedule_delete", systemImage: "trash")
                             }
                         }
                 }
