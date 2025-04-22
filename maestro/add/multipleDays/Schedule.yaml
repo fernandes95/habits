@@ -1,0 +1,51 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../../env.yaml
+---
+- launchApp:
+    clearState: true
+    permissions: 
+        all: deny
+
+- runFlow: ../subFlows/FillName.yaml
+
+# Select End Date
+- runFlow: 
+    env:
+      DATEPICKER_INDEX: ${indexNewHabitDurantionEndDatePicker}
+    file: ../../common/calendar/SelectDayFromDatePicker.yaml
+
+- runFlow: ../subFlows/SelectSchedule.yaml
+
+# Skip Location step with the defaults
+- assertVisible: ${titleNewHabitLocation}
+- tapOn: ${buttonNewHabitNext}
+
+# Create Habit
+- assertVisible: ${buttonNewHabitCreate}
+- tapOn: ${buttonNewHabitCreate}
+- assertVisible: ${buttonHomeAdd}
+- assertVisible: ${output.habitName}
+
+- repeat:
+    times: ${endDayCounter}
+    commands:
+      - tapOn: ${buttonHomeNextDay}
+      - assertVisible: ${output.habitName}
+
+# Open Habit detail
+- tapOn: ${buttonHomeListItemArrow}
+- assertVisible: ${buttonHabitDetailDelete}
+- assertVisible: "Hour #1"
+- assertVisible: "Hour #2"
+- assertVisible: "Hour #3"
+
+# Go Back to Home
+- tapOn: 
+    text: ${buttonHabitDetailBack}
+    index: 2
+- assertVisible: ${buttonHomeAdd}
+
+# Verify that habit doesn't exist on the next day
+- tapOn: ${buttonHomeNextDay}
+- assertNotVisible: ${output.habitName}
