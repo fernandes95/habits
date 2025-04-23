@@ -32,4 +32,3 @@ onFlowStart:
 
 - tapOn: ${buttonHomeNextDay}
 - assertNotVisible: ${output.habitName}
-

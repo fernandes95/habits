@@ -1,0 +1,18 @@
+appId: ${appId}
+---
+# Select current day
+- assertVisible: "Today"
+- tapOn: "Today"
+
+- assertVisible:
+    id: "toggle-day-list-view"
+- tapOn:
+    id: "toggle-day-list-view"
+
+# Select single day
+- assertVisible: "Single Day"
+- tapOn: "Single Day"
+
+# Verify that the view is on single day
+- assertVisible: 
+    id: "current-day"
