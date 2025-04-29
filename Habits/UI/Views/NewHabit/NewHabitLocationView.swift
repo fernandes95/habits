@@ -33,8 +33,6 @@ struct NewHabitLocationView: View {
                 Form {
                     Section(header: Text("new_habit_location_section_title")) {
                         VStack {
-                            Text("new_habit_location_info")
-
                             MapView(location: self.$habit.location, canEdit: .constant(true))
                                 .frame(height: 250)
                                 .cornerRadius(10)
@@ -44,7 +42,14 @@ struct NewHabitLocationView: View {
                 if !self.hasLocationAuth || !self.hasNotificationAuth {
                     VStack(alignment: .center) {
                         Text("new_habit_location_setttings_info")
-                        Text("new_habit_location_settings")
+
+                        if !self.hasLocationAuth {
+                            Text("new_habit_location_settings_location")
+                        }
+
+                        if self.hasLocationAuth && !self.hasNotificationAuth {
+                            Text("new_habit_location_settings_notification")
+                        }
                         Spacer()
                         Button(action: {
                                 Task {
@@ -91,6 +96,11 @@ struct NewHabitLocationView: View {
         Task {
             self.hasLocationAuth = self.state.getLocationAuthorizationStatus()
             self.hasNotificationAuth = try await self.state.getNotificationsAuthorizationStatus()
+
+            if self.hasLocationAuth && !self.hasNotificationAuth {
+                try await self.state.getNotificationsAuthorization()
+                self.hasNotificationAuth = try await self.state.getNotificationsAuthorizationStatus()
+            }
         }
     }
 }

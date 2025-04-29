@@ -346,17 +346,6 @@
         }
       }
     },
-    "new_habit_location_info" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "To use this feature we'll need permissions to notifications and location (While using app and then Always allow while offline)."
-          }
-        }
-      }
-    },
     "new_habit_location_section_title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -368,13 +357,24 @@
         }
       }
     },
-    "new_habit_location_settings" : {
+    "new_habit_location_settings_location" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Follow the following steps to enable location permissions:\n\n   1. Open Settings\n   2. Select ALWAYS allow location\n   3. Select Precise Location toggle if not already selected\n\nFollow the following steps to enable notification permissions:\n\n    1. Open Settings\n    2. Select notification\n    3. Select Allow notifications toggle"
+            "value" : "Follow the following steps to enable location permissions:\n\n   1. Open Settings\n   2. Select ALWAYS allow location\n   3. Select Precise Location toggle if not already selected"
+          }
+        }
+      }
+    },
+    "new_habit_location_settings_notification" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\nFollow the following steps to enable notification permissions:\n\n    1. Open Settings\n    2. Select notification\n    3. Select Allow notifications toggle"
           }
         }
       }
