@@ -46,23 +46,29 @@ struct NewHabitResumeView: View {
                     }
                     .disabled(true)
 
-                    let weeklyValidation: Bool = habit.frequency != .weekly
-                    Spacer()
-                        .isHidden(weeklyValidation)
-                    ForEach(WeekDay.allCases, id: \.self) { day in
-                        HStack {
-                            Text(day.rawValue).tag(day)
-                            Spacer()
-                            if habit.frequencyType.weekFrequency.contains(day) {
-                                Image(systemName: "checkmark")
+                    switch habit.frequency {
+                    case .daily: EmptyView()
+                    case .weekly:
+                        Spacer()
+                        ForEach(WeekDay.allCases, id: \.self) { day in
+                            HStack {
+                                Text(day.rawValue).tag(day)
+                                Spacer()
+                                if habit.frequencyType.weekFrequency.contains(day) {
+                                    Image(systemName: "checkmark")
+                                }
                             }
+                            .contentShape(Rectangle())
                         }
-                        .contentShape(Rectangle())
+                        .disabled(true)
+                    case .interval:
+                        HStack {
+                            Text("habit_interval_title")
+                            Spacer()
+                            Text("\(String(self.habit.scheduleInterval!))")
+                        }
                     }
-                    .isHidden(weeklyValidation)
-                    .disabled(true)
                 }
-
                 if self.habit.schedule.count > 0 {
                     Section(header: Text("new_habit_resume_schedule_section_title")) {
                         ForEach(self.habit.schedule) { hour in

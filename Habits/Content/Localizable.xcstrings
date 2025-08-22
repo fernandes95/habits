@@ -4,6 +4,12 @@
     "" : {
 
     },
+    "%@" : {
+
+    },
+    "Days" : {
+
+    },
     "general_add" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -198,6 +204,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Has alarm"
+          }
+        }
+      }
+    },
+    "habit_interval_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Days"
           }
         }
       }

@@ -105,7 +105,8 @@ class HabitsService {
             },
             hasAlarm: habit.hasAlarm,
             hasLocationReminder: habit.hasLocationReminder,
-            location: location
+            location: location,
+            scheduleInterval: habit.scheduleInterval
         )
 
         self.store.habits.append(newHabit)

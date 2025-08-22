@@ -18,6 +18,7 @@ struct Habit: Identifiable, Equatable {
     var frequency: Frequency
     var frequencyType: Ocurrence
     var category: Category
+    var scheduleInterval: Int?
     var schedule: [Hour]
     var isChecked: Bool
     var hasAlarm: Bool
@@ -43,7 +44,8 @@ struct Habit: Identifiable, Equatable {
         createdDate: Date,
         updatedDate: Date,
         hasLocationReminder: Bool = false,
-        location: Location? = nil
+        location: Location? = nil,
+        scheduleInterval: Int? = nil
     ) {
         self.id = id
         self.eventId = eventId
@@ -61,6 +63,7 @@ struct Habit: Identifiable, Equatable {
         self.schedule = schedule
         self.hasLocationReminder = hasLocationReminder
         self.location = location
+        self.scheduleInterval = scheduleInterval
     }
 
     internal func with(
@@ -71,6 +74,7 @@ struct Habit: Identifiable, Equatable {
         frequency: String? = nil,
         frequencyType: Ocurrence? = nil,
         category: String? = nil,
+        scheduleInterval: Int? = nil,
         schedule: [Hour]? = nil,
         isChecked: Bool? = nil,
         hasAlarm: Bool? = nil,
@@ -96,7 +100,8 @@ struct Habit: Identifiable, Equatable {
             createdDate: createdDate ?? self.createdDate,
             updatedDate: updatedDate ?? self.updatedDate,
             hasLocationReminder: hasLocationReminder ?? self.hasLocationReminder,
-            location: location ?? self.location
+            location: location ?? self.location,
+            scheduleInterval: scheduleInterval ?? self.scheduleInterval
         )
     }
 
@@ -109,6 +114,7 @@ struct Habit: Identifiable, Equatable {
         self.frequency = getFrequency(habitEntity.frequency)
         self.frequencyType = habitEntity.frequencyType
         self.category = getCategory(habitEntity.category)
+        self.scheduleInterval = habitEntity.scheduleInterval
 
         self.schedule = habitEntity.schedule.map { hourEntity in
             return Hour(
@@ -181,7 +187,7 @@ struct Habit: Identifiable, Equatable {
         } else {
             EKRecurrenceRule(
                 recurrenceWith: .daily,
-                interval: 1,
+                interval: self.scheduleInterval ?? 1,
                 end: recurrenceEnd
             )
         }
@@ -226,6 +232,7 @@ struct Habit: Identifiable, Equatable {
     enum Frequency: String, Identifiable, CaseIterable {
         case daily = "Daily"
         case weekly = "Weekly"
+        case interval = "Interval"
 //        case monthly = "Monthly"
 //        case yearly = "Yearly"
 //        case Custom

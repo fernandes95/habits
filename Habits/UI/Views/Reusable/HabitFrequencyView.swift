@@ -11,6 +11,12 @@ struct HabitFrequencyView: View {
     @Binding private var habit: Habit
     @Binding private var isEditing: Bool
 
+    let formatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
+
     init(habit: Binding<Habit>, isEditing: Binding<Bool>) {
         self._habit = habit
         self._isEditing = isEditing
@@ -24,34 +30,43 @@ struct HabitFrequencyView: View {
                         .onTapGesture {
                             if frequency != .weekly {
                                 self.habit.frequencyType.weekFrequency.removeAll()
+                            } else if frequency != .interval {
+                                self.habit.scheduleInterval = nil
                             }
                         }
                 }
             }
             .disabled(!isEditing)
 
-            let weeklyValidation: Bool = self.habit.frequency != .weekly
-            Spacer()
-                .isHidden(weeklyValidation)
-            ForEach(WeekDay.allCases, id: \.self) { day in
-                HStack {
-                    Text(day.rawValue).tag(day)
-                    Spacer()
-                    if self.habit.frequencyType.weekFrequency.contains(day) {
-                        Image(systemName: "checkmark")
+            switch self.habit.frequency {
+            case .daily: EmptyView()
+            case .weekly:
+                Spacer()
+                ForEach(WeekDay.allCases, id: \.self) { day in
+                    HStack {
+                        Text(day.rawValue).tag(day)
+                        Spacer()
+                        if self.habit.frequencyType.weekFrequency.contains(day) {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        if self.habit.frequencyType.weekFrequency.contains(day) {
+                            self.habit.frequencyType.weekFrequency.removeAll(where: {$0 == day})
+                        } else {
+                            self.habit.frequencyType.weekFrequency.append(day)
+                        }
                     }
                 }
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    if self.habit.frequencyType.weekFrequency.contains(day) {
-                        self.habit.frequencyType.weekFrequency.removeAll(where: {$0 == day})
-                    } else {
-                        self.habit.frequencyType.weekFrequency.append(day)
-                    }
-                }
+                .disabled(!isEditing)
+
+            case .interval:
+                TextField("habit_interval_title", value: self.$habit.scheduleInterval, formatter: self.formatter)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .keyboardType(.decimalPad)
+                    .accessibilityIdentifier("new_habit_schedule_interval")
             }
-            .isHidden(weeklyValidation)
-            .disabled(!isEditing)
         }
 
         let scheduleValidation: Bool = self.habit.schedule.count > 0 || self.habit.schedule.count == 0 && isEditing
