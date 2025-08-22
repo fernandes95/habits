@@ -1,0 +1,11 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../../env.yaml
+---
+- launchApp:
+    clearState: true
+
+- assertNotVisible: ${output.calendarRepeat}
+- assertNotVisible: ${endDayCounter + 1}
+- assertNotVisible: ${endDayCounter++}
+- assertNotVisible: '(${endDayCounter} + 1)'
