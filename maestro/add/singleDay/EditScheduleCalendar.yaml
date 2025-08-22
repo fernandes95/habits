@@ -1,0 +1,88 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../../env.yaml
+---
+- launchApp:
+    clearState: true
+    permissions: 
+        all: allow
+
+- runFlow: ../subFlows/FillName.yaml
+- runFlow: ../subFlows/SelectSchedule.yaml
+
+# Skip Location step with the defaults
+- assertVisible: ${titleNewHabitLocation}
+- tapOn: ${buttonNewHabitNext}
+
+# Create Habit
+- assertVisible: ${buttonNewHabitCreate}
+- tapOn: ${buttonNewHabitCreate}
+- assertVisible: ${buttonHomeAdd}
+- assertVisible: ${output.habitName}
+
+- runFlow: ../../common/calendar/OpenSystemCalendar.yaml
+
+- runFlow:
+    env:
+      eventIndex: 0
+      eventExists: true
+    file: ../../common/calendar/VerifyEvent.yaml
+
+- runFlow:
+    env:
+      eventIndex: 1
+      eventExists: true
+    file: ../../common/calendar/VerifyEvent.yaml
+
+- runFlow:
+    env:
+      eventIndex: 2
+      eventExists: true
+    file: ../../common/calendar/VerifyEvent.yaml
+
+- runFlow: ../../common/GoBackToApp.yaml
+- assertVisible: ${output.habitName}
+
+# Open Habit detail
+- tapOn: ${buttonHomeListItemArrow}
+- assertVisible: ${buttonHabitDetailDelete}
+- assertVisible: "Hour #1"
+- assertVisible: "Hour #2"
+- assertVisible: "Hour #3"
+
+# Edit mode
+- tapOn: ${buttonHabitDetailEdit}
+- assertVisible: ${buttonHabitDetailDone}
+
+# Swipe first schedule hour
+- swipe:
+    from:
+      text: 09:00
+    direction: LEFT
+- assertNotVisible: "Hour #3"
+
+# Confirm edit
+- tapOn: ${buttonHabitDetailDone}
+- assertVisible: ${buttonHabitDetailEdit}
+- assertNotVisible: "Hour #3"
+
+- runFlow: ../../common/calendar/OpenSystemCalendar.yaml
+
+- runFlow:
+    env:
+      eventIndex: 0
+      eventExists: true
+    file: ../../common/calendar/VerifyEvent.yaml
+
+- runFlow:
+    env:
+      eventIndex: 1
+      eventExists: true
+    file: ../../common/calendar/VerifyEvent.yaml
+
+- runFlow:
+    env:
+      eventIndex: 2
+      eventExists: false
+    file: ../../common/calendar/VerifyEvent.yaml
+

@@ -1,0 +1,28 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../../env.yaml
+---
+- launchApp:
+    clearState: true
+    permissions: 
+        all: deny
+
+- runFlow: ../subFlows/FillName.yaml
+- runFlow: ../subFlows/SelectSchedule.yaml
+
+# Skip Location step with the defaults
+- assertVisible: ${titleNewHabitLocation}
+- tapOn: ${buttonNewHabitNext}
+
+# Create Habit
+- assertVisible: ${buttonNewHabitCreate}
+- tapOn: ${buttonNewHabitCreate}
+- assertVisible: ${buttonHomeAdd}
+- assertVisible: ${output.habitName}
+
+# Open Habit detail
+- tapOn: ${buttonHomeListItemArrow}
+- assertVisible: ${buttonHabitDetailDelete}
+- assertVisible: "Hour #1"
+- assertVisible: "Hour #2"
+- assertVisible: "Hour #3"

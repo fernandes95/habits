@@ -1,0 +1,21 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../../env.yaml
+---
+- launchApp:
+    clearState: true
+    permissions: 
+        all: unset
+
+- runFlow: ../subFlows/FillName.yaml
+
+- runFlow: ../subFlows/ScheduleAndLocationSteps.yaml
+
+# Create Habit
+- assertVisible: ${buttonNewHabitCreate}
+- tapOn: ${buttonNewHabitCreate}
+
+# Accept Calendar Permissions
+- assertVisible: "Allow Full Access"
+- tapOn: "Allow Full Access"
+- assertNotVisible: "Allow Full Access"

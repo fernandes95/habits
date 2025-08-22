@@ -23,6 +23,7 @@ struct NewHabitNameView: View {
             TextField("", text: self.$habit.name)
                 .font(.title)
                 .textFieldStyle(.roundedBorder)
+                .accessibilityIdentifier("new_habit_name")
 
             Spacer()
         }

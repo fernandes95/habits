@@ -111,6 +111,13 @@ class MainState: ObservableObject {
         return status == .authorized
     }
 
+    /// Get Notifications Authorization
+    func getNotificationsAuthorization() async throws {
+        if self.notificationStatus == .notDetermined {
+            _ = try await self.notificationService.notificationAuthorization()
+        }
+    }
+
     func openSettings() async {
         if let url = URL(string: UIApplication.openSettingsURLString) {
             // Ask the system to open that URL.

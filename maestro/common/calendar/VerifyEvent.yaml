@@ -1,0 +1,23 @@
+appId: ${appId}
+---
+# Verify if event exist by name and index
+- runFlow:
+    when:
+      true: ${eventExists == true}
+    commands: 
+      - assertVisible:
+          text: ${output.habitName}
+          index: ${eventIndex}
+          childOf:
+            id: "CompactMonthListViewTable"
+
+# Verify if event does exist by name and index
+- runFlow:
+    when:
+      true: ${eventExists == false}
+    commands: 
+      - assertNotVisible:
+          text: ${output.habitName}
+          index: ${eventIndex}
+          childOf:
+            id: "CompactMonthListViewTable"

@@ -1,0 +1,48 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../../env.yaml
+---
+- launchApp:
+    clearState: true
+    permissions: 
+        all: allow
+
+# Set location in Marques de Pombal statue
+- setLocation:
+    latitude: 38.72528709433249
+    longitude: -9.150043714243697
+
+- runFlow: ../subFlows/FillName.yaml
+
+# Skip Schedule step with the defaults
+- tapOn: ${buttonNewHabitNext}
+- assertVisible: ${titleNewHabitSchedule}
+- tapOn: ${buttonNewHabitNext}
+- assertVisible: ${titleNewHabitLocation}
+- assertVisible: "Tracking"
+- tapOn: "Tracking"
+
+# Select statue pin
+- assertVisible:
+    id: VKPointFeature
+    text: Marquês de Pombal
+- tapOn:
+    id: VKPointFeature
+    text: Marquês de Pombal
+- assertVisible: "Map pin"
+- tapOn: ${buttonNewHabitNext}
+
+# Create Habit
+- assertVisible: ${buttonNewHabitCreate}
+- tapOn: ${buttonNewHabitCreate}
+- assertVisible: ${buttonHomeAdd}
+- assertVisible: ${output.habitName}
+
+- travel:
+    points: # set of lat/long coordinates where user motion should be mocked
+      - 38.72528709433249,  -9.150043714243697
+      - 38.722133, -9.146791
+      - 38.716498, -9.142372
+      - 38.722133, -9.146791
+      - 38.72528709433249,  -9.150043714243697
+    speed: 100 # 7.9 km/s aka orbital velocity

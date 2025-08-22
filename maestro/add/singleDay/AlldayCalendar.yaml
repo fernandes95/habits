@@ -1,0 +1,23 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../../env.yaml
+---
+- launchApp:
+    clearState: true
+
+- runFlow: ../subFlows/FillName.yaml
+
+- runFlow: ../subFlows/ScheduleAndLocationSteps.yaml
+
+# Create Habit
+- assertVisible: ${buttonNewHabitCreate}
+- tapOn: ${buttonNewHabitCreate}
+
+# Verify Habit was created
+- assertVisible: ${buttonHomeAdd}
+- assertVisible: ${output.habitName}
+
+- runFlow: ../../common/calendar/OpenSystemCalendar.yaml
+
+# Verify that habit was added to Calendar
+- assertVisible: ${output.habitName}

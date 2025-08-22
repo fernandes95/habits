@@ -1,0 +1,8 @@
+appId: ${appId}
+---
+# Skip Schedule and Location steps with the defaults
+- tapOn: ${buttonNewHabitNext}
+- assertVisible: ${titleNewHabitSchedule}
+- tapOn: ${buttonNewHabitNext}
+- assertVisible: ${titleNewHabitLocation}
+- tapOn: ${buttonNewHabitNext}

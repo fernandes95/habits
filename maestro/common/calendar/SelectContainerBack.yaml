@@ -1,0 +1,9 @@
+appId: ${appId}
+---
+# Tap on Back Month Button
+- tapOn:
+    index: 1
+    childOf:
+      id: ${containerId}
+- assertVisible:
+    id: "toggle-month-view"

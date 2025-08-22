@@ -1,0 +1,19 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../../env.yaml
+---
+- launchApp:
+    clearState: true
+    permissions: 
+        all: deny
+
+- runFlow: ../subFlows/FillName.yaml
+
+- runFlow: ../subFlows/ScheduleAndLocationSteps.yaml
+
+# Cancel and verify if it's back on Home View
+- assertVisible: ${buttonNewHabitCancel}
+- tapOn: ${buttonNewHabitCancel}
+- assertNotVisible: ${buttonNewHabitCancel}
+- assertVisible: ${buttonHomeAdd}
+- assertNotVisible: ${output.habitName}
