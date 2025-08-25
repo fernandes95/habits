@@ -284,6 +284,8 @@ func getFrequency(_ frequency: String) -> Habit.Frequency {
     return switch frequency {
     case Habit.Frequency.weekly.rawValue:
         .weekly
+    case Habit.Frequency.interval.rawValue:
+        .interval
 //    case Habit.Frequency.monthly.rawValue:
 //        .monthly
 //    case Habit.Frequency.yearly.rawValue:

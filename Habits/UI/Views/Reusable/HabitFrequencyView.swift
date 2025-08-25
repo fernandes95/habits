@@ -27,13 +27,14 @@ struct HabitFrequencyView: View {
             Picker("habit_frequency", selection: self.$habit.frequency) {
                 ForEach(Habit.Frequency.allCases) { frequency in
                     Text(frequency.rawValue).tag(frequency)
-                        .onTapGesture {
-                            if frequency != .weekly {
-                                self.habit.frequencyType.weekFrequency.removeAll()
-                            } else if frequency != .interval {
-                                self.habit.scheduleInterval = nil
-                            }
-                        }
+                }
+            }
+            .onChange(of: self.habit.frequency) { frequency in
+                if frequency != .weekly {
+                    self.habit.frequencyType.weekFrequency.removeAll()
+                }
+                if frequency != .interval {
+                    self.habit.scheduleInterval = nil
                 }
             }
             .disabled(!isEditing)
@@ -66,6 +67,7 @@ struct HabitFrequencyView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .keyboardType(.decimalPad)
                     .accessibilityIdentifier("new_habit_schedule_interval")
+                    .disabled(!isEditing)
             }
         }
 
