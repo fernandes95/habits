@@ -93,6 +93,7 @@ class HabitsService {
             name: habit.name,
             startDate: habit.startDate,
             endDate: habit.endDate,
+            hasNoEndDate: habit.hasNoEndDate,
             frequency: habit.frequency.rawValue,
             frequencyType: habit.frequencyType,
             category: habit.category.rawValue,
@@ -105,7 +106,8 @@ class HabitsService {
             },
             hasAlarm: habit.hasAlarm,
             hasLocationReminder: habit.hasLocationReminder,
-            location: location
+            location: location,
+            scheduleInterval: habit.scheduleInterval
         )
 
         self.store.habits.append(newHabit)
@@ -126,9 +128,11 @@ class HabitsService {
                 eventId: eventsHabit.eventId,
                 name: eventsHabit.name,
                 endDate: eventsHabit.endDate,
+                hasNoEndDate: eventsHabit.hasNoEndDate,
                 frequency: eventsHabit.frequency.rawValue,
                 frequencyType: eventsHabit.frequencyType,
                 category: eventsHabit.category.rawValue,
+                scheduleInterval: eventsHabit.scheduleInterval,
                 schedule: eventsHabit.schedule.map { hour in
                     return HabitEntity.Hour(
                         date: hour.date,
@@ -259,6 +263,35 @@ class HabitsService {
             }
     }
 
+    /// Get Habits with frequency type .interval
+    ///
+    /// /// - Parameters:
+    ///   - date: Selected Date to filter
+    ///   - existingHabits: List of all habits
+    /// - Returns: Array of Habits
+    private func getIntervalHabits(date: Date, existingHabits: [Habit]?) async throws -> [Habit] {
+        guard let habits: [Habit] = existingHabits != nil
+                ? existingHabits
+                : try await getHabits(date: date)
+        else {
+            return []
+        }
+
+        return habits.filter { $0.frequency == .interval }
+            .compactMap { habit in
+                let calendar = Calendar.current
+                var currentDate = habit.startDate
+                while currentDate <= habit.endDate {
+                    if calendar.isDate(currentDate, inSameDayAs: date) {
+                        return habit // The provided date matches an interval point
+                    }
+                    // Move to the next interval
+                    currentDate = calendar.date(byAdding: .day, value: habit.scheduleInterval!, to: currentDate)!
+                    }
+                return nil
+            }
+    }
+
     /// Get all unchecked habits from selected date
     /// - Parameter date: Selected date
     /// - Returns: Array of Habits
@@ -266,13 +299,16 @@ class HabitsService {
         let habits = try await getHabits(date: date)
         let habitsDaily: [Habit] = try await getDailyHabits(date: date, existingHabits: habits)
         let habitsWeekly: [Habit] = try await getWeeklyHabits(date: date, existingHabits: habits)
+        let habitsInterval: [Habit] = try await getIntervalHabits(date: date, existingHabits: habits)
 
-        let uncheckedDailyList: [Habit]  = habitsDaily
+        let uncheckedDailyList: [Habit] = habitsDaily
             .filter { !$0.isChecked }
-        let uncheckedWeeklyList: [Habit]  = habitsWeekly
+        let uncheckedWeeklyList: [Habit] = habitsWeekly
+            .filter { !$0.isChecked }
+        let uncheckedIntervalList: [Habit] = habitsInterval
             .filter { !$0.isChecked }
 
-        let uncheckedList: [Habit] = uncheckedDailyList + uncheckedWeeklyList
+        let uncheckedList: [Habit] = uncheckedDailyList + uncheckedWeeklyList + uncheckedIntervalList
 
         return uncheckedList
     }
@@ -284,6 +320,7 @@ class HabitsService {
         let habits = try await getHabits(date: date)
         let habitsDaily: [Habit] = try await getDailyHabits(date: date, existingHabits: habits)
         let habitsWeekly: [Habit] = try await getWeeklyHabits(date: date, existingHabits: habits)
+        let habitsInterval: [Habit] = try await getIntervalHabits(date: date, existingHabits: habits)
 
         let checkedDailyList: [Habit]  = habitsDaily
           .filter { $0.isChecked }
@@ -295,8 +332,13 @@ class HabitsService {
           .sorted { (lhs: Habit, rhs: Habit) in
               return (lhs.updatedDate < rhs.updatedDate)
           }
+        let checkedIntervalList: [Habit]  = habitsInterval
+          .filter { $0.isChecked }
+          .sorted { (lhs: Habit, rhs: Habit) in
+              return (lhs.updatedDate < rhs.updatedDate)
+          }
 
-        let checkedList: [Habit]  = checkedDailyList + checkedWeeklyList
+        let checkedList: [Habit] = checkedDailyList + checkedWeeklyList + checkedIntervalList
 
         return checkedList
     }

@@ -15,9 +15,11 @@ struct Habit: Identifiable, Equatable {
     var name: String
     var startDate: Date
     var endDate: Date
+    var hasNoEndDate: Bool
     var frequency: Frequency
     var frequencyType: Ocurrence
     var category: Category
+    var scheduleInterval: Int?
     var schedule: [Hour]
     var isChecked: Bool
     var hasAlarm: Bool
@@ -33,6 +35,7 @@ struct Habit: Identifiable, Equatable {
         name: String,
         startDate: Date,
         endDate: Date,
+        hasNoEndDate: Bool,
         frequency: String,
         frequencyType: Ocurrence,
         category: String,
@@ -43,13 +46,15 @@ struct Habit: Identifiable, Equatable {
         createdDate: Date,
         updatedDate: Date,
         hasLocationReminder: Bool = false,
-        location: Location? = nil
+        location: Location? = nil,
+        scheduleInterval: Int? = nil
     ) {
         self.id = id
         self.eventId = eventId
         self.name = name
         self.startDate = startDate
         self.endDate = endDate
+        self.hasNoEndDate = hasNoEndDate
         self.frequency = getFrequency(frequency)
         self.frequencyType = frequencyType
         self.category = getCategory(category)
@@ -61,6 +66,7 @@ struct Habit: Identifiable, Equatable {
         self.schedule = schedule
         self.hasLocationReminder = hasLocationReminder
         self.location = location
+        self.scheduleInterval = scheduleInterval
     }
 
     internal func with(
@@ -68,9 +74,11 @@ struct Habit: Identifiable, Equatable {
         name: String? = nil,
         startDate: Date? = nil,
         endDate: Date? = nil,
+        hasNoEndDate: Bool? = nil,
         frequency: String? = nil,
         frequencyType: Ocurrence? = nil,
         category: String? = nil,
+        scheduleInterval: Int? = nil,
         schedule: [Hour]? = nil,
         isChecked: Bool? = nil,
         hasAlarm: Bool? = nil,
@@ -86,6 +94,7 @@ struct Habit: Identifiable, Equatable {
             name: name ?? self.name,
             startDate: startDate ?? self.startDate,
             endDate: endDate ?? self.endDate,
+            hasNoEndDate: hasNoEndDate ?? self.hasNoEndDate,
             frequency: frequency ?? self.frequency.rawValue,
             frequencyType: frequencyType ?? self.frequencyType,
             category: category ?? self.category.rawValue,
@@ -96,7 +105,8 @@ struct Habit: Identifiable, Equatable {
             createdDate: createdDate ?? self.createdDate,
             updatedDate: updatedDate ?? self.updatedDate,
             hasLocationReminder: hasLocationReminder ?? self.hasLocationReminder,
-            location: location ?? self.location
+            location: location ?? self.location,
+            scheduleInterval: scheduleInterval ?? self.scheduleInterval
         )
     }
 
@@ -106,9 +116,11 @@ struct Habit: Identifiable, Equatable {
         self.name = habitEntity.name
         self.startDate = habitEntity.startDate
         self.endDate = habitEntity.endDate
+        self.hasNoEndDate = habitEntity.hasNoEndDate
         self.frequency = getFrequency(habitEntity.frequency)
         self.frequencyType = habitEntity.frequencyType
         self.category = getCategory(habitEntity.category)
+        self.scheduleInterval = habitEntity.scheduleInterval
 
         self.schedule = habitEntity.schedule.map { hourEntity in
             return Hour(
@@ -181,7 +193,7 @@ struct Habit: Identifiable, Equatable {
         } else {
             EKRecurrenceRule(
                 recurrenceWith: .daily,
-                interval: 1,
+                interval: self.scheduleInterval ?? 1,
                 end: recurrenceEnd
             )
         }
@@ -226,9 +238,7 @@ struct Habit: Identifiable, Equatable {
     enum Frequency: String, Identifiable, CaseIterable {
         case daily = "Daily"
         case weekly = "Weekly"
-//        case monthly = "Monthly"
-//        case yearly = "Yearly"
-//        case Custom
+        case interval = "Interval"
 
         var id: String {
             rawValue.capitalized
@@ -277,10 +287,8 @@ func getFrequency(_ frequency: String) -> Habit.Frequency {
     return switch frequency {
     case Habit.Frequency.weekly.rawValue:
         .weekly
-//    case Habit.Frequency.monthly.rawValue:
-//        .monthly
-//    case Habit.Frequency.yearly.rawValue:
-//        .yearly
+    case Habit.Frequency.interval.rawValue:
+        .interval
     default:
         .daily
     }

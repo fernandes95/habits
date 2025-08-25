@@ -4,6 +4,9 @@
     "" : {
 
     },
+    "%@" : {
+
+    },
     "general_add" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -198,6 +201,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Has alarm"
+          }
+        }
+      }
+    },
+    "habit_has_end_date" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Is habit forever?"
+          }
+        }
+      }
+    },
+    "habit_interval_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Days"
           }
         }
       }

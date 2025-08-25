@@ -47,10 +47,29 @@ struct HabitDetailView: View {
                     )
                     .disabled(true)
 
-                    DatePicker("habit_end_date", selection: self.$editingHabit.endDate,
-                               in: habit.startDate...,
-                               displayedComponents: .date)
-                    .disabled(!self.isEditing)
+                    if !self.editingHabit.hasNoEndDate || !self.habit.hasNoEndDate {
+                        DatePicker("habit_end_date", selection: self.$editingHabit.endDate,
+                                   in: habit.startDate...,
+                                   displayedComponents: .date)
+                        .disabled(!self.isEditing)
+                    }
+
+                    if self.isEditing {
+                        Toggle("habit_has_end_date", isOn: $editingHabit.hasNoEndDate)
+                            .onChange(of: self.editingHabit.hasNoEndDate) { hasNoEndDate in
+                                if hasNoEndDate {
+                                    let calendar = Calendar.current
+                                    let endDate = calendar.date(
+                                        byAdding: .year,
+                                        value: 100,
+                                        to: self.editingHabit.endDate
+                                    )!
+                                    self.editingHabit.endDate = endDate
+                                } else {
+                                    self.editingHabit.endDate = self.habit.startDate
+                                }
+                            }
+                    }
                 }
 
                 HabitFrequencyView(

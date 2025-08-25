@@ -28,9 +28,22 @@ struct NewHabitDurantionView: View {
                                displayedComponents: .date
                     )
 
-                    DatePicker("habit_end_date", selection: self.$habit.endDate,
-                               in: self.habit.startDate...,
-                               displayedComponents: .date)
+                    if !habit.hasNoEndDate {
+                        DatePicker("habit_end_date", selection: self.$habit.endDate,
+                                   in: self.habit.startDate...,
+                                   displayedComponents: .date)
+                    }
+
+                    Toggle("habit_has_end_date", isOn: $habit.hasNoEndDate)
+                        .onChange(of: self.habit.hasNoEndDate) { hasNoEndDate in
+                            if hasNoEndDate {
+                                let calendar = Calendar.current
+                                let endDate = calendar.date(byAdding: .year, value: 100, to: self.habit.endDate)!
+                                self.habit.endDate = endDate
+                            } else {
+                                self.habit.endDate = self.habit.startDate
+                            }
+                        }
                 }
             }
         }

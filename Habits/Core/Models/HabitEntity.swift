@@ -13,6 +13,7 @@ struct HabitEntity: Codable {
     var name: String
     var startDate: Date
     var endDate: Date
+    var hasNoEndDate: Bool
     var frequency: String
     var frequencyType: Ocurrence
     var category: String
@@ -24,12 +25,14 @@ struct HabitEntity: Codable {
     let createdDate: Date
     var hasLocationReminder: Bool
     var location: Location?
+    var scheduleInterval: Int?
 
     init(id: UUID = UUID(),
          eventId: String,
          name: String,
          startDate: Date,
          endDate: Date,
+         hasNoEndDate: Bool,
          frequency: String,
          frequencyType: Ocurrence,
          category: String,
@@ -38,13 +41,15 @@ struct HabitEntity: Codable {
          hasAlarm: Bool = false,
          updatedDate: Date = Date.now,
          hasLocationReminder: Bool = false,
-         location: Location? = nil
+         location: Location? = nil,
+         scheduleInterval: Int? = nil
     ) {
         self.id = id
         self.eventId = eventId
         self.name = name
         self.startDate = startDate
         self.endDate = endDate
+        self.hasNoEndDate = hasNoEndDate
         self.frequency = frequency
         self.frequencyType = frequencyType
         self.category = category
@@ -54,6 +59,7 @@ struct HabitEntity: Codable {
         self.updatedDate = updatedDate
         self.hasLocationReminder = hasLocationReminder
         self.location = location
+        self.scheduleInterval = scheduleInterval
         self.createdDate = Date.now
         self.successRate = getSuccessRateValue(statusList: self.statusList, startDate: self.startDate)
     }
@@ -63,10 +69,12 @@ struct HabitEntity: Codable {
         name: String? = nil,
         startDate: Date? = nil,
         endDate: Date? = nil,
+        hasNoEndDate: Bool? = nil,
         frequency: String? = nil,
         frequencyType: Ocurrence? = nil,
         category: String? = nil,
         statusList: [Status]? = nil,
+        scheduleInterval: Int? = nil,
         schedule: [Hour]? = nil,
         hasAlarm: Bool? = nil,
         updatedDate: Date? = nil,
@@ -79,6 +87,7 @@ struct HabitEntity: Codable {
             name: name ?? self.name,
             startDate: self.startDate,
             endDate: endDate ?? self.endDate,
+            hasNoEndDate: hasNoEndDate ?? self.hasNoEndDate,
             frequency: frequency ?? self.frequency,
             frequencyType: frequencyType ?? self.frequencyType,
             category: category ?? self.category,
@@ -87,7 +96,8 @@ struct HabitEntity: Codable {
             hasAlarm: hasAlarm ?? self.hasAlarm,
             updatedDate: updatedDate ?? self.updatedDate,
             hasLocationReminder: hasLocationReminder ?? self.hasLocationReminder,
-            location: location
+            location: location,
+            scheduleInterval: scheduleInterval
         )
     }
 
