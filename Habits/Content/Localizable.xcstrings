@@ -205,6 +205,17 @@
         }
       }
     },
+    "habit_has_end_date" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Is habit forever?"
+          }
+        }
+      }
+    },
     "habit_interval_title" : {
       "extractionState" : "manual",
       "localizations" : {

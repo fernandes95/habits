@@ -15,6 +15,7 @@ extension Habit {
             name: "",
             startDate: Date.now,
             endDate: Date.now,
+            hasNoEndDate: false,
             frequency: Habit.Frequency.daily.rawValue,
             frequencyType: Ocurrence(weekFrequency: []),
             category: Habit.Category.new.rawValue,

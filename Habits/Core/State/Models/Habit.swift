@@ -15,6 +15,7 @@ struct Habit: Identifiable, Equatable {
     var name: String
     var startDate: Date
     var endDate: Date
+    var hasNoEndDate: Bool
     var frequency: Frequency
     var frequencyType: Ocurrence
     var category: Category
@@ -34,6 +35,7 @@ struct Habit: Identifiable, Equatable {
         name: String,
         startDate: Date,
         endDate: Date,
+        hasNoEndDate: Bool,
         frequency: String,
         frequencyType: Ocurrence,
         category: String,
@@ -52,6 +54,7 @@ struct Habit: Identifiable, Equatable {
         self.name = name
         self.startDate = startDate
         self.endDate = endDate
+        self.hasNoEndDate = hasNoEndDate
         self.frequency = getFrequency(frequency)
         self.frequencyType = frequencyType
         self.category = getCategory(category)
@@ -71,6 +74,7 @@ struct Habit: Identifiable, Equatable {
         name: String? = nil,
         startDate: Date? = nil,
         endDate: Date? = nil,
+        hasNoEndDate: Bool? = nil,
         frequency: String? = nil,
         frequencyType: Ocurrence? = nil,
         category: String? = nil,
@@ -90,6 +94,7 @@ struct Habit: Identifiable, Equatable {
             name: name ?? self.name,
             startDate: startDate ?? self.startDate,
             endDate: endDate ?? self.endDate,
+            hasNoEndDate: hasNoEndDate ?? self.hasNoEndDate,
             frequency: frequency ?? self.frequency.rawValue,
             frequencyType: frequencyType ?? self.frequencyType,
             category: category ?? self.category.rawValue,
@@ -111,6 +116,7 @@ struct Habit: Identifiable, Equatable {
         self.name = habitEntity.name
         self.startDate = habitEntity.startDate
         self.endDate = habitEntity.endDate
+        self.hasNoEndDate = habitEntity.hasNoEndDate
         self.frequency = getFrequency(habitEntity.frequency)
         self.frequencyType = habitEntity.frequencyType
         self.category = getCategory(habitEntity.category)
@@ -233,9 +239,6 @@ struct Habit: Identifiable, Equatable {
         case daily = "Daily"
         case weekly = "Weekly"
         case interval = "Interval"
-//        case monthly = "Monthly"
-//        case yearly = "Yearly"
-//        case Custom
 
         var id: String {
             rawValue.capitalized
@@ -286,10 +289,6 @@ func getFrequency(_ frequency: String) -> Habit.Frequency {
         .weekly
     case Habit.Frequency.interval.rawValue:
         .interval
-//    case Habit.Frequency.monthly.rawValue:
-//        .monthly
-//    case Habit.Frequency.yearly.rawValue:
-//        .yearly
     default:
         .daily
     }

@@ -31,10 +31,12 @@ struct NewHabitResumeView: View {
                     )
                     .disabled(true)
 
-                    DatePicker("habit_end_date", selection: self.$habit.endDate,
-                               in: self.habit.startDate...,
-                               displayedComponents: .date)
-                    .disabled(true)
+                    if !self.habit.hasNoEndDate {
+                        DatePicker("habit_end_date", selection: self.$habit.endDate,
+                                   in: self.habit.startDate...,
+                                   displayedComponents: .date)
+                        .disabled(true)
+                    }
                 }
 
                 Section(header: Text("habit_new_section_habit_frequency")) {
