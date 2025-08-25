@@ -63,11 +63,19 @@ struct HabitFrequencyView: View {
                 .disabled(!isEditing)
 
             case .interval:
-                TextField("habit_interval_title", value: self.$habit.scheduleInterval, formatter: self.formatter)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .keyboardType(.decimalPad)
-                    .accessibilityIdentifier("new_habit_schedule_interval")
-                    .disabled(!isEditing)
+                if isEditing {
+                    TextField("habit_interval_title", value: self.$habit.scheduleInterval, formatter: self.formatter)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .keyboardType(.decimalPad)
+                        .accessibilityIdentifier("new_habit_schedule_interval")
+                        .disabled(!isEditing)
+                } else {
+                    HStack {
+                        Text("habit_interval_title")
+                        Spacer()
+                        Text("\(String(self.habit.scheduleInterval ?? 0))")
+                    }
+                }
             }
         }
 
