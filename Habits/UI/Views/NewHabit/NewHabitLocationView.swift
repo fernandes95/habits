@@ -20,6 +20,7 @@ struct NewHabitLocationView: View {
     @Binding
     var habit: Habit
 
+    @State private var searchQuery: String = ""
     @State private var hasLocationAuth: Bool = false
     @State private var hasNotificationAuth: Bool = false
 
@@ -30,14 +31,28 @@ struct NewHabitLocationView: View {
                 .fontWeight(.bold)
 
             ZStack {
-                Form {
-                    Section(header: Text("new_habit_location_section_title")) {
-                        VStack {
-                            MapView(location: self.$habit.location, canEdit: .constant(true))
-                                .frame(height: 250)
-                                .cornerRadius(10)
+                VStack {
+                    HStack {
+                        Image(systemName: "magnifyingglass").foregroundColor(.secondary)
+                        TextField("Search", text: $searchQuery)
+                        if searchQuery != "" {
+                            Image(systemName: "xmark.circle.fill")
+                                .imageScale(.medium)
+                                .foregroundColor(Color(.systemGray3))
+                                .padding(3)
+                                .onTapGesture {
+                                    withAnimation {
+                                        self.searchQuery = ""
+                                      }
+                                }
                         }
                     }
+                    .padding(10)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(12)
+                    .padding(.vertical, 10)
+
+                    MapView(location: self.$habit.location, canEdit: .constant(true))
                 }
                 if !self.hasLocationAuth || !self.hasNotificationAuth {
                     VStack(alignment: .center) {
