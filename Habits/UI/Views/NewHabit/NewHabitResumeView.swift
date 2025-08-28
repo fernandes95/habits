@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct NewHabitResumeView: View {
     @EnvironmentObject
@@ -87,10 +88,20 @@ struct NewHabitResumeView: View {
 
                 if let location = self.habit.location {
                     Section(header: Text("new_habit_resume_location_section_title")) {
-                        MapView(location: .constant(location), canEdit: .constant(false))
-                            .frame(height: 250)
-                            .cornerRadius(10)
-                            .disabled(true)
+                        MapView(
+                            position: .constant(
+                                MKCoordinateRegion(
+                                    center: location.locationCoordinate,
+                                    latitudinalMeters: 300,
+                                    longitudinalMeters: 300
+                                )
+                            ),
+                            selectedLocation: .constant(location),
+                            canEdit: .constant(false)
+                        )
+                        .frame(height: 250)
+                        .cornerRadius(10)
+                        .disabled(true)
                     }
                 }
             }

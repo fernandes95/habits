@@ -227,6 +227,17 @@
         }
       }
     },
+    "habit_location_search" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        }
+      }
+    },
     "habit_name" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -350,12 +361,6 @@
     },
     "Hour #%lld" : {
 
-    },
-    "Key" : {
-      "extractionState" : "manual"
-    },
-    "Key 1" : {
-      "extractionState" : "manual"
     },
     "Location Reminder" : {
 
@@ -945,9 +950,6 @@
           }
         }
       }
-    },
-    "Search" : {
-
     }
   },
   "version" : "1.0"

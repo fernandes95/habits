@@ -7,6 +7,7 @@
 
 import SwiftUI
 import EventKitUI
+import MapKit
 
 struct HabitDetailView: View {
     @EnvironmentObject
@@ -84,10 +85,19 @@ struct HabitDetailView: View {
                                     self.editingHabit.location = nil
                                 }
                             }
-                            MapView(location: self.$editingHabit.location, canEdit: self.$isEditing)
-                                .frame(height: 250)
-                                .cornerRadius(10)
-                                .disabled(!self.isEditing)
+                            // TODO: WHEN REMOVE PIN SHOULD MAP SHOULDN'T ZOOM OUT
+                            MapView(
+                                position: .constant(
+                                    self.editingHabit.location?.region ??
+                                    self.habit.location?.region ??
+                                    nil
+                                ),
+                                selectedLocation: self.$editingHabit.location,
+                                canEdit: self.$isEditing
+                            )
+                            .frame(height: 250)
+                            .cornerRadius(10)
+                            .disabled(!self.isEditing)
                     }
                 }
             }

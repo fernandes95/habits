@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import CoreLocation
+import MapKit
 
 struct NewHabitLocationView: View {
     @EnvironmentObject
@@ -21,8 +23,11 @@ struct NewHabitLocationView: View {
     var habit: Habit
 
     @State private var searchQuery: String = ""
+    @State private var selectedLocation: MKCoordinateRegion?
     @State private var hasLocationAuth: Bool = false
     @State private var hasNotificationAuth: Bool = false
+
+    private let locationSearchService: LocationSearchService = LocationSearchService(completer: .init())
 
     var body: some View {
         VStack {
@@ -34,7 +39,11 @@ struct NewHabitLocationView: View {
                 VStack {
                     HStack {
                         Image(systemName: "magnifyingglass").foregroundColor(.secondary)
-                        TextField("Search", text: $searchQuery)
+                        TextField("habit_location_search", text: $searchQuery)
+                            .onChange(of: self.searchQuery) { query in
+                                locationSearchService.update(queryFragment: query)
+                            }
+                            .submitLabel(.done)
                         if searchQuery != "" {
                             Image(systemName: "xmark.circle.fill")
                                 .imageScale(.medium)
@@ -52,7 +61,29 @@ struct NewHabitLocationView: View {
                     .cornerRadius(12)
                     .padding(.vertical, 10)
 
-                    MapView(location: self.$habit.location, canEdit: .constant(true))
+                    ZStack {
+                        MapView(
+                            position: self.$selectedLocation,
+                            selectedLocation: self.$habit.location,
+                            canEdit: .constant(true)
+                        )
+
+                        if !self.searchQuery.isEmpty && !locationSearchService.completions.isEmpty {
+                            List {
+                                ForEach(locationSearchService.completions) { completion in
+                                    Button(action: { selectCompletionLocation(completion) }) {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text(completion.title)
+                                                .font(.headline)
+                                                .fontDesign(.rounded)
+                                            Text(completion.subTitle)
+                                        }
+                                    }
+                                }
+                            }
+                            .listStyle(.plain)
+                        }
+                    }
                 }
                 if !self.hasLocationAuth || !self.hasNotificationAuth {
                     VStack(alignment: .center) {
@@ -116,6 +147,21 @@ struct NewHabitLocationView: View {
                 try await self.state.getNotificationsAuthorization()
                 self.hasNotificationAuth = try await self.state.getNotificationsAuthorizationStatus()
             }
+        }
+    }
+
+    private func selectCompletionLocation(_ completion: LocationSearchCompletion) {
+        Task {
+            if let singleLocation = try? await locationSearchService
+                .search(with: "\(completion.title) \(completion.subTitle)")
+                .first {
+                    selectedLocation = MKCoordinateRegion(
+                        center: singleLocation.location,
+                        latitudinalMeters: 150,
+                        longitudinalMeters: 150
+                    )
+                    self.searchQuery = ""
+                }
         }
     }
 }

@@ -10,20 +10,22 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
-    @Binding var location: Habit.Location?
+    @Binding var position: MKCoordinateRegion?
+    @Binding var selectedLocation: Habit.Location?
     @Binding var canEdit: Bool
 
     var body: some View {
         if #available(iOS 17.0, *) {
-            MapViewRecent(location: $location, canEdit: $canEdit)
+            MapViewRecent(position: $position, location: $selectedLocation, canEdit: $canEdit)
         } else {
-            MapViewFallback(location: $location, canEdit: $canEdit)
+            MapViewFallback(location: $selectedLocation, canEdit: $canEdit)
         }
     }
 }
 
 @available(iOS 17.0, *)
 private struct MapViewRecent: View {
+    @Binding var position: MKCoordinateRegion?
     @Binding var location: Habit.Location?
     @Binding var canEdit: Bool
     @Namespace var mapScope
@@ -36,7 +38,10 @@ private struct MapViewRecent: View {
     var body: some View {
         MapReader { proxy in
             ZStack(alignment: .topTrailing) {
-                Map(position: .constant(.region(location?.region ?? initialRegion)), scope: mapScope) {
+                Map(position: .constant(
+                        .region(position ?? MapCameraPosition.automatic.region ?? initialRegion)
+                    ),
+                    scope: mapScope) {
                     if let location {
                         Marker("", coordinate: location.locationCoordinate)
                         MapCircle(center: location.locationCoordinate, radius: CLLocationDistance(5))
@@ -78,6 +83,12 @@ private struct MapViewRecent: View {
             }
             .mapScope(mapScope)
         }
+    }
+
+    init(position: Binding<MKCoordinateRegion?>, location: Binding<Habit.Location?>, canEdit: Binding<Bool>) {
+        self._position = position
+        self._location = location
+        self._canEdit = canEdit
     }
 }
 
