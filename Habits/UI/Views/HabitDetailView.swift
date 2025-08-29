@@ -7,6 +7,7 @@
 
 import SwiftUI
 import EventKitUI
+import MapKit
 
 struct HabitDetailView: View {
     @EnvironmentObject
@@ -47,7 +48,8 @@ struct HabitDetailView: View {
                     )
                     .disabled(true)
 
-                    if !self.editingHabit.hasNoEndDate || !self.habit.hasNoEndDate {
+                    if !self.editingHabit.hasNoEndDate && self.isEditing ||
+                        !self.habit.hasNoEndDate && !self.isEditing {
                         DatePicker("habit_end_date", selection: self.$editingHabit.endDate,
                                    in: habit.startDate...,
                                    displayedComponents: .date)
@@ -84,10 +86,18 @@ struct HabitDetailView: View {
                                     self.editingHabit.location = nil
                                 }
                             }
-                            MapView(location: self.$editingHabit.location, canEdit: self.$isEditing)
-                                .frame(height: 250)
-                                .cornerRadius(10)
-                                .disabled(!self.isEditing)
+                            MapView(
+                                position: .constant(
+                                    self.editingHabit.location?.region ??
+                                    self.habit.location?.region ??
+                                    nil
+                                ),
+                                selectedLocation: self.$editingHabit.location,
+                                canEdit: self.$isEditing
+                            )
+                            .frame(height: 250)
+                            .cornerRadius(10)
+                            .disabled(!self.isEditing)
                     }
                 }
             }

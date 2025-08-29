@@ -10,20 +10,22 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
-    @Binding var location: Habit.Location?
+    @Binding var position: MKCoordinateRegion?
+    @Binding var selectedLocation: Habit.Location?
     @Binding var canEdit: Bool
 
     var body: some View {
         if #available(iOS 17.0, *) {
-            MapViewRecent(location: $location, canEdit: $canEdit)
+            MapViewRecent(position: $position, location: $selectedLocation, canEdit: $canEdit)
         } else {
-            MapViewFallback(location: $location, canEdit: $canEdit)
+            MapViewFallback(position: $position, location: $selectedLocation, canEdit: $canEdit)
         }
     }
 }
 
 @available(iOS 17.0, *)
 private struct MapViewRecent: View {
+    @Binding var position: MKCoordinateRegion?
     @Binding var location: Habit.Location?
     @Binding var canEdit: Bool
     @Namespace var mapScope
@@ -36,7 +38,10 @@ private struct MapViewRecent: View {
     var body: some View {
         MapReader { proxy in
             ZStack(alignment: .topTrailing) {
-                Map(position: .constant(.region(location?.region ?? initialRegion)), scope: mapScope) {
+                Map(position: .constant(
+                        .region(position ?? MapCameraPosition.automatic.region ?? initialRegion)
+                    ),
+                    scope: mapScope) {
                     if let location {
                         Marker("", coordinate: location.locationCoordinate)
                         MapCircle(center: location.locationCoordinate, radius: CLLocationDistance(5))
@@ -82,6 +87,7 @@ private struct MapViewRecent: View {
 }
 
 private struct MapViewFallback: UIViewRepresentable {
+    @Binding var position: MKCoordinateRegion?
     @Binding var location: Habit.Location?
     @Binding var canEdit: Bool
 
@@ -161,7 +167,7 @@ private struct MapViewFallback: UIViewRepresentable {
         mapView.showsCompass = false
         mapView.preferredConfiguration = MKStandardMapConfiguration(elevationStyle: .flat)
         mapView.addAnnotation(marker)
-        mapView.setRegion(mapView.regionThatFits(location?.region ?? initialLocation), animated: true)
+        mapView.setRegion(mapView.regionThatFits(position ?? initialLocation), animated: true)
         mapView.addGestureRecognizer(
             UITapGestureRecognizer(
                 target: context.coordinator,
@@ -175,6 +181,8 @@ private struct MapViewFallback: UIViewRepresentable {
     func updateUIView(_ mapView: MKMapView, context: Context) {
         let marker = MKPointAnnotation()
 
+        mapView.setRegion(mapView.regionThatFits(position ?? location?.region ?? initialLocation), animated: true)
+
         if let location {
             let circle = MKCircle(center: location.locationCoordinate, radius: 5.0)
 
@@ -187,6 +195,9 @@ private struct MapViewFallback: UIViewRepresentable {
             mapView.addAnnotation(marker)
             mapView.removeOverlays(mapView.overlays)
             mapView.addOverlay(circle)
+        } else {
+            mapView.removeAnnotations(mapView.annotations)
+            mapView.removeOverlays(mapView.overlays)
         }
     }
 
