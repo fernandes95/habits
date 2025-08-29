@@ -71,14 +71,17 @@ struct NewHabitLocationView: View {
                         if !self.searchQuery.isEmpty && !locationSearchService.completions.isEmpty {
                             List {
                                 ForEach(locationSearchService.completions) { completion in
-                                    Button(action: { selectCompletionLocation(completion) }) {
-                                        VStack(alignment: .leading, spacing: 4) {
-                                            Text(completion.title)
-                                                .font(.headline)
-                                                .fontDesign(.rounded)
-                                            Text(completion.subTitle)
+                                    Button(
+                                        action: { selectCompletionLocation(completion) },
+                                        label: {
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                Text(completion.title)
+                                                    .font(.headline)
+                                                    .fontDesign(.rounded)
+                                                Text(completion.subTitle)
+                                            }
                                         }
-                                    }
+                                    )
                                 }
                             }
                             .listStyle(.plain)

@@ -48,7 +48,8 @@ struct HabitDetailView: View {
                     )
                     .disabled(true)
 
-                    if !self.editingHabit.hasNoEndDate || !self.habit.hasNoEndDate {
+                    if !self.editingHabit.hasNoEndDate && self.isEditing ||
+                        !self.habit.hasNoEndDate && !self.isEditing {
                         DatePicker("habit_end_date", selection: self.$editingHabit.endDate,
                                    in: habit.startDate...,
                                    displayedComponents: .date)
@@ -85,7 +86,6 @@ struct HabitDetailView: View {
                                     self.editingHabit.location = nil
                                 }
                             }
-                            // TODO: WHEN REMOVE PIN SHOULD MAP SHOULDN'T ZOOM OUT
                             MapView(
                                 position: .constant(
                                     self.editingHabit.location?.region ??
