@@ -18,7 +18,7 @@ struct MapView: View {
         if #available(iOS 17.0, *) {
             MapViewRecent(position: $position, location: $selectedLocation, canEdit: $canEdit)
         } else {
-            MapViewFallback(location: $selectedLocation, canEdit: $canEdit)
+            MapViewFallback(position: $position, location: $selectedLocation, canEdit: $canEdit)
         }
     }
 }
@@ -84,15 +84,10 @@ private struct MapViewRecent: View {
             .mapScope(mapScope)
         }
     }
-
-    init(position: Binding<MKCoordinateRegion?>, location: Binding<Habit.Location?>, canEdit: Binding<Bool>) {
-        self._position = position
-        self._location = location
-        self._canEdit = canEdit
-    }
 }
 
 private struct MapViewFallback: UIViewRepresentable {
+    @Binding var position: MKCoordinateRegion?
     @Binding var location: Habit.Location?
     @Binding var canEdit: Bool
 
@@ -172,7 +167,7 @@ private struct MapViewFallback: UIViewRepresentable {
         mapView.showsCompass = false
         mapView.preferredConfiguration = MKStandardMapConfiguration(elevationStyle: .flat)
         mapView.addAnnotation(marker)
-        mapView.setRegion(mapView.regionThatFits(location?.region ?? initialLocation), animated: true)
+        mapView.setRegion(mapView.regionThatFits(position ?? initialLocation), animated: true)
         mapView.addGestureRecognizer(
             UITapGestureRecognizer(
                 target: context.coordinator,
@@ -186,6 +181,8 @@ private struct MapViewFallback: UIViewRepresentable {
     func updateUIView(_ mapView: MKMapView, context: Context) {
         let marker = MKPointAnnotation()
 
+        mapView.setRegion(mapView.regionThatFits(position ?? location?.region ?? initialLocation), animated: true)
+
         if let location {
             let circle = MKCircle(center: location.locationCoordinate, radius: 5.0)
 
@@ -198,6 +195,9 @@ private struct MapViewFallback: UIViewRepresentable {
             mapView.addAnnotation(marker)
             mapView.removeOverlays(mapView.overlays)
             mapView.addOverlay(circle)
+        } else {
+            mapView.removeAnnotations(mapView.annotations)
+            mapView.removeOverlays(mapView.overlays)
         }
     }
 
