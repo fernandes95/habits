@@ -32,7 +32,20 @@ struct NewHabitScheduleView: View {
                 Button("general_next") {
                     self.router.push(NewHabitLocationView(habit: self.$habit))
                 }
+                .disabled(!self.canContinue())
             }
+        }
+    }
+
+    private func canContinue() -> Bool {
+        switch self.habit.frequency {
+        case .daily: return true
+        case .interval:
+            if let interval = self.habit.scheduleInterval {
+                return interval >= 2
+            }
+            return false
+        case .weekly: return !self.habit.frequencyType.weekFrequency.isEmpty
         }
     }
 }
