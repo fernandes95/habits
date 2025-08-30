@@ -135,6 +135,7 @@ struct HabitDetailView: View {
                     }
                     self.isEditing = !self.isEditing
                 }
+                .disabled(!self.canContinue())
             }
         }
     }
@@ -162,6 +163,22 @@ struct HabitDetailView: View {
     private func cancelEditHabit() {
         self.editingHabit = self.habit
         self.isEditing = false
+    }
+
+    private func canContinue() -> Bool {
+        guard isEditing else { return true }
+        
+        switch editingHabit.frequency {
+        case .daily:
+            return true
+        case .interval:
+            if let interval = editingHabit.scheduleInterval {
+                return interval >= 2
+            }
+            return false
+        case .weekly:
+            return !editingHabit.frequencyType.weekFrequency.isEmpty
+        }
     }
 }
 
