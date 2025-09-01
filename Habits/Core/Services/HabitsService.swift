@@ -29,10 +29,23 @@ class HabitsService {
         self.store = try await storeService.load()
     }
 
+    /// Gets store from imported file
+    func load(url: URL) async throws {
+        self.store = try await storeService.load(url: url)
+    }
+
     /// Saves store into local file and then loads data from said file
     private func save() async throws {
         try await storeService.save(self.store)
         try await self.load()
+    }
+
+    func getDocument() async -> ExportableDocument {
+        var text: String = ""
+        do {
+            text = try await storeService.loadAsText()
+        } catch {}
+        return ExportableDocument(text: text)
     }
 
     /// Gets Habit by selected date

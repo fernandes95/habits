@@ -27,6 +27,18 @@ class MainState: ObservableObject {
     @Published
     var selectedDate: Date = Date.now
 
+    func getDataDocument() async throws -> ExportableDocument {
+        return await self.habitsService.getDocument()
+    }
+
+    /// Get all habits from imported file
+    ///
+    /// - Parameter text: Imported text data
+    func reloadHabits(url: URL) async throws {
+        try await self.habitsService.load(url: url)
+        try await self.loadHabits(date: self.selectedDate)
+    }
+
     /// Get all habits from `Selected Date`
     ///
     /// - Parameter date: Selected date

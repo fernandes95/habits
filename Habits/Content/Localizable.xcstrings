@@ -348,6 +348,16 @@
         }
       }
     },
+    "habits_accessibility_settings" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        }
+      }
+    },
     "habits_title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -947,6 +957,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“It’s not about who you are today, it’s about who you want to become and the price you are willing to pay to get there.”\n\n―Tom Bilyeu, Founder Impact Theory"
+          }
+        }
+      }
+    },
+    "settings_data_section_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
+          }
+        }
+      }
+    },
+    "settings_export_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export data"
+          }
+        }
+      }
+    },
+    "settings_import_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import data"
+          }
+        }
+      }
+    },
+    "settings_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
           }
         }
       }
