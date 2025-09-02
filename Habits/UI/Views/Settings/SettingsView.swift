@@ -19,7 +19,7 @@ struct SettingsView: View {
     @State private var isLoading: Bool = false
     @State private var showAlert: Bool = false
     @State private var alertTitle: LocalizedStringKey = ""
-    @State private var document: ExportableDocument = ExportableDocument(text: "")
+    @State private var document: ExportableDocument = ExportableDocument(data: Data())
 
     var body: some View {
         ZStack {
@@ -42,7 +42,7 @@ struct SettingsView: View {
                             .fileExporter(
                                 isPresented: $isExporting,
                                 document: self.document,
-                                contentType: .plainText
+                                contentType: .data
                             ) { result in
                                 switch result {
                                 case .success:
@@ -58,7 +58,7 @@ struct SettingsView: View {
                             }
                             .fileImporter(
                                isPresented: $isImporting,
-                               allowedContentTypes: [.plainText]
+                               allowedContentTypes: [.data]
                             ) { result in
                                 switch result {
                                 case .success(let file):

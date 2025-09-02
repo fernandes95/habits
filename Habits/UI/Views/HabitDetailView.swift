@@ -167,7 +167,7 @@ struct HabitDetailView: View {
 
     private func canContinue() -> Bool {
         guard isEditing else { return true }
-        
+
         switch editingHabit.frequency {
         case .daily:
             return true

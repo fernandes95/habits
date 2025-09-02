@@ -11,24 +11,24 @@ import UniformTypeIdentifiers
 
 struct ExportableDocument: FileDocument {
     static var readableContentTypes: [UTType] {
-        [.plainText]
+        [.data]
     }
 
-    var text: String = ""
+    var data: Data = Data()
 
-    init(text: String) {
-        self.text = text
+    init(data: Data) {
+        self.data = data
     }
 
     init(configuration: ReadConfiguration) throws {
         if let data = configuration.file.regularFileContents {
-            self.text = String(decoding: data, as: UTF8.self)
+            self.data = data
        } else {
-            self.text = ""
+            self.data = Data()
        }
     }
 
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        FileWrapper(regularFileWithContents: Data(text.utf8))
+        FileWrapper(regularFileWithContents: data)
     }
 }

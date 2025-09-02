@@ -41,11 +41,11 @@ class HabitsService {
     }
 
     func getDocument() async -> ExportableDocument {
-        var text: String = ""
+        var data: Data = Data()
         do {
-            text = try await storeService.loadAsText()
+            data = try await storeService.loadAsData()
         } catch {}
-        return ExportableDocument(text: text)
+        return ExportableDocument(data: data)
     }
 
     /// Gets Habit by selected date

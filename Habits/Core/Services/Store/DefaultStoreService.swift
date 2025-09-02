@@ -18,14 +18,13 @@ class DefaultStoreService: StoreService {
     }
 
     /// Load all Data from local file
-    func loadAsText() async throws -> String {
-        let task = Task<String, Error> {
+    func loadAsData() async throws -> Data {
+        let task = Task<Data, Error> {
             let fileURL = try self.fileURL()
             guard let data = try? Data(contentsOf: fileURL) else {
-                return ""
+                return Data()
             }
-            let decodedHabits = String(decoding: data, as: UTF8.self)
-            return decodedHabits
+            return data
         }
         return try await task.value
     }
