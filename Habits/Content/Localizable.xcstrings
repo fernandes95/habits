@@ -961,6 +961,42 @@
         }
       }
     },
+    "settings_data_export_fail_alert_title" : {
+      "extractionState" : "manual"
+    },
+    "settings_data_export_success_alert_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exported with success"
+          }
+        }
+      }
+    },
+    "settings_data_import_fail_alert_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to import"
+          }
+        }
+      }
+    },
+    "settings_data_import_success_alert_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imported with success"
+          }
+        }
+      }
+    },
     "settings_data_section_title" : {
       "extractionState" : "manual",
       "localizations" : {
