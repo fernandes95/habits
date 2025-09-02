@@ -8,6 +8,7 @@
 import Foundation
 import EventKit
 
+// swiftlint:disable:next type_body_length
 class HabitsService {
     private let storeService: DefaultStoreService = DefaultStoreService()
     private let calendarService: CalendarService = CalendarService()
@@ -30,8 +31,80 @@ class HabitsService {
     }
 
     /// Gets store from imported file
-    func load(url: URL) async throws {
-        self.store = try await storeService.load(url: url)
+    func load(url: URL) async throws -> [HabitEntity] {
+        var habitsToBeAdded: [HabitEntity] = []
+        let importedStore: StoreEntity = try await storeService.load(url: url)
+
+        var duplicatedHabits: [HabitEntity] = importedStore.habits.compactMap { habit in
+            if self.store.habits.contains(where: { $0.id == habit.id }) {
+                return habit
+            } else if self.store.habits.contains(where: { $0.name == habit.name }) {
+                return habit
+            } else {
+                habitsToBeAdded.append(habit)
+                return nil
+            }
+        }
+
+        for habit in duplicatedHabits {
+            if let originalHabit: HabitEntity = self.store.habits
+                .first(where: { $0.id == habit.id }) {
+                if habit.name != originalHabit.name {
+                    habitsToBeAdded.append(habit.clone())
+                    if let index: Int = duplicatedHabits.firstIndex(where: { $0.id == habit.id }) {
+                        duplicatedHabits.remove(at: index)
+                    }
+                }
+            }
+        }
+
+        if duplicatedHabits.isEmpty && habitsToBeAdded.isEmpty {
+            try await self.addHabits(importedStore.habits)
+            return []
+        } else {
+            try await self.addHabits(habitsToBeAdded)
+            // not using habitsArchived for now so doesn't matter if data is being overitten
+            self.store.habitsArchived = store.habitsArchived
+            return duplicatedHabits
+        }
+    }
+
+    func manageDuplicates(habits: [HabitEntity], resolution: ConflictResolution) async throws {
+        switch resolution {
+        case .delete: return
+        case .duplicate: try await self.duplicateHabits(habits)
+        case .replace: try await self.replaceHabits(habits)
+        }
+    }
+
+    private func duplicateHabits(_ habits: [HabitEntity]) async throws {
+        var duplicatedHabits: [HabitEntity] = []
+        for habit in habits {
+            let habitClone = habit.clone()
+            var count: Int = 2
+            var name: String
+
+            repeat {
+                name = "\(habit.name) #\(count)"
+                count += 1
+            } while self.habits.contains(where: { $0.name == name })
+
+            let newHabit = habitClone.with(name: name)
+            duplicatedHabits.append(newHabit)
+        }
+
+        try await self.addHabits(duplicatedHabits)
+    }
+
+    private func replaceHabits(_ habits: [HabitEntity]) async throws {
+        for habit in habits {
+            if self.store.habits.contains(where: { $0.id == habit.id }) {
+                try await self.removeHabit(habitId: habit.id)
+                try await addHabit(habit)
+            } else {
+                return
+            }
+        }
     }
 
     /// Saves store into local file and then loads data from said file
@@ -40,9 +113,12 @@ class HabitsService {
         try await self.load()
     }
 
+    /// Gets exportable document
     func getDocument() async -> ExportableDocument {
         var data: Data = Data()
         do {
+            // Making sure latest data is saved
+            try await storeService.save(self.store)
             data = try await storeService.loadAsData()
         } catch {}
         return ExportableDocument(data: data)
@@ -128,6 +204,44 @@ class HabitsService {
 
         return newHabit.id
     }
+    
+    /// Adds new Habit from existing habit and creates calendar event/s if any
+    ///
+    /// - Parameter habitEntity: HabitEntity to add
+    func addHabit(_ habitEntity: HabitEntity) async throws {
+        let habit = Habit(habitEntity: habitEntity)
+        var eventId: String = ""
+        var schedule: [Habit.Hour] = habit.schedule
+
+        if habit.schedule.isEmpty {
+            eventId = try await calendarService.createCalendarEvent(habit)
+        } else {
+            schedule = try await calendarService.createScheduleCalendarEvents(habit)
+        }
+
+        let newHabit: HabitEntity = habitEntity.with(
+            eventId: eventId,
+            schedule: schedule.map { hour in
+                return HabitEntity.Hour(
+                    date: hour.date,
+                    eventId: hour.eventId,
+                    notificationId: hour.notificationId
+                )
+            },
+        )
+
+        self.store.habits.append(newHabit)
+        try await self.save()
+    }
+
+    /// Adds new Habits from existing habits list
+    ///
+    /// - Parameter habits: Habits to add
+    func addHabits(_ habits: [HabitEntity]) async throws {
+        for habit in habits {
+            try await self.addHabit(habit)
+        }
+    }
 
     /// Updates existing Habit
     /// - Parameters:
@@ -169,7 +283,7 @@ class HabitsService {
             }) {
                 var status = updatedHabit.statusList[statusIndex]
                 status.isChecked = habit.isChecked
-                status.updatedDate = Date.now
+                status.updatedDate = .now
 
                 updatedHabit.statusList[statusIndex] = status
             } else {
@@ -365,7 +479,7 @@ class HabitsService {
     func getHabitsByDistance(currentLocation: CLLocation, maxHabits: Int = 20) async throws -> ([Habit], Double) {
         var distanceFromClosest: Double = 200
 
-        guard let habits: [Habit] = try? await loadUncheckedHabits(date: Date.now) else {
+        guard let habits: [Habit] = try? await loadUncheckedHabits(date: .now) else {
             return ([], distanceFromClosest)
         }
 

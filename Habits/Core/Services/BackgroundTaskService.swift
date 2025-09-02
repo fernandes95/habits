@@ -22,7 +22,7 @@ class BackgroundTaskService {
 
     func requestRefreshTask(identifier: String) {
         let request = BGAppRefreshTaskRequest(identifier: identifier)
-        request.earliestBeginDate = Calendar.current.date(byAdding: .second, value: 30, to: Date.now)
+        request.earliestBeginDate = Calendar.current.date(byAdding: .second, value: 30, to: .now)
 
        do {
           try taskScheduler.submit(request)

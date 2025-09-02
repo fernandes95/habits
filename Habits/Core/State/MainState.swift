@@ -19,24 +19,48 @@ class MainState: ObservableObject {
     var habits: [Habit] = []
 
     @Published
+    var duplicatedHabits: [HabitEntity] = []
+
+    @Published
     var locationStatus: CLAuthorizationStatus = .notDetermined
 
     @Published
     var notificationStatus: UNAuthorizationStatus = .notDetermined
 
     @Published
-    var selectedDate: Date = Date.now
+    var selectedDate: Date = .now
 
+    /// Get exportable document
     func getDataDocument() async throws -> ExportableDocument {
         return await self.habitsService.getDocument()
     }
 
-    /// Get all habits from imported file
+    /// Get all habits from `Imported Data`
     ///
-    /// - Parameter text: Imported text data
-    func reloadHabits(url: URL) async throws {
-        try await self.habitsService.load(url: url)
+    /// - Parameter data: Imported data
+    func importHabits(url: URL) async throws -> Bool {
+        self.duplicatedHabits = try await self.habitsService.load(url: url)
+
+        if self.duplicatedHabits.isEmpty {
+            try await self.loadHabits(date: self.selectedDate)
+            return false
+        } else {
+            return true
+        }
+    }
+
+    /// Manage duplicated habits
+    ///
+    /// - Parameter resolution: Conflict Resolution type
+    func manageDuplicatedHabits(_ resolution: ConflictResolution) async throws {
+        switch resolution {
+        case .delete: self.duplicatedHabits = []
+        default: try await self.habitsService.manageDuplicates(
+            habits: self.duplicatedHabits,
+            resolution: resolution
+        )
         try await self.loadHabits(date: self.selectedDate)
+        }
     }
 
     /// Get all habits from `Selected Date`
@@ -58,7 +82,7 @@ class MainState: ObservableObject {
     /// - Returns: Habit
     func getHabit(habit: Habit) async throws -> Habit {
         if let habitEntity: HabitEntity = try await self.habitsService.getHabit(id: habit.id) {
-            return Habit(habitEntity: habitEntity, selectedDate: Date.now)
+            return Habit(habitEntity: habitEntity, selectedDate: .now)
         } else {
             return habit
         }

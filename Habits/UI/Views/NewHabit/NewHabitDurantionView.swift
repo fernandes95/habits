@@ -14,7 +14,7 @@ struct NewHabitDurantionView: View {
     @Binding
     var habit: Habit
 
-    var startDateIn: Date = Date.now
+    var startDateIn: Date = .now
 
     var body: some View {
         VStack {

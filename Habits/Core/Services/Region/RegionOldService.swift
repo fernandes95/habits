@@ -37,7 +37,7 @@ class RegionServiceOld: RegionService {
     }
 
     func validateRegion(identifier: String) async throws -> Bool {
-        guard let habits: [Habit] = try? await habitsService.loadCheckedHabits(date: Date.now) else { return false }
+        guard let habits: [Habit] = try? await habitsService.loadCheckedHabits(date: .now) else { return false }
 
         let habitIsChecked = habits.first(where: { $0.id.uuidString == identifier })?.isChecked
 

@@ -13,8 +13,8 @@ extension Habit {
             id: UUID(),
             eventId: "",
             name: "",
-            startDate: Date.now,
-            endDate: Date.now,
+            startDate: .now,
+            endDate: .now,
             hasNoEndDate: false,
             frequency: Habit.Frequency.daily.rawValue,
             frequencyType: Ocurrence(weekFrequency: []),
@@ -23,8 +23,8 @@ extension Habit {
             isChecked: false,
             hasAlarm: false,
             successRate: "0",
-            createdDate: Date.now,
-            updatedDate: Date.now
+            createdDate: .now,
+            updatedDate: .now
         )
     }
 }

@@ -18,6 +18,7 @@ struct SettingsView: View {
     @State private var isExporting: Bool = false
     @State private var isLoading: Bool = false
     @State private var showAlert: Bool = false
+    @State private var showImportAlert: Bool = false
     @State private var alertTitle: LocalizedStringKey = ""
     @State private var document: ExportableDocument = ExportableDocument(data: Data())
 
@@ -34,9 +35,9 @@ struct SettingsView: View {
                                     do {
                                         self.document = try await state.getDataDocument()
                                         isExporting = true
-                                    } catch { }
-
-                                    isLoading = false
+                                    } catch {
+                                        isLoading = false
+                                    }
                                 }
                             }
                             .fileExporter(
@@ -54,6 +55,7 @@ struct SettingsView: View {
                             }
                         Text("settings_import_button")
                             .onTapGesture {
+                                isLoading = true
                                 isImporting = true
                             }
                             .fileImporter(
@@ -63,13 +65,14 @@ struct SettingsView: View {
                                 switch result {
                                 case .success(let file):
                                    Task {
-                                       try await self.state.reloadHabits(url: file)
                                        alertTitle = "settings_data_import_success_alert_title"
+                                       self.showImportAlert = try await self.state.importHabits(url: file)
+                                       showAlert = !self.showImportAlert
                                    }
                                 case .failure:
                                    alertTitle = "settings_data_import_fail_alert_title"
+                                   showAlert = true
                                 }
-                                showAlert = true
                             }
                     } header: {
                         Text("settings_data_section_title")
@@ -80,11 +83,44 @@ struct SettingsView: View {
             .navigationTitle("settings_title")
             .opacity(isLoading ? 0.5 : 1)
             .alert(alertTitle, isPresented: $showAlert, actions: {})
+            .alert(
+                "settings_import_duplicate_alert_title",
+                isPresented: $showImportAlert,
+                actions: {
+                    Button("settings_import_duplicate_alert_delete_button", role: .cancel) {
+                        self.manageConflicts(.delete)
+                    }
+                    Button("settings_import_duplicate_alert_duplicate_button") {
+                        self.manageConflicts(.duplicate)
+                    }
+                    Button("settings_import_duplicate_alert_replace_button") {
+                        self.manageConflicts(.replace)
+                    }
+                },
+                message: { Text("settings_import_duplicate_alert_message") }
+            )
+        }
+        .onChange(of: self.isExporting) { value in
+            if !value {
+                isLoading = false
+            }
+        }
+        .onChange(of: self.isImporting) { value in
+            if !value {
+                isLoading = false
+            }
         }
         .overlay {
             if isLoading {
                 SpinnerView()
             }
+        }
+    }
+
+    private func manageConflicts(_ resolution: ConflictResolution) {
+        Task {
+            try await self.state.manageDuplicatedHabits(resolution)
+            showAlert = true
         }
     }
 }

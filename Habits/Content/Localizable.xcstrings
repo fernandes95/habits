@@ -962,7 +962,15 @@
       }
     },
     "settings_data_export_fail_alert_title" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to export"
+          }
+        }
+      }
     },
     "settings_data_export_success_alert_title" : {
       "extractionState" : "manual",
@@ -1026,6 +1034,61 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Import data"
+          }
+        }
+      }
+    },
+    "settings_import_duplicate_alert_delete_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete all"
+          }
+        }
+      }
+    },
+    "settings_import_duplicate_alert_duplicate_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicate all"
+          }
+        }
+      }
+    },
+    "settings_import_duplicate_alert_message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select an option to deal with duplicated habits."
+          }
+        }
+      }
+    },
+    "settings_import_duplicate_alert_replace_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace all"
+          }
+        }
+      }
+    },
+    "settings_import_duplicate_alert_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are duplicated Habits"
           }
         }
       }

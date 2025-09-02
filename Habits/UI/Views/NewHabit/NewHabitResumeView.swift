@@ -27,7 +27,7 @@ struct NewHabitResumeView: View {
 
                 Section(header: Text("new_habit_resume_duration_section_title")) {
                     DatePicker("habit_start_date", selection: self.$habit.startDate,
-                               in: Date.now...,
+                               in: .now...,
                                displayedComponents: .date
                     )
                     .disabled(true)
@@ -129,8 +129,8 @@ struct NewHabitResumeView: View {
             }
             let newHabit = self.habit
                 .with(
-                    createdDate: Date.now,
-                    updatedDate: Date.now
+                    createdDate: .now,
+                    updatedDate: .now
                 )
 
             try await self.state.addHabit(newHabit)

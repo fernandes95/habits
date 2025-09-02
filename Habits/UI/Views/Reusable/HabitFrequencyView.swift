@@ -110,7 +110,7 @@ struct HabitFrequencyView: View {
                 Spacer()
                 Button(action: {
                     let calendar = Calendar.current
-                    var date: Date = Date.now
+                    var date: Date = .now
                     var mainDateComponents: DateComponents = DateComponents()
 
                     if self.habit.schedule.isEmpty {
