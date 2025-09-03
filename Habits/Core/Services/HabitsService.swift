@@ -30,7 +30,10 @@ class HabitsService {
         self.store = try await storeService.load()
     }
 
-    /// Gets store from imported file
+    /// Gets store from url
+    ///
+    /// - Parameter url: Imported file Url
+    /// - Returns: A nulable array of HabitEntities
     func load(url: URL) async throws -> [HabitEntity]? {
         var habitsToBeAdded: [HabitEntity] = []
         if url.startAccessingSecurityScopedResource() {
@@ -76,6 +79,11 @@ class HabitsService {
         }
     }
 
+    /// Manages duplicated habits when importing
+    ///
+    /// - Parameters:
+    ///   - habits: Duplicated habits
+    ///   - resolution: Conflict resolution type
     func manageDuplicates(habits: [HabitEntity], resolution: ConflictResolution) async throws {
         switch resolution {
         case .delete: return
@@ -84,6 +92,9 @@ class HabitsService {
         }
     }
 
+    /// Duplicates habits
+    ///
+    /// - Parameter habits: Duplicated habits
     private func duplicateHabits(_ habits: [HabitEntity]) async throws {
         var duplicatedHabits: [HabitEntity] = []
         for habit in habits {
@@ -103,6 +114,9 @@ class HabitsService {
         try await self.addHabits(duplicatedHabits)
     }
 
+    /// Replaces existing habits
+    ///
+    /// - Parameter habits: Duplicated habits
     private func replaceHabits(_ habits: [HabitEntity]) async throws {
         for habit in habits {
             if self.store.habits.contains(where: { $0.id == habit.id }) {
@@ -251,6 +265,7 @@ class HabitsService {
     }
 
     /// Updates existing Habit
+    ///
     /// - Parameters:
     ///   - habit: Habit to update
     ///   - selectedDate: Selected Date to update habit status
