@@ -63,11 +63,16 @@ struct SettingsView: View {
                                allowedContentTypes: [.data]
                             ) { result in
                                 switch result {
-                                case .success(let file):
+                                case .success(let url):
                                    Task {
-                                       alertTitle = "settings_data_import_success_alert_title"
-                                       self.showImportAlert = try await self.state.importHabits(url: file)
-                                       showAlert = !self.showImportAlert
+                                       if let didImport = try await self.state.importHabits(url: url) {
+                                           alertTitle = "settings_data_import_success_alert_title"
+                                           self.showImportAlert = didImport
+                                           showAlert = !self.showImportAlert
+                                       } else {
+                                           alertTitle = "settings_data_import_fail_alert_title"
+                                           showAlert = true
+                                       }
                                    }
                                 case .failure:
                                    alertTitle = "settings_data_import_fail_alert_title"

@@ -19,7 +19,7 @@ class MainState: ObservableObject {
     var habits: [Habit] = []
 
     @Published
-    var duplicatedHabits: [HabitEntity] = []
+    var duplicatedHabits: [HabitEntity]? = []
 
     @Published
     var locationStatus: CLAuthorizationStatus = .notDetermined
@@ -38,10 +38,12 @@ class MainState: ObservableObject {
     /// Get all habits from `Imported Data`
     ///
     /// - Parameter data: Imported data
-    func importHabits(url: URL) async throws -> Bool {
+    func importHabits(url: URL) async throws -> Bool? {
         self.duplicatedHabits = try await self.habitsService.load(url: url)
 
-        if self.duplicatedHabits.isEmpty {
+        guard let habits: [HabitEntity] = self.duplicatedHabits else { return nil }
+
+        if habits.isEmpty {
             try await self.loadHabits(date: self.selectedDate)
             return false
         } else {
@@ -56,7 +58,7 @@ class MainState: ObservableObject {
         switch resolution {
         case .delete: self.duplicatedHabits = []
         default: try await self.habitsService.manageDuplicates(
-            habits: self.duplicatedHabits,
+            habits: self.duplicatedHabits ?? [],
             resolution: resolution
         )
         try await self.loadHabits(date: self.selectedDate)

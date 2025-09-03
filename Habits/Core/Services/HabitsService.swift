@@ -31,41 +31,48 @@ class HabitsService {
     }
 
     /// Gets store from imported file
-    func load(url: URL) async throws -> [HabitEntity] {
+    func load(url: URL) async throws -> [HabitEntity]? {
         var habitsToBeAdded: [HabitEntity] = []
-        let importedStore: StoreEntity = try await storeService.load(url: url)
-
-        var duplicatedHabits: [HabitEntity] = importedStore.habits.compactMap { habit in
-            if self.store.habits.contains(where: { $0.id == habit.id }) {
-                return habit
-            } else if self.store.habits.contains(where: { $0.name == habit.name }) {
-                return habit
-            } else {
-                habitsToBeAdded.append(habit)
-                return nil
+        if url.startAccessingSecurityScopedResource() {
+            defer {
+                url.stopAccessingSecurityScopedResource()
             }
-        }
+            let importedStore: StoreEntity = try await storeService.load(url: url)
 
-        for habit in duplicatedHabits {
-            if let originalHabit: HabitEntity = self.store.habits
-                .first(where: { $0.id == habit.id }) {
-                if habit.name != originalHabit.name {
-                    habitsToBeAdded.append(habit.clone())
-                    if let index: Int = duplicatedHabits.firstIndex(where: { $0.id == habit.id }) {
-                        duplicatedHabits.remove(at: index)
+            var duplicatedHabits: [HabitEntity] = importedStore.habits.compactMap { habit in
+                if self.store.habits.contains(where: { $0.id == habit.id }) {
+                    return habit
+                } else if self.store.habits.contains(where: { $0.name == habit.name }) {
+                    return habit
+                } else {
+                    habitsToBeAdded.append(habit)
+                    return nil
+                }
+            }
+
+            for habit in duplicatedHabits {
+                if let originalHabit: HabitEntity = self.store.habits
+                    .first(where: { $0.id == habit.id }) {
+                    if habit.name != originalHabit.name {
+                        habitsToBeAdded.append(habit.clone())
+                        if let index: Int = duplicatedHabits.firstIndex(where: { $0.id == habit.id }) {
+                            duplicatedHabits.remove(at: index)
+                        }
                     }
                 }
             }
-        }
 
-        if duplicatedHabits.isEmpty && habitsToBeAdded.isEmpty {
-            try await self.addHabits(importedStore.habits)
-            return []
+            if duplicatedHabits.isEmpty && habitsToBeAdded.isEmpty {
+                try await self.addHabits(importedStore.habits)
+                return []
+            } else {
+                try await self.addHabits(habitsToBeAdded)
+                // not using habitsArchived for now so doesn't matter if data is being overitten
+                self.store.habitsArchived = store.habitsArchived
+                return duplicatedHabits
+            }
         } else {
-            try await self.addHabits(habitsToBeAdded)
-            // not using habitsArchived for now so doesn't matter if data is being overitten
-            self.store.habitsArchived = store.habitsArchived
-            return duplicatedHabits
+            return nil
         }
     }
 
