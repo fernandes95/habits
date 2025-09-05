@@ -17,9 +17,8 @@ struct SettingsView: View {
     @State private var isImporting: Bool = false
     @State private var isExporting: Bool = false
     @State private var isLoading: Bool = false
-    @State private var showAlert: Bool = false
+    @State private var showAlert: SettingsAlert = .none
     @State private var showImportAlert: Bool = false
-    @State private var alertTitle: LocalizedStringKey = ""
     @State private var document: ExportableDocument = ExportableDocument(data: Data())
 
     var body: some View {
@@ -27,8 +26,7 @@ struct SettingsView: View {
             VStack {
                 List {
                     Section {
-                        Text("settings_export_button")
-                            .onTapGesture {
+                        Button("settings_export_button") {
                                 Task {
                                     isLoading = true
 
@@ -47,14 +45,12 @@ struct SettingsView: View {
                             ) { result in
                                 switch result {
                                 case .success:
-                                    alertTitle = "settings_data_export_success_alert_title"
+                                    showAlert = .exportSuccess
                                 case .failure:
-                                    alertTitle = "settings_data_export_fail_alert_title"
+                                    showAlert = .exportFailure
                                 }
-                                showAlert = true
                             }
-                        Text("settings_import_button")
-                            .onTapGesture {
+                        Button("settings_import_button") {
                                 isLoading = true
                                 isImporting = true
                             }
@@ -66,17 +62,14 @@ struct SettingsView: View {
                                 case .success(let url):
                                    Task {
                                        if let didImport = try await self.state.importHabits(url: url) {
-                                           alertTitle = "settings_data_import_success_alert_title"
                                            self.showImportAlert = didImport
-                                           showAlert = !self.showImportAlert
+                                           showAlert = didImport ? .importSuccess : .importFailure
                                        } else {
-                                           alertTitle = "settings_data_import_fail_alert_title"
-                                           showAlert = true
+                                           showAlert = .importFailure
                                        }
                                    }
                                 case .failure:
-                                   alertTitle = "settings_data_import_fail_alert_title"
-                                   showAlert = true
+                                    showAlert = .importFailure
                                 }
                             }
                     } header: {
@@ -87,7 +80,11 @@ struct SettingsView: View {
             }
             .navigationTitle("settings_title")
             .opacity(isLoading ? 0.5 : 1)
-            .alert(alertTitle, isPresented: $showAlert, actions: {})
+            .alert(
+                showAlert.value,
+                isPresented: .constant($showAlert.wrappedValue != .none),
+                actions: {}
+            )
             .alert(
                 "settings_import_duplicate_alert_title",
                 isPresented: $showImportAlert,
@@ -125,7 +122,21 @@ struct SettingsView: View {
     private func manageConflicts(_ resolution: ConflictResolution) {
         Task {
             try await self.state.manageDuplicatedHabits(resolution)
-            showAlert = true
+            showAlert = .importSuccess
+        }
+    }
+}
+
+private enum SettingsAlert {
+    case none, exportSuccess, exportFailure, importSuccess, importFailure
+
+    internal var value: LocalizedStringKey {
+        return switch self {
+        case .none: ""
+        case .exportSuccess: "settings_data_export_success_alert_title"
+        case .exportFailure: "settings_data_export_fail_alert_title"
+        case .importSuccess: "settings_data_import_success_alert_title"
+        case .importFailure: "settings_data_import_fail_alert_title"
         }
     }
 }

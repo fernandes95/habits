@@ -31,14 +31,14 @@ class MainState: ObservableObject {
 
     /// Get exportable document
     func getDataDocument() async throws -> ExportableDocument {
-        return await self.habitsService.getDocument()
+        return await self.habitsService.exportDataDocument()
     }
 
     /// Get all habits from `Imported Data`
     ///
     /// - Parameter data: Imported data
     func importHabits(url: URL) async throws -> Bool? {
-        self.duplicatedHabits = try await self.habitsService.load(url: url)
+        self.duplicatedHabits = try await self.habitsService.importHabits(from: url)
 
         guard let habits: [HabitEntity] = self.duplicatedHabits else { return nil }
 

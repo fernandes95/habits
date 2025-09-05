@@ -30,17 +30,17 @@ class HabitsService {
         self.store = try await storeService.load()
     }
 
-    /// Gets store from url
+    /// Imports habits from url
     ///
     /// - Parameter url: Imported file Url
     /// - Returns: A nulable array of HabitEntities
-    func load(url: URL) async throws -> [HabitEntity]? {
+    func importHabits(from: URL) async throws -> [HabitEntity]? {
         var habitsToBeAdded: [HabitEntity] = []
-        if url.startAccessingSecurityScopedResource() {
+        if from.startAccessingSecurityScopedResource() {
             defer {
-                url.stopAccessingSecurityScopedResource()
+                from.stopAccessingSecurityScopedResource()
             }
-            let importedStore: StoreEntity = try await storeService.load(url: url)
+            let importedStore: StoreEntity = try await storeService.load(url: from)
 
             var duplicatedHabits: [HabitEntity] = importedStore.habits.compactMap { habit in
                 if self.store.habits.contains(where: { $0.id == habit.id || $0.name == habit.name }) {
@@ -131,7 +131,7 @@ class HabitsService {
     }
 
     /// Gets exportable document
-    func getDocument() async -> ExportableDocument {
+    func exportDataDocument() async -> ExportableDocument {
         var data: Data = Data()
         do {
             // Making sure latest data is saved
