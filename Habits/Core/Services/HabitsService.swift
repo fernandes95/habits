@@ -43,9 +43,7 @@ class HabitsService {
             let importedStore: StoreEntity = try await storeService.load(url: url)
 
             var duplicatedHabits: [HabitEntity] = importedStore.habits.compactMap { habit in
-                if self.store.habits.contains(where: { $0.id == habit.id }) {
-                    return habit
-                } else if self.store.habits.contains(where: { $0.name == habit.name }) {
+                if self.store.habits.contains(where: { $0.id == habit.id || $0.name == habit.name }) {
                     return habit
                 } else {
                     habitsToBeAdded.append(habit)
@@ -64,7 +62,7 @@ class HabitsService {
                     }
                 }
             }
-
+            
             if duplicatedHabits.isEmpty && habitsToBeAdded.isEmpty {
                 try await self.addHabits(importedStore.habits)
                 return []
@@ -98,8 +96,7 @@ class HabitsService {
     private func duplicateHabits(_ habits: [HabitEntity]) async throws {
         var duplicatedHabits: [HabitEntity] = []
         for habit in habits {
-            let habitClone = habit.clone()
-            var count: Int = 2
+            var count: Int = 1
             var name: String
 
             repeat {
@@ -107,8 +104,7 @@ class HabitsService {
                 count += 1
             } while self.habits.contains(where: { $0.name == name })
 
-            let newHabit = habitClone.with(name: name)
-            duplicatedHabits.append(newHabit)
+            duplicatedHabits.append(habit.clone().with(name: name))
         }
 
         try await self.addHabits(duplicatedHabits)
@@ -141,7 +137,7 @@ class HabitsService {
             // Making sure latest data is saved
             try await storeService.save(self.store)
             data = try await storeService.loadAsData()
-        } catch {}
+        } catch let error { print(error.localizedDescription) }
         return ExportableDocument(data: data)
     }
 
@@ -182,7 +178,7 @@ class HabitsService {
     /// - Returns: New Habit UUID
     func addHabit(_ habit: Habit) async throws -> UUID {
         var eventId: String = ""
-        var schedule: [Habit.Hour] = habit.schedule
+        var schedule: [Hour] = habit.schedule
         var location: HabitEntity.Location?
 
         if habit.schedule.isEmpty {
@@ -208,10 +204,10 @@ class HabitsService {
             frequencyType: habit.frequencyType,
             category: habit.category.rawValue,
             schedule: schedule.map { hour in
-                return HabitEntity.Hour(
-                    date: hour.date,
+                return Hour(
                     eventId: hour.eventId,
-                    notificationId: hour.notificationId
+                    notificationId: hour.notificationId,
+                    date: hour.date
                 )
             },
             hasAlarm: habit.hasAlarm,
@@ -232,7 +228,7 @@ class HabitsService {
     func addHabit(_ habitEntity: HabitEntity) async throws {
         let habit = Habit(habitEntity: habitEntity)
         var eventId: String = ""
-        var schedule: [Habit.Hour] = habit.schedule
+        var schedule: [Hour] = habit.schedule
 
         if habit.schedule.isEmpty {
             eventId = try await calendarService.createCalendarEvent(habit)
@@ -243,10 +239,10 @@ class HabitsService {
         let newHabit: HabitEntity = habitEntity.with(
             eventId: eventId,
             schedule: schedule.map { hour in
-                return HabitEntity.Hour(
-                    date: hour.date,
+                return Hour(
                     eventId: hour.eventId,
-                    notificationId: hour.notificationId
+                    notificationId: hour.notificationId,
+                    date: hour.date
                 )
             },
         )
@@ -283,10 +279,10 @@ class HabitsService {
                 category: eventsHabit.category.rawValue,
                 scheduleInterval: eventsHabit.scheduleInterval,
                 schedule: eventsHabit.schedule.map { hour in
-                    return HabitEntity.Hour(
-                        date: hour.date,
+                    return Hour(
                         eventId: hour.eventId,
-                        notificationId: hour.notificationId
+                        notificationId: hour.notificationId,
+                        date: hour.date
                     )
                 },
                 hasAlarm: eventsHabit.hasAlarm,

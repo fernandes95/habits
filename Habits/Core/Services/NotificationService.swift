@@ -106,7 +106,7 @@ class NotificationService {
     /// Creates notification for each item in Schedule with the Habit name as Notification Content Title
     ///
     /// - Parameter habit: Habit populate notification
-    func manageLocalNotifications(habit: Habit) async throws -> [Habit.Hour] {
+    func manageLocalNotifications(habit: Habit) async throws -> [Hour] {
         guard try await self.notificationAuthorization() else {
             return habit.schedule
         }
@@ -131,7 +131,7 @@ class NotificationService {
     ///
     /// - Parameter newSchedule: New Habit Schedule
     /// - Parameter oldSchedule: Old Habit Schedule
-    private func removeNotifications(newSchedule: [Habit.Hour], oldSchedule: [Habit.Hour]) {
+    private func removeNotifications(newSchedule: [Hour], oldSchedule: [Hour]) {
         for hour in oldSchedule {
             // swiftlint:disable:next for_where
             if !newSchedule.contains(where: {$0.id == hour.id}) {
@@ -148,12 +148,12 @@ class NotificationService {
     ///
     /// - Parameter habit: New habit
     /// - Parameter oldHabit: Old habit
-    func manageScheduledNotifications(_ habit: Habit, oldHabit: Habit) async throws -> [Habit.Hour] {
+    func manageScheduledNotifications(_ habit: Habit, oldHabit: Habit) async throws -> [Hour] {
         guard try await self.notificationAuthorization() else {
             return habit.schedule
         }
 
-        var newSchedule: [Habit.Hour] = habit.schedule
+        var newSchedule: [Hour] = habit.schedule
 
         // REMOVE NOTIFICATIONS FROM SCHEDULE THAT WERE DELETED
         self.removeNotifications(newSchedule: habit.schedule, oldSchedule: oldHabit.schedule)

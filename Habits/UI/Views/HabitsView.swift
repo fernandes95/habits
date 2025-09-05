@@ -26,7 +26,7 @@ struct HabitsView: View {
                         Task {
                             do {
                                 try await state.loadHabits(date: state.selectedDate)
-                            } catch { }
+                            } catch let error { print(error.localizedDescription) }
                         }
                     }
                 )
@@ -45,7 +45,7 @@ struct HabitsView: View {
                         Task {
                             do {
                                 try await state.updateHabit(habit: habit)
-                            } catch { }
+                            } catch let error { print(error.localizedDescription) }
                         }
                     },
                     onItemAction: { habit in
@@ -76,7 +76,7 @@ struct HabitsView: View {
                 Task {
                     do {
                         try await state.loadHabits(date: state.selectedDate)
-                    } catch { }
+                    } catch let error { print(error.localizedDescription) }
                 }
                 didLoadData = true
             }

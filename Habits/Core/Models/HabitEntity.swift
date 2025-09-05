@@ -96,8 +96,8 @@ struct HabitEntity: Codable {
             hasAlarm: hasAlarm ?? self.hasAlarm,
             updatedDate: updatedDate ?? self.updatedDate,
             hasLocationReminder: hasLocationReminder ?? self.hasLocationReminder,
-            location: location,
-            scheduleInterval: scheduleInterval
+            location: location ?? self.location,
+            scheduleInterval: scheduleInterval ?? self.scheduleInterval
         )
     }
 
@@ -133,20 +133,6 @@ struct HabitEntity: Codable {
             self.date = date
             self.updatedDate = updatedDate
             self.isChecked = isChecked
-        }
-    }
-
-    internal struct Hour: Codable {
-        let id: UUID
-        let date: Date
-        var eventId: String
-        var notificationId: String?
-
-        init(id: UUID = UUID(), date: Date, eventId: String, notificationId: String?) {
-            self.id = id
-            self.date = date
-            self.eventId = eventId
-            self.notificationId = notificationId
         }
     }
 

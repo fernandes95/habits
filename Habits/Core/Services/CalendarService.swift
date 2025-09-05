@@ -66,12 +66,12 @@ class CalendarService {
     /// - Parameters:
     ///   - habit: Habit to create events from
     ///
-    func createScheduleCalendarEvents(_ habit: Habit) async throws -> [Habit.Hour] {
+    func createScheduleCalendarEvents(_ habit: Habit) async throws -> [Hour] {
         guard try await verifyAuthStatus() else {
             return try await notificationService.manageLocalNotifications(habit: habit)
         }
 
-        var newSchedule: [Habit.Hour] = habit.schedule
+        var newSchedule: [Hour] = habit.schedule
 
         for hour in habit.schedule {
             var components: DateComponents = DateComponents()
@@ -98,7 +98,7 @@ class CalendarService {
         return newSchedule
     }
 
-    private func removeEvents(habit: Habit, schedule: [Habit.Hour]) {
+    private func removeEvents(habit: Habit, schedule: [Hour]) {
         for hour in schedule {
             // swiftlint:disable:next for_where
             if !habit.schedule.contains(where: {$0.id == hour.id}) {
@@ -107,12 +107,12 @@ class CalendarService {
         }
     }
 
-    func manageScheduleEvents(_ habit: Habit, oldHabit: Habit) async throws -> [Habit.Hour] {
+    func manageScheduleEvents(_ habit: Habit, oldHabit: Habit) async throws -> [Hour] {
         guard try await verifyAuthStatus() else {
             return try await notificationService.manageScheduledNotifications(habit, oldHabit: oldHabit)
         }
 
-        var newSchedule: [Habit.Hour] = habit.schedule
+        var newSchedule: [Hour] = habit.schedule
         var components: DateComponents = DateComponents()
         components.minute = 30
 

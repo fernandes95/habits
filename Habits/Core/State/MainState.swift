@@ -19,9 +19,6 @@ class MainState: ObservableObject {
     var habits: [Habit] = []
 
     @Published
-    var duplicatedHabits: [HabitEntity]? = []
-
-    @Published
     var locationStatus: CLAuthorizationStatus = .notDetermined
 
     @Published
@@ -29,6 +26,8 @@ class MainState: ObservableObject {
 
     @Published
     var selectedDate: Date = .now
+
+    var duplicatedHabits: [HabitEntity]?
 
     /// Get exportable document
     func getDataDocument() async throws -> ExportableDocument {
@@ -104,7 +103,7 @@ class MainState: ObservableObject {
                 )
             }
             try await loadHabits(date: self.selectedDate)
-        } catch { }
+        } catch let error { print(error.localizedDescription) }
     }
 
     /// Removes Habit, stops monitoring if needed and loads all habits from selected date
@@ -115,7 +114,7 @@ class MainState: ObservableObject {
             try await habitsService.removeHabit(habitId: habitId)
             self.locationService.stopMonitoringRegion(identifier: habitId.uuidString)
             try await loadHabits(date: self.selectedDate)
-        } catch {}
+        } catch let error { print(error.localizedDescription) }
     }
 
     /// Adds new Habit and loads all habits from selected date
@@ -132,7 +131,7 @@ class MainState: ObservableObject {
                 )
             }
             try await loadHabits(date: self.selectedDate)
-        } catch { }
+        } catch let error { print(error.localizedDescription) }
     }
 
     /// Get Location Authorization Status

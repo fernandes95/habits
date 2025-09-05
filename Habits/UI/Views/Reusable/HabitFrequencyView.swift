@@ -126,7 +126,7 @@ struct HabitFrequencyView: View {
 
                         self.habit.hasAlarm = true
                     } else {
-                        let scheduleSorted = self.habit.schedule.sorted { (lhs: Habit.Hour, rhs: Habit.Hour) in
+                        let scheduleSorted = self.habit.schedule.sorted { (lhs: Hour, rhs: Hour) in
                             return (lhs.date < rhs.date)
                         }
                         if let hour = scheduleSorted.last {
@@ -146,7 +146,7 @@ struct HabitFrequencyView: View {
                     }
 
                     self.habit.schedule.append(
-                        Habit.Hour(eventId: "", date: date)
+                        Hour(eventId: "", date: date)
                     )
                 }, label: {
                     Image(systemName: "plus")
