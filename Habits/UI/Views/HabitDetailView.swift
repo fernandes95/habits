@@ -144,7 +144,7 @@ struct HabitDetailView: View {
         Task {
             do {
                 try await self.state.removeHabit(habitId: self.habit.id)
-            } catch {}
+            } catch let error { print(error.localizedDescription) }
         }
         self.router.pop()
     }
@@ -156,7 +156,7 @@ struct HabitDetailView: View {
                 let habitEdited = try await self.state.getHabit(habit: self.editingHabit)
                 self.habit = habitEdited
                 self.editingHabit = habitEdited
-            } catch {}
+            } catch let error { print(error.localizedDescription) }
         }
     }
 
@@ -167,7 +167,7 @@ struct HabitDetailView: View {
 
     private func canContinue() -> Bool {
         guard isEditing else { return true }
-        
+
         switch editingHabit.frequency {
         case .daily:
             return true

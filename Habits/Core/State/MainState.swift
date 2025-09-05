@@ -25,7 +25,44 @@ class MainState: ObservableObject {
     var notificationStatus: UNAuthorizationStatus = .notDetermined
 
     @Published
-    var selectedDate: Date = Date.now
+    var selectedDate: Date = .now
+
+    var duplicatedHabits: [HabitEntity]?
+
+    /// Get exportable document
+    func getDataDocument() async throws -> ExportableDocument {
+        return await self.habitsService.exportDataDocument()
+    }
+
+    /// Get all habits from `Imported Data`
+    ///
+    /// - Parameter data: Imported data
+    func importHabits(url: URL) async throws -> Bool? {
+        self.duplicatedHabits = try await self.habitsService.importHabits(from: url)
+
+        guard let habits: [HabitEntity] = self.duplicatedHabits else { return nil }
+
+        if habits.isEmpty {
+            try await self.loadHabits(date: self.selectedDate)
+            return false
+        } else {
+            return true
+        }
+    }
+
+    /// Manage duplicated habits
+    ///
+    /// - Parameter resolution: Conflict Resolution type
+    func manageDuplicatedHabits(_ resolution: ConflictResolution) async throws {
+        switch resolution {
+        case .delete: self.duplicatedHabits = []
+        default: try await self.habitsService.manageDuplicates(
+            habits: self.duplicatedHabits ?? [],
+            resolution: resolution
+        )
+        try await self.loadHabits(date: self.selectedDate)
+        }
+    }
 
     /// Get all habits from `Selected Date`
     ///
@@ -46,7 +83,7 @@ class MainState: ObservableObject {
     /// - Returns: Habit
     func getHabit(habit: Habit) async throws -> Habit {
         if let habitEntity: HabitEntity = try await self.habitsService.getHabit(id: habit.id) {
-            return Habit(habitEntity: habitEntity, selectedDate: Date.now)
+            return Habit(habitEntity: habitEntity, selectedDate: .now)
         } else {
             return habit
         }
@@ -66,7 +103,7 @@ class MainState: ObservableObject {
                 )
             }
             try await loadHabits(date: self.selectedDate)
-        } catch { }
+        } catch let error { print(error.localizedDescription) }
     }
 
     /// Removes Habit, stops monitoring if needed and loads all habits from selected date
@@ -77,7 +114,7 @@ class MainState: ObservableObject {
             try await habitsService.removeHabit(habitId: habitId)
             self.locationService.stopMonitoringRegion(identifier: habitId.uuidString)
             try await loadHabits(date: self.selectedDate)
-        } catch {}
+        } catch let error { print(error.localizedDescription) }
     }
 
     /// Adds new Habit and loads all habits from selected date
@@ -94,7 +131,7 @@ class MainState: ObservableObject {
                 )
             }
             try await loadHabits(date: self.selectedDate)
-        } catch { }
+        } catch let error { print(error.localizedDescription) }
     }
 
     /// Get Location Authorization Status

@@ -26,7 +26,7 @@ struct HabitsView: View {
                         Task {
                             do {
                                 try await state.loadHabits(date: state.selectedDate)
-                            } catch { }
+                            } catch let error { print(error.localizedDescription) }
                         }
                     }
                 )
@@ -38,21 +38,37 @@ struct HabitsView: View {
 //                    CalendarView()
 //                        .frame(minHeight: 0, maxHeight: .infinity)
 //                }
-
+            ZStack(alignment: .bottomTrailing) {
                 ContentView(
                     list: $state.habits,
                     onItemStatusAction: { habit in
                         Task {
                             do {
                                 try await state.updateHabit(habit: habit)
-                            } catch { }
+                            } catch let error { print(error.localizedDescription) }
                         }
                     },
                     onItemAction: { habit in
                         router.push(HabitDetailView(habit: habit))
                     }
                 )
-//                .frame(minHeight: 0, maxHeight: .infinity)
+                //                .frame(minHeight: 0, maxHeight: .infinity)
+
+                Button {
+                    self.router.push(NewHabitQuoteView())
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.title.weight(.medium))
+                        .padding()
+                        .background(Color.accentColor)
+                        .foregroundColor(.primary)
+                        .clipShape(Circle())
+                        .shadow(radius: 4, x: 0, y: 4)
+
+                }
+                .accessibilityLabel("habits_accessibility_new_habit")
+                .padding(20)
+            }
 //            }
         }
         .task {
@@ -60,7 +76,7 @@ struct HabitsView: View {
                 Task {
                     do {
                         try await state.loadHabits(date: state.selectedDate)
-                    } catch { }
+                    } catch let error { print(error.localizedDescription) }
                 }
                 didLoadData = true
             }
@@ -86,11 +102,11 @@ struct HabitsView: View {
 
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
-                    self.router.push(NewHabitQuoteView())
+                    self.router.push(SettingsView())
                 }, label: {
-                    Image(systemName: "plus")
+                    Image(systemName: "gearshape.2.fill")
                 })
-                .accessibilityLabel("habits_accessibility_new_habit")
+                .accessibilityLabel("habits_accessibility_settings")
             }
         }
     }

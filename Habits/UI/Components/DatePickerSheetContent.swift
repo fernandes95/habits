@@ -38,7 +38,7 @@ struct DatePickerSheetContent: View {
 
 #Preview {
     DatePickerSheetContent(
-        datePickerDate: .constant(Date.now),
+        datePickerDate: .constant(.now),
         todayAction: { },
         doneAction: { },
         todayButtonDisabled: false

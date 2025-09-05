@@ -18,10 +18,34 @@ class DefaultStoreService: StoreService {
     }
 
     /// Load all Data from local file
+    func loadAsData() async throws -> Data {
+        let task = Task<Data, Error> {
+            let fileURL = try self.fileURL()
+            guard let data = try? Data(contentsOf: fileURL) else {
+                return Data()
+            }
+            return data
+        }
+        return try await task.value
+    }
+
+    /// Load all Data from local file
     func load() async throws -> StoreEntity {
         let task = Task<StoreEntity, Error> {
             let fileURL = try self.fileURL()
             guard let data = try? Data(contentsOf: fileURL) else {
+                return StoreEntity(habits: [], habitsArchived: [])
+            }
+            let decodedHabits = try JSONDecoder().decode(StoreEntity.self, from: data)
+            return decodedHabits
+        }
+        return try await task.value
+    }
+
+    /// Load all Data from imported file
+    func load(url: URL) async throws -> StoreEntity {
+        let task = Task<StoreEntity, Error> {
+            guard let data = try? Data(contentsOf: url) else {
                 return StoreEntity(habits: [], habitsArchived: [])
             }
             let decodedHabits = try JSONDecoder().decode(StoreEntity.self, from: data)

@@ -348,6 +348,16 @@
         }
       }
     },
+    "habits_accessibility_settings" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        }
+      }
+    },
     "habits_title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -947,6 +957,149 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“It’s not about who you are today, it’s about who you want to become and the price you are willing to pay to get there.”\n\n―Tom Bilyeu, Founder Impact Theory"
+          }
+        }
+      }
+    },
+    "settings_data_export_fail_alert_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to export"
+          }
+        }
+      }
+    },
+    "settings_data_export_success_alert_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exported with success"
+          }
+        }
+      }
+    },
+    "settings_data_import_fail_alert_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to import"
+          }
+        }
+      }
+    },
+    "settings_data_import_success_alert_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imported with success"
+          }
+        }
+      }
+    },
+    "settings_data_section_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
+          }
+        }
+      }
+    },
+    "settings_export_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export data"
+          }
+        }
+      }
+    },
+    "settings_import_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import data"
+          }
+        }
+      }
+    },
+    "settings_import_duplicate_alert_delete_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete all"
+          }
+        }
+      }
+    },
+    "settings_import_duplicate_alert_duplicate_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicate all"
+          }
+        }
+      }
+    },
+    "settings_import_duplicate_alert_message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select an option to deal with duplicated habits."
+          }
+        }
+      }
+    },
+    "settings_import_duplicate_alert_replace_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace all"
+          }
+        }
+      }
+    },
+    "settings_import_duplicate_alert_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are duplicated Habits"
+          }
+        }
+      }
+    },
+    "settings_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
           }
         }
       }
