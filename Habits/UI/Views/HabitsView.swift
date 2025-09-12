@@ -194,9 +194,9 @@ private struct ContentView: View {
                     name: habit.name,
                     status: $habit.isChecked,
                     statusAction: {
-                        var habitChecked = habit
-                        habitChecked.isChecked = !habitChecked.isChecked
-                        onItemStatusAction(habitChecked)
+                        var habit = habit
+                        habit.isChecked = !habit.isChecked
+                        onItemStatusAction(habit)
                     },
                     itemAction: { onItemAction(habit) }
                 )

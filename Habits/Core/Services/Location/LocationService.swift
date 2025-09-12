@@ -30,6 +30,7 @@ class LocationService: NSObject, ObservableObject {
         self.locationManager.pausesLocationUpdatesAutomatically = false
         self.locationManager.startUpdatingLocation()
         self.regionService = BackwardsCompactability.regionService(locationManager: self.locationManager)
+        self.forceUpdateLocation()
     }
 
     func getAuthorizationStatus() -> CLAuthorizationStatus {
@@ -55,9 +56,17 @@ class LocationService: NSObject, ObservableObject {
     /// - Parameters:
     ///   - location: Precise location to start monitoring
     ///   - identifier: Location Identifier
-    func startMonitoringRegion(location: CLLocationCoordinate2D, identifier: String) {
+    func startMonitoringRegion(
+        location: CLLocationCoordinate2D,
+        habitIdentifier: String,
+        habitName: String,
+    ) {
         Task {
-            try await regionService?.monitorRegion(center: location, identifier: identifier)
+            try await regionService?.monitorRegion(
+                center: location,
+                habitIdentifier: habitIdentifier,
+                habitName: habitName
+            )
             self.forceUpdateLocation()
         }
     }
@@ -65,9 +74,9 @@ class LocationService: NSObject, ObservableObject {
     /// Stops Monitoring Region by identifier
     ///
     /// - Parameter identifier: Location Identifier
-    func stopMonitoringRegion(identifier: String) {
+    func stopMonitoringRegion(habitIdentifier: String, habitName: String) {
         Task {
-            try await regionService?.stopMonitoringRegion(identifier: identifier)
+            try await regionService?.stopMonitoringRegion(habitIdentifier: habitIdentifier, habitName: habitName)
             self.forceUpdateLocation()
         }
     }
@@ -104,7 +113,7 @@ extension LocationService: CLLocationManagerDelegate {
     /// - Parameter id: Habit ID
     private func remindUser(id: String) async throws {
         guard let habitName: String = try await self.habitsService.getHabit(id: id)?.name else {
-            try await self.regionService?.stopMonitoringRegion(identifier: id)
+            try await self.regionService?.stopMonitoringRegion(habitIdentifier: id, habitName: nil)
             return
         }
 
@@ -147,7 +156,7 @@ extension LocationService: CLLocationManagerDelegate {
                 self.setDistanceFilter(distance: distance)
             }
 
-            print(" Regions being monitored count: \(manager.monitoredRegions.count)")
+            print("Regions being monitored count: \(manager.monitoredRegions.count)")
         }
     }
 

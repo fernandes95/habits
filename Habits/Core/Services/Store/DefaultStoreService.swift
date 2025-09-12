@@ -42,6 +42,19 @@ class DefaultStoreService: StoreService {
         return try await task.value
     }
 
+    /// Load all Data from local file
+    func loadHabit(id: String) async throws -> HabitEntity? {
+        let task = Task<HabitEntity?, Error> {
+            let fileURL = try self.fileURL()
+            guard let data = try? Data(contentsOf: fileURL) else {
+                return nil
+            }
+            let decodedHabits = try JSONDecoder().decode(StoreEntity.self, from: data)
+            return decodedHabits.habits.first(where: { $0.id.uuidString == id }) ?? nil
+        }
+        return try await task.value
+    }
+
     /// Load all Data from imported file
     func load(url: URL) async throws -> StoreEntity {
         let task = Task<StoreEntity, Error> {

@@ -10,18 +10,18 @@ import EventKit
 
 // swiftlint:disable:next type_body_length
 class HabitsService {
-    private let storeService: DefaultStoreService = DefaultStoreService()
+    internal let storeService: DefaultStoreService = DefaultStoreService()
     private let calendarService: CalendarService = CalendarService()
     private let notificationService: NotificationService = NotificationService()
 
-    private var store: StoreEntity = StoreEntity(habits: [], habitsArchived: [])
-    private var habits: [HabitEntity] {
+    internal var store: StoreEntity = StoreEntity(habits: [], habitsArchived: [])
+    internal var habits: [HabitEntity] {
         return store.habits
     }
 
     init() {
         Task {
-            try await load()
+            try await self.load()
         }
     }
 
@@ -30,115 +30,10 @@ class HabitsService {
         self.store = try await storeService.load()
     }
 
-    /// Imports habits from url
-    ///
-    /// - Parameter url: Imported file Url
-    /// - Returns: A nulable array of HabitEntities
-    func importHabits(from: URL) async throws -> [HabitEntity]? {
-        var habitsToBeAdded: [HabitEntity] = []
-        if from.startAccessingSecurityScopedResource() {
-            defer {
-                from.stopAccessingSecurityScopedResource()
-            }
-            let importedStore: StoreEntity = try await storeService.load(url: from)
-
-            var duplicatedHabits: [HabitEntity] = importedStore.habits.compactMap { habit in
-                if self.store.habits.contains(where: { $0.id == habit.id || $0.name == habit.name }) {
-                    return habit
-                } else {
-                    habitsToBeAdded.append(habit)
-                    return nil
-                }
-            }
-
-            for habit in duplicatedHabits {
-                if let originalHabit: HabitEntity = self.store.habits
-                    .first(where: { $0.id == habit.id }) {
-                    if habit.name != originalHabit.name {
-                        habitsToBeAdded.append(habit.clone())
-                        if let index: Int = duplicatedHabits.firstIndex(where: { $0.id == habit.id }) {
-                            duplicatedHabits.remove(at: index)
-                        }
-                    }
-                }
-            }
-            
-            if duplicatedHabits.isEmpty && habitsToBeAdded.isEmpty {
-                try await self.addHabits(importedStore.habits)
-                return []
-            } else {
-                try await self.addHabits(habitsToBeAdded)
-                // not using habitsArchived for now so doesn't matter if data is being overitten
-                self.store.habitsArchived = store.habitsArchived
-                return duplicatedHabits
-            }
-        } else {
-            return nil
-        }
-    }
-
-    /// Manages duplicated habits when importing
-    ///
-    /// - Parameters:
-    ///   - habits: Duplicated habits
-    ///   - resolution: Conflict resolution type
-    func manageDuplicates(habits: [HabitEntity], resolution: ConflictResolution) async throws {
-        switch resolution {
-        case .delete: return
-        case .duplicate: try await self.duplicateHabits(habits)
-        case .replace: try await self.replaceHabits(habits)
-        }
-    }
-
-    /// Duplicates habits
-    ///
-    /// - Parameter habits: Duplicated habits
-    private func duplicateHabits(_ habits: [HabitEntity]) async throws {
-        var duplicatedHabits: [HabitEntity] = []
-        for habit in habits {
-            var count: Int = 1
-            var name: String
-
-            repeat {
-                name = "\(habit.name) #\(count)"
-                count += 1
-            } while self.habits.contains(where: { $0.name == name })
-
-            duplicatedHabits.append(habit.clone().with(name: name))
-        }
-
-        try await self.addHabits(duplicatedHabits)
-    }
-
-    /// Replaces existing habits
-    ///
-    /// - Parameter habits: Duplicated habits
-    private func replaceHabits(_ habits: [HabitEntity]) async throws {
-        for habit in habits {
-            if self.store.habits.contains(where: { $0.id == habit.id }) {
-                try await self.removeHabit(habitId: habit.id)
-                try await addHabit(habit)
-            } else {
-                return
-            }
-        }
-    }
-
     /// Saves store into local file and then loads data from said file
     private func save() async throws {
         try await storeService.save(self.store)
         try await self.load()
-    }
-
-    /// Gets exportable document
-    func exportDataDocument() async -> ExportableDocument {
-        var data: Data = Data()
-        do {
-            // Making sure latest data is saved
-            try await storeService.save(self.store)
-            data = try await storeService.loadAsData()
-        } catch let error { print(error.localizedDescription) }
-        return ExportableDocument(data: data)
     }
 
     /// Gets Habit by selected date
@@ -170,6 +65,15 @@ class HabitsService {
     /// - Returns: Habit Entity if any else nil
     func getHabit(id: String) async throws -> HabitEntity? {
         return self.habits.first(where: { $0.id.uuidString == id }) ?? nil
+    }
+
+    /// Gets Habit Entity by UUID as String directly from habits data file
+    /// Only use if really needed
+    ///
+    /// - Parameter id: UUID as String from Habit
+    /// - Returns: Habit Entity if any else nil
+    func getHabitEntity(id: String) async throws -> HabitEntity? {
+        return try await self.storeService.loadHabit(id: id)
     }
 
     /// Adds new Habit and creates calendar event/s if any
@@ -221,7 +125,7 @@ class HabitsService {
 
         return newHabit.id
     }
-    
+
     /// Adds new Habit from existing habit and creates calendar event/s if any
     ///
     /// - Parameter habitEntity: HabitEntity to add
@@ -313,6 +217,7 @@ class HabitsService {
             }
 
             updatedHabit.successRate = updatedHabit.getSuccessRate()
+            updatedHabit.updatedDate = .now
 
             self.store.habits[index] = updatedHabit
         }

@@ -99,7 +99,8 @@ class MainState: ObservableObject {
             if let location = habit.location {
                 self.locationService.startMonitoringRegion(
                     location: location.locationCoordinate,
-                    identifier: habit.id.uuidString
+                    habitIdentifier: habit.id.uuidString,
+                    habitName: habit.name
                 )
             }
             try await loadHabits(date: self.selectedDate)
@@ -112,7 +113,10 @@ class MainState: ObservableObject {
     func removeHabit(habitId: UUID) async throws {
         do {
             try await habitsService.removeHabit(habitId: habitId)
-            self.locationService.stopMonitoringRegion(identifier: habitId.uuidString)
+            self.locationService.stopMonitoringRegion(
+                habitIdentifier: habitId.uuidString,
+                habitName: ""
+            )
             try await loadHabits(date: self.selectedDate)
         } catch let error { print(error.localizedDescription) }
     }
@@ -127,7 +131,8 @@ class MainState: ObservableObject {
             if let location = habit.location {
                 self.locationService.startMonitoringRegion(
                     location: location.locationCoordinate,
-                    identifier: newHabitId.uuidString
+                    habitIdentifier: newHabitId.uuidString,
+                    habitName: habit.name
                 )
             }
             try await loadHabits(date: self.selectedDate)

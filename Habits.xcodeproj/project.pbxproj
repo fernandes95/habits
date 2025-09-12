@@ -46,6 +46,7 @@
 		AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E192B5FD91B002C7EEB /* ListItem.swift */; };
 		AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */; };
 		AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */; };
+		AE7DD34F2E748801007BF33A /* HabitsService+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7DD34E2E7487F5007BF33A /* HabitsService+Settings.swift */; };
 		AE901D0A2BC54A2300DA674A /* RegionNewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE901D092BC54A2300DA674A /* RegionNewService.swift */; };
 		AE901D0C2BC5791A00DA674A /* HabitsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE901D0B2BC5791A00DA674A /* HabitsService.swift */; };
 		AE901D0E2BC6CD6C00DA674A /* RegionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE901D0D2BC6CD6C00DA674A /* RegionService.swift */; };
@@ -117,6 +118,7 @@
 		AE744E192B5FD91B002C7EEB /* ListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItem.swift; sourceTree = "<group>"; };
 		AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelativeHeightSheetContentModifier.swift; sourceTree = "<group>"; };
 		AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerSheetContent.swift; sourceTree = "<group>"; };
+		AE7DD34E2E7487F5007BF33A /* HabitsService+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HabitsService+Settings.swift"; sourceTree = "<group>"; };
 		AE901D092BC54A2300DA674A /* RegionNewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionNewService.swift; sourceTree = "<group>"; };
 		AE901D0B2BC5791A00DA674A /* HabitsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsService.swift; sourceTree = "<group>"; };
 		AE901D0D2BC6CD6C00DA674A /* RegionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionService.swift; sourceTree = "<group>"; };
@@ -279,6 +281,7 @@
 				AE2B2A472BB0712A004669B6 /* BackgroundTaskService.swift */,
 				AE2B2A492BB07223004669B6 /* NotificationService.swift */,
 				AE901D0B2BC5791A00DA674A /* HabitsService.swift */,
+				AE7DD34E2E7487F5007BF33A /* HabitsService+Settings.swift */,
 				AE901D112BC6D08F00DA674A /* BackwardsCompactability.swift */,
 			);
 			path = Services;
@@ -654,6 +657,7 @@
 				AE98C7F52BBC6C9A00EAE2A5 /* CLLocationDistance+Utils.swift in Sources */,
 				AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */,
 				AE3AA2282E6707F0002F78E9 /* ConflictResolution.swift in Sources */,
+				AE7DD34F2E748801007BF33A /* HabitsService+Settings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

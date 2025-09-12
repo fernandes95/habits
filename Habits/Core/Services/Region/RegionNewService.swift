@@ -29,12 +29,12 @@ class RegionServiceNew: RegionService {
         for try await event in await monitor.events {
                 switch event.state {
                 case .satisfied: // callback when user ENTERS any of the registered regions.
-                    print("⬆️ CL MONITOR ENTERED REGION")
+                    print("⬆️ CL MONITOR ENTERED REGION (Time: \(Date.now)")
                     try await remindUser(id: event.identifier)
                 case .unknown, .unsatisfied: // callback when user EXITS any of the registered regions.
                     print("⬇️ CL MONITOR EXITED REGION")
                     if try await validateRegion(identifier: event.identifier) {
-                        try await stopMonitoringRegion(identifier: event.identifier)
+                        try await stopMonitoringRegion(habitIdentifier: event.identifier)
                     }
                 default:
                     print("CL MONITOR No Location Registered")
@@ -43,33 +43,42 @@ class RegionServiceNew: RegionService {
     }
 
     private func remindUser(id: String) async throws {
-        guard let habitName: String = try await self.habitsService.getHabit(id: id)?.name else {
-            try await stopMonitoringRegion(identifier: id)
+        guard let habitEntity: HabitEntity = try await self.habitsService.getHabitEntity(id: id) else {
+            try await stopMonitoringRegion(habitIdentifier: id)
             return
         }
 
-        try await notificationService.requestInstantNotification(subTitle: "Don't forget to: \(habitName)")
+        // stop monitoring habit that already finished
+        if habitEntity.endDate.startOfDay < .now.startOfDay {
+            try await stopMonitoringRegion(habitIdentifier: id)
+            return
+        }
+
+        // Check if the habit is already completed today
+        let isChecked = habitEntity.statusList.first(where: { $0.date.startOfDay == .now.startOfDay })?.isChecked
+        guard isChecked != true else {
+            // Already completed today, no notification needed
+            return
+        }
+
+        try await notificationService.requestInstantNotification(subTitle: "Don't forget to: \(habitEntity.name)")
     }
 
-    func monitorRegion(center: CLLocationCoordinate2D, identifier: String) async throws {
-        let habitName: String = try await self.habitsService.getHabit(id: identifier)?.name ?? ""
-
+    func monitorRegion(center: CLLocationCoordinate2D, habitIdentifier: String, habitName: String) async throws {
         // making sure to remove if habit is being updated
         // CLMonitor.add doesn't update if it exists
-        try await stopMonitoringRegion(identifier: identifier)
+        try await stopMonitoringRegion(habitIdentifier: habitIdentifier, habitName: habitName)
         await monitor?.add(
             CLMonitor.CircularGeographicCondition(center: center, radius: 5),
-            identifier: identifier,
+            identifier: habitIdentifier,
             assuming: .unsatisfied
         )
         print("🔎✅ CL MONITOR Started monitoring region for HABIT: \(habitName)")
     }
 
-    func stopMonitoringRegion(identifier: String) async throws {
-        let habitName: String = try await self.habitsService.getHabit(id: identifier)?.name ?? ""
-
-        await monitor?.remove(identifier)
-        print("🔎🛑 CL MONITOR Stoped monitoring region for HABIT: \(habitName)")
+    func stopMonitoringRegion(habitIdentifier: String, habitName: String? = nil) async throws {
+        await monitor?.remove(habitIdentifier)
+        print("🔎🛑 CL MONITOR Stoped monitoring region for HABIT: \(habitName ?? habitIdentifier)")
     }
 
     func validateRegion(identifier: String) async throws -> Bool {
@@ -83,7 +92,7 @@ class RegionServiceNew: RegionService {
     private func removeAllEvents() async throws {
         if let monitor {
             for identifier in await monitor.identifiers {
-                try await stopMonitoringRegion(identifier: identifier)
+                try await stopMonitoringRegion(habitIdentifier: identifier)
             }
         }
         print("🔎🛑✅ CL MONITOR All regions are being removed")
@@ -102,22 +111,24 @@ class RegionServiceNew: RegionService {
         if let monitor {
             for identifier in await monitor.identifiers {
                 guard let habitEntity = try await self.habitsService.getHabit(id: identifier) else {
-                    try await stopMonitoringRegion(identifier: identifier)
+                    try await stopMonitoringRegion(habitIdentifier: identifier)
                     return distance
                 }
 
-                let habit: Habit = Habit(habitEntity: habitEntity)
-
-                if !habits.contains(where: { $0.id.uuidString == identifier }) {
-                    try await stopMonitoringRegion(identifier: identifier)
+                if habits.contains(where: { $0.id.uuidString == identifier }) {
+                    habitsMonitored.append(habitEntity.id.uuidString)
                 } else {
-                    habitsMonitored.append(habit.id.uuidString)
+                    try await stopMonitoringRegion(habitIdentifier: identifier, habitName: habitEntity.name)
                 }
             }
         }
 
         for habit in habits where !habitsMonitored.contains(where: { $0 == habit.id.uuidString }) {
-            try await monitorRegion(center: habit.location!.locationCoordinate, identifier: habit.id.uuidString)
+            try await monitorRegion(
+                center: habit.location!.locationCoordinate,
+                habitIdentifier: habit.id.uuidString,
+                habitName: habit.name,
+            )
         }
 
         // DEBUG LOGS

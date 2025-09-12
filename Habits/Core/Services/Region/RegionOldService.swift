@@ -16,12 +16,12 @@ class RegionServiceOld: RegionService {
         self.locationManager = locationManager
     }
 
-    func monitorRegion(center: CLLocationCoordinate2D, identifier: String) async throws {
+    func monitorRegion(center: CLLocationCoordinate2D, habitIdentifier: String, habitName: String) async throws {
         if CLLocationManager.isMonitoringAvailable(for: CLCircularRegion.self) {
             let region = CLCircularRegion(
                 center: center,
                 radius: 5,
-                identifier: identifier)
+                identifier: habitIdentifier)
             region.notifyOnEntry = true
             region.notifyOnExit = true
 
@@ -30,8 +30,8 @@ class RegionServiceOld: RegionService {
         }
     }
 
-    func stopMonitoringRegion(identifier: String) async throws {
-        if let region = self.locationManager.monitoredRegions.first(where: { $0.identifier == identifier }) {
+    func stopMonitoringRegion(habitIdentifier: String, habitName: String? = nil) async throws {
+        if let region = self.locationManager.monitoredRegions.first(where: { $0.identifier == habitIdentifier }) {
             self.locationManager.stopMonitoring(for: region)
         }
     }
@@ -62,7 +62,11 @@ class RegionServiceOld: RegionService {
         try await stopMonitoringAll()
 
         for habit in habits {
-            try await monitorRegion(center: habit.location!.locationCoordinate, identifier: habit.id.uuidString)
+            try await monitorRegion(
+                center: habit.location!.locationCoordinate,
+                habitIdentifier: habit.id.uuidString,
+                habitName: habit.name
+            )
         }
 
         return distance
