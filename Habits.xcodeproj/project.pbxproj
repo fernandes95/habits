@@ -15,6 +15,8 @@
 		AE2B2A482BB0712A004669B6 /* BackgroundTaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2B2A472BB0712A004669B6 /* BackgroundTaskService.swift */; };
 		AE2B2A4A2BB07223004669B6 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2B2A492BB07223004669B6 /* NotificationService.swift */; };
 		AE302EA32BC2F646002C8DC1 /* ViewType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE302EA22BC2F646002C8DC1 /* ViewType.swift */; };
+		AE30AF332E7F4AC3004257BF /* HabitNotificationEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30AF322E7F4ABB004257BF /* HabitNotificationEntity.swift */; };
+		AE30AF352E7F4B36004257BF /* HabitsService+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30AF342E7F4B29004257BF /* HabitsService+Notifications.swift */; };
 		AE30E1582B9F7428009E10CD /* CalendarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1572B9F7428009E10CD /* CalendarService.swift */; };
 		AE30E1602BA4C182009E10CD /* Ocurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E15F2BA4C182009E10CD /* Ocurrence.swift */; };
 		AE30E1622BA88B5B009E10CD /* WeekDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1612BA88B5B009E10CD /* WeekDay.swift */; };
@@ -84,6 +86,8 @@
 		AE2B2A472BB0712A004669B6 /* BackgroundTaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskService.swift; sourceTree = "<group>"; };
 		AE2B2A492BB07223004669B6 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		AE302EA22BC2F646002C8DC1 /* ViewType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewType.swift; sourceTree = "<group>"; };
+		AE30AF322E7F4ABB004257BF /* HabitNotificationEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitNotificationEntity.swift; sourceTree = "<group>"; };
+		AE30AF342E7F4B29004257BF /* HabitsService+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HabitsService+Notifications.swift"; sourceTree = "<group>"; };
 		AE30E1572B9F7428009E10CD /* CalendarService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarService.swift; sourceTree = "<group>"; };
 		AE30E15F2BA4C182009E10CD /* Ocurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ocurrence.swift; sourceTree = "<group>"; };
 		AE30E1612BA88B5B009E10CD /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
@@ -282,6 +286,7 @@
 				AE2B2A492BB07223004669B6 /* NotificationService.swift */,
 				AE901D0B2BC5791A00DA674A /* HabitsService.swift */,
 				AE7DD34E2E7487F5007BF33A /* HabitsService+Settings.swift */,
+				AE30AF342E7F4B29004257BF /* HabitsService+Notifications.swift */,
 				AE901D112BC6D08F00DA674A /* BackwardsCompactability.swift */,
 			);
 			path = Services;
@@ -449,6 +454,7 @@
 				AEDAA9D82E60BABF0001ABA6 /* LocationSearchCompletion.swift */,
 				AE3AA22A2E6AD163002F78E9 /* Hour.swift */,
 				AEA3D6C92B5E8BE000A08F31 /* HabitEntity.swift */,
+				AE30AF322E7F4ABB004257BF /* HabitNotificationEntity.swift */,
 				AE51BD582B9612E3005DCBC7 /* StoreEntity.swift */,
 			);
 			path = Models;
@@ -611,7 +617,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE901D0C2BC5791A00DA674A /* HabitsService.swift in Sources */,
+				AE30AF332E7F4AC3004257BF /* HabitNotificationEntity.swift in Sources */,
 				AE3AA2232E66CDEF002F78E9 /* SpinnerView.swift in Sources */,
+				AE30AF352E7F4B36004257BF /* HabitsService+Notifications.swift in Sources */,
 				AE3FCFED2D1E315200E25F46 /* HabitFrequencyView.swift in Sources */,
 				AE14909C2C98882800F9BD58 /* NewHabitDurantionView.swift in Sources */,
 				AE3AA22B2E6AD165002F78E9 /* Hour.swift in Sources */,

@@ -34,7 +34,7 @@ class DefaultStoreService: StoreService {
         let task = Task<StoreEntity, Error> {
             let fileURL = try self.fileURL()
             guard let data = try? Data(contentsOf: fileURL) else {
-                return StoreEntity(habits: [], habitsArchived: [])
+                return StoreEntity(habits: [], habitsArchived: [], habitsNotified: [])
             }
             let decodedHabits = try JSONDecoder().decode(StoreEntity.self, from: data)
             return decodedHabits
@@ -55,11 +55,26 @@ class DefaultStoreService: StoreService {
         return try await task.value
     }
 
+    /// Load all Data from local file
+    func didNotifyHabit(id: UUID) async throws -> Bool {
+        let task = Task<Bool, Error> {
+            let fileURL = try self.fileURL()
+            guard let data = try? Data(contentsOf: fileURL) else {
+                return false
+            }
+            let decodedHabits = try JSONDecoder().decode(StoreEntity.self, from: data)
+            return decodedHabits.habitsNotified.contains(where: {
+                $0.habitId == id &&
+                $0.date.startOfDay == Date().startOfDay })
+        }
+        return try await task.value
+    }
+
     /// Load all Data from imported file
     func load(url: URL) async throws -> StoreEntity {
         let task = Task<StoreEntity, Error> {
             guard let data = try? Data(contentsOf: url) else {
-                return StoreEntity(habits: [], habitsArchived: [])
+                return StoreEntity(habits: [], habitsArchived: [], habitsNotified: [])
             }
             let decodedHabits = try JSONDecoder().decode(StoreEntity.self, from: data)
             return decodedHabits

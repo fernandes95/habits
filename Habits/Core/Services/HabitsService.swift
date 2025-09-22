@@ -14,7 +14,7 @@ class HabitsService {
     private let calendarService: CalendarService = CalendarService()
     private let notificationService: NotificationService = NotificationService()
 
-    internal var store: StoreEntity = StoreEntity(habits: [], habitsArchived: [])
+    internal var store: StoreEntity = StoreEntity(habits: [], habitsArchived: [], habitsNotified: [])
     internal var habits: [HabitEntity] {
         return store.habits
     }
@@ -31,7 +31,7 @@ class HabitsService {
     }
 
     /// Saves store into local file and then loads data from said file
-    private func save() async throws {
+    internal func save() async throws {
         try await storeService.save(self.store)
         try await self.load()
     }

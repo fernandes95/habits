@@ -60,8 +60,13 @@ class RegionServiceNew: RegionService {
             // Already completed today, no notification needed
             return
         }
+        
+        guard !(try await habitsService.verifyHabitWasNotified(habitId: habitEntity.id)) else {
+            return
+        }
 
         try await notificationService.requestInstantNotification(subTitle: "Don't forget to: \(habitEntity.name)")
+        try await habitsService.notifiedHabit(habitId: habitEntity.id)
     }
 
     func monitorRegion(center: CLLocationCoordinate2D, habitIdentifier: String, habitName: String) async throws {
