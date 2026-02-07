@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreLocation
+import OSLog
 
 @available(iOS 17.0, *)
 class RegionServiceNew: RegionService {
@@ -29,15 +30,15 @@ class RegionServiceNew: RegionService {
         for try await event in await monitor.events {
                 switch event.state {
                 case .satisfied: // callback when user ENTERS any of the registered regions.
-                    print("⬆️ CL MONITOR ENTERED REGION (Time: \(Date.now)")
+                    Logger.location.debug("⬆️ CL MONITOR ENTERED REGION (Time: \(Date.now)")
                     try await remindUser(id: event.identifier)
                 case .unknown, .unsatisfied: // callback when user EXITS any of the registered regions.
-                    print("⬇️ CL MONITOR EXITED REGION")
+                    Logger.location.debug("⬇️ CL MONITOR EXITED REGION")
                     if try await validateRegion(identifier: event.identifier) {
                         try await stopMonitoringRegion(habitIdentifier: event.identifier)
                     }
                 default:
-                    print("CL MONITOR No Location Registered")
+                    Logger.location.debug("CL MONITOR No Location Registered")
                 }
         }
     }
@@ -60,7 +61,6 @@ class RegionServiceNew: RegionService {
             // Already completed today, no notification needed
             return
         }
-        
         guard !(try await habitsService.verifyHabitWasNotified(habitId: habitEntity.id)) else {
             return
         }
@@ -78,12 +78,12 @@ class RegionServiceNew: RegionService {
             identifier: habitIdentifier,
             assuming: .unsatisfied
         )
-        print("🔎✅ CL MONITOR Started monitoring region for HABIT: \(habitName)")
+        Logger.location.debug("🔎✅ CL MONITOR Started monitoring region for HABIT: \(habitName)")
     }
 
     func stopMonitoringRegion(habitIdentifier: String, habitName: String? = nil) async throws {
         await monitor?.remove(habitIdentifier)
-        print("🔎🛑 CL MONITOR Stoped monitoring region for HABIT: \(habitName ?? habitIdentifier)")
+        Logger.location.debug("🔎🛑 CL MONITOR Stoped monitoring region for HABIT: \(habitName ?? habitIdentifier)")
     }
 
     func validateRegion(identifier: String) async throws -> Bool {
@@ -100,7 +100,7 @@ class RegionServiceNew: RegionService {
                 try await stopMonitoringRegion(habitIdentifier: identifier)
             }
         }
-        print("🔎🛑✅ CL MONITOR All regions are being removed")
+        Logger.location.debug("🔎🛑✅ CL MONITOR All regions are being removed")
     }
 
     func manageRegions(currentLocation: CLLocation) async throws -> Double {
@@ -137,17 +137,17 @@ class RegionServiceNew: RegionService {
         }
 
         // DEBUG LOGS
-        print("\n **** Regions being monitored ****")
+        Logger.location.debug("\n **** Regions being monitored ****")
         if let monitor {
             for identifier in await monitor.identifiers {
                 if let habit = try await self.habitsService.getHabit(id: identifier) {
-                    print("► Name: \(habit.name)")
+                    Logger.location.debug("► Name: \(habit.name)")
                 } else {
-                    print("► Identifier: \(identifier)")
+                    Logger.location.debug("► Identifier: \(identifier)")
                 }
             }
         }
-        print("\n **** End of Regions being monitored ****")
+        Logger.location.debug("\n **** End of Regions being monitored ****")
         // END OF DEBUG LOGS
 
         return distance

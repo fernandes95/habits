@@ -8,6 +8,7 @@
 import Foundation
 import MapKit
 import CoreLocation
+import OSLog
 
 class LocationService: NSObject, ObservableObject {
     private let notificationService: NotificationService = NotificationService()
@@ -28,9 +29,11 @@ class LocationService: NSObject, ObservableObject {
         self.locationManager.activityType = .otherNavigation
         self.locationManager.allowsBackgroundLocationUpdates = true
         self.locationManager.pausesLocationUpdatesAutomatically = false
-        self.locationManager.startUpdatingLocation()
         self.regionService = BackwardsCompactability.regionService(locationManager: self.locationManager)
-        self.forceUpdateLocation()
+    }
+
+    func stopUpdatingLocation() {
+        self.locationManager.stopUpdatingLocation()
     }
 
     func getAuthorizationStatus() -> CLAuthorizationStatus {
@@ -45,7 +48,7 @@ class LocationService: NSObject, ObservableObject {
     /// Updates Location
     ///
     /// Forces to stop location, go to minimum distance filter an then force start update location again
-    private func forceUpdateLocation() {
+    func forceUpdateLocation() {
         self.locationManager.stopUpdatingLocation()
         self.locationManager.distanceFilter = 1
         self.locationManager.startUpdatingLocation()
@@ -138,15 +141,15 @@ extension LocationService: CLLocationManagerDelegate {
 
         self.locationManager.distanceFilter = newDistance
 
-        print("\n New distance received: \(String(describing: distance))")
-        print("New distance to set: \(newDistance)")
-        print("Distance Filter: \(self.locationManager.distanceFilter)")
+        Logger.location.debug("\n New distance received: \(String(describing: distance))")
+        Logger.location.debug("New distance to set: \(newDistance)")
+        Logger.location.debug("Distance Filter: \(self.locationManager.distanceFilter)")
     }
 
     /// Gets Location updates and manages regions based on current Location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
-            print("🏃🏻‍♂️‍➡️ Changed location")
+            Logger.location.debug("🏃🏻‍♂️‍➡️ Changed location")
             Task {
                 guard let distance: Double = try await regionService?.manageRegions(currentLocation: location)
                 else {
@@ -156,24 +159,24 @@ extension LocationService: CLLocationManagerDelegate {
                 self.setDistanceFilter(distance: distance)
             }
 
-            print("Regions being monitored count: \(manager.monitoredRegions.count)")
+            Logger.location.debug("Regions being monitored count: \(manager.monitoredRegions.count)")
         }
     }
 
     /// Handles failure when getting a user’s location
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("ERROR: \(error.localizedDescription)")
+        Logger.location.debug("ERROR: \(error.localizedDescription)")
     }
 
     /// Logs when region monitoring starts to a specific identifier
     func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-        print("🔎✅ Started monitoring region with IDENTIFIER: \(region.identifier)")
+        Logger.location.debug("🔎✅ Started monitoring region with IDENTIFIER: \(region.identifier)")
     }
 
     /// Handles user entering region and reminds user
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         if let region = region as? CLCircularRegion {
-            print("⬆️ Entered region with IDENTIFIER: \(region.identifier)")
+            Logger.location.debug("⬆️ Entered region with IDENTIFIER: \(region.identifier)")
             Task {
                 try await self.remindUser(id: region.identifier)
             }
@@ -184,11 +187,11 @@ extension LocationService: CLLocationManagerDelegate {
     /// If the user checks the Habit as done it will stop monitoring said region
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         if let region = region as? CLCircularRegion {
-            print("⬇️ Exited region with IDENTIFIER: \(region.identifier)")
+            Logger.location.debug("⬇️ Exited region with IDENTIFIER: \(region.identifier)")
             Task {
                 if try await regionService?.validateRegion(identifier: region.identifier) ?? false {
                         locationManager.stopMonitoring(for: region)
-                    print("🔎🛑 Stoped monitoring region: \(region.identifier)")
+                    Logger.location.debug("🔎🛑 Stoped monitoring region: \(region.identifier)")
                 }
             }
         }

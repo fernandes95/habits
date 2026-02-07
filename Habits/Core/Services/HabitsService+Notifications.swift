@@ -11,12 +11,12 @@ extension HabitsService {
     func verifyHabitWasNotified(habitId: UUID) async throws -> Bool {
         return try await self.storeService.didNotifyHabit(id: habitId)
     }
-    
+
     func notifiedHabit(habitId: UUID) async throws {
         self.store.habitsNotified.append(
             HabitNotificationEntity(habitId: habitId, date: .now)
         )
-        
+
         try await self.save()
     }
 }

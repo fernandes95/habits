@@ -10,12 +10,4 @@ import Foundation
 struct HabitNotificationEntity: Codable {
     var habitId: UUID
     var date: Date
-    
-    init(
-        habitId: UUID,
-        date: Date
-    ) {
-        self.habitId = habitId
-        self.date = date
-    }
 }

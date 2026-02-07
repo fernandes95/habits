@@ -6,21 +6,40 @@
 //
 
 import SwiftUI
+import OSLog
 
 @main
 struct HabitsApp: App {
     @StateObject private var state = MainState()
     @StateObject private var router: HabitsRouter = HabitsRouter()
+    @Environment(\.scenePhase) var scenePhase
 
     var body: some Scene {
         WindowGroup {
 
             // Bypassing normal app launch for Unit Testing
             if isProduction {
-                ZStack {
-                    self.router.root
-                        .environmentObject(self.state)
-                        .environmentObject(self.router)
+                if #available(iOS 17.0, *) {
+                    ZStack {
+                        self.router.root
+                            .environmentObject(self.state)
+                            .environmentObject(self.router)
+                    }
+                    .onDisappear()
+                    .onChange(of: scenePhase) { _, newPhase in
+                        switch newPhase {
+                        case ScenePhase.active:
+                            self.state.forceStopUpdatingLocation()
+                        default:
+                            self.state.forceStartUpdatingLocation()
+                        }
+                    }
+                } else {
+                    ZStack {
+                        self.router.root
+                            .environmentObject(self.state)
+                            .environmentObject(self.router)
+                    }
                 }
             }
         }

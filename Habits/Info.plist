@@ -4,12 +4,13 @@
 <dict>
 	<key></key>
 	<string></string>
-	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>Fetch events in all your calendars</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
 		<string>processing</string>
+		<string>fetch</string>
 	</array>
 </dict>
 </plist>
