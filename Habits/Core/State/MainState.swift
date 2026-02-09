@@ -14,7 +14,7 @@ class MainState: ObservableObject {
     private let habitsService: HabitsService = HabitsService()
     private let locationService: LocationService = LocationService()
     private let notificationService: NotificationService = NotificationService()
-    
+
     @Published
     var habits: [Habit] = []
 
@@ -166,11 +166,11 @@ class MainState: ObservableObject {
             await UIApplication.shared.open(url)
         }
     }
-    
+
     func forceStartUpdatingLocation() {
         self.locationService.forceUpdateLocation()
     }
-    
+
     func forceStopUpdatingLocation() {
         self.locationService.stopUpdatingLocation()
     }

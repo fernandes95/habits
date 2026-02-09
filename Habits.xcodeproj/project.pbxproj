@@ -12,6 +12,7 @@
 		AE14909E2C995F0600F9BD58 /* NewHabitScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE14909D2C995F0600F9BD58 /* NewHabitScheduleView.swift */; };
 		AE1490A02C9994CA00F9BD58 /* NewHabitLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE14909F2C9994CA00F9BD58 /* NewHabitLocationView.swift */; };
 		AE25CCB72F37C1C100A285FA /* Logger+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE25CCB62F37C1B800A285FA /* Logger+Extensions.swift */; };
+		AE25CCB92F390FCD00A285FA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE25CCB82F390FC900A285FA /* AppDelegate.swift */; };
 		AE29ACEA2C932DCC004E023E /* NewHabitQuoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE29ACE92C932DCC004E023E /* NewHabitQuoteView.swift */; };
 		AE2B2A482BB0712A004669B6 /* BackgroundTaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2B2A472BB0712A004669B6 /* BackgroundTaskService.swift */; };
 		AE2B2A4A2BB07223004669B6 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2B2A492BB07223004669B6 /* NotificationService.swift */; };
@@ -84,6 +85,7 @@
 		AE14909D2C995F0600F9BD58 /* NewHabitScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitScheduleView.swift; sourceTree = "<group>"; };
 		AE14909F2C9994CA00F9BD58 /* NewHabitLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitLocationView.swift; sourceTree = "<group>"; };
 		AE25CCB62F37C1B800A285FA /* Logger+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+Extensions.swift"; sourceTree = "<group>"; };
+		AE25CCB82F390FC900A285FA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE29ACE92C932DCC004E023E /* NewHabitQuoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitQuoteView.swift; sourceTree = "<group>"; };
 		AE2B2A472BB0712A004669B6 /* BackgroundTaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskService.swift; sourceTree = "<group>"; };
 		AE2B2A492BB07223004669B6 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -434,6 +436,7 @@
 				AE448A8E2B8CECE40034898F /* Helpers */,
 				AE744E1C2B600A4B002C7EEB /* UI */,
 				AEA3D6BA2B5E85B700A08F31 /* HabitsApp.swift */,
+				AE25CCB82F390FC900A285FA /* AppDelegate.swift */,
 				AE448A8B2B89257E0034898F /* Content */,
 				AEA3D6C02B5E85B900A08F31 /* Preview Content */,
 			);
@@ -627,6 +630,7 @@
 				AE14909C2C98882800F9BD58 /* NewHabitDurantionView.swift in Sources */,
 				AE3AA22B2E6AD165002F78E9 /* Hour.swift in Sources */,
 				AEDAA9D92E60BACD0001ABA6 /* LocationSearchCompletion.swift in Sources */,
+				AE25CCB92F390FCD00A285FA /* AppDelegate.swift in Sources */,
 				AE2B2A482BB0712A004669B6 /* BackgroundTaskService.swift in Sources */,
 				AE9D9A0F2BB1814000CF3498 /* MapView.swift in Sources */,
 				AE448A9A2B8D228C0034898F /* MainState.swift in Sources */,
@@ -864,7 +868,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -901,7 +905,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

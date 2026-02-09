@@ -9,7 +9,6 @@ import Foundation
 import CoreLocation
 import OSLog
 
-@available(iOS 17.0, *)
 class RegionServiceNew: RegionService {
     private let habitsService: HabitsService = HabitsService()
     private let notificationService: NotificationService = NotificationService()

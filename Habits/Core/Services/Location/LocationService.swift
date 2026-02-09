@@ -15,6 +15,7 @@ class LocationService: NSObject, ObservableObject {
     private let habitsService: HabitsService = HabitsService()
     private var regionService: RegionService?
     private var locationManager: CLLocationManager = CLLocationManager()
+    private var backgroundSession: CLBackgroundActivitySession?
 
     @Published
     var status: CLAuthorizationStatus?
@@ -32,7 +33,14 @@ class LocationService: NSObject, ObservableObject {
         self.regionService = BackwardsCompactability.regionService(locationManager: self.locationManager)
     }
 
+    func startTrackingWithBackgroundSupport() {
+        self.backgroundSession = CLBackgroundActivitySession()
+        self.locationManager.startUpdatingLocation()
+    }
+
     func stopUpdatingLocation() {
+        backgroundSession?.invalidate()
+        backgroundSession = nil
         self.locationManager.stopUpdatingLocation()
     }
 

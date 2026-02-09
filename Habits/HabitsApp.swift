@@ -10,6 +10,10 @@ import OSLog
 
 @main
 struct HabitsApp: App {
+    @UIApplicationDelegateAdaptor
+    // swiftlint:disable:next unused_declaration
+    private var appDelegate: AppDelegate
+
     @StateObject private var state = MainState()
     @StateObject private var router: HabitsRouter = HabitsRouter()
     @Environment(\.scenePhase) var scenePhase
@@ -19,26 +23,18 @@ struct HabitsApp: App {
 
             // Bypassing normal app launch for Unit Testing
             if isProduction {
-                if #available(iOS 17.0, *) {
-                    ZStack {
-                        self.router.root
-                            .environmentObject(self.state)
-                            .environmentObject(self.router)
-                    }
-                    .onDisappear()
-                    .onChange(of: scenePhase) { _, newPhase in
-                        switch newPhase {
-                        case ScenePhase.active:
-                            self.state.forceStopUpdatingLocation()
-                        default:
-                            self.state.forceStartUpdatingLocation()
-                        }
-                    }
-                } else {
-                    ZStack {
-                        self.router.root
-                            .environmentObject(self.state)
-                            .environmentObject(self.router)
+                ZStack {
+                    self.router.root
+                        .environmentObject(self.state)
+                        .environmentObject(self.router)
+                }
+                .onDisappear()
+                .onChange(of: scenePhase) { _, newPhase in
+                    switch newPhase {
+                    case ScenePhase.active:
+                        self.state.forceStopUpdatingLocation()
+                    default:
+                        self.state.forceStartUpdatingLocation()
                     }
                 }
             }
