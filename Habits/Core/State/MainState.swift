@@ -168,7 +168,7 @@ class MainState: ObservableObject {
     }
 
     func forceStartUpdatingLocation() {
-        self.locationService.forceUpdateLocation()
+        self.locationService.startTrackingWithBackgroundSupport()
     }
 
     func forceStopUpdatingLocation() {

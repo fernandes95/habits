@@ -32,9 +32,9 @@ struct HabitsApp: App {
                 .onChange(of: scenePhase) { _, newPhase in
                     switch newPhase {
                     case ScenePhase.active:
-                        self.state.forceStopUpdatingLocation()
-                    default:
                         self.state.forceStartUpdatingLocation()
+                    default:
+                        self.state.forceStopUpdatingLocation()
                     }
                 }
             }

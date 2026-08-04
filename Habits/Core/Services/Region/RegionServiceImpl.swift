@@ -31,7 +31,7 @@ class RegionServiceImpl: RegionService {
                 case .satisfied: // callback when user ENTERS any of the registered regions.
                     Logger.location.debug("⬆️ CL MONITOR ENTERED REGION (Time: \(Date.now)")
                     try await remindUser(id: event.identifier)
-                case .unknown, .unsatisfied: // callback when user EXITS any of the registered regions.
+                case .unsatisfied: // callback when user EXITS any of the registered regions.
                     Logger.location.debug("⬇️ CL MONITOR EXITED REGION")
                     if try await validateRegion(identifier: event.identifier) {
                         try await stopMonitoringRegion(habitIdentifier: event.identifier)
@@ -73,7 +73,7 @@ class RegionServiceImpl: RegionService {
         // CLMonitor.add doesn't update if it exists
         try await stopMonitoringRegion(habitIdentifier: habitIdentifier, habitName: habitName)
         await monitor?.add(
-            CLMonitor.CircularGeographicCondition(center: center, radius: 5),
+            CLMonitor.CircularGeographicCondition(center: center, radius: 100),
             identifier: habitIdentifier,
             assuming: .unsatisfied
         )
@@ -116,7 +116,7 @@ class RegionServiceImpl: RegionService {
             for identifier in await monitor.identifiers {
                 guard let habitEntity = try await self.habitsService.getHabit(id: identifier) else {
                     try await stopMonitoringRegion(habitIdentifier: identifier)
-                    return distance
+                    continue
                 }
 
                 if habits.contains(where: { $0.id.uuidString == identifier }) {

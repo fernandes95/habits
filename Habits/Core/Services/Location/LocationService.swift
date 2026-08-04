@@ -119,18 +119,6 @@ extension LocationService: CLLocationManagerDelegate {
         }
     }
 
-    /// Sends Instant Notification to Remind User and stops monitoring region by Habit ID
-    ///
-    /// - Parameter id: Habit ID
-    private func remindUser(id: String) async throws {
-        guard let habitName: String = try await self.habitsService.getHabit(id: id)?.name else {
-            try await self.regionService?.stopMonitoringRegion(habitIdentifier: id, habitName: nil)
-            return
-        }
-
-        try await notificationService.requestInstantNotification(subTitle: "Dont forget to: \(habitName)")
-    }
-
     /// Sets new distance filter to Location Manager based on `Distance` paramether
     ///
     /// - Parameter distance: Distance to filter
@@ -174,34 +162,5 @@ extension LocationService: CLLocationManagerDelegate {
     /// Handles failure when getting a user’s location
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         Logger.location.debug("ERROR: \(error.localizedDescription)")
-    }
-
-    /// Logs when region monitoring starts to a specific identifier
-    func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-        Logger.location.debug("🔎✅ Started monitoring region with IDENTIFIER: \(region.identifier)")
-    }
-
-    /// Handles user entering region and reminds user
-    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        if let region = region as? CLCircularRegion {
-            Logger.location.debug("⬆️ Entered region with IDENTIFIER: \(region.identifier)")
-            Task {
-                try await self.remindUser(id: region.identifier)
-            }
-        }
-    }
-
-    /// Handles user exiting region.
-    /// If the user checks the Habit as done it will stop monitoring said region
-    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        if let region = region as? CLCircularRegion {
-            Logger.location.debug("⬇️ Exited region with IDENTIFIER: \(region.identifier)")
-            Task {
-                if try await regionService?.validateRegion(identifier: region.identifier) ?? false {
-                        locationManager.stopMonitoring(for: region)
-                    Logger.location.debug("🔎🛑 Stoped monitoring region: \(region.identifier)")
-                }
-            }
-        }
     }
 }
