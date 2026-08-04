@@ -83,8 +83,3 @@ private struct CalendarViewRepresentable: UIViewRepresentable {
 
     }
 }
-
-#Preview {
-    CalendarView()
-        .environmentObject(MainState())
-}

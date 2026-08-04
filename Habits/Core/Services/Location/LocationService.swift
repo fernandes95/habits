@@ -30,7 +30,7 @@ class LocationService: NSObject, ObservableObject {
         self.locationManager.activityType = .otherNavigation
         self.locationManager.allowsBackgroundLocationUpdates = true
         self.locationManager.pausesLocationUpdatesAutomatically = false
-        self.regionService = BackwardsCompactability.regionService(locationManager: self.locationManager)
+        self.regionService = RegionServiceImpl()
     }
 
     func startTrackingWithBackgroundSupport() {

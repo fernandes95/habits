@@ -1,5 +1,5 @@
 //
-//  RegionService.swift
+//  RegionServiceImpl.swift
 //  Habits
 //
 //  Created by Tiago Fernandes on 09/04/2024.
@@ -9,7 +9,7 @@ import Foundation
 import CoreLocation
 import OSLog
 
-class RegionServiceNew: RegionService {
+class RegionServiceImpl: RegionService {
     private let habitsService: HabitsService = HabitsService()
     private let notificationService: NotificationService = NotificationService()
     private var monitor: CLMonitor?

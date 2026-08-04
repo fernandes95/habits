@@ -206,8 +206,3 @@ private struct ContentView: View {
         .listStyle(.plain)
     }
 }
-
-#Preview {
-    HabitsView()
-        .environmentObject(MainState())
-}

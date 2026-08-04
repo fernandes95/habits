@@ -43,11 +43,7 @@ extension EKEventStore {
     @objc internal class func mockAuthorizationStatusRestricted(
         for entityType: EKEntityType
     ) -> EKAuthorizationStatus {
-        if #available(iOS 17.0, *) {
             .fullAccess
-        } else {
-            .restricted
-        }
     }
 
     @objc internal class func mockAuthorizationStatusDenied(
