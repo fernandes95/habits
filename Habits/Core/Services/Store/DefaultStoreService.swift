@@ -87,7 +87,34 @@ class DefaultStoreService: StoreService {
         let task = Task {
             let data = try JSONEncoder().encode(store)
             let outfile = try self.fileURL()
-            try data.write(to: outfile)
+            try data.write(to: outfile, options: .atomic)
+        }
+        _ = try await task.value
+    }
+
+    /// Only save notified habit
+    func appendNotifiedHabit(_ notification: HabitNotificationEntity) async throws {
+        let task = Task {
+            let fileURL = try self.fileURL()
+            var store: StoreEntity
+
+            if let data = try? Data(contentsOf: fileURL) {
+                store = try JSONDecoder().decode(StoreEntity.self, from: data)
+            } else {
+                store = StoreEntity(habits: [], habitsArchived: [], habitsNotified: [])
+            }
+
+            // append only if not already recorded today (idempotent)
+            let alreadyNotified = store.habitsNotified.contains {
+                $0.habitId == notification.habitId &&
+                $0.date.startOfDay == notification.date.startOfDay
+            }
+            guard !alreadyNotified else { return }
+
+            store.habitsNotified.append(notification)
+
+            let data = try JSONEncoder().encode(store)
+            try data.write(to: fileURL, options: .atomic)
         }
         _ = try await task.value
     }

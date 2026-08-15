@@ -21,7 +21,7 @@ internal final class HabitsServiceTests: XCTestCase {
 
     override internal func tearDown() async throws {
         self.sut = nil
-        try await DefaultStoreService().save(StoreEntity(habits: [], habitsArchived: []))
+        try await DefaultStoreService().save(StoreEntity(habits: [], habitsArchived: [], habitsNotified: []))
         try await super.tearDown()
     }
     

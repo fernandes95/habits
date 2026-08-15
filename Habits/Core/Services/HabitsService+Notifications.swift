@@ -13,10 +13,13 @@ extension HabitsService {
     }
 
     func notifiedHabit(habitId: UUID) async throws {
-        self.store.habitsNotified.append(
+        try await storeService.appendNotifiedHabit(
             HabitNotificationEntity(habitId: habitId, date: .now)
         )
 
-        try await self.save()
+        // local storing //TODO check if this is really needed on further development
+        self.store.habitsNotified.append(
+            HabitNotificationEntity(habitId: habitId, date: .now)
+        )
     }
 }

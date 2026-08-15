@@ -12,7 +12,7 @@ import OSLog
 
 class LocationService: NSObject, ObservableObject {
     private let notificationService: NotificationService = NotificationService()
-    private let habitsService: HabitsService = HabitsService()
+    private let habitsService: HabitsService
     private var regionService: RegionService?
     private var locationManager: CLLocationManager = CLLocationManager()
     private var backgroundSession: CLBackgroundActivitySession?
@@ -22,7 +22,8 @@ class LocationService: NSObject, ObservableObject {
 
     // desiredAccuracy as kCLLocationAccuracyBestForNavigation to have the most accurate location
     // activityType as otherNavigation to include all type of navigation besides airborn
-    override init() {
+    init(habitsService: HabitsService) {
+        self.habitsService = habitsService
         super.init()
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
@@ -30,7 +31,7 @@ class LocationService: NSObject, ObservableObject {
         self.locationManager.activityType = .otherNavigation
         self.locationManager.allowsBackgroundLocationUpdates = true
         self.locationManager.pausesLocationUpdatesAutomatically = false
-        self.regionService = RegionServiceImpl()
+        self.regionService = RegionServiceImpl(habitsService: habitsService)
     }
 
     func startTrackingWithBackgroundSupport() {

@@ -14,9 +14,14 @@ struct HabitsApp: App {
     // swiftlint:disable:next unused_declaration
     private var appDelegate: AppDelegate
 
-    @StateObject private var state = MainState()
+    @StateObject private var state: MainState
     @StateObject private var router: HabitsRouter = HabitsRouter()
     @Environment(\.scenePhase) var scenePhase
+
+    init() {
+        let habitsService = HabitsService()
+        _state = StateObject(wrappedValue: MainState(habitsService: habitsService))
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -27,6 +32,9 @@ struct HabitsApp: App {
                     self.router.root
                         .environmentObject(self.state)
                         .environmentObject(self.router)
+                        .task {
+                            await self.state.initHabits()
+                        }
                 }
                 .onDisappear()
                 .onChange(of: scenePhase) { _, newPhase in

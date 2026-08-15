@@ -11,8 +11,8 @@ import EventKit
 
 @MainActor
 class MainState: ObservableObject {
-    private let habitsService: HabitsService = HabitsService()
-    private let locationService: LocationService = LocationService()
+    private let habitsService: HabitsService
+    private let locationService: LocationService
     private let notificationService: NotificationService = NotificationService()
 
     @Published
@@ -28,6 +28,20 @@ class MainState: ObservableObject {
     var selectedDate: Date = .now
 
     var duplicatedHabits: [HabitEntity]?
+
+    init(habitsService: HabitsService) {
+        self.habitsService = habitsService
+        self.locationService = LocationService(habitsService: habitsService)
+    }
+
+    internal func initHabits() async {
+        do {
+            try await self.habitsService.load()
+            try await self.loadHabits(date: selectedDate)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
 
     /// Get exportable document
     func getDataDocument() async throws -> ExportableDocument {

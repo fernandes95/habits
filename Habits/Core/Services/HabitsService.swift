@@ -19,14 +19,8 @@ class HabitsService {
         return store.habits
     }
 
-    init() {
-        Task {
-            try await self.load()
-        }
-    }
-
     /// Gets store from local file
-    private func load() async throws {
+    internal func load() async throws {
         self.store = try await storeService.load()
     }
 

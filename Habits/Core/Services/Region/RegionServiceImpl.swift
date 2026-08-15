@@ -10,14 +10,13 @@ import CoreLocation
 import OSLog
 
 class RegionServiceImpl: RegionService {
-    private let habitsService: HabitsService = HabitsService()
+    private let habitsService: HabitsService
     private let notificationService: NotificationService = NotificationService()
     private var monitor: CLMonitor?
 
-    init() {
-        Task {
-            try await startMonitorRegions()
-        }
+    init(habitsService: HabitsService) {
+        self.habitsService = habitsService
+        Task { try await startMonitorRegions() }
     }
 
     private func startMonitorRegions() async throws {
