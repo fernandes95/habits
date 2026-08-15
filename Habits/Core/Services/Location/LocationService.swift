@@ -37,18 +37,20 @@ class LocationService: NSObject, ObservableObject {
     }
 
     func startTrackingWithBackgroundSupport() {
-        didRunInitialInsideCheck = false
+        self.didRunInitialInsideCheck = false
         self.backgroundSession = CLBackgroundActivitySession()
         self.locationManager.startUpdatingLocation()
     }
 
     func requestOneTimeLocation() {
+        let status = self.locationManager.authorizationStatus
+        guard status == .authorizedAlways || status == .authorizedWhenInUse else { return }
         self.locationManager.requestLocation()
     }
 
     func stopUpdatingLocation() {
-        backgroundSession?.invalidate()
-        backgroundSession = nil
+        self.backgroundSession?.invalidate()
+        self.backgroundSession = nil
         self.locationManager.stopUpdatingLocation()
     }
 
@@ -56,18 +58,9 @@ class LocationService: NSObject, ObservableObject {
         return self.locationManager.authorizationStatus
     }
 
-    /// Request Location Authorization `When In Use`
-    func locationAuthorization() {
-        self.locationManager.requestWhenInUseAuthorization()
-    }
-
-    /// Updates Location
-    ///
-    /// Forces to stop location, go to minimum distance filter an then force start update location again
-    func forceUpdateLocation() {
-        self.locationManager.stopUpdatingLocation()
-        self.locationManager.distanceFilter = 1
-        self.locationManager.startUpdatingLocation()
+    /// Request Location Authorization `Always`
+    func requestLocationAuthorization() {
+        self.locationManager.requestAlwaysAuthorization()
     }
 
     /// Starts Monitoring Region
@@ -81,12 +74,11 @@ class LocationService: NSObject, ObservableObject {
         habitName: String,
     ) {
         Task {
-            try await regionService?.monitorRegion(
+            try await self.regionService?.monitorRegion(
                 center: location,
                 habitIdentifier: habitIdentifier,
                 habitName: habitName
             )
-            self.forceUpdateLocation()
         }
     }
 
@@ -95,8 +87,7 @@ class LocationService: NSObject, ObservableObject {
     /// - Parameter identifier: Location Identifier
     func stopMonitoringRegion(habitIdentifier: String, habitName: String) {
         Task {
-            try await regionService?.stopMonitoringRegion(habitIdentifier: habitIdentifier, habitName: habitName)
-            self.forceUpdateLocation()
+            try await self.regionService?.stopMonitoringRegion(habitIdentifier: habitIdentifier, habitName: habitName)
         }
     }
 }
@@ -122,29 +113,6 @@ extension LocationService: CLLocationManagerDelegate {
         }
     }
 
-    /// Sets new distance filter to Location Manager based on `Distance` paramether
-    ///
-    /// - Parameter distance: Distance to filter
-    private func setDistanceFilter(distance: Double) {
-        let newDistance: Double =
-            switch distance {
-            case ...70:
-                5
-            case ...150:
-                10
-            case ...500:
-                50
-            default:
-                200
-            }
-
-        self.locationManager.distanceFilter = newDistance
-
-        Logger.location.debug("\n New distance received: \(String(describing: distance))")
-        Logger.location.debug("New distance to set: \(newDistance)")
-        Logger.location.debug("Distance Filter: \(self.locationManager.distanceFilter)")
-    }
-
     /// Gets Location updates and manages regions based on current Location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
@@ -153,8 +121,6 @@ extension LocationService: CLLocationManagerDelegate {
                 self.didRunInitialInsideCheck = true
                 try? await self.regionService?.checkAlreadyInsideRegion(currentLocation: location)
             }
-            guard let distance = try await self.regionService?.manageRegions(currentLocation: location) else { return }
-            self.setDistanceFilter(distance: distance)
         }
         Logger.location.debug("Regions being monitored count: \(manager.monitoredRegions.count)")
     }

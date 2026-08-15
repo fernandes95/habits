@@ -34,18 +34,18 @@ struct HabitsApp: App {
                         .environmentObject(self.router)
                         .task {
                             await self.state.initHabits()
-                            self.state.requestLocation()
+                            // self.state.requestLocationAuthorizationIfNeeded()
                         }
                 }
                 .onDisappear()
-                .onChange(of: scenePhase) { _, newPhase in
+                /*.onChange(of: scenePhase) { _, newPhase in
                     switch newPhase {
                     case ScenePhase.active:
                         self.state.forceStartUpdatingLocation()
                     default:
                         self.state.forceStopUpdatingLocation()
                     }
-                }
+                }*/
             }
         }
     }

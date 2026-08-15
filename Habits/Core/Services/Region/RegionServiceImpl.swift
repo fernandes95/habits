@@ -18,7 +18,10 @@ class RegionServiceImpl: RegionService {
     init(habitsService: HabitsService, regionRadius: CLLocationDistance) {
         self.habitsService = habitsService
         self.regionRadius = regionRadius
-        Task { try await startMonitorRegions() }
+        Task {
+            try await self.startMonitorRegions()
+            try await self.manageRegions()
+        }
     }
 
     private func startMonitorRegions() async throws {
@@ -51,7 +54,7 @@ class RegionServiceImpl: RegionService {
 
         // stop monitoring habit that already finished
         if habitEntity.endDate.startOfDay < .now.startOfDay {
-            try await stopMonitoringRegion(habitIdentifier: id)
+            try await self.stopMonitoringRegion(habitIdentifier: id)
             return
         }
 
@@ -61,19 +64,19 @@ class RegionServiceImpl: RegionService {
             // Already completed today, no notification needed
             return
         }
-        guard !(try await habitsService.verifyHabitWasNotified(habitId: habitEntity.id)) else {
+        guard !(try await self.habitsService.verifyHabitWasNotified(habitId: habitEntity.id)) else {
             return
         }
 
-        try await notificationService.requestInstantNotification(subTitle: "Don't forget to: \(habitEntity.name)")
-        try await habitsService.notifiedHabit(habitId: habitEntity.id)
+        try await self.notificationService.requestInstantNotification(subTitle: "Don't forget to: \(habitEntity.name)")
+        try await self.habitsService.notifiedHabit(habitId: habitEntity.id)
     }
 
     func monitorRegion(center: CLLocationCoordinate2D, habitIdentifier: String, habitName: String) async throws {
         // making sure to remove if habit is being updated
         // CLMonitor.add doesn't update if it exists
         try await stopMonitoringRegion(habitIdentifier: habitIdentifier, habitName: habitName)
-        await monitor?.add(
+        await self.monitor?.add(
             CLMonitor.CircularGeographicCondition(center: center, radius: self.regionRadius),
             identifier: habitIdentifier,
             assuming: .unsatisfied
@@ -82,12 +85,12 @@ class RegionServiceImpl: RegionService {
     }
 
     func stopMonitoringRegion(habitIdentifier: String, habitName: String? = nil) async throws {
-        await monitor?.remove(habitIdentifier)
+        await self.monitor?.remove(habitIdentifier)
         Logger.location.debug("🔎🛑 CL MONITOR Stoped monitoring region for HABIT: \(habitName ?? habitIdentifier)")
     }
 
     func validateRegion(identifier: String) async throws -> Bool {
-        guard let habits: [Habit] = try? await habitsService.loadCheckedHabits(date: .now) else { return false }
+        guard let habits: [Habit] = try? await self.habitsService.loadCheckedHabits(date: .now) else { return false }
 
         let habitIsChecked = habits.first(where: { $0.id.uuidString == identifier })?.isChecked
 
@@ -97,21 +100,15 @@ class RegionServiceImpl: RegionService {
     private func removeAllEvents() async throws {
         if let monitor {
             for identifier in await monitor.identifiers {
-                try await stopMonitoringRegion(habitIdentifier: identifier)
+                try await self.stopMonitoringRegion(habitIdentifier: identifier)
             }
         }
         Logger.location.debug("🔎🛑✅ CL MONITOR All regions are being removed")
     }
 
-    func manageRegions(currentLocation: CLLocation) async throws -> Double {
+    func manageRegions() async throws {
         var habitsMonitored: [String] = []
-        guard let (habits, distance): ([Habit], Double) = try? await habitsService.getHabitsByDistance(
-            currentLocation: currentLocation,
-            maxHabits: 5
-        ) else {
-            try await removeAllEvents()
-            return 200
-        }
+        let habits: [Habit] = try await self.habitsService.getHabits(date: .now)
 
         if let monitor {
             for identifier in await monitor.identifiers {
@@ -149,15 +146,10 @@ class RegionServiceImpl: RegionService {
         }
         Logger.location.debug("\n **** End of Regions being monitored ****")
         // END OF DEBUG LOGS
-
-        return distance
     }
 
     func checkAlreadyInsideRegion(currentLocation: CLLocation) async throws {
-        guard let (habits, _) = try? await habitsService.getHabitsByDistance(
-            currentLocation: currentLocation,
-            maxHabits: 5
-        ) else { return }
+        let habits = try await habitsService.getHabits(date: .now)
 
         for habit in habits {
             guard let coord = habit.location?.locationCoordinate else { continue }

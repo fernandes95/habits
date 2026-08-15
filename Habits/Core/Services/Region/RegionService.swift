@@ -12,6 +12,6 @@ protocol RegionService {
     func monitorRegion(center: CLLocationCoordinate2D, habitIdentifier: String, habitName: String) async throws
     func stopMonitoringRegion(habitIdentifier: String, habitName: String?) async throws
     func validateRegion(identifier: String) async throws -> Bool
-    func manageRegions(currentLocation: CLLocation) async throws -> Double
+    func manageRegions() async throws
     func checkAlreadyInsideRegion(currentLocation: CLLocation) async throws
 }

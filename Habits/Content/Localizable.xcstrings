@@ -95,6 +95,12 @@
         }
       }
     },
+    "Give Location permission" : {
+
+    },
+    "Give Notifications permission" : {
+
+    },
     "habit_category" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -403,7 +409,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Follow the following steps to enable location permissions:\n\n   1. Open Settings\n   2. Select ALWAYS allow location\n   3. Select Precise Location toggle if not already selected"
+            "value" : "If you want location based notification for your habits, we’ll need your Always Location permissions and Notifications"
           }
         }
       }
@@ -506,9 +512,6 @@
           }
         }
       }
-    },
-    "Open Settings" : {
-
     },
     "quote_eight" : {
       "extractionState" : "manual",

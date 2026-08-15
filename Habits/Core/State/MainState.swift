@@ -43,7 +43,7 @@ class MainState: ObservableObject {
         }
     }
 
-    func requestLocation() {
+    func requestLocationAuthorizationIfNeeded() {
         self.locationService.requestOneTimeLocation()
     }
 
@@ -178,11 +178,8 @@ class MainState: ObservableObject {
         }
     }
 
-    func openSettings() async {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
-            // Ask the system to open that URL.
-            await UIApplication.shared.open(url)
-        }
+    func requestLocation() {
+        self.locationService.requestLocationAuthorization()
     }
 
     func forceStartUpdatingLocation() {

@@ -387,6 +387,7 @@ class HabitsService {
         return checkedList
     }
 
+    // TODO UNUSED FOR NOW, I'LL CHECK LATER
     /// Get habits and closest habit distance from current location
     ///
     /// - Parameters:
