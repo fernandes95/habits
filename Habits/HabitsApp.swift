@@ -34,6 +34,7 @@ struct HabitsApp: App {
                         .environmentObject(self.router)
                         .task {
                             await self.state.initHabits()
+                            self.state.requestLocation()
                         }
                 }
                 .onDisappear()

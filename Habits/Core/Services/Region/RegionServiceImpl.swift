@@ -13,9 +13,11 @@ class RegionServiceImpl: RegionService {
     private let habitsService: HabitsService
     private let notificationService: NotificationService = NotificationService()
     private var monitor: CLMonitor?
+    private let regionRadius: CLLocationDistance
 
-    init(habitsService: HabitsService) {
+    init(habitsService: HabitsService, regionRadius: CLLocationDistance) {
         self.habitsService = habitsService
+        self.regionRadius = regionRadius
         Task { try await startMonitorRegions() }
     }
 
@@ -72,7 +74,7 @@ class RegionServiceImpl: RegionService {
         // CLMonitor.add doesn't update if it exists
         try await stopMonitoringRegion(habitIdentifier: habitIdentifier, habitName: habitName)
         await monitor?.add(
-            CLMonitor.CircularGeographicCondition(center: center, radius: 100),
+            CLMonitor.CircularGeographicCondition(center: center, radius: self.regionRadius),
             identifier: habitIdentifier,
             assuming: .unsatisfied
         )
@@ -149,5 +151,23 @@ class RegionServiceImpl: RegionService {
         // END OF DEBUG LOGS
 
         return distance
+    }
+
+    func checkAlreadyInsideRegion(currentLocation: CLLocation) async throws {
+        guard let (habits, _) = try? await habitsService.getHabitsByDistance(
+            currentLocation: currentLocation,
+            maxHabits: 5
+        ) else { return }
+
+        for habit in habits {
+            guard let coord = habit.location?.locationCoordinate else { continue }
+            let habitLocation = CLLocation(latitude: coord.latitude, longitude: coord.longitude)
+            let distance = currentLocation.distance(from: habitLocation)
+
+            if distance <= self.regionRadius {
+                Logger.location.debug("📍 Already inside region at launch for: \(habit.name)")
+                try await remindUser(id: habit.id.uuidString)
+            }
+        }
     }
 }

@@ -34,13 +34,17 @@ class MainState: ObservableObject {
         self.locationService = LocationService(habitsService: habitsService)
     }
 
-    internal func initHabits() async {
+    func initHabits() async {
         do {
             try await self.habitsService.load()
             try await self.loadHabits(date: selectedDate)
         } catch {
             print(error.localizedDescription)
         }
+    }
+
+    func requestLocation() {
+        self.locationService.requestOneTimeLocation()
     }
 
     /// Get exportable document

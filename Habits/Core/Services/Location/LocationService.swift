@@ -16,6 +16,8 @@ class LocationService: NSObject, ObservableObject {
     private var regionService: RegionService?
     private var locationManager: CLLocationManager = CLLocationManager()
     private var backgroundSession: CLBackgroundActivitySession?
+    private let regionRadius: CLLocationDistance = 100
+    private var didRunInitialInsideCheck = false
 
     @Published
     var status: CLAuthorizationStatus?
@@ -27,16 +29,21 @@ class LocationService: NSObject, ObservableObject {
         super.init()
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-        self.locationManager.distanceFilter = 5
+        self.locationManager.distanceFilter = self.regionRadius
         self.locationManager.activityType = .otherNavigation
         self.locationManager.allowsBackgroundLocationUpdates = true
         self.locationManager.pausesLocationUpdatesAutomatically = false
-        self.regionService = RegionServiceImpl(habitsService: habitsService)
+        self.regionService = RegionServiceImpl(habitsService: habitsService, regionRadius: self.regionRadius)
     }
 
     func startTrackingWithBackgroundSupport() {
+        didRunInitialInsideCheck = false
         self.backgroundSession = CLBackgroundActivitySession()
         self.locationManager.startUpdatingLocation()
+    }
+
+    func requestOneTimeLocation() {
+        self.locationManager.requestLocation()
     }
 
     func stopUpdatingLocation() {
@@ -102,21 +109,16 @@ extension LocationService: CLLocationManagerDelegate {
 
         switch status {
         case .authorizedAlways:
-            // Handle case
-            return
+            self.startTrackingWithBackgroundSupport()   // sets didRunInitialInsideCheck = false
+            self.requestOneTimeLocation()
         case .authorizedWhenInUse:
             manager.requestAlwaysAuthorization()
-        case .denied:
-            // Handle case
-            return
+        case .denied, .restricted:
+            self.stopUpdatingLocation()
         case .notDetermined:
-            // Handle case
-            return
-        case .restricted:
-            // Handle case
-            return
+            break
         default:
-            return
+            break
         }
     }
 
@@ -145,19 +147,16 @@ extension LocationService: CLLocationManagerDelegate {
 
     /// Gets Location updates and manages regions based on current Location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.first {
-            Logger.location.debug("🏃🏻‍♂️‍➡️ Changed location")
-            Task {
-                guard let distance: Double = try await regionService?.manageRegions(currentLocation: location)
-                else {
-                    return
-                }
-
-                self.setDistanceFilter(distance: distance)
+        guard let location = locations.first else { return }
+        Task {
+            if !self.didRunInitialInsideCheck {
+                self.didRunInitialInsideCheck = true
+                try? await self.regionService?.checkAlreadyInsideRegion(currentLocation: location)
             }
-
-            Logger.location.debug("Regions being monitored count: \(manager.monitoredRegions.count)")
+            guard let distance = try await self.regionService?.manageRegions(currentLocation: location) else { return }
+            self.setDistanceFilter(distance: distance)
         }
+        Logger.location.debug("Regions being monitored count: \(manager.monitoredRegions.count)")
     }
 
     /// Handles failure when getting a user’s location
