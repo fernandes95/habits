@@ -18,10 +18,6 @@ class RegionServiceImpl: RegionService {
     init(habitsService: HabitsService, regionRadius: CLLocationDistance) {
         self.habitsService = habitsService
         self.regionRadius = regionRadius
-        /*Task {
-            try await self.startMonitorRegions()
-            try await self.manageRegions()
-        }*/
     }
 
     private func startMonitorRegions() async throws {
@@ -164,6 +160,7 @@ class RegionServiceImpl: RegionService {
     }
 
     func startMonitoringIfAuthorized() async throws {
+        try await self.manageRegions()
         try await self.startMonitorRegions()
     }
 }
