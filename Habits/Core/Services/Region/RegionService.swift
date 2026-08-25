@@ -14,4 +14,5 @@ protocol RegionService {
     func validateRegion(identifier: String) async throws -> Bool
     func manageRegions() async throws
     func checkAlreadyInsideRegion(currentLocation: CLLocation) async throws
+    func startMonitoringIfAuthorized() async throws
 }

@@ -38,6 +38,7 @@ class MainState: ObservableObject {
         do {
             try await self.habitsService.load()
             try await self.loadHabits(date: selectedDate)
+            self.requestLocationAuthorizationIfNeeded()
         } catch {
             print(error.localizedDescription)
         }
@@ -180,13 +181,5 @@ class MainState: ObservableObject {
 
     func requestLocation() {
         self.locationService.requestLocationAuthorization()
-    }
-
-    func forceStartUpdatingLocation() {
-        self.locationService.startTrackingWithBackgroundSupport()
-    }
-
-    func forceStopUpdatingLocation() {
-        self.locationService.stopUpdatingLocation()
     }
 }

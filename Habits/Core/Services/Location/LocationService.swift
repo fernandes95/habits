@@ -15,7 +15,6 @@ class LocationService: NSObject, ObservableObject {
     private let habitsService: HabitsService
     private var regionService: RegionService?
     private var locationManager: CLLocationManager = CLLocationManager()
-    private var backgroundSession: CLBackgroundActivitySession?
     private let regionRadius: CLLocationDistance = 100
     private var didRunInitialInsideCheck = false
 
@@ -28,18 +27,11 @@ class LocationService: NSObject, ObservableObject {
         self.habitsService = habitsService
         super.init()
         self.locationManager.delegate = self
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-        self.locationManager.distanceFilter = self.regionRadius
-        self.locationManager.activityType = .otherNavigation
-        self.locationManager.allowsBackgroundLocationUpdates = true
-        self.locationManager.pausesLocationUpdatesAutomatically = false
-        self.regionService = RegionServiceImpl(habitsService: habitsService, regionRadius: self.regionRadius)
-    }
-
-    func startTrackingWithBackgroundSupport() {
-        self.didRunInitialInsideCheck = false
-        self.backgroundSession = CLBackgroundActivitySession()
-        self.locationManager.startUpdatingLocation()
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        self.regionService = RegionServiceImpl(
+            habitsService: habitsService,
+            regionRadius: self.regionRadius
+        )
     }
 
     func requestOneTimeLocation() {
@@ -49,8 +41,6 @@ class LocationService: NSObject, ObservableObject {
     }
 
     func stopUpdatingLocation() {
-        self.backgroundSession?.invalidate()
-        self.backgroundSession = nil
         self.locationManager.stopUpdatingLocation()
     }
 
@@ -100,8 +90,9 @@ extension LocationService: CLLocationManagerDelegate {
 
         switch status {
         case .authorizedAlways:
-            self.startTrackingWithBackgroundSupport()   // sets didRunInitialInsideCheck = false
+            self.locationManager.allowsBackgroundLocationUpdates = true
             self.requestOneTimeLocation()
+            Task { try? await self.regionService?.startMonitoringIfAuthorized() }
         case .authorizedWhenInUse:
             manager.requestAlwaysAuthorization()
         case .denied, .restricted:

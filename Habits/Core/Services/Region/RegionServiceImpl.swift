@@ -18,10 +18,10 @@ class RegionServiceImpl: RegionService {
     init(habitsService: HabitsService, regionRadius: CLLocationDistance) {
         self.habitsService = habitsService
         self.regionRadius = regionRadius
-        Task {
+        /*Task {
             try await self.startMonitorRegions()
             try await self.manageRegions()
-        }
+        }*/
     }
 
     private func startMonitorRegions() async throws {
@@ -161,5 +161,9 @@ class RegionServiceImpl: RegionService {
                 try await remindUser(id: habit.id.uuidString)
             }
         }
+    }
+
+    func startMonitoringIfAuthorized() async throws {
+        try await self.startMonitorRegions()
     }
 }
