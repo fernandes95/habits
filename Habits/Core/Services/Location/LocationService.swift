@@ -32,6 +32,10 @@ class LocationService: NSObject, ObservableObject {
             habitsService: habitsService,
             regionRadius: self.regionRadius
         )
+        
+        if self.locationManager.authorizationStatus == .authorizedAlways {
+            Task { try? await self.regionService?.startMonitoringIfAuthorized() }
+        }
     }
 
     func requestOneTimeLocation() {
