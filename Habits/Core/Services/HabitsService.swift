@@ -13,10 +13,17 @@ class HabitsService {
     internal let storeService: DefaultStoreService = DefaultStoreService()
     private let calendarService: CalendarService = CalendarService()
     private let notificationService: NotificationService = NotificationService()
+    private var didLoad = false
 
     internal var store: StoreEntity = StoreEntity(habits: [], habitsArchived: [], habitsNotified: [])
     internal var habits: [HabitEntity] {
         return store.habits
+    }
+
+    func loadIfNeeded() async throws {
+        guard !self.didLoad else { return }
+        try await self.load()
+        self.didLoad = true
     }
 
     /// Gets store from local file
@@ -33,10 +40,18 @@ class HabitsService {
     /// Gets Habit by selected date
     ///
     /// - Parameter date: Date to filter Habits
+    /// - Parameter hasFilterLocation: Filters only habits with location
     /// - Returns: Array of Habits
-    func getHabits(date: Date) async throws -> [Habit] {
+    func getHabits(date: Date, hasFilterLocation: Bool = false) async throws -> [Habit] {
         let habitsFilterted = self.habits
             .filter { ($0.startDate.startOfDay ... $0.endDate.endOfDay) ~= date }
+            .filter {
+                if hasFilterLocation {
+                    return $0.location != nil
+                } else {
+                    return true
+                }
+            }
             .map { habitEntity in
                 let habit = Habit(habitEntity: habitEntity, selectedDate: date)
                 return habit

@@ -13,7 +13,7 @@ import OSLog
 class LocationService: NSObject, ObservableObject {
     private let notificationService: NotificationService = NotificationService()
     private let habitsService: HabitsService
-    private var regionService: RegionService?
+    private var regionService: RegionService
     private var locationManager: CLLocationManager = CLLocationManager()
     private let regionRadius: CLLocationDistance = 100
     private var didRunInitialInsideCheck = false
@@ -23,19 +23,12 @@ class LocationService: NSObject, ObservableObject {
 
     // desiredAccuracy as kCLLocationAccuracyBestForNavigation to have the most accurate location
     // activityType as otherNavigation to include all type of navigation besides airborn
-    init(habitsService: HabitsService) {
+    init(habitsService: HabitsService, regionService: RegionService) {
         self.habitsService = habitsService
+        self.regionService = regionService
         super.init()
         self.locationManager.delegate = self
         self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        self.regionService = RegionServiceImpl(
-            habitsService: habitsService,
-            regionRadius: self.regionRadius
-        )
-        
-        if self.locationManager.authorizationStatus == .authorizedAlways {
-            Task { try? await self.regionService?.startMonitoringIfAuthorized() }
-        }
     }
 
     func requestOneTimeLocation() {
@@ -52,8 +45,13 @@ class LocationService: NSObject, ObservableObject {
         return self.locationManager.authorizationStatus
     }
 
-    /// Request Location Authorization `Always`
+    /// Request Location Authorization `When In Use`
     func requestLocationAuthorization() {
+        self.locationManager.requestWhenInUseAuthorization()
+    }
+
+    /// Request Location Authorization `Always`
+    func requestAlwaysLocationAuthorization() {
         self.locationManager.requestAlwaysAuthorization()
     }
 
@@ -68,7 +66,7 @@ class LocationService: NSObject, ObservableObject {
         habitName: String,
     ) {
         Task {
-            try await self.regionService?.monitorRegion(
+            try await self.regionService.monitorRegion(
                 center: location,
                 habitIdentifier: habitIdentifier,
                 habitName: habitName
@@ -81,7 +79,7 @@ class LocationService: NSObject, ObservableObject {
     /// - Parameter identifier: Location Identifier
     func stopMonitoringRegion(habitIdentifier: String, habitName: String) {
         Task {
-            try await self.regionService?.stopMonitoringRegion(habitIdentifier: habitIdentifier, habitName: habitName)
+            try await self.regionService.stopMonitoringRegion(habitIdentifier: habitIdentifier, habitName: habitName)
         }
     }
 }
@@ -96,9 +94,12 @@ extension LocationService: CLLocationManagerDelegate {
         case .authorizedAlways:
             self.locationManager.allowsBackgroundLocationUpdates = true
             self.requestOneTimeLocation()
-            Task { try? await self.regionService?.startMonitoringIfAuthorized() }
+            Task { try? await self.regionService.startMonitoringIfAuthorized() }
         case .authorizedWhenInUse:
-            manager.requestAlwaysAuthorization()
+            Task {
+               try? await Task.sleep(for: .seconds(0.5))
+               manager.requestAlwaysAuthorization()
+            }
         case .denied, .restricted:
             self.stopUpdatingLocation()
         case .notDetermined:
@@ -110,11 +111,15 @@ extension LocationService: CLLocationManagerDelegate {
 
     /// Gets Location updates and manages regions based on current Location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.first else { return }
-        Task {
-            if !self.didRunInitialInsideCheck {
-                self.didRunInitialInsideCheck = true
-                try? await self.regionService?.checkAlreadyInsideRegion(currentLocation: location)
+        let usable = locations
+            .filter { $0.horizontalAccuracy > 0 && $0.horizontalAccuracy <= 200 }
+            .filter { abs($0.timestamp.timeIntervalSinceNow) < 60 }
+            .min { $0.horizontalAccuracy < $1.horizontalAccuracy }
+
+        if let location = usable, !self.didRunInitialInsideCheck {
+            self.didRunInitialInsideCheck = true
+            Task {
+                try? await self.regionService.checkAlreadyInsideRegion(currentLocation: location)
             }
         }
         Logger.location.debug("Regions being monitored count: \(manager.monitoredRegions.count)")

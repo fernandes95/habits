@@ -136,6 +136,7 @@ struct NewHabitLocationView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("general_next") {
+                    self.state.requestAlwaysLocation()
                     self.router.push(NewHabitResumeView(habit: self.$habit))
                 }
             }

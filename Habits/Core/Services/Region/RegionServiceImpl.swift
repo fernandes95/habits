@@ -9,10 +9,14 @@ import Foundation
 import CoreLocation
 import OSLog
 
-class RegionServiceImpl: RegionService {
+@MainActor
+final class RegionServiceImpl: RegionService {
     private let habitsService: HabitsService
     private let notificationService: NotificationService = NotificationService()
-    private var monitor: CLMonitor?
+    private static let monitorName = "MonitorID"
+    private var monitorTask: Task<CLMonitor, Never>?
+    private var eventTask: Task<Void, Never>?
+    private var serviceSession: CLServiceSession?
     private let regionRadius: CLLocationDistance
 
     init(habitsService: HabitsService, regionRadius: CLLocationDistance) {
@@ -20,26 +24,36 @@ class RegionServiceImpl: RegionService {
         self.regionRadius = regionRadius
     }
 
-    private func startMonitorRegions() async throws {
-        if self.monitor == nil {
-            self.monitor = await CLMonitor("MonitorID")
-        }
+    private func currentMonitor() async -> CLMonitor {
+        if let monitorTask { return await monitorTask.value }
+            let task = Task { await CLMonitor(Self.monitorName) }
+            self.monitorTask = task
+            return await task.value
+    }
 
-        guard let monitor else { return }
-        for try await event in await monitor.events {
+    private func consumeEvents(_ monitor: CLMonitor) async {
+        // defer { self.eventTask = nil }
+
+        do {
+            for try await event in await monitor.events {
                 switch event.state {
-                case .satisfied: // callback when user ENTERS any of the registered regions.
-                    Logger.location.debug("⬆️ CL MONITOR ENTERED REGION (Time: \(Date.now)")
-                    try await remindUser(id: event.identifier)
-                case .unsatisfied: // callback when user EXITS any of the registered regions.
+                case .satisfied:
+                    Logger.location.debug("⬆️ CL MONITOR ENTERED REGION (Time: \(Date.now))")
+                    try? await remindUser(id: event.identifier)
+                case .unsatisfied:
                     Logger.location.debug("⬇️ CL MONITOR EXITED REGION")
-                    if try await validateRegion(identifier: event.identifier) {
-                        try await stopMonitoringRegion(habitIdentifier: event.identifier)
+                    if (try? await validateRegion(identifier: event.identifier)) == true {
+                        try? await stopMonitoringRegion(habitIdentifier: event.identifier)
                     }
                 default:
-                    Logger.location.debug("CL MONITOR No Location Registered")
+                    Logger.location.debug("CL MONITOR unknown state: \(String(describing: event))")
                 }
-        }
+            }
+                Logger.location.error("CL MONITOR stream ended — monitoring is dead until relaunch")
+            } catch {
+                Logger.location.error("CL MONITOR stream failed: \(error.localizedDescription)")
+            }
+
     }
 
     private func remindUser(id: String) async throws {
@@ -72,7 +86,7 @@ class RegionServiceImpl: RegionService {
         // making sure to remove if habit is being updated
         // CLMonitor.add doesn't update if it exists
         try await stopMonitoringRegion(habitIdentifier: habitIdentifier, habitName: habitName)
-        await self.monitor?.add(
+        await self.currentMonitor().add(
             CLMonitor.CircularGeographicCondition(center: center, radius: self.regionRadius),
             identifier: habitIdentifier,
             assuming: .unsatisfied
@@ -81,7 +95,7 @@ class RegionServiceImpl: RegionService {
     }
 
     func stopMonitoringRegion(habitIdentifier: String, habitName: String? = nil) async throws {
-        await self.monitor?.remove(habitIdentifier)
+        await self.currentMonitor().remove(habitIdentifier)
         Logger.location.debug("🔎🛑 CL MONITOR Stoped monitoring region for HABIT: \(habitName ?? habitIdentifier)")
     }
 
@@ -94,30 +108,31 @@ class RegionServiceImpl: RegionService {
     }
 
     private func removeAllEvents() async throws {
-        if let monitor {
-            for identifier in await monitor.identifiers {
-                try await self.stopMonitoringRegion(habitIdentifier: identifier)
-            }
+        let monitor = await currentMonitor()
+        for identifier in await monitor.identifiers {
+            try await self.stopMonitoringRegion(habitIdentifier: identifier)
         }
         Logger.location.debug("🔎🛑✅ CL MONITOR All regions are being removed")
     }
 
     func manageRegions() async throws {
         var habitsMonitored: [String] = []
-        let habits: [Habit] = try await self.habitsService.getHabits(date: .now)
+        try await self.habitsService.loadIfNeeded()
+        let habits = try await self.habitsService.getHabits(date: .now, hasFilterLocation: true)
+        let allHabits = try await self.habitsService.getHabits(date: .now)
+        guard !allHabits.isEmpty || habits.isEmpty else { return }
 
-        if let monitor {
-            for identifier in await monitor.identifiers {
-                guard let habitEntity = try await self.habitsService.getHabit(id: identifier) else {
-                    try await stopMonitoringRegion(habitIdentifier: identifier)
-                    continue
-                }
+        let monitor = await currentMonitor()
+        for identifier in await monitor.identifiers {
+            guard let habitEntity = try await self.habitsService.getHabit(id: identifier) else {
+                try await stopMonitoringRegion(habitIdentifier: identifier)
+                continue
+            }
 
-                if habits.contains(where: { $0.id.uuidString == identifier }) {
-                    habitsMonitored.append(habitEntity.id.uuidString)
-                } else {
-                    try await stopMonitoringRegion(habitIdentifier: identifier, habitName: habitEntity.name)
-                }
+            if habits.contains(where: { $0.id.uuidString == identifier }) {
+                habitsMonitored.append(habitEntity.id.uuidString)
+            } else {
+                try await stopMonitoringRegion(habitIdentifier: identifier, habitName: habitEntity.name)
             }
         }
 
@@ -131,13 +146,11 @@ class RegionServiceImpl: RegionService {
 
         // DEBUG LOGS
         Logger.location.debug("\n **** Regions being monitored ****")
-        if let monitor {
-            for identifier in await monitor.identifiers {
-                if let habit = try await self.habitsService.getHabit(id: identifier) {
-                    Logger.location.debug("► Name: \(habit.name)")
-                } else {
-                    Logger.location.debug("► Identifier: \(identifier)")
-                }
+        for identifier in await monitor.identifiers {
+            if let habit = try await self.habitsService.getHabit(id: identifier) {
+                Logger.location.debug("► Name: \(habit.name)")
+            } else {
+                Logger.location.debug("► Identifier: \(identifier)")
             }
         }
         Logger.location.debug("\n **** End of Regions being monitored ****")
@@ -160,7 +173,17 @@ class RegionServiceImpl: RegionService {
     }
 
     func startMonitoringIfAuthorized() async throws {
+        if self.serviceSession == nil {
+           self.serviceSession = CLServiceSession(authorization: .always)
+       }
+
+        if self.eventTask == nil {
+            self.eventTask = Task { [weak self] in
+                guard let self else { return }
+                let monitor = await self.currentMonitor()
+                await self.consumeEvents(monitor)
+            }
+        }
         try await self.manageRegions()
-        try await self.startMonitorRegions()
     }
 }

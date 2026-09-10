@@ -14,13 +14,12 @@ struct HabitsApp: App {
     // swiftlint:disable:next unused_declaration
     private var appDelegate: AppDelegate
 
-    @StateObject private var state: MainState
+    @StateObject private var state: MainState = StateObject(wrappedValue: MainState(environment: .shared)).wrappedValue
     @StateObject private var router: HabitsRouter = HabitsRouter()
     @Environment(\.scenePhase) var scenePhase
 
     init() {
-        let habitsService = HabitsService()
-        _state = StateObject(wrappedValue: MainState(habitsService: habitsService))
+        _state = StateObject(wrappedValue: MainState(environment: AppEnvironment.shared))
     }
 
     var body: some Scene {

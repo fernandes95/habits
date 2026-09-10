@@ -29,9 +29,9 @@ class MainState: ObservableObject {
 
     var duplicatedHabits: [HabitEntity]?
 
-    init(habitsService: HabitsService) {
-        self.habitsService = habitsService
-        self.locationService = LocationService(habitsService: habitsService)
+    init(environment: AppEnvironment) {
+        self.habitsService = environment.habitsService
+        self.locationService = environment.locationService
     }
 
     func initHabits() async {
@@ -181,5 +181,9 @@ class MainState: ObservableObject {
 
     func requestLocation() {
         self.locationService.requestLocationAuthorization()
+    }
+
+    func requestAlwaysLocation() {
+        self.locationService.requestAlwaysLocationAuthorization()
     }
 }
