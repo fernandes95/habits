@@ -181,9 +181,3 @@ struct HabitDetailView: View {
         }
     }
 }
-
-#Preview {
-    HabitDetailView(habit: .empty)
-        .environmentObject(HabitsRouter())
-        .environmentObject(MainState())
-}

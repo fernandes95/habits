@@ -88,6 +88,8 @@ struct NewHabitLocationView: View {
                         }
                     }
                 }
+
+                // TODO IMPROVE THIS SCREEN
                 if !self.hasLocationAuth || !self.hasNotificationAuth {
                     VStack(alignment: .center) {
                         Text("new_habit_location_setttings_info")
@@ -101,11 +103,22 @@ struct NewHabitLocationView: View {
                         }
                         Spacer()
                         Button(action: {
-                                Task {
-                                    await self.state.openSettings()
-                                }
-                            }, label: {
-                                Text("Open Settings")
+                            self.state.requestLocation()
+                        }, label: {
+                                Text("Give Location permission")
+                                    .padding()
+                                    .foregroundStyle(Color.white)
+                                    .background(Color.blue)
+                                    .cornerRadius(40)
+                            }
+                        )
+                        Spacer()
+
+                        // TODO ADD THIS LOGIC TO LOCATION SERVICE
+                        Button(action: {
+                            self.updatePerms()
+                        }, label: {
+                                Text("Give Notifications permission")
                                     .padding()
                                     .foregroundStyle(Color.white)
                                     .background(Color.blue)
@@ -123,22 +136,19 @@ struct NewHabitLocationView: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("general_next") {
+                    self.state.requestAlwaysLocation()
                     self.router.push(NewHabitResumeView(habit: self.$habit))
                 }
             }
         }
-        .onAppear {
-            updatePerms()
-        }
-        .onChange(of: self.scenePhase) { (newValue: ScenePhase) in
+        /*.onChange(of: self.scenePhase) { (newValue: ScenePhase) in
             switch newValue {
             case .active:
                 updatePerms()
             default:
                 break
             }
-        }
-
+        }*/
     }
 
     func updatePerms() {

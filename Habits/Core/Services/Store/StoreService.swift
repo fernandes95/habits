@@ -11,4 +11,5 @@ protocol StoreService {
     func fileURL() throws -> URL
     func load() async throws -> StoreEntity
     func save(_ store: StoreEntity) async throws
+    func appendNotifiedHabit(_ notification: HabitNotificationEntity) async throws
 }

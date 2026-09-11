@@ -8,28 +8,35 @@
 import Foundation
 import MapKit
 import CoreLocation
+import OSLog
 
 class LocationService: NSObject, ObservableObject {
-    private let notificationService: NotificationService = NotificationService()
-    private let habitsService: HabitsService = HabitsService()
-    private var regionService: RegionService?
+    private let habitsService: HabitsService
+    private var regionService: RegionService
     private var locationManager: CLLocationManager = CLLocationManager()
+    private var didRunInitialInsideCheck = false
 
     @Published
     var status: CLAuthorizationStatus?
 
     // desiredAccuracy as kCLLocationAccuracyBestForNavigation to have the most accurate location
     // activityType as otherNavigation to include all type of navigation besides airborn
-    override init() {
+    init(habitsService: HabitsService, regionService: RegionService) {
+        self.habitsService = habitsService
+        self.regionService = regionService
         super.init()
         self.locationManager.delegate = self
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-        self.locationManager.distanceFilter = 5
-        self.locationManager.activityType = .otherNavigation
-        self.locationManager.allowsBackgroundLocationUpdates = true
-        self.locationManager.pausesLocationUpdatesAutomatically = false
-        self.locationManager.startUpdatingLocation()
-        self.regionService = BackwardsCompactability.regionService(locationManager: self.locationManager)
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+    }
+
+    func requestOneTimeLocation() {
+        let status = self.locationManager.authorizationStatus
+        guard status == .authorizedAlways || status == .authorizedWhenInUse else { return }
+        self.locationManager.requestLocation()
+    }
+
+    func stopUpdatingLocation() {
+        self.locationManager.stopUpdatingLocation()
     }
 
     func getAuthorizationStatus() -> CLAuthorizationStatus {
@@ -37,17 +44,13 @@ class LocationService: NSObject, ObservableObject {
     }
 
     /// Request Location Authorization `When In Use`
-    func locationAuthorization() {
+    func requestLocationAuthorization() {
         self.locationManager.requestWhenInUseAuthorization()
     }
 
-    /// Updates Location
-    ///
-    /// Forces to stop location, go to minimum distance filter an then force start update location again
-    private func forceUpdateLocation() {
-        self.locationManager.stopUpdatingLocation()
-        self.locationManager.distanceFilter = 1
-        self.locationManager.startUpdatingLocation()
+    /// Request Location Authorization `Always`
+    func requestAlwaysLocationAuthorization() {
+        self.locationManager.requestAlwaysAuthorization()
     }
 
     /// Starts Monitoring Region
@@ -55,20 +58,26 @@ class LocationService: NSObject, ObservableObject {
     /// - Parameters:
     ///   - location: Precise location to start monitoring
     ///   - identifier: Location Identifier
-    func startMonitoringRegion(location: CLLocationCoordinate2D, identifier: String) {
+    func startMonitoringRegion(
+        location: CLLocationCoordinate2D,
+        habitIdentifier: String,
+        habitName: String,
+    ) {
         Task {
-            try await regionService?.monitorRegion(center: location, identifier: identifier)
-            self.forceUpdateLocation()
+            try await self.regionService.monitorRegion(
+                center: location,
+                habitIdentifier: habitIdentifier,
+                habitName: habitName
+            )
         }
     }
 
     /// Stops Monitoring Region by identifier
     ///
     /// - Parameter identifier: Location Identifier
-    func stopMonitoringRegion(identifier: String) {
+    func stopMonitoringRegion(habitIdentifier: String, habitName: String) {
         Task {
-            try await regionService?.stopMonitoringRegion(identifier: identifier)
-            self.forceUpdateLocation()
+            try await self.regionService.stopMonitoringRegion(habitIdentifier: habitIdentifier, habitName: habitName)
         }
     }
 }
@@ -81,107 +90,41 @@ extension LocationService: CLLocationManagerDelegate {
 
         switch status {
         case .authorizedAlways:
-            // Handle case
-            return
+            self.locationManager.allowsBackgroundLocationUpdates = true
+            self.requestOneTimeLocation()
+            Task { try? await self.regionService.startMonitoringIfAuthorized() }
         case .authorizedWhenInUse:
-            manager.requestAlwaysAuthorization()
-        case .denied:
-            // Handle case
-            return
-        case .notDetermined:
-            // Handle case
-            return
-        case .restricted:
-            // Handle case
-            return
-        default:
-            return
-        }
-    }
-
-    /// Sends Instant Notification to Remind User and stops monitoring region by Habit ID
-    ///
-    /// - Parameter id: Habit ID
-    private func remindUser(id: String) async throws {
-        guard let habitName: String = try await self.habitsService.getHabit(id: id)?.name else {
-            try await self.regionService?.stopMonitoringRegion(identifier: id)
-            return
-        }
-
-        try await notificationService.requestInstantNotification(subTitle: "Dont forget to: \(habitName)")
-    }
-
-    /// Sets new distance filter to Location Manager based on `Distance` paramether
-    ///
-    /// - Parameter distance: Distance to filter
-    private func setDistanceFilter(distance: Double) {
-        let newDistance: Double =
-            switch distance {
-            case ...70:
-                5
-            case ...150:
-                10
-            case ...500:
-                50
-            default:
-                200
+            Task {
+               try? await Task.sleep(for: .seconds(0.5))
+               manager.requestAlwaysAuthorization()
             }
-
-        self.locationManager.distanceFilter = newDistance
-
-        print("\n New distance received: \(String(describing: distance))")
-        print("New distance to set: \(newDistance)")
-        print("Distance Filter: \(self.locationManager.distanceFilter)")
+        case .denied, .restricted:
+            self.stopUpdatingLocation()
+        case .notDetermined:
+            break
+        default:
+            break
+        }
     }
 
     /// Gets Location updates and manages regions based on current Location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.first {
-            print("🏃🏻‍♂️‍➡️ Changed location")
+        let usable = locations
+            .filter { $0.horizontalAccuracy > 0 && $0.horizontalAccuracy <= 200 }
+            .filter { abs($0.timestamp.timeIntervalSinceNow) < 60 }
+            .min { $0.horizontalAccuracy < $1.horizontalAccuracy }
+
+        if let location = usable, !self.didRunInitialInsideCheck {
+            self.didRunInitialInsideCheck = true
             Task {
-                guard let distance: Double = try await regionService?.manageRegions(currentLocation: location)
-                else {
-                    return
-                }
-
-                self.setDistanceFilter(distance: distance)
+                try? await self.regionService.checkAlreadyInsideRegion(currentLocation: location)
             }
-
-            print(" Regions being monitored count: \(manager.monitoredRegions.count)")
         }
+        Logger.location.debug("Regions being monitored count: \(manager.monitoredRegions.count)")
     }
 
     /// Handles failure when getting a user’s location
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("ERROR: \(error.localizedDescription)")
-    }
-
-    /// Logs when region monitoring starts to a specific identifier
-    func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-        print("🔎✅ Started monitoring region with IDENTIFIER: \(region.identifier)")
-    }
-
-    /// Handles user entering region and reminds user
-    func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        if let region = region as? CLCircularRegion {
-            print("⬆️ Entered region with IDENTIFIER: \(region.identifier)")
-            Task {
-                try await self.remindUser(id: region.identifier)
-            }
-        }
-    }
-
-    /// Handles user exiting region.
-    /// If the user checks the Habit as done it will stop monitoring said region
-    func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        if let region = region as? CLCircularRegion {
-            print("⬇️ Exited region with IDENTIFIER: \(region.identifier)")
-            Task {
-                if try await regionService?.validateRegion(identifier: region.identifier) ?? false {
-                        locationManager.stopMonitoring(for: region)
-                    print("🔎🛑 Stoped monitoring region: \(region.identifier)")
-                }
-            }
-        }
+        Logger.location.debug("ERROR: \(error.localizedDescription)")
     }
 }

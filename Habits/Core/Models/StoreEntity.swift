@@ -10,4 +10,5 @@ import Foundation
 struct StoreEntity: Codable {
     var habits: [HabitEntity]
     var habitsArchived: [HabitEntity]
+    var habitsNotified: [HabitNotificationEntity]
 }

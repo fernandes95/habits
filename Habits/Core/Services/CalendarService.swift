@@ -24,11 +24,7 @@ class CalendarService {
 
         return switch status {
         case .notDetermined:
-            if #available(iOS 17.0, *) {
                 try await self.eventStore.requestFullAccessToEvents()
-            } else {
-                try await self.eventStore.requestAccess(to: .event)
-            }
         case .fullAccess,
              .restricted,
              .writeOnly:

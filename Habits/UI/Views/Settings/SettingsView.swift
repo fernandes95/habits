@@ -140,8 +140,3 @@ private enum SettingsAlert {
         }
     }
 }
-
-#Preview {
-    SettingsView()
-        .environmentObject(MainState())
-}

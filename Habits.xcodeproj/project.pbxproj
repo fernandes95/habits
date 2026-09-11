@@ -11,10 +11,15 @@
 		AE14909C2C98882800F9BD58 /* NewHabitDurantionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE14909B2C98882800F9BD58 /* NewHabitDurantionView.swift */; };
 		AE14909E2C995F0600F9BD58 /* NewHabitScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE14909D2C995F0600F9BD58 /* NewHabitScheduleView.swift */; };
 		AE1490A02C9994CA00F9BD58 /* NewHabitLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE14909F2C9994CA00F9BD58 /* NewHabitLocationView.swift */; };
+		AE25CCB72F37C1C100A285FA /* Logger+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE25CCB62F37C1B800A285FA /* Logger+Extensions.swift */; };
+		AE25CCB92F390FCD00A285FA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE25CCB82F390FC900A285FA /* AppDelegate.swift */; };
 		AE29ACEA2C932DCC004E023E /* NewHabitQuoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE29ACE92C932DCC004E023E /* NewHabitQuoteView.swift */; };
-		AE2B2A482BB0712A004669B6 /* BackgroundTaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2B2A472BB0712A004669B6 /* BackgroundTaskService.swift */; };
 		AE2B2A4A2BB07223004669B6 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2B2A492BB07223004669B6 /* NotificationService.swift */; };
+		AE2FFB94305302EF00CDBA6B /* Documentation.docc in Sources */ = {isa = PBXBuildFile; fileRef = AE2FFB93305302EF00CDBA6B /* Documentation.docc */; };
+		AE2FFB963053031300CDBA6B /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2FFB953053031300CDBA6B /* AppEnvironment.swift */; };
 		AE302EA32BC2F646002C8DC1 /* ViewType.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE302EA22BC2F646002C8DC1 /* ViewType.swift */; };
+		AE30AF332E7F4AC3004257BF /* HabitNotificationEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30AF322E7F4ABB004257BF /* HabitNotificationEntity.swift */; };
+		AE30AF352E7F4B36004257BF /* HabitsService+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30AF342E7F4B29004257BF /* HabitsService+Notifications.swift */; };
 		AE30E1582B9F7428009E10CD /* CalendarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1572B9F7428009E10CD /* CalendarService.swift */; };
 		AE30E1602BA4C182009E10CD /* Ocurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E15F2BA4C182009E10CD /* Ocurrence.swift */; };
 		AE30E1622BA88B5B009E10CD /* WeekDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1612BA88B5B009E10CD /* WeekDay.swift */; };
@@ -46,11 +51,10 @@
 		AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E192B5FD91B002C7EEB /* ListItem.swift */; };
 		AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */; };
 		AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */; };
-		AE901D0A2BC54A2300DA674A /* RegionNewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE901D092BC54A2300DA674A /* RegionNewService.swift */; };
+		AE7DD34F2E748801007BF33A /* HabitsService+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7DD34E2E7487F5007BF33A /* HabitsService+Settings.swift */; };
+		AE901D0A2BC54A2300DA674A /* RegionServiceImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE901D092BC54A2300DA674A /* RegionServiceImpl.swift */; };
 		AE901D0C2BC5791A00DA674A /* HabitsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE901D0B2BC5791A00DA674A /* HabitsService.swift */; };
 		AE901D0E2BC6CD6C00DA674A /* RegionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE901D0D2BC6CD6C00DA674A /* RegionService.swift */; };
-		AE901D102BC6D03B00DA674A /* RegionOldService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE901D0F2BC6D03B00DA674A /* RegionOldService.swift */; };
-		AE901D122BC6D08F00DA674A /* BackwardsCompactability.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE901D112BC6D08F00DA674A /* BackwardsCompactability.swift */; };
 		AE98C7F52BBC6C9A00EAE2A5 /* CLLocationDistance+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE98C7F42BBC6C9A00EAE2A5 /* CLLocationDistance+Utils.swift */; };
 		AE9D9A0F2BB1814000CF3498 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9D9A0E2BB1814000CF3498 /* MapView.swift */; };
 		AE9D9A112BB3328400CF3498 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9D9A102BB3328400CF3498 /* LocationService.swift */; };
@@ -79,10 +83,15 @@
 		AE14909B2C98882800F9BD58 /* NewHabitDurantionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitDurantionView.swift; sourceTree = "<group>"; };
 		AE14909D2C995F0600F9BD58 /* NewHabitScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitScheduleView.swift; sourceTree = "<group>"; };
 		AE14909F2C9994CA00F9BD58 /* NewHabitLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitLocationView.swift; sourceTree = "<group>"; };
+		AE25CCB62F37C1B800A285FA /* Logger+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+Extensions.swift"; sourceTree = "<group>"; };
+		AE25CCB82F390FC900A285FA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE29ACE92C932DCC004E023E /* NewHabitQuoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitQuoteView.swift; sourceTree = "<group>"; };
-		AE2B2A472BB0712A004669B6 /* BackgroundTaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskService.swift; sourceTree = "<group>"; };
 		AE2B2A492BB07223004669B6 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		AE2FFB93305302EF00CDBA6B /* Documentation.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = Documentation.docc; sourceTree = "<group>"; };
+		AE2FFB953053031300CDBA6B /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		AE302EA22BC2F646002C8DC1 /* ViewType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewType.swift; sourceTree = "<group>"; };
+		AE30AF322E7F4ABB004257BF /* HabitNotificationEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitNotificationEntity.swift; sourceTree = "<group>"; };
+		AE30AF342E7F4B29004257BF /* HabitsService+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HabitsService+Notifications.swift"; sourceTree = "<group>"; };
 		AE30E1572B9F7428009E10CD /* CalendarService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarService.swift; sourceTree = "<group>"; };
 		AE30E15F2BA4C182009E10CD /* Ocurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ocurrence.swift; sourceTree = "<group>"; };
 		AE30E1612BA88B5B009E10CD /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
@@ -117,11 +126,10 @@
 		AE744E192B5FD91B002C7EEB /* ListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListItem.swift; sourceTree = "<group>"; };
 		AE744E1F2B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelativeHeightSheetContentModifier.swift; sourceTree = "<group>"; };
 		AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerSheetContent.swift; sourceTree = "<group>"; };
-		AE901D092BC54A2300DA674A /* RegionNewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionNewService.swift; sourceTree = "<group>"; };
+		AE7DD34E2E7487F5007BF33A /* HabitsService+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HabitsService+Settings.swift"; sourceTree = "<group>"; };
+		AE901D092BC54A2300DA674A /* RegionServiceImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionServiceImpl.swift; sourceTree = "<group>"; };
 		AE901D0B2BC5791A00DA674A /* HabitsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsService.swift; sourceTree = "<group>"; };
 		AE901D0D2BC6CD6C00DA674A /* RegionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionService.swift; sourceTree = "<group>"; };
-		AE901D0F2BC6D03B00DA674A /* RegionOldService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionOldService.swift; sourceTree = "<group>"; };
-		AE901D112BC6D08F00DA674A /* BackwardsCompactability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackwardsCompactability.swift; sourceTree = "<group>"; };
 		AE98C7F42BBC6C9A00EAE2A5 /* CLLocationDistance+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocationDistance+Utils.swift"; sourceTree = "<group>"; };
 		AE9D9A0E2BB1814000CF3498 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		AE9D9A102BB3328400CF3498 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
@@ -276,10 +284,10 @@
 				AE901D142BC6D7D700DA674A /* Store */,
 				AE901D132BC6D7C100DA674A /* Region */,
 				AE30E1572B9F7428009E10CD /* CalendarService.swift */,
-				AE2B2A472BB0712A004669B6 /* BackgroundTaskService.swift */,
 				AE2B2A492BB07223004669B6 /* NotificationService.swift */,
 				AE901D0B2BC5791A00DA674A /* HabitsService.swift */,
-				AE901D112BC6D08F00DA674A /* BackwardsCompactability.swift */,
+				AE7DD34E2E7487F5007BF33A /* HabitsService+Settings.swift */,
+				AE30AF342E7F4B29004257BF /* HabitsService+Notifications.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -287,6 +295,7 @@
 		AE448A962B8D224F0034898F /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				AE2FFB953053031300CDBA6B /* AppEnvironment.swift */,
 				AE448A912B8D1FF80034898F /* Services */,
 				AED732D62B61700C00CD750D /* Models */,
 				AE448A972B8D227A0034898F /* State */,
@@ -361,8 +370,7 @@
 			isa = PBXGroup;
 			children = (
 				AE901D0D2BC6CD6C00DA674A /* RegionService.swift */,
-				AE901D092BC54A2300DA674A /* RegionNewService.swift */,
-				AE901D0F2BC6D03B00DA674A /* RegionOldService.swift */,
+				AE901D092BC54A2300DA674A /* RegionServiceImpl.swift */,
 			);
 			path = Region;
 			sourceTree = "<group>";
@@ -379,6 +387,7 @@
 		AE98C7F32BBC6C7F00EAE2A5 /* Lib */ = {
 			isa = PBXGroup;
 			children = (
+				AE25CCB62F37C1B800A285FA /* Logger+Extensions.swift */,
 				AE98C7F42BBC6C9A00EAE2A5 /* CLLocationDistance+Utils.swift */,
 			);
 			path = Lib;
@@ -417,12 +426,14 @@
 		AEA3D6B92B5E85B700A08F31 /* Habits */ = {
 			isa = PBXGroup;
 			children = (
+				AE2FFB93305302EF00CDBA6B /* Documentation.docc */,
 				AE98C7F32BBC6C7F00EAE2A5 /* Lib */,
 				AE6CC09A2B9F02DE00873D03 /* Info.plist */,
 				AE448A962B8D224F0034898F /* Core */,
 				AE448A8E2B8CECE40034898F /* Helpers */,
 				AE744E1C2B600A4B002C7EEB /* UI */,
 				AEA3D6BA2B5E85B700A08F31 /* HabitsApp.swift */,
+				AE25CCB82F390FC900A285FA /* AppDelegate.swift */,
 				AE448A8B2B89257E0034898F /* Content */,
 				AEA3D6C02B5E85B900A08F31 /* Preview Content */,
 			);
@@ -446,6 +457,7 @@
 				AEDAA9D82E60BABF0001ABA6 /* LocationSearchCompletion.swift */,
 				AE3AA22A2E6AD163002F78E9 /* Hour.swift */,
 				AEA3D6C92B5E8BE000A08F31 /* HabitEntity.swift */,
+				AE30AF322E7F4ABB004257BF /* HabitNotificationEntity.swift */,
 				AE51BD582B9612E3005DCBC7 /* StoreEntity.swift */,
 			);
 			path = Models;
@@ -608,35 +620,38 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE901D0C2BC5791A00DA674A /* HabitsService.swift in Sources */,
+				AE30AF332E7F4AC3004257BF /* HabitNotificationEntity.swift in Sources */,
 				AE3AA2232E66CDEF002F78E9 /* SpinnerView.swift in Sources */,
+				AE30AF352E7F4B36004257BF /* HabitsService+Notifications.swift in Sources */,
 				AE3FCFED2D1E315200E25F46 /* HabitFrequencyView.swift in Sources */,
 				AE14909C2C98882800F9BD58 /* NewHabitDurantionView.swift in Sources */,
 				AE3AA22B2E6AD165002F78E9 /* Hour.swift in Sources */,
 				AEDAA9D92E60BACD0001ABA6 /* LocationSearchCompletion.swift in Sources */,
-				AE2B2A482BB0712A004669B6 /* BackgroundTaskService.swift in Sources */,
+				AE25CCB92F390FCD00A285FA /* AppDelegate.swift in Sources */,
 				AE9D9A0F2BB1814000CF3498 /* MapView.swift in Sources */,
 				AE448A9A2B8D228C0034898F /* MainState.swift in Sources */,
 				AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */,
+				AE2FFB94305302EF00CDBA6B /* Documentation.docc in Sources */,
 				AE32F8102BED08BD0095DD1A /* ViewModifiers.swift in Sources */,
-				AE901D102BC6D03B00DA674A /* RegionOldService.swift in Sources */,
 				AE30E1622BA88B5B009E10CD /* WeekDay.swift in Sources */,
 				AEA3D6CA2B5E8BE000A08F31 /* HabitEntity.swift in Sources */,
 				AE3AA21F2E65E4C4002F78E9 /* SettingsView.swift in Sources */,
 				AE448A872B86632E0034898F /* HabitRouteIdEnvironmentKey.swift in Sources */,
-				AE901D122BC6D08F00DA674A /* BackwardsCompactability.swift in Sources */,
 				AE29ACEA2C932DCC004E023E /* NewHabitQuoteView.swift in Sources */,
 				AEDAA9D72E60B9E10001ABA6 /* LocationSearchService.swift in Sources */,
+				AE2FFB963053031300CDBA6B /* AppEnvironment.swift in Sources */,
 				AE1490A02C9994CA00F9BD58 /* NewHabitLocationView.swift in Sources */,
 				AE448A812B84E99F0034898F /* HabitDetailView.swift in Sources */,
 				AE448A932B8D20160034898F /* StoreService.swift in Sources */,
 				AE901D0E2BC6CD6C00DA674A /* RegionService.swift in Sources */,
 				AE14909E2C995F0600F9BD58 /* NewHabitScheduleView.swift in Sources */,
 				AE51BD592B9612E3005DCBC7 /* StoreEntity.swift in Sources */,
-				AE901D0A2BC54A2300DA674A /* RegionNewService.swift in Sources */,
+				AE901D0A2BC54A2300DA674A /* RegionServiceImpl.swift in Sources */,
 				AE448A8A2B8664B40034898F /* HabitsRouter.swift in Sources */,
 				AE14909A2C9885BB00F9BD58 /* NewHabitNameView.swift in Sources */,
 				AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */,
 				AE302EA32BC2F646002C8DC1 /* ViewType.swift in Sources */,
+				AE25CCB72F37C1C100A285FA /* Logger+Extensions.swift in Sources */,
 				AE3AA2212E660203002F78E9 /* ExportableDocument.swift in Sources */,
 				AEE2E5E32BC2EBC800DD9BC2 /* CalendarView.swift in Sources */,
 				AE448A902B8CECF60034898F /* DateHelper.swift in Sources */,
@@ -654,6 +669,7 @@
 				AE98C7F52BBC6C9A00EAE2A5 /* CLLocationDistance+Utils.swift in Sources */,
 				AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */,
 				AE3AA2282E6707F0002F78E9 /* ConflictResolution.swift in Sources */,
+				AE7DD34F2E748801007BF33A /* HabitsService+Settings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -838,7 +854,9 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Habits/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Fetch events in all your calendars";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Give me permition for geofencing please";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Permition for map";
@@ -846,7 +864,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -873,7 +891,9 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Habits/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Fetch events in all your calendars";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Give me permition for geofencing please";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Permition for map";
@@ -881,7 +901,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

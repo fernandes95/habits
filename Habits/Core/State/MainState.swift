@@ -11,8 +11,8 @@ import EventKit
 
 @MainActor
 class MainState: ObservableObject {
-    private let habitsService: HabitsService = HabitsService()
-    private let locationService: LocationService = LocationService()
+    private let habitsService: HabitsService
+    private let locationService: LocationService
     private let notificationService: NotificationService = NotificationService()
 
     @Published
@@ -28,6 +28,25 @@ class MainState: ObservableObject {
     var selectedDate: Date = .now
 
     var duplicatedHabits: [HabitEntity]?
+
+    init(environment: AppEnvironment) {
+        self.habitsService = environment.habitsService
+        self.locationService = environment.locationService
+    }
+
+    func initHabits() async {
+        do {
+            try await self.habitsService.load()
+            try await self.loadHabits(date: selectedDate)
+            self.requestLocationAuthorizationIfNeeded()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
+    func requestLocationAuthorizationIfNeeded() {
+        self.locationService.requestOneTimeLocation()
+    }
 
     /// Get exportable document
     func getDataDocument() async throws -> ExportableDocument {
@@ -99,7 +118,8 @@ class MainState: ObservableObject {
             if let location = habit.location {
                 self.locationService.startMonitoringRegion(
                     location: location.locationCoordinate,
-                    identifier: habit.id.uuidString
+                    habitIdentifier: habit.id.uuidString,
+                    habitName: habit.name
                 )
             }
             try await loadHabits(date: self.selectedDate)
@@ -112,7 +132,10 @@ class MainState: ObservableObject {
     func removeHabit(habitId: UUID) async throws {
         do {
             try await habitsService.removeHabit(habitId: habitId)
-            self.locationService.stopMonitoringRegion(identifier: habitId.uuidString)
+            self.locationService.stopMonitoringRegion(
+                habitIdentifier: habitId.uuidString,
+                habitName: ""
+            )
             try await loadHabits(date: self.selectedDate)
         } catch let error { print(error.localizedDescription) }
     }
@@ -127,7 +150,8 @@ class MainState: ObservableObject {
             if let location = habit.location {
                 self.locationService.startMonitoringRegion(
                     location: location.locationCoordinate,
-                    identifier: newHabitId.uuidString
+                    habitIdentifier: newHabitId.uuidString,
+                    habitName: habit.name
                 )
             }
             try await loadHabits(date: self.selectedDate)
@@ -155,10 +179,11 @@ class MainState: ObservableObject {
         }
     }
 
-    func openSettings() async {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
-            // Ask the system to open that URL.
-            await UIApplication.shared.open(url)
-        }
+    func requestLocation() {
+        self.locationService.requestLocationAuthorization()
+    }
+
+    func requestAlwaysLocation() {
+        self.locationService.requestAlwaysLocationAuthorization()
     }
 }
