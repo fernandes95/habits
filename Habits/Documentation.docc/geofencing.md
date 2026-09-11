@@ -259,12 +259,6 @@ something "randomly" breaks, start here.
 
 ## 8. Minor things worth a note (not bugs, just "huh?")
 
-- In `manageRegions()`, the line
-  `guard !allHabits.isEmpty || habits.isEmpty else { return }` describes a
-  state that can't actually happen (a filtered subset can't be non-empty when
-  the full list is empty), so it never returns early. Harmless, but confusing —
-  simplify it if you touch that method.
-
 - `didRunInitialInsideCheck` is a per-launch flag: the safety-net inside-check
   runs **once per app process**. Because each background relaunch is a fresh
   process, this is the intended behavior — it re-arms on every launch.
@@ -272,11 +266,6 @@ something "randomly" breaks, start here.
 - `didUpdateLocations` deliberately ignores unusable fixes (accuracy worse than
   200 m, or older than 60 s) so the one-shot inside-check isn't "spent" on a
   garbage location.
-
-- `BackgroundTaskService` / the `fetch` background mode /
-  `BGTaskSchedulerPermittedIdentifiers` are not part of geofencing. Background
-  tasks don't help geofence delivery and can interfere with the session — the
-  `CLServiceSession` is the correct mechanism.
 
 ---
 

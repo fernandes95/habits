@@ -14,7 +14,6 @@
 		AE25CCB72F37C1C100A285FA /* Logger+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE25CCB62F37C1B800A285FA /* Logger+Extensions.swift */; };
 		AE25CCB92F390FCD00A285FA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE25CCB82F390FC900A285FA /* AppDelegate.swift */; };
 		AE29ACEA2C932DCC004E023E /* NewHabitQuoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE29ACE92C932DCC004E023E /* NewHabitQuoteView.swift */; };
-		AE2B2A482BB0712A004669B6 /* BackgroundTaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2B2A472BB0712A004669B6 /* BackgroundTaskService.swift */; };
 		AE2B2A4A2BB07223004669B6 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2B2A492BB07223004669B6 /* NotificationService.swift */; };
 		AE2FFB94305302EF00CDBA6B /* Documentation.docc in Sources */ = {isa = PBXBuildFile; fileRef = AE2FFB93305302EF00CDBA6B /* Documentation.docc */; };
 		AE2FFB963053031300CDBA6B /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2FFB953053031300CDBA6B /* AppEnvironment.swift */; };
@@ -87,7 +86,6 @@
 		AE25CCB62F37C1B800A285FA /* Logger+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+Extensions.swift"; sourceTree = "<group>"; };
 		AE25CCB82F390FC900A285FA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE29ACE92C932DCC004E023E /* NewHabitQuoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitQuoteView.swift; sourceTree = "<group>"; };
-		AE2B2A472BB0712A004669B6 /* BackgroundTaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskService.swift; sourceTree = "<group>"; };
 		AE2B2A492BB07223004669B6 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		AE2FFB93305302EF00CDBA6B /* Documentation.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = Documentation.docc; sourceTree = "<group>"; };
 		AE2FFB953053031300CDBA6B /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
@@ -286,7 +284,6 @@
 				AE901D142BC6D7D700DA674A /* Store */,
 				AE901D132BC6D7C100DA674A /* Region */,
 				AE30E1572B9F7428009E10CD /* CalendarService.swift */,
-				AE2B2A472BB0712A004669B6 /* BackgroundTaskService.swift */,
 				AE2B2A492BB07223004669B6 /* NotificationService.swift */,
 				AE901D0B2BC5791A00DA674A /* HabitsService.swift */,
 				AE7DD34E2E7487F5007BF33A /* HabitsService+Settings.swift */,
@@ -631,7 +628,6 @@
 				AE3AA22B2E6AD165002F78E9 /* Hour.swift in Sources */,
 				AEDAA9D92E60BACD0001ABA6 /* LocationSearchCompletion.swift in Sources */,
 				AE25CCB92F390FCD00A285FA /* AppDelegate.swift in Sources */,
-				AE2B2A482BB0712A004669B6 /* BackgroundTaskService.swift in Sources */,
 				AE9D9A0F2BB1814000CF3498 /* MapView.swift in Sources */,
 				AE448A9A2B8D228C0034898F /* MainState.swift in Sources */,
 				AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */,

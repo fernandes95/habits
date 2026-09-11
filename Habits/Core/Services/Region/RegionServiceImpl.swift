@@ -32,8 +32,6 @@ final class RegionServiceImpl: RegionService {
     }
 
     private func consumeEvents(_ monitor: CLMonitor) async {
-        // defer { self.eventTask = nil }
-
         do {
             for try await event in await monitor.events {
                 switch event.state {
@@ -107,20 +105,11 @@ final class RegionServiceImpl: RegionService {
         return habitIsChecked ?? false
     }
 
-    private func removeAllEvents() async throws {
-        let monitor = await currentMonitor()
-        for identifier in await monitor.identifiers {
-            try await self.stopMonitoringRegion(habitIdentifier: identifier)
-        }
-        Logger.location.debug("🔎🛑✅ CL MONITOR All regions are being removed")
-    }
-
     func manageRegions() async throws {
         var habitsMonitored: [String] = []
         try await self.habitsService.loadIfNeeded()
         let habits = try await self.habitsService.getHabits(date: .now, hasFilterLocation: true)
         let allHabits = try await self.habitsService.getHabits(date: .now)
-        guard !allHabits.isEmpty || habits.isEmpty else { return }
 
         let monitor = await currentMonitor()
         for identifier in await monitor.identifiers {

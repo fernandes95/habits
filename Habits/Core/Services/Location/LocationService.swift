@@ -11,11 +11,9 @@ import CoreLocation
 import OSLog
 
 class LocationService: NSObject, ObservableObject {
-    private let notificationService: NotificationService = NotificationService()
     private let habitsService: HabitsService
     private var regionService: RegionService
     private var locationManager: CLLocationManager = CLLocationManager()
-    private let regionRadius: CLLocationDistance = 100
     private var didRunInitialInsideCheck = false
 
     @Published
