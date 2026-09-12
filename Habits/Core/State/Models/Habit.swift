@@ -22,6 +22,7 @@ struct Habit: Identifiable, Equatable {
     var scheduleInterval: Int?
     var schedule: [Hour]
     var isChecked: Bool
+    var checkedDates: [Date]
     var hasAlarm: Bool
     var successRate: String
     let createdDate: Date
@@ -41,6 +42,7 @@ struct Habit: Identifiable, Equatable {
         category: String,
         schedule: [Hour],
         isChecked: Bool,
+        checkedDates: [Date],
         hasAlarm: Bool,
         successRate: String,
         createdDate: Date,
@@ -59,6 +61,7 @@ struct Habit: Identifiable, Equatable {
         self.frequencyType = frequencyType
         self.category = getCategory(category)
         self.isChecked = isChecked
+        self.checkedDates = checkedDates
         self.hasAlarm = hasAlarm
         self.successRate = successRate
         self.createdDate = createdDate
@@ -81,6 +84,7 @@ struct Habit: Identifiable, Equatable {
         scheduleInterval: Int? = nil,
         schedule: [Hour]? = nil,
         isChecked: Bool? = nil,
+        checkedDates: [Date]? = nil,
         hasAlarm: Bool? = nil,
         successRate: String? = nil,
         createdDate: Date? = nil,
@@ -100,6 +104,7 @@ struct Habit: Identifiable, Equatable {
             category: category ?? self.category.rawValue,
             schedule: schedule ?? self.schedule,
             isChecked: isChecked ?? self.isChecked,
+            checkedDates: checkedDates ?? self.checkedDates,
             hasAlarm: hasAlarm ?? self.hasAlarm,
             successRate: successRate ?? self.successRate,
             createdDate: createdDate ?? self.createdDate,
@@ -132,6 +137,10 @@ struct Habit: Identifiable, Equatable {
         }
 
         self.isChecked = false
+        self.checkedDates = habitEntity.statusList
+            .filter { $0.isChecked == true }
+            .map { return $0.date }
+
         self.hasAlarm = habitEntity.hasAlarm
         self.hasLocationReminder = habitEntity.hasLocationReminder
         self.location = getLocation(location: habitEntity.location)

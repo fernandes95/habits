@@ -46,6 +46,7 @@
 		AE448A952B8D20700034898F /* DefaultStoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A942B8D20700034898F /* DefaultStoreService.swift */; };
 		AE448A9A2B8D228C0034898F /* MainState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A992B8D228C0034898F /* MainState.swift */; };
 		AE448A9C2B8DEC970034898F /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A9B2B8DEC970034898F /* Habit.swift */; };
+		AE51A33630553D55003F9BD1 /* HabitCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE51A33530553D4C003F9BD1 /* HabitCalendarView.swift */; };
 		AE51BD592B9612E3005DCBC7 /* StoreEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE51BD582B9612E3005DCBC7 /* StoreEntity.swift */; };
 		AE5845F12CB974BA0038E322 /* NewHabitResumeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE5845F02CB974BA0038E322 /* NewHabitResumeView.swift */; };
 		AE744E1A2B5FD91B002C7EEB /* ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE744E192B5FD91B002C7EEB /* ListItem.swift */; };
@@ -120,6 +121,7 @@
 		AE448A942B8D20700034898F /* DefaultStoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultStoreService.swift; sourceTree = "<group>"; };
 		AE448A992B8D228C0034898F /* MainState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainState.swift; sourceTree = "<group>"; };
 		AE448A9B2B8DEC970034898F /* Habit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
+		AE51A33530553D4C003F9BD1 /* HabitCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCalendarView.swift; sourceTree = "<group>"; };
 		AE51BD582B9612E3005DCBC7 /* StoreEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreEntity.swift; sourceTree = "<group>"; };
 		AE5845F02CB974BA0038E322 /* NewHabitResumeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitResumeView.swift; sourceTree = "<group>"; };
 		AE6CC09A2B9F02DE00873D03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -327,6 +329,7 @@
 		AE744E182B5FD90B002C7EEB /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				AE51A33530553D4C003F9BD1 /* HabitCalendarView.swift */,
 				AE744E192B5FD91B002C7EEB /* ListItem.swift */,
 				AE744E212B60141D002C7EEB /* DatePickerSheetContent.swift */,
 			);
@@ -625,6 +628,7 @@
 				AE30AF352E7F4B36004257BF /* HabitsService+Notifications.swift in Sources */,
 				AE3FCFED2D1E315200E25F46 /* HabitFrequencyView.swift in Sources */,
 				AE14909C2C98882800F9BD58 /* NewHabitDurantionView.swift in Sources */,
+				AE51A33630553D55003F9BD1 /* HabitCalendarView.swift in Sources */,
 				AE3AA22B2E6AD165002F78E9 /* Hour.swift in Sources */,
 				AEDAA9D92E60BACD0001ABA6 /* LocationSearchCompletion.swift in Sources */,
 				AE25CCB92F390FCD00A285FA /* AppDelegate.swift in Sources */,

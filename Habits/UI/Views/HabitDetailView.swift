@@ -100,6 +100,13 @@ struct HabitDetailView: View {
                             .disabled(!self.isEditing)
                     }
                 }
+
+                Section(header: Text("History")) {
+                    HabitCalendarView(
+                        startDate: self.habit.createdDate,
+                        dates: self.habit.checkedDates
+                    )
+                }
             }
 
             Button(role: .destructive) {
