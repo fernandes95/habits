@@ -145,7 +145,7 @@ class MainState: ObservableObject {
     /// - Parameter habit: Habit UUID to remove
     func addHabit(_ habit: Habit) async throws {
         do {
-            let newHabitId: UUID = try await habitsService.addHabit(habit)
+            let newHabitId: UUID = try await self.habitsService.addHabit(habit)
 
             if let location = habit.location {
                 self.locationService.startMonitoringRegion(
@@ -154,7 +154,7 @@ class MainState: ObservableObject {
                     habitName: habit.name
                 )
             }
-            try await loadHabits(date: self.selectedDate)
+            try await self.loadHabits(date: self.selectedDate)
         } catch let error { print(error.localizedDescription) }
     }
 

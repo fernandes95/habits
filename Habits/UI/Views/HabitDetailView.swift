@@ -185,6 +185,8 @@ struct HabitDetailView: View {
             return false
         case .weekly:
             return !editingHabit.frequencyType.weekFrequency.isEmpty
+        case .minDays: return self.habit.frequencyType.minimumDays > 0 && self.habit.frequencyType.minimumDays < 6
+        case .minTimes: return self.habit.frequencyType.minimumTimes > 0
         }
     }
 }

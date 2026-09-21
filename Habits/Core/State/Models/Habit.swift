@@ -152,7 +152,15 @@ struct Habit: Identifiable, Equatable {
             if let status: HabitEntity.Status = habitEntity.statusList.first(
                 where: { $0.date.formatDate() == selectedDate!.formatDate()}
             ) {
-                self.isChecked = status.isChecked
+                if self.frequency == .minTimes {
+                    let statusCount = self.checkedDates.count(where: {
+                        $0.startOfDay == selectedDate!.startOfDay
+                    })
+                    self.isChecked = statusCount == self.frequencyType.minimumTimes
+                } else {
+                    self.isChecked = status.isChecked
+                }
+
                 self.updatedDate = status.updatedDate
             }
         }
@@ -248,6 +256,8 @@ struct Habit: Identifiable, Equatable {
         case daily = "Daily"
         case weekly = "Weekly"
         case interval = "Interval"
+        case minDays = "Minimum Days"
+        case minTimes = "Minimum Times"
 
         var id: String {
             rawValue.capitalized
@@ -282,6 +292,10 @@ func getFrequency(_ frequency: String) -> Habit.Frequency {
         .weekly
     case Habit.Frequency.interval.rawValue:
         .interval
+    case Habit.Frequency.minDays.rawValue:
+        .minDays
+    case Habit.Frequency.minTimes.rawValue:
+        .minTimes
     default:
         .daily
     }

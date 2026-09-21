@@ -70,6 +70,18 @@ struct NewHabitResumeView: View {
                             Spacer()
                             Text("\(String(self.habit.scheduleInterval!))")
                         }
+                    case .minDays:
+                        HStack {
+                            Text("Minimum days")
+                            Spacer()
+                            Text("\(String(self.habit.frequencyType.minimumDays))")
+                        }
+                    case .minTimes:
+                        HStack {
+                            Text("Minimum times")
+                            Spacer()
+                            Text("\(String(self.habit.frequencyType.minimumTimes))")
+                        }
                     }
                 }
                 if self.habit.schedule.count > 0 {

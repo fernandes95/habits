@@ -15,11 +15,9 @@ struct HabitsView: View {
     private var state: MainState
 
     @State private var didLoadData = false
-//    @State private var viewType: ViewType = .list
 
     var body: some View {
         VStack {
-//            if viewType == .list {
                 HeaderView(
                     date: $state.selectedDate,
                     changeDateAction: {
@@ -31,16 +29,10 @@ struct HabitsView: View {
                     }
                 )
                 .padding([.top, .horizontal])
-//            }
-
-//            VStack {
-//                if viewType == .calendar {
-//                    CalendarView()
-//                        .frame(minHeight: 0, maxHeight: .infinity)
-//                }
             ZStack(alignment: .bottomTrailing) {
                 ContentView(
                     list: $state.habits,
+                    date: $state.selectedDate,
                     onItemStatusAction: { habit in
                         Task {
                             do {
@@ -52,7 +44,6 @@ struct HabitsView: View {
                         router.push(HabitDetailView(habit: habit))
                     }
                 )
-                //                .frame(minHeight: 0, maxHeight: .infinity)
 
                 Button {
                     self.router.push(NewHabitQuoteView())
@@ -69,7 +60,6 @@ struct HabitsView: View {
                 .accessibilityLabel("habits_accessibility_new_habit")
                 .padding(20)
             }
-//            }
         }
         .task {
             if !didLoadData {
@@ -83,23 +73,6 @@ struct HabitsView: View {
         }
         .navigationTitle("habits_title")
         .toolbar {
-//            ToolbarItem(placement: .topBarLeading) {
-//                let action = { viewType = viewType == .calendar ? .list : .calendar }
-//                let systemName = "list.bullet.below.rectangle"
-//                if viewType == .calendar {
-//                    Button(action: action, label: { Image(systemName: systemName) })
-//                        .buttonStyle(.borderedProminent)
-//                        .accessibilityLabel("habits_accessibility_change_view")
-//                } else {
-//                    Button(action: action, label: { Image(systemName: systemName) })
-//                        .buttonStyle(.borderedProminent)
-//                        .tint(.clear)
-//                        .foregroundStyle(Color.accentColor)
-//                        .accessibilityLabel("habits_accessibility_change_view")
-//                }
-//
-//            }
-
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
                     self.router.push(SettingsView())
@@ -181,21 +154,35 @@ private struct HeaderView: View {
 
 private struct ContentView: View {
     @Binding var list: [Habit]
+    @Binding var date: Date
     var onItemStatusAction: (Habit) -> Void
     var onItemAction: (Habit) -> Void
 
     var body: some View {
         List {
             ForEach($list) { $habit in
+                let totalSteps = habit.frequencyType.minimumTimes
                 let dividerColor = $list.count == 1 ?
                     Color.black.opacity(0.0) : nil
 
+                let datesCheckedCount = habit.checkedDates.count(where: {
+                    $0.startOfDay == date.startOfDay
+                })
+
+                let isChecked: Bool = if totalSteps > 0 {
+                    datesCheckedCount == totalSteps
+                } else {
+                    !habit.isChecked
+                }
+
                 ListItem(
                     name: habit.name,
+                    completedSteps: datesCheckedCount,
+                    totalSteps: totalSteps,
                     status: $habit.isChecked,
                     statusAction: {
                         var habit = habit
-                        habit.isChecked = !habit.isChecked
+                        habit.isChecked = isChecked
                         onItemStatusAction(habit)
                     },
                     itemAction: { onItemAction(habit) }

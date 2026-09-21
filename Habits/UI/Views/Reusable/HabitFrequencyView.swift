@@ -36,6 +36,12 @@ struct HabitFrequencyView: View {
                 if frequency != .interval {
                     self.habit.scheduleInterval = nil
                 }
+                if frequency != .minDays {
+                    self.habit.frequencyType.minimumDays = 0
+                }
+                if frequency != .minTimes {
+                    self.habit.frequencyType.minimumTimes = 0
+                }
             }
             .disabled(!isEditing)
 
@@ -76,6 +82,18 @@ struct HabitFrequencyView: View {
                         Text("\(String(self.habit.scheduleInterval ?? 0))")
                     }
                 }
+            case .minDays:
+                TextField("Minimum Days", value: self.$habit.frequencyType.minimumDays, formatter: self.formatter)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .keyboardType(.decimalPad)
+                    .accessibilityIdentifier("")
+                    .disabled(!isEditing)
+            case .minTimes:
+                TextField("Minimum Times", value: self.$habit.frequencyType.minimumTimes, formatter: self.formatter)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .keyboardType(.decimalPad)
+                    .accessibilityIdentifier("")
+                    .disabled(!isEditing)
             }
         }
 

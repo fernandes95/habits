@@ -7,6 +7,16 @@
     "%@" : {
 
     },
+    "%lld/%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld/%2$lld"
+          }
+        }
+      }
+    },
     "general_add" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -382,6 +392,18 @@
 
     },
     "Location Reminder" : {
+
+    },
+    "Minimum days" : {
+
+    },
+    "Minimum Days" : {
+
+    },
+    "Minimum times" : {
+
+    },
+    "Minimum Times" : {
 
     },
     "new_habit_duration_title" : {
