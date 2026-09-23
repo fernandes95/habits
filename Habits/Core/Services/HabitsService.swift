@@ -209,42 +209,30 @@ class HabitsService {
             )
 
             /// If status exists updates based on `habit` else will create new status based on `habit`
-            if let statusIndex: Int = updatedHabit.statusList.firstIndex(where: {
+            let statusIndex = updatedHabit.statusList.firstIndex(where: {
                 $0.date.startOfDay == selectedDate.startOfDay
-            }) {
-                let statusCount = updatedHabit.statusList.count(where: {
-                    $0.date.startOfDay == selectedDate.startOfDay
-                })
-                var status = updatedHabit.statusList[statusIndex]
+            })
+            var status = statusIndex.map { updatedHabit.statusList[$0] } ?? HabitEntity.Status(date: selectedDate)
 
-                if habit.frequency == .minTimes {
-                    if statusCount <= habit.frequencyType.minimumTimes {
-                        let status = HabitEntity.Status(
-                            date: selectedDate,
-                            isChecked: true
-                        )
-                        updatedHabit.statusList.append(status)
-                    } else {
-                        updatedHabit.statusList.removeAll(where: {
-                            $0.date.startOfDay == selectedDate.startOfDay
-                        })
-                        status.isChecked = false
-                    }
+            if habit.frequency == .minTimes {
+                if status.isChecked {
+                    status.count = 0
+                    status.isChecked = false
                 } else {
-                    status.isChecked = habit.isChecked
-                    status.updatedDate = .now
-
-                    updatedHabit.statusList[statusIndex] = status
+                    status.count += 1
+                    status.isChecked = status.count >= habit.frequencyType.minimumTimes
                 }
             } else {
-                let status = HabitEntity.Status(
-                    date: selectedDate,
-                    isChecked: habit.isChecked
-                )
+                status.isChecked = habit.isChecked
+            }
+            status.updatedDate = .now
+
+            if let statusIndex {
+                updatedHabit.statusList[statusIndex] = status
+            } else {
                 updatedHabit.statusList.append(status)
             }
 
-            updatedHabit.successRate = updatedHabit.getSuccessRate()
             updatedHabit.updatedDate = .now
 
             self.store.habits[index] = updatedHabit

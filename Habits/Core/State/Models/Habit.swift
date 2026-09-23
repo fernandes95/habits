@@ -18,13 +18,13 @@ struct Habit: Identifiable, Equatable {
     var hasNoEndDate: Bool
     var frequency: Frequency
     var frequencyType: Ocurrence
+    var completedCount: Int
     var category: Category
     var scheduleInterval: Int?
     var schedule: [Hour]
     var isChecked: Bool
     var checkedDates: [Date]
     var hasAlarm: Bool
-    var successRate: String
     let createdDate: Date
     var updatedDate: Date
     var hasLocationReminder: Bool
@@ -39,12 +39,12 @@ struct Habit: Identifiable, Equatable {
         hasNoEndDate: Bool,
         frequency: String,
         frequencyType: Ocurrence,
+        completedCount: Int,
         category: String,
         schedule: [Hour],
         isChecked: Bool,
         checkedDates: [Date],
         hasAlarm: Bool,
-        successRate: String,
         createdDate: Date,
         updatedDate: Date,
         hasLocationReminder: Bool = false,
@@ -59,11 +59,11 @@ struct Habit: Identifiable, Equatable {
         self.hasNoEndDate = hasNoEndDate
         self.frequency = getFrequency(frequency)
         self.frequencyType = frequencyType
+        self.completedCount = completedCount
         self.category = getCategory(category)
         self.isChecked = isChecked
         self.checkedDates = checkedDates
         self.hasAlarm = hasAlarm
-        self.successRate = successRate
         self.createdDate = createdDate
         self.updatedDate = updatedDate
         self.schedule = schedule
@@ -80,13 +80,13 @@ struct Habit: Identifiable, Equatable {
         hasNoEndDate: Bool? = nil,
         frequency: String? = nil,
         frequencyType: Ocurrence? = nil,
+        completedCount: Int? = nil,
         category: String? = nil,
         scheduleInterval: Int? = nil,
         schedule: [Hour]? = nil,
         isChecked: Bool? = nil,
         checkedDates: [Date]? = nil,
         hasAlarm: Bool? = nil,
-        successRate: String? = nil,
         createdDate: Date? = nil,
         updatedDate: Date? = nil,
         hasLocationReminder: Bool? = nil,
@@ -101,12 +101,12 @@ struct Habit: Identifiable, Equatable {
             hasNoEndDate: hasNoEndDate ?? self.hasNoEndDate,
             frequency: frequency ?? self.frequency.rawValue,
             frequencyType: frequencyType ?? self.frequencyType,
+            completedCount: completedCount ?? self.completedCount,
             category: category ?? self.category.rawValue,
             schedule: schedule ?? self.schedule,
             isChecked: isChecked ?? self.isChecked,
             checkedDates: checkedDates ?? self.checkedDates,
             hasAlarm: hasAlarm ?? self.hasAlarm,
-            successRate: successRate ?? self.successRate,
             createdDate: createdDate ?? self.createdDate,
             updatedDate: updatedDate ?? self.updatedDate,
             hasLocationReminder: hasLocationReminder ?? self.hasLocationReminder,
@@ -144,26 +144,19 @@ struct Habit: Identifiable, Equatable {
         self.hasAlarm = habitEntity.hasAlarm
         self.hasLocationReminder = habitEntity.hasLocationReminder
         self.location = getLocation(location: habitEntity.location)
-        self.successRate = "\(habitEntity.successRate)%"
         self.createdDate = habitEntity.createdDate
         self.updatedDate = habitEntity.updatedDate
+        self.isChecked = false
+        self.completedCount = 0
 
-        if selectedDate != nil {
-            if let status: HabitEntity.Status = habitEntity.statusList.first(
-                where: { $0.date.formatDate() == selectedDate!.formatDate()}
+        if let selectedDate,
+           let status: HabitEntity.Status = habitEntity.statusList.first(
+                where: { $0.date.formatDate() == selectedDate.formatDate() }
             ) {
-                if self.frequency == .minTimes {
-                    let statusCount = self.checkedDates.count(where: {
-                        $0.startOfDay == selectedDate!.startOfDay
-                    })
-                    self.isChecked = statusCount == self.frequencyType.minimumTimes
-                } else {
-                    self.isChecked = status.isChecked
-                }
-
+                self.isChecked = status.isChecked
+                self.completedCount = status.count
                 self.updatedDate = status.updatedDate
             }
-        }
     }
 
     private func getEKRecurrenceDaysOfWeek() -> [EKRecurrenceDayOfWeek] {

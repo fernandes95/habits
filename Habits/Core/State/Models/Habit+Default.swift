@@ -18,12 +18,12 @@ extension Habit {
             hasNoEndDate: false,
             frequency: Habit.Frequency.daily.rawValue,
             frequencyType: Ocurrence(weekFrequency: []),
+            completedCount: 0,
             category: Habit.Category.new.rawValue,
             schedule: [],
             isChecked: false,
             checkedDates: [],
             hasAlarm: false,
-            successRate: "0",
             createdDate: .now,
             updatedDate: .now
         )

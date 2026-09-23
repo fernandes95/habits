@@ -161,28 +161,18 @@ private struct ContentView: View {
     var body: some View {
         List {
             ForEach($list) { $habit in
-                let totalSteps = habit.frequencyType.minimumTimes
+                let totalSteps = habit.frequency == .minTimes ? habit.frequencyType.minimumTimes : 0
                 let dividerColor = $list.count == 1 ?
                     Color.black.opacity(0.0) : nil
 
-                let datesCheckedCount = habit.checkedDates.count(where: {
-                    $0.startOfDay == date.startOfDay
-                })
-
-                let isChecked: Bool = if totalSteps > 0 {
-                    datesCheckedCount == totalSteps
-                } else {
-                    !habit.isChecked
-                }
-
                 ListItem(
                     name: habit.name,
-                    completedSteps: datesCheckedCount,
+                    completedSteps: habit.completedCount,
                     totalSteps: totalSteps,
                     status: $habit.isChecked,
                     statusAction: {
                         var habit = habit
-                        habit.isChecked = isChecked
+                        habit.isChecked = !habit.isChecked
                         onItemStatusAction(habit)
                     },
                     itemAction: { onItemAction(habit) }

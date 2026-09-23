@@ -19,7 +19,6 @@ struct HabitEntity: Codable {
     var category: String
     var statusList: [Status]
     var schedule: [Hour]
-    var successRate: Int = 0
     var hasAlarm: Bool
     var updatedDate: Date
     let createdDate: Date
@@ -61,7 +60,6 @@ struct HabitEntity: Codable {
         self.location = location
         self.scheduleInterval = scheduleInterval
         self.createdDate = .now
-        self.successRate = getSuccessRateValue(statusList: self.statusList, startDate: self.startDate)
     }
 
     internal func with(
@@ -127,31 +125,25 @@ struct HabitEntity: Codable {
         var date: Date
         var updatedDate: Date
         var isChecked: Bool
+        var count: Int
 
-        init(id: UUID = UUID(), date: Date, updatedDate: Date = .now, isChecked: Bool = false) {
+        init(
+            id: UUID = UUID(),
+            date: Date,
+            updatedDate: Date = .now,
+            isChecked: Bool = false,
+            count: Int = 0
+        ) {
             self.id = id
             self.date = date
             self.updatedDate = updatedDate
             self.isChecked = isChecked
+            self.count = count
         }
     }
 
     internal struct Location: Codable {
         var latitude: Double
         var longitude: Double
-    }
-}
-
-extension HabitEntity {
-    private func getSuccessRateValue(statusList: [Status], startDate: Date) -> Int {
-        let checkedAmount: Int = statusList.filter { $0.date <= .now.endOfDay && $0.isChecked }.count
-        let dayDiff: Int = DateHelper.numberOfDaysBetween(startDate.startOfDay, and: .now.endOfDay) + 1
-        let percentage: Double = checkedAmount == 0 ? 0 : (Double(checkedAmount) / Double(dayDiff)) * 100.0
-
-        return Int(percentage)
-    }
-
-    func getSuccessRate() -> Int {
-        return getSuccessRateValue(statusList: self.statusList, startDate: self.startDate)
     }
 }
