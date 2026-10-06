@@ -24,6 +24,7 @@ struct Habit: Identifiable, Equatable {
     var schedule: [Hour]
     var isChecked: Bool
     var checkedDates: [Date]
+    var history: [DayRecord]
     var hasAlarm: Bool
     let createdDate: Date
     var updatedDate: Date
@@ -44,6 +45,7 @@ struct Habit: Identifiable, Equatable {
         schedule: [Hour],
         isChecked: Bool,
         checkedDates: [Date],
+        history: [DayRecord],
         hasAlarm: Bool,
         createdDate: Date,
         updatedDate: Date,
@@ -63,6 +65,7 @@ struct Habit: Identifiable, Equatable {
         self.category = getCategory(category)
         self.isChecked = isChecked
         self.checkedDates = checkedDates
+        self.history = history
         self.hasAlarm = hasAlarm
         self.createdDate = createdDate
         self.updatedDate = updatedDate
@@ -86,6 +89,7 @@ struct Habit: Identifiable, Equatable {
         schedule: [Hour]? = nil,
         isChecked: Bool? = nil,
         checkedDates: [Date]? = nil,
+        history: [DayRecord]? = nil,
         hasAlarm: Bool? = nil,
         createdDate: Date? = nil,
         updatedDate: Date? = nil,
@@ -106,6 +110,7 @@ struct Habit: Identifiable, Equatable {
             schedule: schedule ?? self.schedule,
             isChecked: isChecked ?? self.isChecked,
             checkedDates: checkedDates ?? self.checkedDates,
+            history: history ?? self.history,
             hasAlarm: hasAlarm ?? self.hasAlarm,
             createdDate: createdDate ?? self.createdDate,
             updatedDate: updatedDate ?? self.updatedDate,
@@ -140,6 +145,16 @@ struct Habit: Identifiable, Equatable {
         self.checkedDates = habitEntity.statusList
             .filter { $0.isChecked == true }
             .map { return $0.date }
+        let currentTarget: Int? = frequency == .minTimes ? habitEntity.frequencyType.minimumTimes : nil
+        self.history = habitEntity.statusList.map { status in
+            DayRecord(
+                date: status.date,
+                count: status.count,
+                // Older statuses were saved without a target, fall back to the current one.
+                requiredCount: status.requiredCount ?? currentTarget,
+                isChecked: status.isChecked
+            )
+        }
 
         self.hasAlarm = habitEntity.hasAlarm
         self.hasLocationReminder = habitEntity.hasLocationReminder
@@ -276,6 +291,13 @@ struct Habit: Identifiable, Equatable {
             self.locationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             self.region = region
         }
+    }
+
+    struct DayRecord: Equatable {
+        let date: Date
+        let count: Int
+        let requiredCount: Int?
+        let isChecked: Bool
     }
 }
 

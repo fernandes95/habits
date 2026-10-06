@@ -104,7 +104,7 @@ struct HabitDetailView: View {
                 Section(header: Text("History")) {
                     HabitCalendarView(
                         startDate: self.habit.createdDate,
-                        dates: self.habit.checkedDates
+                        history: self.habit.history
                     )
                 }
             }

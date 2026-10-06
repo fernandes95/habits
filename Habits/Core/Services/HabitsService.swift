@@ -208,6 +208,16 @@ class HabitsService {
                 : nil
             )
 
+            /// Statuses saved before `requiredCount` existed have no target. Stamp the previous target
+            /// on them while it's still known, so the history keeps its colors after a type/target change.
+            if oldHabit.frequency == .minTimes {
+                let previousTarget: Int = oldHabit.frequencyType.minimumTimes
+                for statusIndex in updatedHabit.statusList.indices
+                where updatedHabit.statusList[statusIndex].requiredCount == nil {
+                    updatedHabit.statusList[statusIndex].requiredCount = previousTarget
+                }
+            }
+
             /// If status exists updates based on `habit` else will create new status based on `habit`
             let statusIndex = updatedHabit.statusList.firstIndex(where: {
                 $0.date.startOfDay == selectedDate.startOfDay
@@ -217,9 +227,11 @@ class HabitsService {
             if habit.frequency == .minTimes {
                 if status.isChecked {
                     status.count = 0
+                    status.requiredCount = habit.frequencyType.minimumTimes
                     status.isChecked = false
                 } else {
                     status.count += 1
+                    status.requiredCount = habit.frequencyType.minimumTimes
                     status.isChecked = status.count >= habit.frequencyType.minimumTimes
                 }
             } else {

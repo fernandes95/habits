@@ -126,19 +126,22 @@ struct HabitEntity: Codable {
         var updatedDate: Date
         var isChecked: Bool
         var count: Int
+        var requiredCount: Int?
 
         init(
             id: UUID = UUID(),
             date: Date,
             updatedDate: Date = .now,
             isChecked: Bool = false,
-            count: Int = 0
+            count: Int = 0,
+            requiredCount: Int? = nil,
         ) {
             self.id = id
             self.date = date
             self.updatedDate = updatedDate
             self.isChecked = isChecked
             self.count = count
+            self.requiredCount = requiredCount
         }
     }
 

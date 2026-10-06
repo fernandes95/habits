@@ -23,6 +23,7 @@ extension Habit {
             schedule: [],
             isChecked: false,
             checkedDates: [],
+            history: [],
             hasAlarm: false,
             createdDate: .now,
             updatedDate: .now
