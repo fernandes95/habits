@@ -91,14 +91,22 @@ class MainState: ObservableObject {
     /// Get all habits from `Selected Date`
     ///
     /// - Parameter date: Selected date
-    func loadHabits(date: Date) async throws {
-        self.habits = []
+    func loadHabits(date: Date, animated: Bool = true) async throws {
         self.selectedDate = date
 
         let uncheckedList: [Habit] = try await self.habitsService.loadUncheckedHabits(date: self.selectedDate)
         let checkedList: [Habit] = try await self.habitsService.loadCheckedHabits(date: self.selectedDate)
 
-        self.habits = uncheckedList + checkedList
+        // The date may have changed while loading (fast swipes), drop outdated results.
+        guard self.selectedDate.startOfDay == date.startOfDay else { return }
+
+        let newList: [Habit] = uncheckedList + checkedList
+        if animated {
+            withAnimation(.snappy) { self.habits = newList }
+        } else {
+            self.habits = newList
+        }
+
         await self.loadWeekProgress(around: date)
     }
 

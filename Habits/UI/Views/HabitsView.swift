@@ -89,11 +89,12 @@ struct HabitsView: View {
         }
     }
 
-    /// Moves the selected date by `days` (negative goes back)
-    private func changeDay(by days: Int) {
+    /// Moves the selected date by `days` (negative goes back) and waits until it's loaded
+    private func changeDay(by days: Int) async {
         guard let newDate = Calendar.current.date(byAdding: .day, value: days, to: state.selectedDate) else { return }
-        self.state.selectedDate = newDate
-        self.loadSelectedDate()
+        do {
+            try await state.loadHabits(date: newDate, animated: false)
+        } catch let error { print(error.localizedDescription) }
     }
 }
 
@@ -394,7 +395,7 @@ private extension Color {
 /// Lets the user swipe the content horizontally to go to the previous / next day.
 /// The content follows the finger and slides out / in when the day changes.
 private struct DaySwipeContainer<Content: View>: View {
-    let onSwipe: (Int) -> Void
+    let onSwipe: (Int) async -> Void
     @ViewBuilder let content: Content
 
     @State private var offset: CGFloat = 0
@@ -434,13 +435,16 @@ private struct DaySwipeContainer<Content: View>: View {
     }
 
     private func slide(direction: Int) {
-        let distance = self.width > 0 ? self.width : 400
+        let distance = width > 0 ? width : 400
         withAnimation(.easeIn(duration: 0.15)) {
-            self.offset = -CGFloat(direction) * distance
+            offset = -CGFloat(direction) * distance
         } completion: {
-            self.onSwipe(direction)
-            self.offset = CGFloat(direction) * distance
-            withAnimation(.snappy) { self.offset = 0 }
+            Task {
+                // Load the new day while the list is off screen, then slide it in
+                await onSwipe(direction)
+                offset = CGFloat(direction) * distance
+                withAnimation(.snappy) { offset = 0 }
+            }
         }
     }
 }
