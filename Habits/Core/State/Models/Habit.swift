@@ -23,7 +23,6 @@ struct Habit: Identifiable, Equatable {
     var scheduleInterval: Int?
     var schedule: [Hour]
     var isChecked: Bool
-    var checkedDates: [Date]
     var history: [DayRecord]
     var hasAlarm: Bool
     let createdDate: Date
@@ -44,7 +43,6 @@ struct Habit: Identifiable, Equatable {
         category: String,
         schedule: [Hour],
         isChecked: Bool,
-        checkedDates: [Date],
         history: [DayRecord],
         hasAlarm: Bool,
         createdDate: Date,
@@ -64,7 +62,6 @@ struct Habit: Identifiable, Equatable {
         self.completedCount = completedCount
         self.category = getCategory(category)
         self.isChecked = isChecked
-        self.checkedDates = checkedDates
         self.history = history
         self.hasAlarm = hasAlarm
         self.createdDate = createdDate
@@ -88,7 +85,6 @@ struct Habit: Identifiable, Equatable {
         scheduleInterval: Int? = nil,
         schedule: [Hour]? = nil,
         isChecked: Bool? = nil,
-        checkedDates: [Date]? = nil,
         history: [DayRecord]? = nil,
         hasAlarm: Bool? = nil,
         createdDate: Date? = nil,
@@ -109,7 +105,6 @@ struct Habit: Identifiable, Equatable {
             category: category ?? self.category.rawValue,
             schedule: schedule ?? self.schedule,
             isChecked: isChecked ?? self.isChecked,
-            checkedDates: checkedDates ?? self.checkedDates,
             history: history ?? self.history,
             hasAlarm: hasAlarm ?? self.hasAlarm,
             createdDate: createdDate ?? self.createdDate,
@@ -142,9 +137,6 @@ struct Habit: Identifiable, Equatable {
         }
 
         self.isChecked = false
-        self.checkedDates = habitEntity.statusList
-            .filter { $0.isChecked == true }
-            .map { return $0.date }
         let currentTarget: Int? = frequency == .minTimes ? habitEntity.frequencyType.minimumTimes : nil
         self.history = habitEntity.statusList.map { status in
             DayRecord(

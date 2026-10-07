@@ -22,7 +22,6 @@ extension Habit {
             category: Habit.Category.new.rawValue,
             schedule: [],
             isChecked: false,
-            checkedDates: [],
             history: [],
             hasAlarm: false,
             createdDate: .now,
