@@ -11,14 +11,17 @@ struct HabitCalendarView: View {
     private let calendar: Calendar = .current
     private let columns: [GridItem] = Array(repeating: GridItem(.flexible(), spacing: 6), count: 7)
     private let startDate: Date
-    private let dates: [Date]
+    private let records: [Date: Habit.DayRecord]
 
     @State
     private var selectedMonth: Date = .now
 
-    init(startDate: Date, dates: [Date]) {
+    init(startDate: Date, history: [Habit.DayRecord]) {
         self.startDate = startDate
-        self.dates = dates
+        self.records = Dictionary(
+            history.map { ($0.date.startOfDay, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
     }
 
     var body: some View {
@@ -86,7 +89,11 @@ struct HabitCalendarView: View {
     }
 
     private var canGoToNextMonth: Bool {
-        guard let lastDate: Date = self.dates.max(),
+        let activeDates: [Date] = self.records.values
+            .filter { $0.isChecked || $0.count > 0 }
+            .map(\.date)
+
+        guard let lastDate: Date = activeDates.max(),
               let lastMonth: Date = self.calendar.dateInterval(of: .month, for: lastDate)?.start
          else { return false }
 
@@ -114,11 +121,22 @@ struct HabitCalendarView: View {
     }
 
     private func state(for day: Day) -> DaySquare.State {
-        guard let date: Date = day.date else { return .placeholder }
-        return self.dates.contains(where: {
-            $0.startOfDay == date.startOfDay
-        }) ? .completed : .placeholder
-    }
+            guard let date: Date = day.date else { return .hidden }
+            guard let record: Habit.DayRecord = self.records[date.startOfDay] else { return .placeholder }
+
+            if record.isChecked { return .completed }
+
+            // Partial progress only applies to days saved with a target (minimum-times days).
+            guard let required: Int = record.requiredCount, required > 0, record.count > 0 else {
+                return .placeholder
+            }
+
+            if record.count >= required { return .completed }
+
+            // Halfway point rounded, e.g. 5 times -> 3, 4 times -> 2.
+            let halfway: Int = Int((Double(required) / 2).rounded())
+            return record.count >= halfway ? .halfway : .started
+        }
 
     private func previousMonth() {
         guard self.canGoToPreviousMonth else { return }
@@ -150,7 +168,10 @@ private struct Day: Identifiable {
 
 private struct DaySquare: View {
     enum State {
+        case hidden
         case placeholder
+        case started
+        case halfway
         case completed
     }
 
@@ -164,7 +185,10 @@ private struct DaySquare: View {
 
     private var color: Color {
         switch self.state {
+        case .hidden: Color.clear
         case .placeholder: Color.gray.opacity(0.2)
+        case .started: Color.red
+        case .halfway: Color.yellow
         case .completed: Color.green
         }
     }

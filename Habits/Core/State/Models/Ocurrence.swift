@@ -9,4 +9,6 @@ import Foundation
 
 struct Ocurrence: Codable, Equatable {
     var weekFrequency: [WeekDay] = []
+    var minimumTimes: Int = 0
+    var minimumDays: Int = 0
 }

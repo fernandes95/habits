@@ -126,6 +126,25 @@ class MainState: ObservableObject {
         } catch let error { print(error.localizedDescription) }
     }
 
+    /// Saves edited Habit settings without changing the status of any day,
+    /// and loads all habits from selected date
+    ///
+    /// - Parameter habit: Habit with the edited settings
+    func editHabit(habit: Habit) async throws {
+        do {
+            try await self.habitsService.editHabit(habit)
+
+            if let location = habit.location {
+                self.locationService.startMonitoringRegion(
+                    location: location.locationCoordinate,
+                    habitIdentifier: habit.id.uuidString,
+                    habitName: habit.name
+                )
+            }
+            try await loadHabits(date: self.selectedDate)
+        } catch let error { print(error.localizedDescription) }
+    }
+
     /// Removes Habit, stops monitoring if needed and loads all habits from selected date
     ///
     /// - Parameter habit: Habit UUID to remove
@@ -145,7 +164,7 @@ class MainState: ObservableObject {
     /// - Parameter habit: Habit UUID to remove
     func addHabit(_ habit: Habit) async throws {
         do {
-            let newHabitId: UUID = try await habitsService.addHabit(habit)
+            let newHabitId: UUID = try await self.habitsService.addHabit(habit)
 
             if let location = habit.location {
                 self.locationService.startMonitoringRegion(
@@ -154,7 +173,7 @@ class MainState: ObservableObject {
                     habitName: habit.name
                 )
             }
-            try await loadHabits(date: self.selectedDate)
+            try await self.loadHabits(date: self.selectedDate)
         } catch let error { print(error.localizedDescription) }
     }
 
