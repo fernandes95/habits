@@ -318,7 +318,7 @@ class HabitsService {
         }
     }
 
-    /// Get Habits with frequency type .daily
+    /// Get Habits with frequency type .daily and .minDays.
     ///
     /// /// - Parameters:
     ///   - date: Selected Date to filter
@@ -332,7 +332,7 @@ class HabitsService {
             return []
         }
 
-        return habits.filter { $0.frequency == .daily }
+        return habits.filter { $0.frequency == .daily || $0.frequency == .minDays }
     }
 
     /// Get Habits with frequency type .weekly
