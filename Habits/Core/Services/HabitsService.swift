@@ -318,9 +318,9 @@ class HabitsService {
         }
     }
 
-    /// Get Habits with frequency type .daily and .minDays.
+    /// Get Habits with frequency type .daily, .minTimes and .minDays.
     ///
-    /// /// - Parameters:
+    /// - Parameters:
     ///   - date: Selected Date to filter
     ///   - existingHabits: List of all habits
     /// - Returns: Array of Habits
@@ -332,7 +332,11 @@ class HabitsService {
             return []
         }
 
-        return habits.filter { $0.frequency == .daily || $0.frequency == .minDays }
+        return habits.filter {
+            $0.frequency == .daily ||
+            $0.frequency == .minDays ||
+            $0.frequency == .minTimes
+        }
     }
 
     /// Get Habits with frequency type .weekly
@@ -393,23 +397,6 @@ class HabitsService {
             }
     }
 
-    /// Get Habits with frequency type .minTimes
-    ///
-    /// /// - Parameters:
-    ///   - date: Selected Date to filter
-    ///   - existingHabits: List of all habits
-    /// - Returns: Array of Habits
-    private func getMinTimesHabits(date: Date, existingHabits: [Habit]?) async throws -> [Habit] {
-        guard let habits: [Habit] = existingHabits != nil
-                ? existingHabits
-                : try await getHabits(date: date)
-        else {
-            return []
-        }
-
-        return habits.filter { $0.frequency == .minTimes }
-    }
-
     /// Get all unchecked habits from selected date
     /// - Parameter date: Selected date
     /// - Returns: Array of Habits
@@ -418,7 +405,6 @@ class HabitsService {
         let habitsDaily: [Habit] = try await getDailyHabits(date: date, existingHabits: habits)
         let habitsWeekly: [Habit] = try await getWeeklyHabits(date: date, existingHabits: habits)
         let habitsInterval: [Habit] = try await getIntervalHabits(date: date, existingHabits: habits)
-        let habitsMinTimes: [Habit] = try await getMinTimesHabits(date: date, existingHabits: habits)
 
         let uncheckedDailyList: [Habit] = habitsDaily
             .filter { !$0.isChecked }
@@ -426,11 +412,9 @@ class HabitsService {
             .filter { !$0.isChecked }
         let uncheckedIntervalList: [Habit] = habitsInterval
             .filter { !$0.isChecked }
-        let uncheckedMinTimesList: [Habit] = habitsMinTimes
-            .filter { !$0.isChecked }
 
         let uncheckedList: [Habit] = uncheckedDailyList +
-        uncheckedWeeklyList + uncheckedIntervalList + uncheckedMinTimesList
+        uncheckedWeeklyList + uncheckedIntervalList
 
         return uncheckedList
     }
@@ -443,7 +427,6 @@ class HabitsService {
         let habitsDaily: [Habit] = try await getDailyHabits(date: date, existingHabits: habits)
         let habitsWeekly: [Habit] = try await getWeeklyHabits(date: date, existingHabits: habits)
         let habitsInterval: [Habit] = try await getIntervalHabits(date: date, existingHabits: habits)
-        let habitsMinTimes: [Habit] = try await getMinTimesHabits(date: date, existingHabits: habits)
 
         let checkedDailyList: [Habit] = habitsDaily
           .filter { $0.isChecked }
@@ -460,14 +443,9 @@ class HabitsService {
           .sorted { (lhs: Habit, rhs: Habit) in
               return (lhs.updatedDate < rhs.updatedDate)
           }
-        let checkedMinTimesList: [Habit] = habitsMinTimes
-          .filter { $0.isChecked }
-          .sorted { (lhs: Habit, rhs: Habit) in
-              return (lhs.updatedDate < rhs.updatedDate)
-          }
 
         let checkedList: [Habit] = checkedDailyList + checkedWeeklyList +
-        checkedIntervalList + checkedMinTimesList
+        checkedIntervalList
 
         return checkedList
     }
