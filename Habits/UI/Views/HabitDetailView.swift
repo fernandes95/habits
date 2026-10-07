@@ -159,7 +159,7 @@ struct HabitDetailView: View {
     private func updateHabit() {
         Task {
             do {
-                try await self.state.updateHabit(habit: self.editingHabit)
+                try await self.state.editHabit(habit: self.editingHabit)
                 let habitEdited = try await self.state.getHabit(habit: self.editingHabit)
                 self.habit = habitEdited
                 self.editingHabit = habitEdited

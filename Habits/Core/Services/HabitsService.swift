@@ -173,84 +173,107 @@ class HabitsService {
         }
     }
 
-    /// Updates existing Habit
+    /// Updates existing Habit settings and toggles its status on `selectedDate`.
+    /// Used when the user taps a habit in the list.
     ///
     /// - Parameters:
     ///   - habit: Habit to update
     ///   - selectedDate: Selected Date to update habit status
     func updateHabit(_ habit: Habit, selectedDate: Date) async throws {
-        if let index: Int = self.store.habits.firstIndex(where: { $0.id == habit.id}) {
-            let oldHabit: Habit = Habit(habitEntity: self.habits[index])
-            let eventsHabit: Habit = try await manageUpdateEvents(habit: habit, oldHabit: oldHabit)
-            var updatedHabit: HabitEntity = self.habits[index].with(
-                eventId: eventsHabit.eventId,
-                name: eventsHabit.name,
-                endDate: eventsHabit.endDate,
-                hasNoEndDate: eventsHabit.hasNoEndDate,
-                frequency: eventsHabit.frequency.rawValue,
-                frequencyType: eventsHabit.frequencyType,
-                category: eventsHabit.category.rawValue,
-                scheduleInterval: eventsHabit.scheduleInterval,
-                schedule: eventsHabit.schedule.map { hour in
-                    return Hour(
-                        eventId: hour.eventId,
-                        notificationId: hour.notificationId,
-                        date: hour.date
-                    )
-                },
-                hasAlarm: eventsHabit.hasAlarm,
-                hasLocationReminder: eventsHabit.hasLocationReminder,
-                location: eventsHabit.location != nil
-                ? HabitEntity.Location(
-                    latitude: eventsHabit.location!.latitude,
-                    longitude: eventsHabit.location!.longitude
-                    )
-                : nil
-            )
+        guard let index: Int = self.store.habits.firstIndex(where: { $0.id == habit.id }) else { return }
 
-            /// Statuses saved before `requiredCount` existed have no target. Stamp the previous target
-            /// on them while it's still known, so the history keeps its colors after a type/target change.
-            if oldHabit.frequency == .minTimes {
-                let previousTarget: Int = oldHabit.frequencyType.minimumTimes
-                for statusIndex in updatedHabit.statusList.indices
-                where updatedHabit.statusList[statusIndex].requiredCount == nil {
-                    updatedHabit.statusList[statusIndex].requiredCount = previousTarget
-                }
+        var updatedHabit: HabitEntity = try await self.applySettings(of: habit, at: index)
+        self.updateStatus(of: &updatedHabit, with: habit, selectedDate: selectedDate)
+        updatedHabit.updatedDate = .now
+
+        self.store.habits[index] = updatedHabit
+        try await self.save()
+    }
+
+    /// Copies the settings of `habit` into the stored entity at `index` and syncs calendar events.
+    private func applySettings(of habit: Habit, at index: Int) async throws -> HabitEntity {
+        let oldHabit: Habit = Habit(habitEntity: self.habits[index])
+        let eventsHabit: Habit = try await manageUpdateEvents(habit: habit, oldHabit: oldHabit)
+        var updatedHabit: HabitEntity = self.habits[index].with(
+            eventId: eventsHabit.eventId,
+            name: eventsHabit.name,
+            endDate: eventsHabit.endDate,
+            hasNoEndDate: eventsHabit.hasNoEndDate,
+            frequency: eventsHabit.frequency.rawValue,
+            frequencyType: eventsHabit.frequencyType,
+            category: eventsHabit.category.rawValue,
+            scheduleInterval: eventsHabit.scheduleInterval,
+            schedule: eventsHabit.schedule.map { hour in
+                return Hour(
+                    eventId: hour.eventId,
+                    notificationId: hour.notificationId,
+                    date: hour.date
+                )
+            },
+            hasAlarm: eventsHabit.hasAlarm,
+            hasLocationReminder: eventsHabit.hasLocationReminder,
+            location: eventsHabit.location != nil
+            ? HabitEntity.Location(
+                latitude: eventsHabit.location!.latitude,
+                longitude: eventsHabit.location!.longitude
+                )
+            : nil
+        )
+
+        /// Statuses saved before `requiredCount` existed have no target. Stamp the previous target
+        /// on them while it's still known, so the history keeps its colors after a type/target change.
+        if oldHabit.frequency == .minTimes {
+            let previousTarget: Int = oldHabit.frequencyType.minimumTimes
+            for statusIndex in updatedHabit.statusList.indices
+            where updatedHabit.statusList[statusIndex].requiredCount == nil {
+                updatedHabit.statusList[statusIndex].requiredCount = previousTarget
             }
-
-            /// If status exists updates based on `habit` else will create new status based on `habit`
-            let statusIndex = updatedHabit.statusList.firstIndex(where: {
-                $0.date.startOfDay == selectedDate.startOfDay
-            })
-            var status = statusIndex.map { updatedHabit.statusList[$0] } ?? HabitEntity.Status(date: selectedDate)
-
-            if habit.frequency == .minTimes {
-                if status.isChecked {
-                    status.count = 0
-                    status.requiredCount = habit.frequencyType.minimumTimes
-                    status.isChecked = false
-                } else {
-                    status.count += 1
-                    status.requiredCount = habit.frequencyType.minimumTimes
-                    status.isChecked = status.count >= habit.frequencyType.minimumTimes
-                }
-            } else {
-                status.isChecked = habit.isChecked
-            }
-            status.updatedDate = .now
-
-            if let statusIndex {
-                updatedHabit.statusList[statusIndex] = status
-            } else {
-                updatedHabit.statusList.append(status)
-            }
-
-            updatedHabit.updatedDate = .now
-
-            self.store.habits[index] = updatedHabit
         }
 
+        return updatedHabit
+    }
+
+    /// Updates existing Habit settings only, the status of any day is left untouched.
+    /// Used when the user edits a habit in the detail screen.
+    ///
+    /// - Parameter habit: Habit with the edited settings
+    func editHabit(_ habit: Habit) async throws {
+        guard let index: Int = self.store.habits.firstIndex(where: { $0.id == habit.id }) else { return }
+
+        var updatedHabit: HabitEntity = try await self.applySettings(of: habit, at: index)
+        updatedHabit.updatedDate = .now
+
+        self.store.habits[index] = updatedHabit
         try await self.save()
+    }
+
+    /// If status exists updates based on `habit` else will create new status based on `habit`
+    private func updateStatus(of habitEntity: inout HabitEntity, with habit: Habit, selectedDate: Date) {
+        let statusIndex: Int? = habitEntity.statusList.firstIndex(where: {
+            $0.date.startOfDay == selectedDate.startOfDay
+        })
+        var status: HabitEntity.Status = statusIndex.map { habitEntity.statusList[$0] }
+            ?? HabitEntity.Status(date: selectedDate)
+
+        if habit.frequency == .minTimes {
+            if status.isChecked {
+                status.count = 0
+                status.isChecked = false
+            } else {
+                status.count += 1
+                status.isChecked = status.count == habit.frequencyType.minimumTimes
+            }
+            status.requiredCount = habit.frequencyType.minimumTimes
+        } else {
+            status.isChecked = habit.isChecked
+        }
+        status.updatedDate = .now
+
+        if let statusIndex {
+            habitEntity.statusList[statusIndex] = status
+        } else {
+            habitEntity.statusList.append(status)
+        }
     }
 
     private func manageUpdateEvents(habit: Habit, oldHabit: Habit) async throws -> Habit {
