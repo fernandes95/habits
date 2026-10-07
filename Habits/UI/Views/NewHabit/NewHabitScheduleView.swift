@@ -50,7 +50,7 @@ struct NewHabitScheduleView: View {
             }
             return false
         case .weekly: return !self.habit.frequencyType.weekFrequency.isEmpty
-        case .minDays: return self.habit.frequencyType.minimumDays > 0 && self.habit.frequencyType.minimumDays < 6
+        case .minDays: return self.habit.frequencyType.minimumDays > 0 && self.habit.frequencyType.minimumDays < 7
         case .minTimes: return self.habit.frequencyType.minimumTimes > 0
         }
     }
