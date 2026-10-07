@@ -27,6 +27,11 @@ class MainState: ObservableObject {
     @Published
     var selectedDate: Date = .now
 
+    /// Progress of each day (0...1) keyed by the start of the day.
+    /// Days without habits have no entry.
+    @Published
+    var dayProgress: [Date: Double] = [:]
+
     var duplicatedHabits: [HabitEntity]?
 
     init(environment: AppEnvironment) {
@@ -94,6 +99,26 @@ class MainState: ObservableObject {
         let checkedList: [Habit] = try await self.habitsService.loadCheckedHabits(date: self.selectedDate)
 
         self.habits = uncheckedList + checkedList
+        await self.loadWeekProgress(around: date)
+    }
+
+    /// Calculates the progress of the week containing `date` and its previous and next weeks,
+    /// so the header pager already has the values when swiping.
+    ///
+    /// - Parameter date: Any date inside the week to calculate
+    func loadWeekProgress(around date: Date) async {
+        let calendar = Calendar.current
+        guard let weekStart = calendar.dateInterval(of: .weekOfYear, for: date)?.start else { return }
+
+        var progress: [Date: Double] = self.dayProgress
+        for offset in -7..<14 {
+            guard let day = calendar.date(byAdding: .day, value: offset, to: weekStart)?.startOfDay else {
+                continue
+            }
+            let value: Double? = try? await self.habitsService.getDayProgress(date: day)
+            progress[day] = value
+        }
+        self.dayProgress = progress
     }
 
     /// Get original habit if it doesn't exists returns itself

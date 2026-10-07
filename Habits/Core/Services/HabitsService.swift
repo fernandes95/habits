@@ -450,6 +450,26 @@ class HabitsService {
         return checkedList
     }
 
+    /// Get the overall progress of a day, taking into account every habit scheduled for that day.
+    ///
+    /// Each habit contributes a value between 0 and 1 (partial for `.minTimes` habits) and
+    /// the day's progress is the average of all of them.
+    ///
+    /// - Parameter date: Day to calculate
+    /// - Returns: Value between 0 and 1, or nil when the day has no habits
+    func getDayProgress(date: Date) async throws -> Double? {
+        let habits = try await getHabits(date: date)
+        let habitsDaily: [Habit] = try await getDailyHabits(date: date, existingHabits: habits)
+        let habitsWeekly: [Habit] = try await getWeeklyHabits(date: date, existingHabits: habits)
+        let habitsInterval: [Habit] = try await getIntervalHabits(date: date, existingHabits: habits)
+
+        let dayHabits: [Habit] = habitsDaily + habitsWeekly + habitsInterval
+        guard !dayHabits.isEmpty else { return nil }
+
+        let total: Double = dayHabits.reduce(0) { $0 + $1.dayProgress }
+        return total / Double(dayHabits.count)
+    }
+
     // TODO UNUSED FOR NOW, I'LL CHECK LATER
     /// Get habits and closest habit distance from current location
     ///
