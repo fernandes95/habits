@@ -33,7 +33,6 @@ struct HabitsApp: App {
                         .environmentObject(self.router)
                         .task { await self.state.initHabits() }
                 }
-                .onDisappear()
             }
         }
     }
