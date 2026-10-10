@@ -382,19 +382,13 @@ class HabitsService {
             return []
         }
 
-        return habits.filter { $0.frequency == .interval }
-            .compactMap { habit in
-                let calendar = Calendar.current
-                var currentDate = habit.startDate
-                while currentDate <= habit.endDate {
-                    if calendar.isDate(currentDate, inSameDayAs: date) {
-                        return habit // The provided date matches an interval point
-                    }
-                    // Move to the next interval
-                    currentDate = calendar.date(byAdding: .day, value: habit.scheduleInterval!, to: currentDate)!
-                    }
-                return nil
-            }
+        return habits.filter { habit in
+            guard habit.frequency == .interval,
+                  let interval = habit.scheduleInterval, interval > 0 else { return false }
+
+            let daysSinceStart = DateHelper.numberOfDaysBetween(habit.startDate, and: date)
+            return daysSinceStart >= 0 && daysSinceStart % interval == 0
+        }
     }
 
     /// Get all unchecked habits from selected date
@@ -450,24 +444,29 @@ class HabitsService {
         return checkedList
     }
 
-    /// Get the overall progress of a day, taking into account every habit scheduled for that day.
+    /// Loads the habits of several days at once.
     ///
-    /// Each habit contributes a value between 0 and 1 (partial for `.minTimes` habits) and
-    /// the day's progress is the average of all of them.
-    ///
-    /// - Parameter date: Day to calculate
-    /// - Returns: Value between 0 and 1, or nil when the day has no habits
-    func getDayProgress(date: Date) async throws -> Double? {
-        let habits = try await getHabits(date: date)
-        let habitsDaily: [Habit] = try await getDailyHabits(date: date, existingHabits: habits)
-        let habitsWeekly: [Habit] = try await getWeeklyHabits(date: date, existingHabits: habits)
-        let habitsInterval: [Habit] = try await getIntervalHabits(date: date, existingHabits: habits)
+    /// - Parameter days: Days to load
+    /// - Returns: Habits of each day keyed by start of day, unchecked first and then checked
+    func loadHabits(days: [Date]) async throws -> [Date: [Habit]] {
+        var result: [Date: [Habit]] = [:]
 
-        let dayHabits: [Habit] = habitsDaily + habitsWeekly + habitsInterval
-        guard !dayHabits.isEmpty else { return nil }
+        for day in days.map(\.startOfDay) {
+            let habits: [Habit] = try await getHabits(date: day)
+            let habitsDaily: [Habit] = try await getDailyHabits(date: day, existingHabits: habits)
+            let habitsWeekly: [Habit] = try await getWeeklyHabits(date: day, existingHabits: habits)
+            let habitsInterval: [Habit] = try await getIntervalHabits(date: day, existingHabits: habits)
+            let scheduled: [Habit] = habitsDaily + habitsWeekly + habitsInterval
 
-        let total: Double = dayHabits.reduce(0) { $0 + $1.dayProgress }
-        return total / Double(dayHabits.count)
+            let unchecked: [Habit] = scheduled.filter { !$0.isChecked }
+            let checked: [Habit] = scheduled
+                .filter { $0.isChecked }
+                .sorted { $0.updatedDate < $1.updatedDate }
+
+            result[day] = unchecked + checked
+        }
+
+        return result
     }
 
     // TODO UNUSED FOR NOW, I'LL CHECK LATER

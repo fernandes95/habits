@@ -27,6 +27,9 @@ class MainState: ObservableObject {
     @Published
     var selectedDate: Date = .now
 
+    /// Habits of each loaded day, keyed by start of day
+    private var habitsByDay: [Date: [Habit]] = [:]
+
     /// Progress of each day (0...1) keyed by the start of the day.
     /// Days without habits have no entry.
     @Published
@@ -88,45 +91,67 @@ class MainState: ObservableObject {
         }
     }
 
-    /// Get all habits from `Selected Date`
-    ///
-    /// - Parameter date: Selected date
+    /// Reloads the whole block around `date`.
+    /// Use it after any change to the habits, since a change can affect other days too.
     func loadHabits(date: Date, animated: Bool = true) async throws {
         self.selectedDate = date
 
-        let uncheckedList: [Habit] = try await self.habitsService.loadUncheckedHabits(date: self.selectedDate)
-        let checkedList: [Habit] = try await self.habitsService.loadCheckedHabits(date: self.selectedDate)
+        let block = try await self.habitsService.loadHabits(days: Self.blockDays(around: date))
 
-        // The date may have changed while loading (fast swipes), drop outdated results.
-        guard self.selectedDate.startOfDay == date.startOfDay else { return }
-
-        let newList: [Habit] = uncheckedList + checkedList
-        if animated {
-            withAnimation(.snappy) { self.habits = newList }
-        } else {
-            self.habits = newList
-        }
-
-        await self.loadWeekProgress(around: date)
+        self.habitsByDay = block
+        self.updateProgress()
+        // The user may have moved to another day while loading, show whatever is selected now
+        self.showHabits(of: self.selectedDate, animated: animated)
     }
 
-    /// Calculates the progress of the week containing `date` and its previous and next weeks,
-    /// so the header pager already has the values when swiping.
-    ///
-    /// - Parameter date: Any date inside the week to calculate
-    func loadWeekProgress(around date: Date) async {
-        let calendar = Calendar.current
-        guard let weekStart = calendar.dateInterval(of: .weekOfYear, for: date)?.start else { return }
+    /// Selects a day using the loaded block, and loads the missing days around it if needed.
+    func selectDate(_ date: Date, animated: Bool = true) async throws {
+        self.selectedDate = date
 
-        var progress: [Date: Double] = self.dayProgress
-        for offset in -7..<14 {
-            guard let day = calendar.date(byAdding: .day, value: offset, to: weekStart)?.startOfDay else {
-                continue
-            }
-            let value: Double? = try? await self.habitsService.getDayProgress(date: day)
-            progress[day] = value
+        let wasLoaded = self.habitsByDay[date.startOfDay] != nil
+        if wasLoaded {
+            self.showHabits(of: date, animated: animated)
         }
-        self.dayProgress = progress
+
+        let missingDays = Self.blockDays(around: date).filter { self.habitsByDay[$0] == nil }
+        guard !missingDays.isEmpty else { return }
+
+        let loaded = try await self.habitsService.loadHabits(days: missingDays)
+        self.habitsByDay.merge(loaded) { _, new in new }
+        self.updateProgress()
+
+        if !wasLoaded && self.selectedDate.startOfDay == date.startOfDay {
+            self.showHabits(of: date, animated: animated)
+        }
+    }
+
+    /// Week of `date` plus the previous and next weeks
+    private static func blockDays(around date: Date) -> [Date] {
+        let calendar = Calendar.current
+        guard let weekStart = calendar.dateInterval(of: .weekOfYear, for: date)?.start else {
+            return [date.startOfDay]
+        }
+        return (-7..<14).compactMap {
+            calendar.date(byAdding: .day, value: $0, to: weekStart)?.startOfDay
+        }
+    }
+
+    private func showHabits(of date: Date, animated: Bool) {
+        let list: [Habit] = self.habitsByDay[date.startOfDay] ?? []
+        guard list != self.habits else { return }
+
+        if animated {
+            withAnimation(.snappy) { self.habits = list }
+        } else {
+            self.habits = list
+        }
+    }
+
+    private func updateProgress() {
+        self.dayProgress = self.habitsByDay.compactMapValues { list in
+            guard !list.isEmpty else { return nil }
+            return list.reduce(0) { $0 + $1.dayProgress } / Double(list.count)
+        }
     }
 
     /// Get original habit if it doesn't exists returns itself

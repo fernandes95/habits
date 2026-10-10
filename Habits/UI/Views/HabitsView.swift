@@ -69,11 +69,7 @@ struct HabitsView: View {
         .background(Color(.systemGroupedBackground))
         .task {
             if !didLoadData {
-                Task {
-                    do {
-                        try await state.loadHabits(date: state.selectedDate)
-                    } catch let error { print(error.localizedDescription) }
-                }
+                self.reloadAll()
                 didLoadData = true
             }
         }
@@ -81,10 +77,20 @@ struct HabitsView: View {
         .toolbar(.hidden, for: .navigationBar)
     }
 
+    /// Day changed from the header (day tap, week swipe, calendar)
     private func loadSelectedDate() {
         Task {
             do {
-                try await self.state.loadHabits(date: state.selectedDate)
+                try await state.selectDate(state.selectedDate)
+            } catch let error { print(error.localizedDescription) }
+        }
+    }
+
+    /// Full load of the block around the selected date
+    private func reloadAll() {
+        Task {
+            do {
+                try await state.loadHabits(date: state.selectedDate)
             } catch let error { print(error.localizedDescription) }
         }
     }
@@ -93,7 +99,7 @@ struct HabitsView: View {
     private func changeDay(by days: Int) async {
         guard let newDate = Calendar.current.date(byAdding: .day, value: days, to: state.selectedDate) else { return }
         do {
-            try await state.loadHabits(date: newDate, animated: false)
+            try await state.selectDate(newDate, animated: false)
         } catch let error { print(error.localizedDescription) }
     }
 }
