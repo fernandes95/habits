@@ -19,9 +19,6 @@ class MainState: ObservableObject {
     var habits: [Habit] = []
 
     @Published
-    var locationStatus: CLAuthorizationStatus = .notDetermined
-
-    @Published
     var notificationStatus: UNAuthorizationStatus = .notDetermined
 
     @Published
@@ -238,7 +235,6 @@ class MainState: ObservableObject {
     /// Get Location Authorization Status
     func getLocationAuthorizationStatus() -> Bool {
         let status = self.locationService.getAuthorizationStatus()
-        self.locationStatus = status
         return status == .authorizedAlways
     }
 

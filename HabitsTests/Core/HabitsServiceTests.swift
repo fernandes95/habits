@@ -107,31 +107,6 @@ internal final class HabitsServiceTests: XCTestCase {
         XCTAssertNil(habitRemoved)
     }
     
-    internal func test_load_unchecked_habits() async throws {
-        let habitUncheckedAdded: Habit = testHabit.with(name: "Habit Unchecked")
-        var habit: Habit
-        calendarAuthorizationMock()
-        
-        // Add Habit Checked
-        let habitId: UUID = try await addHabit(testHabit)
-        if let habitEntity: HabitEntity = try await getHabit(habitId) {
-            habit = Habit(habitEntity: habitEntity)
-            try await sut.updateHabit(habit.with(isChecked: true), selectedDate: Date.now)
-        }
-        
-        // Add Habit Unchecked
-        let habitUncheckedId = try await addHabit(habitUncheckedAdded)
-        
-        // Load Unchecked Habits
-        let habitsUnchecked: [Habit] = try await sut.loadUncheckedHabits(date: Date.now)
-        
-        // Get added unchecked Habit
-        let habitUnchecked: Habit? = habitsUnchecked.first(where: { $0.id == habitUncheckedId })
-        
-        XCTAssertNotNil(habitUnchecked)
-        XCTAssert(habitUnchecked?.isChecked == false)
-    }
-    
     internal func test_load_checked_habits() async throws {
         let habitCheckedAdded: Habit = testHabit.with(name: "Habit Checked")
         var habit: Habit

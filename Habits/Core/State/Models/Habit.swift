@@ -9,6 +9,7 @@ import Foundation
 import EventKit
 import MapKit
 
+// swiftlint:disable:next type_body_length
 struct Habit: Identifiable, Equatable {
     var id: UUID
     var eventId: String

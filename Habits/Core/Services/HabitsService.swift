@@ -11,7 +11,7 @@ import EventKit
 // swiftlint:disable:next type_body_length
 class HabitsService {
     internal let storeService: DefaultStoreService = DefaultStoreService()
-    private let calendarService: CalendarService = CalendarService()
+    internal let calendarService: CalendarService = CalendarService()
     private let notificationService: NotificationService = NotificationService()
     private var didLoad = false
 
@@ -57,6 +57,7 @@ class HabitsService {
                 return habit
             }
 
+        print(self.habits.map { "\($0.name): \($0.startDate) → \($0.endDate), forever: \($0.hasNoEndDate)" })
         return habitsFilterted
     }
 
@@ -190,49 +191,6 @@ class HabitsService {
         try await self.save()
     }
 
-    /// Copies the settings of `habit` into the stored entity at `index` and syncs calendar events.
-    private func applySettings(of habit: Habit, at index: Int) async throws -> HabitEntity {
-        let oldHabit: Habit = Habit(habitEntity: self.habits[index])
-        let eventsHabit: Habit = try await manageUpdateEvents(habit: habit, oldHabit: oldHabit)
-        var updatedHabit: HabitEntity = self.habits[index].with(
-            eventId: eventsHabit.eventId,
-            name: eventsHabit.name,
-            endDate: eventsHabit.endDate,
-            hasNoEndDate: eventsHabit.hasNoEndDate,
-            frequency: eventsHabit.frequency.rawValue,
-            frequencyType: eventsHabit.frequencyType,
-            category: eventsHabit.category.rawValue,
-            scheduleInterval: eventsHabit.scheduleInterval,
-            schedule: eventsHabit.schedule.map { hour in
-                return Hour(
-                    eventId: hour.eventId,
-                    notificationId: hour.notificationId,
-                    date: hour.date
-                )
-            },
-            hasAlarm: eventsHabit.hasAlarm,
-            hasLocationReminder: eventsHabit.hasLocationReminder,
-            location: eventsHabit.location != nil
-            ? HabitEntity.Location(
-                latitude: eventsHabit.location!.latitude,
-                longitude: eventsHabit.location!.longitude
-                )
-            : nil
-        )
-
-        /// Statuses saved before `requiredCount` existed have no target. Stamp the previous target
-        /// on them while it's still known, so the history keeps its colors after a type/target change.
-        if oldHabit.frequency == .minTimes {
-            let previousTarget: Int = oldHabit.frequencyType.minimumTimes
-            for statusIndex in updatedHabit.statusList.indices
-            where updatedHabit.statusList[statusIndex].requiredCount == nil {
-                updatedHabit.statusList[statusIndex].requiredCount = previousTarget
-            }
-        }
-
-        return updatedHabit
-    }
-
     /// Updates existing Habit settings only, the status of any day is left untouched.
     /// Used when the user edits a habit in the detail screen.
     ///
@@ -245,55 +203,6 @@ class HabitsService {
 
         self.store.habits[index] = updatedHabit
         try await self.save()
-    }
-
-    /// If status exists updates based on `habit` else will create new status based on `habit`
-    private func updateStatus(of habitEntity: inout HabitEntity, with habit: Habit, selectedDate: Date) {
-        let statusIndex: Int? = habitEntity.statusList.firstIndex(where: {
-            $0.date.startOfDay == selectedDate.startOfDay
-        })
-        var status: HabitEntity.Status = statusIndex.map { habitEntity.statusList[$0] }
-            ?? HabitEntity.Status(date: selectedDate)
-
-        if habit.frequency == .minTimes {
-            if status.isChecked {
-                status.count = 0
-                status.isChecked = false
-            } else {
-                status.count += 1
-                status.isChecked = status.count == habit.frequencyType.minimumTimes
-            }
-            status.requiredCount = habit.frequencyType.minimumTimes
-        } else {
-            status.isChecked = habit.isChecked
-        }
-        status.updatedDate = .now
-
-        if let statusIndex {
-            habitEntity.statusList[statusIndex] = status
-        } else {
-            habitEntity.statusList.append(status)
-        }
-    }
-
-    private func manageUpdateEvents(habit: Habit, oldHabit: Habit) async throws -> Habit {
-        var habitUpdated: Habit = habit
-
-        if habit.schedule.count > 0 || oldHabit.schedule.count > 0 {
-            habitUpdated.schedule = try await calendarService.manageScheduleEvents(habit, oldHabit: oldHabit)
-        }
-
-        if habitUpdated.eventId.isEmpty && habitUpdated.schedule.isEmpty {
-            let eventId: String = try await calendarService.createCalendarEvent(habitUpdated)
-            habitUpdated.eventId = eventId
-        } else if !habitUpdated.eventId.isEmpty && !habitUpdated.schedule.isEmpty && oldHabit.schedule.isEmpty {
-            calendarService.deleteEventById(eventId: habitUpdated.eventId)
-            habitUpdated.eventId = ""
-        } else {
-            calendarService.editEvent(habitUpdated)
-        }
-
-        return habitUpdated
     }
 
     /// Transfers Habit to Habits Archived list
@@ -391,28 +300,6 @@ class HabitsService {
         }
     }
 
-    /// Get all unchecked habits from selected date
-    /// - Parameter date: Selected date
-    /// - Returns: Array of Habits
-    func loadUncheckedHabits(date: Date) async throws -> [Habit] {
-        let habits = try await getHabits(date: date)
-        let habitsDaily: [Habit] = try await getDailyHabits(date: date, existingHabits: habits)
-        let habitsWeekly: [Habit] = try await getWeeklyHabits(date: date, existingHabits: habits)
-        let habitsInterval: [Habit] = try await getIntervalHabits(date: date, existingHabits: habits)
-
-        let uncheckedDailyList: [Habit] = habitsDaily
-            .filter { !$0.isChecked }
-        let uncheckedWeeklyList: [Habit] = habitsWeekly
-            .filter { !$0.isChecked }
-        let uncheckedIntervalList: [Habit] = habitsInterval
-            .filter { !$0.isChecked }
-
-        let uncheckedList: [Habit] = uncheckedDailyList +
-        uncheckedWeeklyList + uncheckedIntervalList
-
-        return uncheckedList
-    }
-
     /// Get all checked habits from selected date
     /// - Parameter date: Selected date
     /// - Returns: Array of Habits
@@ -467,64 +354,5 @@ class HabitsService {
         }
 
         return result
-    }
-
-    // TODO UNUSED FOR NOW, I'LL CHECK LATER
-    /// Get habits and closest habit distance from current location
-    ///
-    /// - Parameters:
-    ///   - currentLocation: User current location
-    ///   - maxHabits: Limit of habits to be returned
-    /// - Returns: Array of habits and Distance from closest habit
-    func getHabitsByDistance(currentLocation: CLLocation, maxHabits: Int = 20) async throws -> ([Habit], Double) {
-        var distanceFromClosest: Double = 200
-
-        guard let habits: [Habit] = try? await loadUncheckedHabits(date: .now) else {
-            return ([], distanceFromClosest)
-        }
-
-        let habitsByDistance: [Habit] = habits
-            .filter({ $0.location != nil })
-            .sorted { (lhs: Habit, rhs: Habit) in
-                let lhsLocation: CLLocation = CLLocation(
-                    latitude: lhs.location!.latitude,
-                    longitude: lhs.location!.longitude
-                )
-                let rhsLocation: CLLocation = CLLocation(
-                    latitude: rhs.location!.latitude,
-                    longitude: rhs.location!.longitude
-                )
-
-                return currentLocation.distance(from: lhsLocation) < currentLocation.distance(from: rhsLocation)
-            }
-
-        if let closestHabit: Habit = habitsByDistance.first {
-            let closestHabitLocation: CLLocation = CLLocation(
-                latitude: closestHabit.location!.latitude,
-                longitude: closestHabit.location!.longitude
-            )
-
-            distanceFromClosest = currentLocation.distance(from: closestHabitLocation)
-        }
-
-        // DEBUG LOGS
-        print("\n **** Habits by Distance ****")
-        print(" **** Limit Lenght: \(maxHabits) ****")
-        print(" **** Count: \(habits.count) **** \n")
-        for habit in Array(habitsByDistance.prefix(maxHabits)) {
-            let closestLocation: CLLocation = CLLocation(
-                latitude: habit.location!.latitude,
-                longitude: habit.location!.longitude
-            )
-            let distance = currentLocation.distance(from: closestLocation)
-
-            print("● Name: \(habit.name), Distance: \(distance)")
-        }
-        print("\n **** End of Habits by Distance ****")
-        // END OF DEBUG LOGS
-
-        let habitsToReturn: [Habit] = maxHabits == 0 ? (habitsByDistance) : Array(habitsByDistance.prefix(maxHabits))
-
-        return (habitsToReturn, distanceFromClosest)
     }
 }
