@@ -64,11 +64,15 @@ class LocationService: NSObject, ObservableObject {
         habitName: String,
     ) {
         Task {
-            try await self.regionService.monitorRegion(
-                center: location,
-                habitIdentifier: habitIdentifier,
-                habitName: habitName
-            )
+            do {
+                try await self.regionService.monitorRegion(
+                    center: location,
+                    habitIdentifier: habitIdentifier,
+                    habitName: habitName
+                )
+            } catch let error {
+                Logger.location.debug("ERROR: \(error.localizedDescription)")
+            }
         }
     }
 
@@ -77,7 +81,14 @@ class LocationService: NSObject, ObservableObject {
     /// - Parameter identifier: Location Identifier
     func stopMonitoringRegion(habitIdentifier: String, habitName: String) {
         Task {
-            try await self.regionService.stopMonitoringRegion(habitIdentifier: habitIdentifier, habitName: habitName)
+            do {
+                try await self.regionService.stopMonitoringRegion(
+                    habitIdentifier: habitIdentifier,
+                    habitName: habitName
+                )
+            } catch let error {
+                Logger.location.debug("ERROR: \(error.localizedDescription)")
+            }
         }
     }
 }

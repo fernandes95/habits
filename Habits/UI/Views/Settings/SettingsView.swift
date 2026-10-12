@@ -61,10 +61,14 @@ struct SettingsView: View {
                                 switch result {
                                 case .success(let url):
                                    Task {
-                                       if let didImport = try await self.state.importHabits(url: url) {
-                                           self.showImportAlert = didImport
-                                           showAlert = didImport ? .importSuccess : .importFailure
-                                       } else {
+                                       do {
+                                           if let didImport = try await self.state.importHabits(url: url) {
+                                               self.showImportAlert = didImport
+                                               showAlert = didImport ? .importSuccess : .importFailure
+                                           } else {
+                                               showAlert = .importFailure
+                                           }
+                                       } catch {
                                            showAlert = .importFailure
                                        }
                                    }
@@ -102,12 +106,12 @@ struct SettingsView: View {
                 message: { Text("settings_import_duplicate_alert_message") }
             )
         }
-        .onChange(of: self.isExporting) { value in
+        .onChange(of: self.isExporting) { _, value in
             if !value {
                 isLoading = false
             }
         }
-        .onChange(of: self.isImporting) { value in
+        .onChange(of: self.isImporting) { _, value in
             if !value {
                 isLoading = false
             }
@@ -121,8 +125,12 @@ struct SettingsView: View {
 
     private func manageConflicts(_ resolution: ConflictResolution) {
         Task {
-            try await self.state.manageDuplicatedHabits(resolution)
-            showAlert = .importSuccess
+            do {
+                try await self.state.manageDuplicatedHabits(resolution)
+                showAlert = .importSuccess
+            } catch {
+                showAlert = .importFailure
+            }
         }
     }
 }

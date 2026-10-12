@@ -35,7 +35,7 @@ struct NewHabitDurantionView: View {
                     }
 
                     Toggle("habit_has_end_date", isOn: $habit.hasNoEndDate)
-                        .onChange(of: self.habit.hasNoEndDate) { hasNoEndDate in
+                        .onChange(of: self.habit.hasNoEndDate) { _, hasNoEndDate in
                             if hasNoEndDate {
                                 let calendar = Calendar.current
                                 let endDate = calendar.date(byAdding: .year, value: 100, to: self.habit.endDate)!

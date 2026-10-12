@@ -850,7 +850,6 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Fetch events in all your calendars";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Give me permition for geofencing please";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Permition for map";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -887,7 +886,6 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Fetch events in all your calendars";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Give me permition for geofencing please";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Permition for map";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

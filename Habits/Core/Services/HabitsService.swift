@@ -8,7 +8,6 @@
 import Foundation
 import EventKit
 
-// swiftlint:disable:next type_body_length
 class HabitsService {
     internal let storeService: DefaultStoreService = DefaultStoreService()
     internal let calendarService: CalendarService = CalendarService()

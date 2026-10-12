@@ -58,7 +58,7 @@ struct HabitDetailView: View {
 
                     if self.isEditing {
                         Toggle("habit_has_end_date", isOn: $editingHabit.hasNoEndDate)
-                            .onChange(of: self.editingHabit.hasNoEndDate) { hasNoEndDate in
+                            .onChange(of: self.editingHabit.hasNoEndDate) { _, hasNoEndDate in
                                 if hasNoEndDate {
                                     let calendar = Calendar.current
                                     let endDate = calendar.date(

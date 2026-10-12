@@ -145,9 +145,10 @@ struct NewHabitResumeView: View {
                     updatedDate: .now
                 )
 
-            try await self.state.addHabit(newHabit)
-
-            self.router.popToRoot()
+            do {
+                try await self.state.addHabit(newHabit)
+                self.router.popToRoot()
+            } catch let error { print(error.localizedDescription) }
         }
     }
 }
