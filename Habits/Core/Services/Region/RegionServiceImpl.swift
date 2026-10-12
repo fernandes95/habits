@@ -109,7 +109,6 @@ final class RegionServiceImpl: RegionService {
         var habitsMonitored: [String] = []
         try await self.habitsService.loadIfNeeded()
         let habits = try await self.habitsService.getHabits(date: .now, hasFilterLocation: true)
-        let allHabits = try await self.habitsService.getHabits(date: .now)
 
         let monitor = await currentMonitor()
         for identifier in await monitor.identifiers {

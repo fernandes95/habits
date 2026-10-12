@@ -4,6 +4,9 @@
     "" : {
 
     },
+    " " : {
+
+    },
     "%@" : {
 
     },
@@ -16,6 +19,9 @@
           }
         }
       }
+    },
+    "%lld%%" : {
+
     },
     "general_add" : {
       "extractionState" : "manual",

@@ -19,13 +19,18 @@ class MainState: ObservableObject {
     var habits: [Habit] = []
 
     @Published
-    var locationStatus: CLAuthorizationStatus = .notDetermined
-
-    @Published
     var notificationStatus: UNAuthorizationStatus = .notDetermined
 
     @Published
     var selectedDate: Date = .now
+
+    /// Habits of each loaded day, keyed by start of day
+    private var habitsByDay: [Date: [Habit]] = [:]
+
+    /// Progress of each day (0...1) keyed by the start of the day.
+    /// Days without habits have no entry.
+    @Published
+    var dayProgress: [Date: Double] = [:]
 
     var duplicatedHabits: [HabitEntity]?
 
@@ -83,17 +88,67 @@ class MainState: ObservableObject {
         }
     }
 
-    /// Get all habits from `Selected Date`
-    ///
-    /// - Parameter date: Selected date
-    func loadHabits(date: Date) async throws {
-        self.habits = []
+    /// Reloads the whole block around `date`.
+    /// Use it after any change to the habits, since a change can affect other days too.
+    func loadHabits(date: Date, animated: Bool = true) async throws {
         self.selectedDate = date
 
-        let uncheckedList: [Habit] = try await self.habitsService.loadUncheckedHabits(date: self.selectedDate)
-        let checkedList: [Habit] = try await self.habitsService.loadCheckedHabits(date: self.selectedDate)
+        let block = try await self.habitsService.loadHabits(days: Self.blockDays(around: date))
 
-        self.habits = uncheckedList + checkedList
+        self.habitsByDay = block
+        self.updateProgress()
+        // The user may have moved to another day while loading, show whatever is selected now
+        self.showHabits(of: self.selectedDate, animated: animated)
+    }
+
+    /// Selects a day using the loaded block, and loads the missing days around it if needed.
+    func selectDate(_ date: Date, animated: Bool = true) async throws {
+        self.selectedDate = date
+
+        let wasLoaded = self.habitsByDay[date.startOfDay] != nil
+        if wasLoaded {
+            self.showHabits(of: date, animated: animated)
+        }
+
+        let missingDays = Self.blockDays(around: date).filter { self.habitsByDay[$0] == nil }
+        guard !missingDays.isEmpty else { return }
+
+        let loaded = try await self.habitsService.loadHabits(days: missingDays)
+        self.habitsByDay.merge(loaded) { _, new in new }
+        self.updateProgress()
+
+        if !wasLoaded && self.selectedDate.startOfDay == date.startOfDay {
+            self.showHabits(of: date, animated: animated)
+        }
+    }
+
+    /// Week of `date` plus the previous and next weeks
+    private static func blockDays(around date: Date) -> [Date] {
+        let calendar = Calendar.current
+        guard let weekStart = calendar.dateInterval(of: .weekOfYear, for: date)?.start else {
+            return [date.startOfDay]
+        }
+        return (-7..<14).compactMap {
+            calendar.date(byAdding: .day, value: $0, to: weekStart)?.startOfDay
+        }
+    }
+
+    private func showHabits(of date: Date, animated: Bool) {
+        let list: [Habit] = self.habitsByDay[date.startOfDay] ?? []
+        guard list != self.habits else { return }
+
+        if animated {
+            withAnimation(.snappy) { self.habits = list }
+        } else {
+            self.habits = list
+        }
+    }
+
+    private func updateProgress() {
+        self.dayProgress = self.habitsByDay.compactMapValues { list in
+            guard !list.isEmpty else { return nil }
+            return list.reduce(0) { $0 + $1.dayProgress } / Double(list.count)
+        }
     }
 
     /// Get original habit if it doesn't exists returns itself
@@ -180,7 +235,6 @@ class MainState: ObservableObject {
     /// Get Location Authorization Status
     func getLocationAuthorizationStatus() -> Bool {
         let status = self.locationService.getAuthorizationStatus()
-        self.locationStatus = status
         return status == .authorizedAlways
     }
 

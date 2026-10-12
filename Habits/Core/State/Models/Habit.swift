@@ -9,6 +9,7 @@ import Foundation
 import EventKit
 import MapKit
 
+// swiftlint:disable:next type_body_length
 struct Habit: Identifiable, Equatable {
     var id: UUID
     var eventId: String
@@ -164,6 +165,18 @@ struct Habit: Identifiable, Equatable {
                 self.completedCount = status.count
                 self.updatedDate = status.updatedDate
             }
+    }
+
+    /// Progress of this habit on the date it was loaded for, between 0 and 1.
+    /// `.minTimes` habits count partial progress, every other habit is either done or not.
+    var dayProgress: Double {
+        if self.isChecked { return 1 }
+
+        if self.frequency == .minTimes, self.frequencyType.minimumTimes > 0 {
+            return min(Double(self.completedCount) / Double(self.frequencyType.minimumTimes), 1)
+        }
+
+        return 0
     }
 
     private func getEKRecurrenceDaysOfWeek() -> [EKRecurrenceDayOfWeek] {

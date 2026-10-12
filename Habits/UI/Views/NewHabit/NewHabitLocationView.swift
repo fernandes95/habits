@@ -40,7 +40,7 @@ struct NewHabitLocationView: View {
                     HStack {
                         Image(systemName: "magnifyingglass").foregroundColor(.secondary)
                         TextField("habit_location_search", text: $searchQuery)
-                            .onChange(of: self.searchQuery) { query in
+                            .onChange(of: self.searchQuery) { _, query in
                                 locationSearchService.update(queryFragment: query)
                             }
                             .submitLabel(.done)
@@ -153,13 +153,15 @@ struct NewHabitLocationView: View {
 
     func updatePerms() {
         Task {
-            self.hasLocationAuth = self.state.getLocationAuthorizationStatus()
-            self.hasNotificationAuth = try await self.state.getNotificationsAuthorizationStatus()
-
-            if self.hasLocationAuth && !self.hasNotificationAuth {
-                try await self.state.getNotificationsAuthorization()
+            do {
+                self.hasLocationAuth = self.state.getLocationAuthorizationStatus()
                 self.hasNotificationAuth = try await self.state.getNotificationsAuthorizationStatus()
-            }
+
+                if self.hasLocationAuth && !self.hasNotificationAuth {
+                    try await self.state.getNotificationsAuthorization()
+                    self.hasNotificationAuth = try await self.state.getNotificationsAuthorizationStatus()
+                }
+            } catch let error { print(error.localizedDescription) }
         }
     }
 

@@ -29,7 +29,7 @@ struct HabitFrequencyView: View {
                     Text(frequency.rawValue).tag(frequency)
                 }
             }
-            .onChange(of: self.habit.frequency) { frequency in
+            .onChange(of: self.habit.frequency) { _, frequency in
                 if frequency != .weekly {
                     self.habit.frequencyType.weekFrequency.removeAll()
                 }
