@@ -113,4 +113,13 @@ extension HabitsService {
         }
     }
 
+    /// Updates app configs.
+    /// Used when the user edits an app configuration.
+    ///
+    /// - Parameters:
+    ///   - configs: Configurations to save
+    func updateAppConfigs(_ configs: AppConfig) async throws {
+        self.store.appConfigs = configs
+        try await self.save()
+    }
 }

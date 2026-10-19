@@ -14,9 +14,17 @@ class HabitsService {
     private let notificationService: NotificationService = NotificationService()
     private var didLoad = false
 
-    internal var store: StoreEntity = StoreEntity(habits: [], habitsArchived: [], habitsNotified: [])
+    internal var store: StoreEntity = StoreEntity(
+        habits: [], habitsArchived: [],
+        habitsNotified: [], appConfigs: AppConfig.empty
+    )
+
     internal var habits: [HabitEntity] {
         return store.habits
+    }
+
+    internal var appConfigs: AppConfig {
+        return store.appConfigs
     }
 
     func loadIfNeeded() async throws {
@@ -56,7 +64,6 @@ class HabitsService {
                 return habit
             }
 
-        print(self.habits.map { "\($0.name): \($0.startDate) → \($0.endDate), forever: \($0.hasNoEndDate)" })
         return habitsFilterted
     }
 
@@ -263,9 +270,7 @@ class HabitsService {
 
         return habits.filter { $0.frequency == .weekly }
             .compactMap { habit in
-                let weekDayRaw: Int = Calendar.current.component(.weekday, from: date)
-                guard let ekWeekday: EKWeekday = EKWeekday(rawValue: weekDayRaw) else { return nil }
-                let weekday: WeekDay = getWeekDay(ekWeekday: ekWeekday)
+                let weekday = WeekDay(date: date)
 
                 return if habit.startDate.startOfDay == date.startOfDay ||
                         habit.frequencyType.weekFrequency.contains(weekday) {

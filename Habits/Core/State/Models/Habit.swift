@@ -180,29 +180,7 @@ struct Habit: Identifiable, Equatable {
     }
 
     private func getEKRecurrenceDaysOfWeek() -> [EKRecurrenceDayOfWeek] {
-        let list: [WeekDay] = self.frequencyType.weekFrequency
-        var weekDays: [EKRecurrenceDayOfWeek] = []
-
-        for day in list {
-            let weekDay: EKWeekday = switch day {
-            case WeekDay.monday:
-                .monday
-            case WeekDay.tuesday:
-                .tuesday
-            case WeekDay.wednesday:
-                .wednesday
-            case WeekDay.thursday:
-                .thursday
-            case WeekDay.friday:
-                .friday
-            case WeekDay.saturday:
-                .saturday
-            default:
-                .sunday
-            }
-            weekDays.append(EKRecurrenceDayOfWeek(weekDay))
-        }
-        return weekDays
+        return self.frequencyType.weekFrequency.map { EKRecurrenceDayOfWeek($0.ekWeekday) }
     }
 
     func getEKRecurrenceRule() -> EKRecurrenceRule {

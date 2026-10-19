@@ -8,35 +8,16 @@
 import Foundation
 import EventKit
 
-enum WeekDay: String, Identifiable, CaseIterable, Codable {
-    case sunday = "Sunday"
-    case monday = "Monday"
-    case tuesday = "Tuesday"
-    case wednesday = "Wednesday"
-    case thursday = "Thursday"
-    case friday = "Friday"
-    case saturday = "Saturday"
+enum WeekDay: Int, Identifiable, CaseIterable, Codable {
+    case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 
-    var id: String {
-        rawValue.capitalized
+    var id: Int { rawValue }
+
+    init(date: Date, calendar: Calendar = .current) {
+        self = WeekDay(rawValue: calendar.component(.weekday, from: date)) ?? .sunday
     }
-}
 
-func getWeekDay(ekWeekday: EKWeekday) -> WeekDay {
-    return switch ekWeekday {
-            case .monday:
-                WeekDay.monday
-            case .tuesday:
-                WeekDay.tuesday
-            case .wednesday:
-                WeekDay.wednesday
-            case .thursday:
-                WeekDay.thursday
-            case .friday:
-                WeekDay.friday
-            case .saturday:
-                WeekDay.saturday
-            default:
-                WeekDay.sunday
-            }
+    var ekWeekday: EKWeekday { EKWeekday(rawValue: rawValue) ?? .sunday }
+
+    var localizedName: String { Calendar.current.standaloneWeekdaySymbols[rawValue - 1] }
 }

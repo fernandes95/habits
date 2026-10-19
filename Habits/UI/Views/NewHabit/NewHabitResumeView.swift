@@ -55,7 +55,7 @@ struct NewHabitResumeView: View {
                         Spacer()
                         ForEach(WeekDay.allCases, id: \.self) { day in
                             HStack {
-                                Text(day.rawValue).tag(day)
+                                Text(day.localizedName).tag(day)
                                 Spacer()
                                 if habit.frequencyType.weekFrequency.contains(day) {
                                     Image(systemName: "checkmark")

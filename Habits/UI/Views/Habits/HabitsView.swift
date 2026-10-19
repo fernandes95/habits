@@ -21,8 +21,8 @@ struct HabitsView: View {
             HeaderView(
                 date: self.$state.selectedDate,
                 progress: self.state.dayProgress,
-                changeDateAction: self.loadSelectedDate,
-                settingsAction: { self.router.push(SettingsView()) }
+                calendar: self.state.calendar,
+                changeDateAction: self.loadSelectedDate
             )
             .padding(.horizontal)
             .padding(.bottom, 12)
@@ -72,8 +72,16 @@ struct HabitsView: View {
                 didLoadData = true
             }
         }
-        .navigationTitle("habits_title")
-        .toolbar(.hidden, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    self.router.push(SettingsView())
+                }, label: {
+                    Image(systemName: "gearshape.2.fill")
+                })
+                .accessibilityLabel("habits_accessibility_settings")
+            }
+        }
     }
 
     /// Day changed from the header (day tap, week swipe, calendar)
