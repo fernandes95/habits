@@ -11,8 +11,9 @@ extension HabitsView {
     internal struct HeaderView: View {
         @Binding var date: Date
         let progress: [Date: Double]
+        /// Calendar with the configured first day of the week
+        let calendar: Calendar
         var changeDateAction: () -> Void
-        var settingsAction: () -> Void
 
         @State private var showDatePicker = false
         @State private var datePickerDate = Date.now
@@ -21,7 +22,6 @@ extension HabitsView {
         /// True while the user is dragging the pager, used to tell user swipes from programmatic scrolls
         @State private var isUserScrolling = false
 
-        private let calendar = Calendar.current
         private let referenceWeekStart: Date
         /// Amount of weeks reachable by swiping, before and after the current week (~19 years)
         private static let weekRange: ClosedRange<Int> = -1000...1000
@@ -29,19 +29,19 @@ extension HabitsView {
         init(
             date: Binding<Date>,
             progress: [Date: Double],
-            changeDateAction: @escaping () -> Void,
-            settingsAction: @escaping () -> Void
+            calendar: Calendar,
+            changeDateAction: @escaping () -> Void
         ) {
             self._date = date
             self.progress = progress
+            self.calendar = calendar
             self.changeDateAction = changeDateAction
-            self.settingsAction = settingsAction
-            let referenceWeekStart = Calendar.current.dateInterval(of: .weekOfYear, for: .now)?.start
+            let referenceWeekStart = calendar.dateInterval(of: .weekOfYear, for: .now)?.start
                 ?? Date.now.startOfDay
             self.referenceWeekStart = referenceWeekStart
             // Start the pager on the selected week before the first layout
             self._visibleWeek = State(
-                initialValue: Self.weekOffset(for: date.wrappedValue, from: referenceWeekStart)
+                initialValue: Self.weekOffset(for: date.wrappedValue, from: referenceWeekStart, calendar: calendar)
             )
         }
 
@@ -50,10 +50,6 @@ extension HabitsView {
                 HStack(alignment: .firstTextBaseline) {
                     self.titleButton
                     Spacer()
-                    Button(action: self.settingsAction, label: {
-                        Image(systemName: "gearshape.2.fill")
-                    })
-                    .accessibilityLabel("habits_accessibility_settings")
                 }
                 .padding(.top, 8)
 
@@ -87,6 +83,10 @@ extension HabitsView {
                 if self.visibleWeek != newWeek && !self.isUserScrolling {
                     withAnimation(.snappy) { self.visibleWeek = newWeek }
                 }
+            }
+            .onChange(of: self.calendar.firstWeekday) {
+                // The start of the week changed: every week moved, keep the selected day in view
+                self.visibleWeek = self.weekOffset(for: self.date)
             }
         }
 
@@ -181,12 +181,12 @@ extension HabitsView {
         // MARK: Date helpers
 
         private func weekOffset(for date: Date) -> Int {
-            Self.weekOffset(for: date, from: self.referenceWeekStart)
+            Self.weekOffset(for: date, from: self.referenceWeekStart, calendar: self.calendar)
         }
 
         /// Number of weeks between the week of `reference` and the week of `date`
-        private static func weekOffset(for date: Date, from reference: Date) -> Int {
-            let weekStart = Calendar.current.dateInterval(of: .weekOfYear, for: date)?.start ?? date.startOfDay
+        private static func weekOffset(for date: Date, from reference: Date, calendar: Calendar) -> Int {
+            let weekStart = calendar.dateInterval(of: .weekOfYear, for: date)?.start ?? date.startOfDay
             let days = DateHelper.numberOfDaysBetween(reference, and: weekStart)
             let offset = Int((Double(days) / 7).rounded(.down))
             return min(max(offset, self.weekRange.lowerBound), self.weekRange.upperBound)

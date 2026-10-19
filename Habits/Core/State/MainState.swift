@@ -37,6 +37,11 @@ class MainState: ObservableObject {
 
     var duplicatedHabits: [HabitEntity]?
 
+    /// Calendar used for every week related calculation, follows the start of the week setting
+    var calendar: Calendar {
+        return self.configs.calendar
+    }
+
     init(environment: AppEnvironment) {
         self.habitsService = environment.habitsService
         self.locationService = environment.locationService
@@ -97,7 +102,7 @@ class MainState: ObservableObject {
     func loadHabits(date: Date, animated: Bool = true) async throws {
         self.selectedDate = date
 
-        let block = try await self.habitsService.loadHabits(days: Self.blockDays(around: date))
+        let block = try await self.habitsService.loadHabits(days: self.blockDays(around: date))
 
         self.habitsByDay = block
         self.updateProgress()
@@ -114,7 +119,7 @@ class MainState: ObservableObject {
             self.showHabits(of: date, animated: animated)
         }
 
-        let missingDays = Self.blockDays(around: date).filter { self.habitsByDay[$0] == nil }
+        let missingDays = self.blockDays(around: date).filter { self.habitsByDay[$0] == nil }
         guard !missingDays.isEmpty else { return }
 
         let loaded = try await self.habitsService.loadHabits(days: missingDays)
@@ -127,8 +132,8 @@ class MainState: ObservableObject {
     }
 
     /// Week of `date` plus the previous and next weeks
-    private static func blockDays(around date: Date) -> [Date] {
-        let calendar = Calendar.current
+    private func blockDays(around date: Date) -> [Date] {
+        let calendar = self.calendar
         guard let weekStart = calendar.dateInterval(of: .weekOfYear, for: date)?.start else {
             return [date.startOfDay]
         }
@@ -248,6 +253,9 @@ class MainState: ObservableObject {
     func saveConfigs(_ configs: AppConfig) async {
         do {
             try await self.habitsService.updateAppConfigs(configs)
+            self.configs = configs
+            // The loaded block depends on where the week starts, reload it with the new weeks
+            try await self.loadHabits(date: self.selectedDate, animated: false)
         } catch let error { print(error.localizedDescription) }
     }
 

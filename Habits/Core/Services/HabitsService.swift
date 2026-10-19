@@ -270,9 +270,7 @@ class HabitsService {
 
         return habits.filter { $0.frequency == .weekly }
             .compactMap { habit in
-                let weekDayRaw: Int = Calendar.current.component(.weekday, from: date)
-                guard let ekWeekday: EKWeekday = EKWeekday(rawValue: weekDayRaw) else { return nil }
-                let weekday: WeekDay = getWeekDay(ekWeekday: ekWeekday)
+                let weekday = WeekDay(date: date)
 
                 return if habit.startDate.startOfDay == date.startOfDay ||
                         habit.frequencyType.weekFrequency.contains(weekday) {

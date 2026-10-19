@@ -82,7 +82,7 @@ struct SettingsView: View {
                     Section {
                         Picker("settings_configs_week_title", selection: self.$state.configs.startOfWeek) {
                             ForEach(WeekDay.allCases) { day in
-                                Text(day.rawValue).tag(day)
+                                Text(day.localizedName).tag(day)
                             }
                         }
                     } header: {

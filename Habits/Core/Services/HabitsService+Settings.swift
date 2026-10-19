@@ -113,13 +113,6 @@ extension HabitsService {
         }
     }
 
-    /// Get app configs.
-    /// Used to load configurations.
-    ///
-    func getAppConfigs() -> AppConfig {
-        return self.store.appConfigs
-    }
-
     /// Updates app configs.
     /// Used when the user edits an app configuration.
     ///
