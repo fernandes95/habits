@@ -19,6 +19,9 @@ class MainState: ObservableObject {
     var habits: [Habit] = []
 
     @Published
+    var configs: AppConfig = AppConfig.empty
+
+    @Published
     var notificationStatus: UNAuthorizationStatus = .notDetermined
 
     @Published
@@ -42,6 +45,7 @@ class MainState: ObservableObject {
     func initHabits() async {
         do {
             try await self.habitsService.load()
+            self.getConfigs()
             try await self.loadHabits(date: selectedDate)
             self.requestLocationAuthorizationIfNeeded()
         } catch {
@@ -229,6 +233,21 @@ class MainState: ObservableObject {
                 )
             }
             try await self.loadHabits(date: self.selectedDate)
+        } catch let error { print(error.localizedDescription) }
+    }
+
+    /// Gets saved configurations
+    ///
+    func getConfigs() {
+        self.configs = self.habitsService.appConfigs
+    }
+
+    /// Saves new configurations
+    ///
+    /// - Parameter configs: Configurations to change.
+    func saveConfigs(_ configs: AppConfig) async {
+        do {
+            try await self.habitsService.updateAppConfigs(configs)
         } catch let error { print(error.localizedDescription) }
     }
 

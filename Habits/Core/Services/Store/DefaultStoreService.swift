@@ -34,7 +34,7 @@ class DefaultStoreService: StoreService {
         let task = Task<StoreEntity, Error> {
             let fileURL = try self.fileURL()
             guard let data = try? Data(contentsOf: fileURL) else {
-                return StoreEntity(habits: [], habitsArchived: [], habitsNotified: [])
+                return StoreEntity(habits: [], habitsArchived: [], habitsNotified: [], appConfigs: AppConfig.empty)
             }
             let decodedHabits = try JSONDecoder().decode(StoreEntity.self, from: data)
             return decodedHabits
@@ -74,7 +74,7 @@ class DefaultStoreService: StoreService {
     func load(url: URL) async throws -> StoreEntity {
         let task = Task<StoreEntity, Error> {
             guard let data = try? Data(contentsOf: url) else {
-                return StoreEntity(habits: [], habitsArchived: [], habitsNotified: [])
+                return StoreEntity(habits: [], habitsArchived: [], habitsNotified: [], appConfigs: AppConfig.empty)
             }
             let decodedHabits = try JSONDecoder().decode(StoreEntity.self, from: data)
             return decodedHabits
@@ -101,7 +101,7 @@ class DefaultStoreService: StoreService {
             if let data = try? Data(contentsOf: fileURL) {
                 store = try JSONDecoder().decode(StoreEntity.self, from: data)
             } else {
-                store = StoreEntity(habits: [], habitsArchived: [], habitsNotified: [])
+                store = StoreEntity(habits: [], habitsArchived: [], habitsNotified: [], appConfigs: AppConfig.empty)
             }
 
             // append only if not already recorded today (idempotent)

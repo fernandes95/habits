@@ -79,6 +79,15 @@ struct SettingsView: View {
                     } header: {
                         Text("settings_data_section_title")
                     }
+                    Section {
+                        Picker("settings_configs_week_title", selection: self.$state.configs.startOfWeek) {
+                            ForEach(WeekDay.allCases) { day in
+                                Text(day.rawValue).tag(day)
+                            }
+                        }
+                    } header: {
+                        Text("settings_configs_section_title")
+                    }
                 }
                 .listStyle(.grouped)
             }
@@ -116,10 +125,23 @@ struct SettingsView: View {
                 isLoading = false
             }
         }
+        .onChange(of: self.state.configs.startOfWeek) { _, value in
+            self.updateConfigs(day: value)
+        }
         .overlay {
             if isLoading {
                 SpinnerView()
             }
+        }
+    }
+
+    private func updateConfigs(day: WeekDay) {
+        Task {
+            let newConfigs = self.state.configs.with(
+                startOfWeek: day
+            )
+
+            await self.state.saveConfigs(newConfigs)
         }
     }
 

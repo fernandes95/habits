@@ -11,4 +11,5 @@ struct StoreEntity: Codable {
     var habits: [HabitEntity]
     var habitsArchived: [HabitEntity]
     var habitsNotified: [HabitNotificationEntity]
+    var appConfigs: AppConfig
 }

@@ -14,9 +14,17 @@ class HabitsService {
     private let notificationService: NotificationService = NotificationService()
     private var didLoad = false
 
-    internal var store: StoreEntity = StoreEntity(habits: [], habitsArchived: [], habitsNotified: [])
+    internal var store: StoreEntity = StoreEntity(
+        habits: [], habitsArchived: [],
+        habitsNotified: [], appConfigs: AppConfig.empty
+    )
+
     internal var habits: [HabitEntity] {
         return store.habits
+    }
+
+    internal var appConfigs: AppConfig {
+        return store.appConfigs
     }
 
     func loadIfNeeded() async throws {
@@ -56,7 +64,6 @@ class HabitsService {
                 return habit
             }
 
-        print(self.habits.map { "\($0.name): \($0.startDate) → \($0.endDate), forever: \($0.hasNoEndDate)" })
         return habitsFilterted
     }
 
