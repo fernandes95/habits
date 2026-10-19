@@ -14,6 +14,9 @@ struct SettingsView: View {
     @EnvironmentObject
     private var state: MainState
 
+    @AppStorage("appTheme")
+    private var theme: AppTheme = .system
+
     @State private var isImporting: Bool = false
     @State private var isExporting: Bool = false
     @State private var isLoading: Bool = false
@@ -87,6 +90,15 @@ struct SettingsView: View {
                         }
                     } header: {
                         Text("settings_configs_section_title")
+                    }
+                    Section {
+                        Picker("settings_appearance_theme_title", selection: self.$theme) {
+                            Text("settings_theme_system_title").tag(AppTheme.system)
+                            Text("settings_theme_light_title").tag(AppTheme.light)
+                            Text("settings_theme_dark_title").tag(AppTheme.dark)
+                        }
+                    } header: {
+                        Text("settings_appearance_section_title")
                     }
                 }
                 .listStyle(.grouped)

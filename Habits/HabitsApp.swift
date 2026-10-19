@@ -18,6 +18,8 @@ struct HabitsApp: App {
     @StateObject private var router: HabitsRouter = HabitsRouter()
     @Environment(\.scenePhase) var scenePhase
 
+    @AppStorage("appTheme") private var theme: AppTheme = .system
+
     init() {
         _state = StateObject(wrappedValue: MainState(environment: AppEnvironment.shared))
     }
@@ -32,6 +34,7 @@ struct HabitsApp: App {
                         .environmentObject(self.state)
                         .environmentObject(self.router)
                         .task { await self.state.initHabits() }
+                        .preferredColorScheme(theme.colorScheme)
                 }
             }
         }
