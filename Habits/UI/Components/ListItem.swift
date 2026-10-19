@@ -11,6 +11,7 @@ struct ListItem: View {
     let name: String
     var completedSteps: Int = 0
     var totalSteps: Int = 0
+    var label: String?
     @Binding var status: Bool
     let statusAction: () -> Void
     let itemAction: () -> Void
@@ -27,8 +28,8 @@ struct ListItem: View {
 
             Spacer(minLength: 8)
 
-            if self.totalSteps > 0 {
-                Text("\(completedSteps)/\(totalSteps)")
+            if let progressLabel {
+                Text(progressLabel)
                     .font(.subheadline)
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
@@ -40,6 +41,11 @@ struct ListItem: View {
             })
             .padding([.vertical, .leading])
         }
+    }
+
+    private var progressLabel: String? {
+        if let label { return label }
+        return self.totalSteps > 0 ? "\(completedSteps)/\(totalSteps)" : nil
     }
 }
 

@@ -31,6 +31,8 @@ struct HabitsView: View {
                 DaySwipeContainer(onSwipe: changeDay) {
                     ContentView(
                         list: self.$state.habits,
+                        selectedDate: self.state.selectedDate,
+                        calendar: self.state.calendar,
                         onItemStatusAction: { habit in
                             Task {
                                 do {
@@ -118,6 +120,9 @@ extension Color {
 
 private struct ContentView: View {
     @Binding var list: [Habit]
+    let selectedDate: Date
+    /// Calendar with the configured first day of the week
+    let calendar: Calendar
     var onItemStatusAction: (Habit) -> Void
     var onItemAction: (Habit) -> Void
 
@@ -132,6 +137,7 @@ private struct ContentView: View {
                     name: habit.name,
                     completedSteps: habit.completedCount,
                     totalSteps: totalSteps,
+                    label: self.minDaysLabel(for: habit),
                     status: $habit.isChecked,
                     statusAction: {
                         var habit = habit
@@ -147,5 +153,12 @@ private struct ContentView: View {
         .scrollContentBackground(.hidden)
         // Keeps the empty area swipeable when there are no habits
         .contentShape(Rectangle())
+    }
+
+    /// `checkedDays/minimumDays` for `.minDays` habits that reached the minimum in the selected week, nil otherwise
+    private func minDaysLabel(for habit: Habit) -> String? {
+        guard habit.hasReachedMinDays(inWeekOf: self.selectedDate, calendar: self.calendar) else { return nil }
+        let checkedDays = habit.checkedDays(inWeekOf: self.selectedDate, calendar: self.calendar)
+        return "\(checkedDays)/\(habit.frequencyType.minimumDays)"
     }
 }

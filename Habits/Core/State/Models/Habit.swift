@@ -179,6 +179,24 @@ struct Habit: Identifiable, Equatable {
         return 0
     }
 
+    /// Number of different days this habit was checked during the week of `date`.
+    /// The week boundaries come from `calendar`, so they follow the start of the week setting.
+    func checkedDays(inWeekOf date: Date, calendar: Calendar) -> Int {
+        guard let week = calendar.dateInterval(of: .weekOfYear, for: date) else { return 0 }
+
+        let days = self.history
+            .filter { $0.isChecked && $0.date >= week.start && $0.date < week.end }
+            .map { calendar.startOfDay(for: $0.date) }
+
+        return Set(days).count
+    }
+
+    /// True when a `.minDays` habit was checked on at least `minimumDays` days in the week of `date`.
+    func hasReachedMinDays(inWeekOf date: Date, calendar: Calendar) -> Bool {
+        guard self.frequency == .minDays, self.frequencyType.minimumDays > 0 else { return false }
+        return self.checkedDays(inWeekOf: date, calendar: calendar) >= self.frequencyType.minimumDays
+    }
+
     private func getEKRecurrenceDaysOfWeek() -> [EKRecurrenceDayOfWeek] {
         return self.frequencyType.weekFrequency.map { EKRecurrenceDayOfWeek($0.ekWeekday) }
     }
