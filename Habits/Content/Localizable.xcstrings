@@ -390,6 +390,9 @@
     "Location Reminder" : {
 
     },
+    "Map" : {
+
+    },
     "Minimum days" : {
 
     },
@@ -1204,6 +1207,9 @@
           }
         }
       }
+    },
+    "TODO" : {
+
     }
   },
   "version" : "1.0"

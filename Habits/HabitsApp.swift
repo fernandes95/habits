@@ -14,8 +14,7 @@ struct HabitsApp: App {
     // swiftlint:disable:next unused_declaration
     private var appDelegate: AppDelegate
 
-    @StateObject private var state: MainState = StateObject(wrappedValue: MainState(environment: .shared)).wrappedValue
-    @StateObject private var router: HabitsRouter = HabitsRouter()
+    @StateObject private var state: MainState
     @Environment(\.scenePhase) var scenePhase
 
     @AppStorage("appTheme") private var theme: AppTheme = .system
@@ -29,13 +28,10 @@ struct HabitsApp: App {
 
             // Bypassing normal app launch for Unit Testing
             if isProduction {
-                ZStack {
-                    self.router.root
-                        .environmentObject(self.state)
-                        .environmentObject(self.router)
-                        .task { await self.state.initHabits() }
-                        .preferredColorScheme(theme.colorScheme)
-                }
+                RootTabView()
+                    .environmentObject(self.state)
+                    .task { await self.state.initHabits() }
+                    .preferredColorScheme(theme.colorScheme)
             }
         }
     }
