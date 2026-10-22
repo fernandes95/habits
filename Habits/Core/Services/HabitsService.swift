@@ -97,15 +97,16 @@ class HabitsService {
     /// - Parameter habit: Habit to add
     /// - Returns: New Habit UUID
     func addHabit(_ habit: Habit) async throws -> UUID {
-        var eventId: String = ""
-        var schedule: [Hour] = habit.schedule
+        let eventId: String = ""
+        let schedule: [Hour] = habit.schedule
         var location: HabitEntity.Location?
 
-        if habit.schedule.isEmpty {
+        // Won't use this feature for now
+        /*if habit.schedule.isEmpty {
             eventId = try await calendarService.createCalendarEvent(habit)
         } else {
             schedule = try await calendarService.createScheduleCalendarEvents(habit)
-        }
+        }*/
 
         if habit.location != nil {
             location = HabitEntity.Location(
@@ -147,14 +148,15 @@ class HabitsService {
     /// - Parameter habitEntity: HabitEntity to add
     func addHabit(_ habitEntity: HabitEntity) async throws {
         let habit = Habit(habitEntity: habitEntity)
-        var eventId: String = ""
-        var schedule: [Hour] = habit.schedule
+        let eventId: String = ""
+        let schedule: [Hour] = habit.schedule
 
-        if habit.schedule.isEmpty {
+        // Won't use this feature for now
+        /*if habit.schedule.isEmpty {
             eventId = try await calendarService.createCalendarEvent(habit)
         } else {
             schedule = try await calendarService.createScheduleCalendarEvents(habit)
-        }
+        }*/
 
         let newHabit: HabitEntity = habitEntity.with(
             eventId: eventId,

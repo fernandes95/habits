@@ -19,14 +19,25 @@ internal final class AppRouter: ObservableObject {
     @Published
     internal var selectedTab: AppTab = .habits
 
+    @Published
+    internal var sheet: SheetRoute?
+
     internal let todo: HabitsRouter
     internal let habits: HabitsRouter
     internal let map: HabitsRouter
 
     internal init() {
-        self.todo = HabitsRouter(root: TodoView().settingsToolbarButton().addToolbarButton())
-        self.habits = HabitsRouter(root: HabitsView().settingsToolbarButton().addToolbarButton())
-        self.map = HabitsRouter(root: HabitsMapView().settingsToolbarButton().addToolbarButton())
+        self.todo = HabitsRouter(
+            root: TodoView()
+                .settingsToolbarButton()
+                .addToolbarButton { NewHabitContentView() }
+        )
+        self.habits = HabitsRouter(
+            root: HabitsView()
+                .settingsToolbarButton()
+                .addToolbarButton { NewHabitContentView() }
+        )
+        self.map = HabitsRouter(root: HabitsMapView().settingsToolbarButton())
     }
 
     internal func router(for tab: AppTab) -> HabitsRouter {
@@ -44,5 +55,33 @@ internal final class AppRouter: ObservableObject {
         } else {
             self.selectedTab = tab
         }
+    }
+
+    internal func presentSheet<V: View>(
+        _ view: V,
+        detents: Set<PresentationDetent> = [.large]
+    ) {
+        self.sheet = SheetRoute(
+            view
+                .presentationDetents(detents)
+                .presentationDragIndicator(.hidden)
+        )
+    }
+
+    internal func dismissSheet() {
+        self.sheet = nil
+    }
+}
+
+internal struct SheetRoute: View, Identifiable {
+    internal let id: UUID = UUID()
+    private let view: AnyView
+
+    internal init<V: View>(_ view: V) {
+        self.view = AnyView(view)
+    }
+
+    internal var body: some View {
+        self.view
     }
 }

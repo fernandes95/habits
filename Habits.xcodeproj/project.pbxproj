@@ -71,6 +71,7 @@
 		AEA4B5CB3088F87300B71C76 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5CA3088F87200B71C76 /* RootTabView.swift */; };
 		AEA4B5CD3089081200B71C76 /* SettingsToolbarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5CC3089081100B71C76 /* SettingsToolbarButton.swift */; };
 		AEA4B5CF3089090300B71C76 /* AddToolbarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5CE308908FE00B71C76 /* AddToolbarButton.swift */; };
+		AEA4B832308A7A4700B71C76 /* NewHabitContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B831308A7A4000B71C76 /* NewHabitContentView.swift */; };
 		AECA0CA13086AB7C00AC1AF2 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */; };
 		AECAF3193085FE5400AC1AF2 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECAF3183085FE5100AC1AF2 /* AppConfig.swift */; };
 		AEDAA9D72E60B9E10001ABA6 /* LocationSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */; };
@@ -156,6 +157,7 @@
 		AEA4B5CA3088F87200B71C76 /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
 		AEA4B5CC3089081100B71C76 /* SettingsToolbarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsToolbarButton.swift; sourceTree = "<group>"; };
 		AEA4B5CE308908FE00B71C76 /* AddToolbarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToolbarButton.swift; sourceTree = "<group>"; };
+		AEA4B831308A7A4000B71C76 /* NewHabitContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitContentView.swift; sourceTree = "<group>"; };
 		AEAFF2552DF5FC1D00B03261 /* gpxmarques.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = gpxmarques.gpx; sourceTree = "<group>"; };
 		AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		AECAF3183085FE5100AC1AF2 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 		AE29ACE82C932D9F004E023E /* NewHabit */ = {
 			isa = PBXGroup;
 			children = (
+				AEA4B831308A7A4000B71C76 /* NewHabitContentView.swift */,
 				AE29ACE92C932DCC004E023E /* NewHabitQuoteView.swift */,
 				AE1490992C9885BB00F9BD58 /* NewHabitNameView.swift */,
 				AE14909B2C98882800F9BD58 /* NewHabitDurantionView.swift */,
@@ -672,6 +675,7 @@
 				AE51A33630553D55003F9BD1 /* HabitCalendarView.swift in Sources */,
 				AE3AA22B2E6AD165002F78E9 /* Hour.swift in Sources */,
 				AEDAA9D92E60BACD0001ABA6 /* LocationSearchCompletion.swift in Sources */,
+				AEA4B832308A7A4700B71C76 /* NewHabitContentView.swift in Sources */,
 				AEA4B5CB3088F87300B71C76 /* RootTabView.swift in Sources */,
 				AE4F1BDB307A7E3800CC446E /* HabitsService+Extention.swift in Sources */,
 				AE25CCB92F390FCD00A285FA /* AppDelegate.swift in Sources */,

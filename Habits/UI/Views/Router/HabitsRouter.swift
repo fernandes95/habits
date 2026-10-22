@@ -24,6 +24,9 @@ internal class HabitsRouter: ObservableObject {
                         // Pushed screens are full screen, the tab bar only shows on tab roots
                         .toolbar(.hidden, for: .tabBar)
                 }
+                .sheet(item: self.$router.sheet) { (route: HabitsRouter.Route) in
+                    route
+                }
             }
         }
 
@@ -62,9 +65,28 @@ internal class HabitsRouter: ObservableObject {
     @Published
     private var navigationPaths: [Route] = []
 
+    @Published
+    private var sheet: Route?
+
+    /// Shows `view` as a bottom sheet over the current tab
+    internal func present<V: View>(
+        _ view: V,
+        detents: Set<PresentationDetent> = [.medium, .large]
+    ) {
+        self.sheet = Route(
+            view
+                .presentationDetents(detents)
+                .presentationDragIndicator(.visible)
+        )
+    }
+
+    internal func dismissSheet() {
+        self.sheet = nil
+    }
+
     internal var isAtRoot: Bool {
        self.navigationPaths.isEmpty
-   }
+    }
 
     internal init<V: View>(root: V) {
         self.root = Root(root)

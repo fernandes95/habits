@@ -9,15 +9,17 @@ import SwiftUI
 
 /// Adds the settings button to the navigation bar and pushes
 /// `NewHabitView` onto the current tab's stack.
-private struct AddToolbarButton: ViewModifier {
+private struct AddToolbarButton<Sheet: View>: ViewModifier {
     @EnvironmentObject
-    private var router: HabitsRouter
+    private var appRouter: AppRouter
+
+    let sheet: () -> Sheet
 
     func body(content: Content) -> some View {
         content.toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button {
-                    self.router.push(NewHabitQuoteView())
+                    self.appRouter.presentSheet(self.sheet())
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -28,7 +30,9 @@ private struct AddToolbarButton: ViewModifier {
 }
 
 extension View {
-    internal func addToolbarButton() -> some View {
-        self.modifier(AddToolbarButton())
+    internal func addToolbarButton<Sheet: View>(
+        @ViewBuilder sheet: @escaping () -> Sheet
+    ) -> some View {
+        self.modifier(AddToolbarButton(sheet: sheet))
     }
 }

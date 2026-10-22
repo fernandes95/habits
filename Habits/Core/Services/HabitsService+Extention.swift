@@ -83,7 +83,8 @@ extension HabitsService {
     internal func manageUpdateEvents(habit: Habit, oldHabit: Habit) async throws -> Habit {
         var habitUpdated: Habit = habit
 
-        if habit.schedule.count > 0 || oldHabit.schedule.count > 0 {
+        // TODO REWIEW THIS
+        /* if habit.schedule.count > 0 || oldHabit.schedule.count > 0 {
             habitUpdated.schedule = try await self.calendarService.manageScheduleEvents(habit, oldHabit: oldHabit)
         }
 
@@ -95,7 +96,7 @@ extension HabitsService {
             habitUpdated.eventId = ""
         } else {
             self.calendarService.editEvent(habitUpdated)
-        }
+        }*/
 
         return habitUpdated
     }

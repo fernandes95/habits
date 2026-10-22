@@ -16,6 +16,8 @@ struct HabitsView: View {
 
     @State private var didLoadData = false
 
+    @State private var showNewHabitSheet = false
+
     var body: some View {
         VStack {
             HeaderView(

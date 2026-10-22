@@ -13,6 +13,12 @@
     "%lld%%" : {
 
     },
+    "Add" : {
+
+    },
+    "Duration" : {
+
+    },
     "general_add" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -387,7 +393,13 @@
     "Hour #%lld" : {
 
     },
+    "Location" : {
+
+    },
     "Location Reminder" : {
+
+    },
+    "Location to remind" : {
 
     },
     "Map" : {
@@ -403,6 +415,9 @@
 
     },
     "Minimum Times" : {
+
+    },
+    "New habit" : {
 
     },
     "new_habit_duration_title" : {
@@ -1207,6 +1222,9 @@
           }
         }
       }
+    },
+    "Title" : {
+
     },
     "TODO" : {
 

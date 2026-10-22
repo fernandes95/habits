@@ -23,6 +23,9 @@ internal struct RootTabView: View {
                 TabRoot(router: self.appRouter.map)
             }
         }
+        .sheet(item: self.$appRouter.sheet) { (sheet: SheetRoute) in
+            sheet
+        }
         .environmentObject(self.appRouter)
     }
 
