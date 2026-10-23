@@ -72,6 +72,8 @@
 		AEA4B5CD3089081200B71C76 /* SettingsToolbarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5CC3089081100B71C76 /* SettingsToolbarButton.swift */; };
 		AEA4B5CF3089090300B71C76 /* AddToolbarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5CE308908FE00B71C76 /* AddToolbarButton.swift */; };
 		AEA4B832308A7A4700B71C76 /* NewHabitContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B831308A7A4000B71C76 /* NewHabitContentView.swift */; };
+		AEA4C929308B744000B71C76 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA4C928308B744000B71C76 /* LaunchScreen.storyboard */; };
+		AEA4C92B308B7AEE00B71C76 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4C92A308B7AEE00B71C76 /* SplashView.swift */; };
 		AECA0CA13086AB7C00AC1AF2 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */; };
 		AECAF3193085FE5400AC1AF2 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECAF3183085FE5100AC1AF2 /* AppConfig.swift */; };
 		AEDAA9D72E60B9E10001ABA6 /* LocationSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */; };
@@ -158,6 +160,8 @@
 		AEA4B5CC3089081100B71C76 /* SettingsToolbarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsToolbarButton.swift; sourceTree = "<group>"; };
 		AEA4B5CE308908FE00B71C76 /* AddToolbarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToolbarButton.swift; sourceTree = "<group>"; };
 		AEA4B831308A7A4000B71C76 /* NewHabitContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitContentView.swift; sourceTree = "<group>"; };
+		AEA4C928308B744000B71C76 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		AEA4C92A308B7AEE00B71C76 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		AEAFF2552DF5FC1D00B03261 /* gpxmarques.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = gpxmarques.gpx; sourceTree = "<group>"; };
 		AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		AECAF3183085FE5100AC1AF2 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
@@ -373,6 +377,7 @@
 		AE744E1D2B600A61002C7EEB /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				AEA4C927308B742000B71C76 /* Launch */,
 				AEA4B5BD3088F73800B71C76 /* Map */,
 				AEA4B5BF3088F74300B71C76 /* Todos */,
 				AEA4B5C33088F74500B71C76 /* Habits */,
@@ -501,6 +506,15 @@
 			path = Habits;
 			sourceTree = "<group>";
 		};
+		AEA4C927308B742000B71C76 /* Launch */ = {
+			isa = PBXGroup;
+			children = (
+				AEA4C928308B744000B71C76 /* LaunchScreen.storyboard */,
+				AEA4C92A308B7AEE00B71C76 /* SplashView.swift */,
+			);
+			path = Launch;
+			sourceTree = "<group>";
+		};
 		AED732D62B61700C00CD750D /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -620,6 +634,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AEA3D6C22B5E85B900A08F31 /* Preview Assets.xcassets in Resources */,
+				AEA4C929308B744000B71C76 /* LaunchScreen.storyboard in Resources */,
 				AEA3D6BF2B5E85B900A08F31 /* Assets.xcassets in Resources */,
 				AE448A8D2B8925D80034898F /* Localizable.xcstrings in Resources */,
 			);
@@ -676,6 +691,7 @@
 				AE3AA22B2E6AD165002F78E9 /* Hour.swift in Sources */,
 				AEDAA9D92E60BACD0001ABA6 /* LocationSearchCompletion.swift in Sources */,
 				AEA4B832308A7A4700B71C76 /* NewHabitContentView.swift in Sources */,
+				AEA4C92B308B7AEE00B71C76 /* SplashView.swift in Sources */,
 				AEA4B5CB3088F87300B71C76 /* RootTabView.swift in Sources */,
 				AE4F1BDB307A7E3800CC446E /* HabitsService+Extention.swift in Sources */,
 				AE25CCB92F390FCD00A285FA /* AppDelegate.swift in Sources */,
@@ -917,7 +933,8 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Permition for map";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -957,7 +974,8 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Permition for map";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (

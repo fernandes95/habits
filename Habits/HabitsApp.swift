@@ -19,6 +19,8 @@ struct HabitsApp: App {
 
     @AppStorage("appTheme") private var theme: AppTheme = .system
 
+    @State private var showSplash: Bool = true
+
     init() {
         _state = StateObject(wrappedValue: MainState(environment: AppEnvironment.shared))
     }
@@ -28,10 +30,22 @@ struct HabitsApp: App {
 
             // Bypassing normal app launch for Unit Testing
             if isProduction {
-                RootTabView()
-                    .environmentObject(self.state)
-                    .task { await self.state.initHabits() }
-                    .preferredColorScheme(theme.colorScheme)
+                ZStack {
+                    RootTabView()
+                        .environmentObject(self.state)
+                        .task { await self.state.initHabits() }
+
+                    if self.showSplash {
+                        SplashView {
+                            withAnimation(.easeOut(duration: 0.4)) {
+                                self.showSplash = false
+                            }
+                        }
+                        .transition(.opacity)
+                        .zIndex(1)
+                    }
+                }
+                .preferredColorScheme(theme.colorScheme)
             }
         }
     }
