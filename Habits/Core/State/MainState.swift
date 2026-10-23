@@ -204,6 +204,11 @@ class MainState: ObservableObject {
                     habitIdentifier: habit.id.uuidString,
                     habitName: habit.name
                 )
+            } else {
+                self.locationService.stopMonitoringRegion(
+                    habitIdentifier: habit.id.uuidString,
+                    habitName: habit.name
+                )
             }
             try await loadHabits(date: self.selectedDate)
         } catch let error { print(error.localizedDescription) }

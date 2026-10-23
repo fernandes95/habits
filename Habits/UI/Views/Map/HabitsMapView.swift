@@ -16,7 +16,7 @@ struct HabitsMapView: View {
 
     var body: some View {
         VStack {
-            Text("Map")
+            Text("map_title")
         }
     }
 }

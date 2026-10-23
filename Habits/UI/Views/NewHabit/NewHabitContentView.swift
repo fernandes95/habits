@@ -19,6 +19,12 @@ struct NewHabitContentView: View {
     @State
     private var habit: Habit = Habit.empty
 
+    @State
+    private var isPickingLocation: Bool = false
+
+    @State
+    private var locationPlace: LocationPlaceDetails?
+
     @FocusState private var nameFocused: Bool
 
     var startDateIn: Date = .now
@@ -27,7 +33,7 @@ struct NewHabitContentView: View {
         NavigationStack {
             Form {
                 // Name
-                TextField("Title", text: self.$habit.name)
+                TextField("new_habit_name_placeholder", text: self.$habit.name)
                     .font(.title3.weight(.semibold))
                     .padding(.horizontal, 16)
                     .padding(.vertical, 14)
@@ -38,7 +44,7 @@ struct NewHabitContentView: View {
                     .accessibilityIdentifier("new_habit_name")
 
                 // Duration
-                Section(header: Text("Duration")) {
+                Section(header: Text("new_habit_duration_section_title")) {
                     DatePicker("habit_start_date", selection: $habit.startDate,
                                in: self.startDateIn...,
                                displayedComponents: .date
@@ -62,26 +68,45 @@ struct NewHabitContentView: View {
                         }
                 }
 
-                Section(header: Text("Location")) {
-                    Button {
-                        // open location picker
-                    } label: {
-                        HStack(spacing: 12) {
-                            Image(systemName: "location")
-                                .font(.body.weight(.medium))
-                            Text("Location to remind")
-                                .font(.title3)
-                            Spacer()
+                Section(header: Text("habit_location_section_title")) {
+                    if let location = self.habit.location {
+                        LocationCardView(
+                            location: location,
+                            place: self.locationPlace,
+                            onTap: {
+                                self.isPickingLocation = true
+                            },
+                            onClear: {
+                                withAnimation {
+                                    self.habit.location = nil
+                                    self.locationPlace = nil
+                                }
+                            }
+                        )
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets())
+                    } else {
+                        Button {
+                            self.isPickingLocation = true
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: "location")
+                                    .font(.body.weight(.medium))
+                                Text("habit_location_button")
+                                    .font(.title3)
+                                Spacer()
+                            }
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 14)
+                            .background(.fill.tertiary, in: .rect(cornerRadius: 26))
+                            .contentShape(.rect(cornerRadius: 26))
                         }
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 14)
-                        .background(.fill.tertiary, in: .rect(cornerRadius: 26))
-                        .contentShape(.rect(cornerRadius: 26))
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets())
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier("new_habit_location")
                     }
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets())
-                    .buttonStyle(.plain)
                 }
 
                 // Frequency
@@ -90,9 +115,23 @@ struct NewHabitContentView: View {
                     isEditing: .constant(true)
                 )
             }
-            .navigationTitle("New habit")
+            .navigationTitle("new_habit_title")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear { self.nameFocused = true }
+            .sheet(isPresented: self.$isPickingLocation) {
+                NewHabitLocationView(
+                    location: self.$habit.location,
+                    place: self.$locationPlace
+                )
+                .presentationDetents([.large])
+                .presentationDragIndicator(.hidden)
+            }
+            .onChange(of: self.habit.location) { _, location in
+                // Reminders fire in the background, so they need always authorization
+                if location != nil {
+                    self.state.requestAlwaysLocation()
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("", systemImage: "xmark") {
@@ -100,13 +139,22 @@ struct NewHabitContentView: View {
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
+                    Button("general_add") {
                         self.addHabit()
                     }
                     .disabled(self.habit.name.isEmpty)
                 }
             }
         }
+    }
+
+    private var locationTitle: Text {
+        guard self.habit.location != nil else { return Text("habit_location_button") }
+
+        if let locationName = self.locationPlace?.name {
+            return Text(verbatim: locationName)
+        }
+        return Text("habit_location_pinned")
     }
 
     private func addHabit() {

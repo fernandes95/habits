@@ -16,7 +16,7 @@ struct TodoView: View {
 
     var body: some View {
         VStack {
-            Text("TODO")
+            Text("todos_title")
         }
     }
 }

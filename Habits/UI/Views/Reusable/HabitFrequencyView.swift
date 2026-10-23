@@ -83,13 +83,13 @@ struct HabitFrequencyView: View {
                     }
                 }
             case .minDays:
-                TextField("Minimum Days", value: self.$habit.frequencyType.minimumDays, formatter: self.formatter)
+                TextField("habit_min_days", value: self.$habit.frequencyType.minimumDays, formatter: self.formatter)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .keyboardType(.decimalPad)
                     .accessibilityIdentifier("")
                     .disabled(!isEditing)
             case .minTimes:
-                TextField("Minimum Times", value: self.$habit.frequencyType.minimumTimes, formatter: self.formatter)
+                TextField("habit_min_times", value: self.$habit.frequencyType.minimumTimes, formatter: self.formatter)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .keyboardType(.decimalPad)
                     .accessibilityIdentifier("")
@@ -101,7 +101,7 @@ struct HabitFrequencyView: View {
         Section {
             ForEach(self.$habit.schedule) { $hour in
                 if let index = self.habit.schedule.firstIndex(of: hour) {
-                    let datePicker = DatePicker("Hour #\(index + 1)",
+                    let datePicker = DatePicker("habit_schedule_hour \(index + 1)",
                                                 selection: $hour.date,
                                                 displayedComponents: .hourAndMinute
                     )

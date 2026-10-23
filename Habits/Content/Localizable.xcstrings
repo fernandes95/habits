@@ -13,12 +13,6 @@
     "%lld%%" : {
 
     },
-    "Add" : {
-
-    },
-    "Duration" : {
-
-    },
     "general_add" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -107,12 +101,6 @@
         }
       }
     },
-    "Give Location permission" : {
-
-    },
-    "Give Notifications permission" : {
-
-    },
     "habit_category" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -164,6 +152,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete habit"
+          }
+        }
+      }
+    },
+    "habit_detail_history_section_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History"
           }
         }
       }
@@ -245,6 +244,50 @@
         }
       }
     },
+    "habit_location_accessibility_remove" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove location"
+          }
+        }
+      }
+    },
+    "habit_location_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location to remind"
+          }
+        }
+      }
+    },
+    "habit_location_picker_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location"
+          }
+        }
+      }
+    },
+    "habit_location_pinned" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pinned location"
+          }
+        }
+      }
+    },
     "habit_location_search" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -252,6 +295,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Search"
+          }
+        }
+      }
+    },
+    "habit_location_section_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location"
+          }
+        }
+      }
+    },
+    "habit_min_days" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum days"
+          }
+        }
+      }
+    },
+    "habit_min_times" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum times"
           }
         }
       }
@@ -307,6 +383,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete schedule hour"
+          }
+        }
+      }
+    },
+    "habit_schedule_hour %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hour #%lld"
           }
         }
       }
@@ -387,38 +474,27 @@
         }
       }
     },
-    "History" : {
-
+    "map_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Map"
+          }
+        }
+      }
     },
-    "Hour #%lld" : {
-
-    },
-    "Location" : {
-
-    },
-    "Location Reminder" : {
-
-    },
-    "Location to remind" : {
-
-    },
-    "Map" : {
-
-    },
-    "Minimum days" : {
-
-    },
-    "Minimum Days" : {
-
-    },
-    "Minimum times" : {
-
-    },
-    "Minimum Times" : {
-
-    },
-    "New habit" : {
-
+    "new_habit_duration_section_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duration"
+          }
+        }
+      }
     },
     "new_habit_duration_title" : {
       "extractionState" : "manual",
@@ -427,6 +503,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "How long do you want this habit to be?"
+          }
+        }
+      }
+    },
+    "new_habit_location_permission_location_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Give Location permission"
+          }
+        }
+      }
+    },
+    "new_habit_location_permission_notifications_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Give Notifications permission"
           }
         }
       }
@@ -482,6 +580,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Do you want to get reminders based on your location?"
+          }
+        }
+      }
+    },
+    "new_habit_name_placeholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title"
           }
         }
       }
@@ -548,6 +657,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Do you want to create a schedule?"
+          }
+        }
+      }
+    },
+    "new_habit_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New habit"
           }
         }
       }
@@ -1223,11 +1343,16 @@
         }
       }
     },
-    "Title" : {
-
-    },
-    "TODO" : {
-
+    "todos_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TODO"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

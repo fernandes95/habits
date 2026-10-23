@@ -10,7 +10,7 @@
 		AE14909A2C9885BB00F9BD58 /* NewHabitNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1490992C9885BB00F9BD58 /* NewHabitNameView.swift */; };
 		AE14909C2C98882800F9BD58 /* NewHabitDurantionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE14909B2C98882800F9BD58 /* NewHabitDurantionView.swift */; };
 		AE14909E2C995F0600F9BD58 /* NewHabitScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE14909D2C995F0600F9BD58 /* NewHabitScheduleView.swift */; };
-		AE1490A02C9994CA00F9BD58 /* NewHabitLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE14909F2C9994CA00F9BD58 /* NewHabitLocationView.swift */; };
+		AE1490A02C9994CA00F9BD58 /* oldNewHabitLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE14909F2C9994CA00F9BD58 /* oldNewHabitLocationView.swift */; };
 		AE25CCB72F37C1C100A285FA /* Logger+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE25CCB62F37C1B800A285FA /* Logger+Extensions.swift */; };
 		AE25CCB92F390FCD00A285FA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE25CCB82F390FC900A285FA /* AppDelegate.swift */; };
 		AE29ACEA2C932DCC004E023E /* NewHabitQuoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE29ACE92C932DCC004E023E /* NewHabitQuoteView.swift */; };
@@ -74,10 +74,13 @@
 		AEA4B832308A7A4700B71C76 /* NewHabitContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B831308A7A4000B71C76 /* NewHabitContentView.swift */; };
 		AEA4C929308B744000B71C76 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEA4C928308B744000B71C76 /* LaunchScreen.storyboard */; };
 		AEA4C92B308B7AEE00B71C76 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4C92A308B7AEE00B71C76 /* SplashView.swift */; };
+		AEA4C92D308BACA700B71C76 /* NewHabitLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4C92C308BACA600B71C76 /* NewHabitLocationView.swift */; };
+		AEA4C92F308BC83200B71C76 /* LocationCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4C92E308BC83000B71C76 /* LocationCardView.swift */; };
 		AECA0CA13086AB7C00AC1AF2 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */; };
 		AECAF3193085FE5400AC1AF2 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECAF3183085FE5100AC1AF2 /* AppConfig.swift */; };
 		AEDAA9D72E60B9E10001ABA6 /* LocationSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */; };
 		AEDAA9D92E60BACD0001ABA6 /* LocationSearchCompletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDAA9D82E60BABF0001ABA6 /* LocationSearchCompletion.swift */; };
+		AEB1C0DE308C000200A1B2C3 /* LocationPlaceDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB1C0DE308C000100A1B2C3 /* LocationPlaceDetails.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,7 +97,7 @@
 		AE1490992C9885BB00F9BD58 /* NewHabitNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitNameView.swift; sourceTree = "<group>"; };
 		AE14909B2C98882800F9BD58 /* NewHabitDurantionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitDurantionView.swift; sourceTree = "<group>"; };
 		AE14909D2C995F0600F9BD58 /* NewHabitScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitScheduleView.swift; sourceTree = "<group>"; };
-		AE14909F2C9994CA00F9BD58 /* NewHabitLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitLocationView.swift; sourceTree = "<group>"; };
+		AE14909F2C9994CA00F9BD58 /* oldNewHabitLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = oldNewHabitLocationView.swift; sourceTree = "<group>"; };
 		AE25CCB62F37C1B800A285FA /* Logger+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Logger+Extensions.swift"; sourceTree = "<group>"; };
 		AE25CCB82F390FC900A285FA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE29ACE92C932DCC004E023E /* NewHabitQuoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitQuoteView.swift; sourceTree = "<group>"; };
@@ -162,11 +165,14 @@
 		AEA4B831308A7A4000B71C76 /* NewHabitContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitContentView.swift; sourceTree = "<group>"; };
 		AEA4C928308B744000B71C76 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AEA4C92A308B7AEE00B71C76 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		AEA4C92C308BACA600B71C76 /* NewHabitLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitLocationView.swift; sourceTree = "<group>"; };
+		AEA4C92E308BC83000B71C76 /* LocationCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCardView.swift; sourceTree = "<group>"; };
 		AEAFF2552DF5FC1D00B03261 /* gpxmarques.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = gpxmarques.gpx; sourceTree = "<group>"; };
 		AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		AECAF3183085FE5100AC1AF2 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchService.swift; sourceTree = "<group>"; };
 		AEDAA9D82E60BABF0001ABA6 /* LocationSearchCompletion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchCompletion.swift; sourceTree = "<group>"; };
+		AEB1C0DE308C000100A1B2C3 /* LocationPlaceDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPlaceDetails.swift; sourceTree = "<group>"; };
 		AEE2E5E02BBDA7C000DD9BC2 /* gpxgenerator_path.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = gpxgenerator_path.gpx; path = ../../../Downloads/gpxgenerator_path.gpx; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -195,12 +201,13 @@
 		AE29ACE82C932D9F004E023E /* NewHabit */ = {
 			isa = PBXGroup;
 			children = (
+				AEA4C92C308BACA600B71C76 /* NewHabitLocationView.swift */,
 				AEA4B831308A7A4000B71C76 /* NewHabitContentView.swift */,
 				AE29ACE92C932DCC004E023E /* NewHabitQuoteView.swift */,
 				AE1490992C9885BB00F9BD58 /* NewHabitNameView.swift */,
 				AE14909B2C98882800F9BD58 /* NewHabitDurantionView.swift */,
 				AE14909D2C995F0600F9BD58 /* NewHabitScheduleView.swift */,
-				AE14909F2C9994CA00F9BD58 /* NewHabitLocationView.swift */,
+				AE14909F2C9994CA00F9BD58 /* oldNewHabitLocationView.swift */,
 				AE5845F02CB974BA0038E322 /* NewHabitResumeView.swift */,
 			);
 			path = NewHabit;
@@ -261,6 +268,7 @@
 		AE448A822B85237A0034898F /* Reusable */ = {
 			isa = PBXGroup;
 			children = (
+				AEA4C92E308BC83000B71C76 /* LocationCardView.swift */,
 				AEA4B5CE308908FE00B71C76 /* AddToolbarButton.swift */,
 				AEA4B5CC3089081100B71C76 /* SettingsToolbarButton.swift */,
 				AE3AA2222E66CDE8002F78E9 /* SpinnerView.swift */,
@@ -385,7 +393,6 @@
 				AE29ACE82C932D9F004E023E /* NewHabit */,
 				AE448A882B86649F0034898F /* Router */,
 				AE448A822B85237A0034898F /* Reusable */,
-				AE448A802B84E99F0034898F /* HabitDetailView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -500,6 +507,7 @@
 		AEA4B5C33088F74500B71C76 /* Habits */ = {
 			isa = PBXGroup;
 			children = (
+				AE448A802B84E99F0034898F /* HabitDetailView.swift */,
 				AEA4B5C13088F74500B71C76 /* HabitsView.swift */,
 				AEA4B5C23088F74500B71C76 /* HabitsView+Components.swift */,
 			);
@@ -523,6 +531,7 @@
 				AE3AA2202E6601FA002F78E9 /* ExportableDocument.swift */,
 				AE3AA21B2E61170A002F78E9 /* LocationSearchResult.swift */,
 				AEDAA9D82E60BABF0001ABA6 /* LocationSearchCompletion.swift */,
+				AEB1C0DE308C000100A1B2C3 /* LocationPlaceDetails.swift */,
 				AE3AA22A2E6AD163002F78E9 /* Hour.swift */,
 				AEA3D6C92B5E8BE000A08F31 /* HabitEntity.swift */,
 				AE30AF322E7F4ABB004257BF /* HabitNotificationEntity.swift */,
@@ -690,6 +699,7 @@
 				AE51A33630553D55003F9BD1 /* HabitCalendarView.swift in Sources */,
 				AE3AA22B2E6AD165002F78E9 /* Hour.swift in Sources */,
 				AEDAA9D92E60BACD0001ABA6 /* LocationSearchCompletion.swift in Sources */,
+				AEB1C0DE308C000200A1B2C3 /* LocationPlaceDetails.swift in Sources */,
 				AEA4B832308A7A4700B71C76 /* NewHabitContentView.swift in Sources */,
 				AEA4C92B308B7AEE00B71C76 /* SplashView.swift in Sources */,
 				AEA4B5CB3088F87300B71C76 /* RootTabView.swift in Sources */,
@@ -708,7 +718,7 @@
 				AE29ACEA2C932DCC004E023E /* NewHabitQuoteView.swift in Sources */,
 				AEDAA9D72E60B9E10001ABA6 /* LocationSearchService.swift in Sources */,
 				AE2FFB963053031300CDBA6B /* AppEnvironment.swift in Sources */,
-				AE1490A02C9994CA00F9BD58 /* NewHabitLocationView.swift in Sources */,
+				AE1490A02C9994CA00F9BD58 /* oldNewHabitLocationView.swift in Sources */,
 				AE448A812B84E99F0034898F /* HabitDetailView.swift in Sources */,
 				AE448A932B8D20160034898F /* StoreService.swift in Sources */,
 				AE901D0E2BC6CD6C00DA674A /* RegionService.swift in Sources */,
@@ -716,6 +726,7 @@
 				AE51BD592B9612E3005DCBC7 /* StoreEntity.swift in Sources */,
 				AE901D0A2BC54A2300DA674A /* RegionServiceImpl.swift in Sources */,
 				AE448A8A2B8664B40034898F /* HabitsRouter.swift in Sources */,
+				AEA4C92D308BACA700B71C76 /* NewHabitLocationView.swift in Sources */,
 				AEA4B5C43088F74500B71C76 /* HabitsView.swift in Sources */,
 				AEA4B5C53088F74500B71C76 /* HabitsView+Components.swift in Sources */,
 				AE14909A2C9885BB00F9BD58 /* NewHabitNameView.swift in Sources */,
@@ -742,6 +753,7 @@
 				AE744E222B60141D002C7EEB /* DatePickerSheetContent.swift in Sources */,
 				AE3AA2282E6707F0002F78E9 /* ConflictResolution.swift in Sources */,
 				AE7DD34F2E748801007BF33A /* HabitsService+Settings.swift in Sources */,
+				AEA4C92F308BC83200B71C76 /* LocationCardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

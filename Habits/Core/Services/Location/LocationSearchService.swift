@@ -5,7 +5,10 @@
 //  Created by Tiago Fernandes on 28/08/2025.
 //
 import MapKit
+import Observation
+import OSLog
 
+@Observable
 class LocationSearchService: NSObject, MKLocalSearchCompleterDelegate {
     private let completer: MKLocalSearchCompleter
 
@@ -15,24 +18,39 @@ class LocationSearchService: NSObject, MKLocalSearchCompleterDelegate {
         self.completer = completer
         super.init()
         self.completer.delegate = self
+        self.completer.resultTypes = [.address, .pointOfInterest]
+    }
+
+    func update(region: MKCoordinateRegion) {
+        completer.region = region
     }
 
     func update(queryFragment: String) {
-        completer.resultTypes = .address
+        guard !queryFragment.isEmpty else {
+            completer.cancel()
+            completions = []
+            return
+        }
+
         completer.queryFragment = queryFragment
     }
 
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        completions = completer.results.map { completion in
-            // Get the private _mapItem property
-            let mapItem = completion.value(forKey: "_mapItem") as? MKMapItem
+        completions = completer.results.map(LocationSearchCompletion.init)
+    }
 
-            return LocationSearchCompletion(
-                title: completion.title,
-                subTitle: completion.subtitle,
-                url: mapItem?.url
-            )
-        }
+    func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
+        Logger.location.error("Location search failed: \(error.localizedDescription)")
+    }
+
+    /// Finds the place of the tapped suggestion, not a new text search that can land on another match
+    func search(for completion: LocationSearchCompletion) async throws -> LocationSearchResult? {
+        let request = MKLocalSearch.Request(completion: completion.completion)
+        let response = try await MKLocalSearch(request: request).start()
+
+        guard let location = response.mapItems.first?.placemark.location?.coordinate else { return nil }
+
+        return LocationSearchResult(location: location)
     }
 
     func search(with query: String, coordinate: CLLocationCoordinate2D? = nil) async throws -> [LocationSearchResult] {

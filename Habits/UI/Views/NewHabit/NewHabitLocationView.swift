@@ -1,186 +1,295 @@
 //
-//  NewHabitLocationView.swift
+//  NewHabitLocationPickerView.swift
 //  Habits
 //
-//  Created by Tiago Fernandes on 17/09/2024.
+//  Created by Tiago Fernandes on 23/10/2026.
 //
 
 import SwiftUI
-import CoreLocation
 import MapKit
 
+/// Bottom sheet with a full screen map to pick the location a habit reminds at.
+/// Tapping the map or picking a search result drops the pin, the circle around it
+/// is the region that gets monitored.
 struct NewHabitLocationView: View {
-    @EnvironmentObject
-    private var router: HabitsRouter
-
-    @EnvironmentObject
-    private var state: MainState
-
-    @Environment(\.scenePhase)
-    private var scenePhase: ScenePhase
+    @Environment(\.dismiss) private var dismiss
 
     @Binding
-    var habit: Habit
+    var location: Habit.Location?
 
-    @State private var searchQuery: String = ""
-    @State private var selectedLocation: MKCoordinateRegion?
-    @State private var hasLocationAuth: Bool = false
-    @State private var hasNotificationAuth: Bool = false
+    @Binding
+    var place: LocationPlaceDetails?
 
-    private let locationSearchService: LocationSearchService = LocationSearchService(completer: .init())
+    @State private var draftLocation: Habit.Location?
+    @State private var cameraRegion: MKCoordinateRegion?
+    @State private var visibleRegion: MKCoordinateRegion?
+    @State private var searchedPlace: SearchedPlace?
+    @State private var isSearching: Bool = false
 
     var body: some View {
-        VStack {
-            Text("new_habit_location_title")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-
-            ZStack {
-                VStack {
-                    HStack {
-                        Image(systemName: "magnifyingglass").foregroundColor(.secondary)
-                        TextField("habit_location_search", text: $searchQuery)
-                            .onChange(of: self.searchQuery) { _, query in
-                                locationSearchService.update(queryFragment: query)
-                            }
-                            .submitLabel(.done)
-                        if searchQuery != "" {
-                            Image(systemName: "xmark.circle.fill")
-                                .imageScale(.medium)
-                                .foregroundColor(Color(.systemGray3))
-                                .padding(3)
-                                .onTapGesture {
-                                    withAnimation {
-                                        self.searchQuery = ""
-                                      }
-                                }
-                        }
-                    }
-                    .padding(10)
-                    .background(Color(.systemGray6))
-                    .cornerRadius(12)
-                    .padding(.vertical, 10)
-
-                    ZStack {
-                        MapView(
-                            position: self.$selectedLocation,
-                            selectedLocation: self.$habit.location,
-                            canEdit: .constant(true)
-                        )
-
-                        if !self.searchQuery.isEmpty && !locationSearchService.completions.isEmpty {
-                            List {
-                                ForEach(locationSearchService.completions) { completion in
-                                    Button(
-                                        action: { selectCompletionLocation(completion) },
-                                        label: {
-                                            VStack(alignment: .leading, spacing: 4) {
-                                                Text(completion.title)
-                                                    .font(.headline)
-                                                    .fontDesign(.rounded)
-                                                Text(completion.subTitle)
-                                            }
-                                        }
-                                    )
-                                }
-                            }
-                            .listStyle(.plain)
-                        }
+        NavigationStack {
+            MapView(
+                position: self.$cameraRegion,
+                selectedLocation: self.$draftLocation,
+                canEdit: .constant(true),
+                onCameraChange: { (region: MKCoordinateRegion) in
+                    self.visibleRegion = region
+                }
+            )
+            // Map keeps drawing under the inset, its logo and legal label stay above the search bar
+            .safeAreaInset(edge: .bottom) {
+                LocationSearchBar(title: self.draftPlace?.name) {
+                    self.isSearching = true
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
+            }
+            .navigationTitle("habit_location_picker_title")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("", systemImage: "xmark") {
+                        self.dismiss()
                     }
                 }
-
-                // TODO IMPROVE THIS SCREEN
-                if !self.hasLocationAuth || !self.hasNotificationAuth {
-                    VStack(alignment: .center) {
-                        Text("new_habit_location_setttings_info")
-
-                        if !self.hasLocationAuth {
-                            Text("new_habit_location_settings_location")
-                        }
-
-                        if self.hasLocationAuth && !self.hasNotificationAuth {
-                            Text("new_habit_location_settings_notification")
-                        }
-                        Spacer()
-                        Button(action: {
-                            self.state.requestLocation()
-                        }, label: {
-                                Text("Give Location permission")
-                                    .padding()
-                                    .foregroundStyle(Color.white)
-                                    .background(Color.blue)
-                                    .cornerRadius(40)
-                            }
-                        )
-                        Spacer()
-
-                        // TODO ADD THIS LOGIC TO LOCATION SERVICE
-                        Button(action: {
-                            self.updatePerms()
-                        }, label: {
-                                Text("Give Notifications permission")
-                                    .padding()
-                                    .foregroundStyle(Color.white)
-                                    .background(Color.blue)
-                                    .cornerRadius(40)
-                            }
-                        )
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("", systemImage: "checkmark") {
+                        self.location = self.draftLocation
+                        self.place = self.draftPlace
+                        self.dismiss()
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.white)
-                    Spacer()
+                    .disabled(self.draftLocation == nil)
+                    .accessibilityIdentifier("location_picker_done")
+                }
+            }
+            .sheet(isPresented: self.$isSearching) {
+                LocationSearchView(
+                    region: self.visibleRegion
+                ) { (place: LocationPlaceDetails, coordinate: CLLocationCoordinate2D) in
+                    self.select(place: place, coordinate: coordinate)
+                }
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
+            }
+            .onAppear {
+                self.draftLocation = self.location
+                if let location = self.location {
+                    self.cameraRegion = .around(location.locationCoordinate)
+                    if let place = self.place {
+                        self.searchedPlace = SearchedPlace(place: place, coordinate: location.locationCoordinate)
+                    }
                 }
             }
         }
-        .padding(.vertical)
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button("general_next") {
-                    self.state.requestAlwaysLocation()
-                    self.router.push(NewHabitResumeView(habit: self.$habit))
-                }
-            }
-        }
-        /*.onChange(of: self.scenePhase) { (newValue: ScenePhase) in
-            switch newValue {
-            case .active:
-                updatePerms()
-            default:
-                break
-            }
-        }*/
     }
 
-    func updatePerms() {
-        Task {
-            do {
-                self.hasLocationAuth = self.state.getLocationAuthorizationStatus()
-                self.hasNotificationAuth = try await self.state.getNotificationsAuthorizationStatus()
-
-                if self.hasLocationAuth && !self.hasNotificationAuth {
-                    try await self.state.getNotificationsAuthorization()
-                    self.hasNotificationAuth = try await self.state.getNotificationsAuthorizationStatus()
-                }
-            } catch let error { print(error.localizedDescription) }
+    /// Name  and address of the searched place while the pin is still on it,
+    /// moving the pin by tapping the map drops the name
+    private var draftPlace: LocationPlaceDetails? {
+        guard let searchedPlace = self.searchedPlace,
+              let draftLocation = self.draftLocation,
+              draftLocation.latitude == searchedPlace.coordinate.latitude,
+              draftLocation.longitude == searchedPlace.coordinate.longitude
+        else {
+            return nil
         }
+
+        return searchedPlace.place
+    }
+
+    /// Goes to the searched place and drops the pin on it
+    private func select(place: LocationPlaceDetails, coordinate: CLLocationCoordinate2D) {
+        let region: MKCoordinateRegion = .around(coordinate)
+        self.searchedPlace = SearchedPlace(place: place, coordinate: coordinate)
+
+        withAnimation(.easeOut) {
+            self.cameraRegion = region
+            self.draftLocation = Habit.Location(
+                latitude: coordinate.latitude,
+                longitude: coordinate.longitude,
+                region: region
+            )
+        }
+    }
+
+    private struct SearchedPlace {
+        let place: LocationPlaceDetails
+        let coordinate: CLLocationCoordinate2D
+    }
+}
+
+/// Search field floating over the bottom of the map
+private struct LocationSearchBar: View {
+    let title: String?
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: self.action) {
+            HStack(spacing: 10) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.secondary)
+
+                Group {
+                    if let title = self.title {
+                        Text(title)
+                            .foregroundStyle(.primary)
+                    } else {
+                        Text("habit_location_search")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .lineLimit(1)
+
+                Spacer(minLength: 0)
+            }
+            .font(.body)
+            .padding(.horizontal, 18)
+            .frame(height: 50)
+            .contentShape(.capsule)
+        }
+        .buttonStyle(.plain)
+        .glassCapsule()
+        .accessibilityIdentifier("location_search_bar")
+    }
+}
+
+/// Address search, calls `onSelect` with the place found for the tapped completion
+struct LocationSearchView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var locationSearchService: LocationSearchService = LocationSearchService(completer: .init())
+    @State private var searchQuery: String = ""
+    @State private var isResolving: Bool = false
+
+    @FocusState private var searchFocused: Bool
+
+    let region: MKCoordinateRegion?
+    let onSelect: (LocationPlaceDetails, CLLocationCoordinate2D) -> Void
+
+    var body: some View {
+        NavigationStack {
+            List {
+                if !self.searchQuery.isEmpty {
+                    ForEach(self.locationSearchService.completions) { (completion: LocationSearchCompletion) in
+                        Button {
+                            self.selectCompletionLocation(completion)
+                        } label: {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(completion.title)
+                                    .font(.headline)
+                                    .fontDesign(.rounded)
+                                Text(completion.subTitle)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .contentShape(.rect)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+            .listStyle(.plain)
+            .disabled(self.isResolving)
+            .overlay {
+                if self.isResolving {
+                    ProgressView()
+                }
+            }
+            .safeAreaInset(edge: .top) {
+                self.searchField
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+            }
+            .navigationTitle("habit_location_search")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("", systemImage: "xmark") {
+                        self.dismiss()
+                    }
+                }
+            }
+            .onAppear { self.searchFocused = true }
+        }
+    }
+
+    private var searchField: some View {
+        HStack {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.secondary)
+            TextField("habit_location_search", text: self.$searchQuery)
+                .focused(self.$searchFocused)
+                .submitLabel(.search)
+                .autocorrectionDisabled()
+                .onChange(of: self.searchQuery) { _, query in
+                    self.locationSearchService.update(queryFragment: query)
+                }
+                .accessibilityIdentifier("location_search_field")
+            if !self.searchQuery.isEmpty {
+                Button {
+                    withAnimation {
+                        self.searchQuery = ""
+                    }
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .imageScale(.medium)
+                        .foregroundStyle(Color(.systemGray3))
+                        .padding(3)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 16)
+        .frame(height: 50)
+        .glassCapsule()
     }
 
     private func selectCompletionLocation(_ completion: LocationSearchCompletion) {
         Task {
-            if let singleLocation = try? await locationSearchService
+            self.isResolving = true
+            defer { self.isResolving = false }
+
+            guard let result: LocationSearchResult = try? await self.locationSearchService
                 .search(with: "\(completion.title) \(completion.subTitle)")
-                .first {
-                    selectedLocation = MKCoordinateRegion(
-                        center: singleLocation.location,
-                        latitudinalMeters: 150,
-                        longitudinalMeters: 150
-                    )
-                    self.searchQuery = ""
-                }
+                .first
+            else {
+                return
+            }
+
+            let place = LocationPlaceDetails(
+                name: completion.title,
+                address: completion.subTitle.isEmpty ? nil : completion.subTitle
+            )
+            self.onSelect(place, result.location)
+            self.dismiss()
+        }
+    }
+}
+
+extension MKCoordinateRegion {
+    /// Region centered on `coordinate` that fits the monitored circle with some margin around it
+    static func around(_ coordinate: CLLocationCoordinate2D) -> MKCoordinateRegion {
+        return MKCoordinateRegion(
+            center: coordinate,
+            latitudinalMeters: .regionRadius * 6,
+            longitudinalMeters: .regionRadius * 6
+        )
+    }
+}
+
+extension View {
+    /// Liquid Glass capsule on iOS 26, material on older versions
+    @ViewBuilder
+    func glassCapsule() -> some View {
+        if #available(iOS 26.0, *) {
+            self.glassEffect(.regular.interactive(), in: .capsule)
+        } else {
+            self
+                .background(.regularMaterial, in: .capsule)
+                .shadow(color: .black.opacity(0.12), radius: 12, y: 4)
         }
     }
 }
 
 #Preview {
-    NewHabitLocationView(habit: .constant(Habit.empty))
+    NewHabitLocationView(location: .constant(nil), place: .constant(nil))
 }

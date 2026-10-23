@@ -20,7 +20,6 @@ extension HabitsService {
             frequency: eventsHabit.frequency.rawValue,
             frequencyType: eventsHabit.frequencyType,
             category: eventsHabit.category.rawValue,
-            scheduleInterval: eventsHabit.scheduleInterval,
             schedule: eventsHabit.schedule.map { hour in
                 return Hour(
                     eventId: hour.eventId,
@@ -29,14 +28,14 @@ extension HabitsService {
                 )
             },
             hasAlarm: eventsHabit.hasAlarm,
-            hasLocationReminder: eventsHabit.hasLocationReminder,
-            location: eventsHabit.location != nil
-            ? HabitEntity.Location(
-                latitude: eventsHabit.location!.latitude,
-                longitude: eventsHabit.location!.longitude
-                )
-            : nil
+            hasLocationReminder: eventsHabit.hasLocationReminder
         )
+
+        /// Making sure the values are overridden
+        updatedHabit.scheduleInterval = eventsHabit.scheduleInterval
+        updatedHabit.location = eventsHabit.location.map { location in
+            HabitEntity.Location(latitude: location.latitude, longitude: location.longitude)
+        }
 
         /// Statuses saved before `requiredCount` existed have no target. Stamp the previous target
         /// on them while it's still known, so the history keeps its colors after a type/target change.

@@ -9,4 +9,6 @@ import MapKit
 
 extension CLLocationDistance {
     static let mapDistance: CLLocationDistance = 3000
+
+    static let regionRadius: CLLocationDistance = 100
 }

@@ -31,7 +31,7 @@ struct NewHabitScheduleView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button("general_next") {
                     if self.habit.schedule.isEmpty {
-                        self.router.push(NewHabitLocationView(habit: self.$habit))
+                        // self.router.push(NewHabitLocationView(habit: self.$habit))
                     } else {
                         self.router.push(NewHabitResumeView(habit: self.$habit))
                     }
