@@ -68,46 +68,15 @@ struct NewHabitContentView: View {
                         }
                 }
 
-                Section(header: Text("habit_location_section_title")) {
-                    if let location = self.habit.location {
-                        LocationCardView(
-                            location: location,
-                            place: self.locationPlace,
-                            onTap: {
-                                self.isPickingLocation = true
-                            },
-                            onClear: {
-                                withAnimation {
-                                    self.habit.location = nil
-                                    self.locationPlace = nil
-                                }
-                            }
-                        )
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets())
-                    } else {
-                        Button {
-                            self.isPickingLocation = true
-                        } label: {
-                            HStack(spacing: 12) {
-                                Image(systemName: "location")
-                                    .font(.body.weight(.medium))
-                                Text("habit_location_button")
-                                    .font(.title3)
-                                Spacer()
-                            }
-                            .foregroundStyle(.secondary)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 14)
-                            .background(.fill.tertiary, in: .rect(cornerRadius: 26))
-                            .contentShape(.rect(cornerRadius: 26))
-                        }
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets())
-                        .buttonStyle(.plain)
-                        .accessibilityIdentifier("new_habit_location")
+                HabitLocationSectionView(
+                    location: self.$habit.location,
+                    hasLocationReminder: self.$habit.hasLocationReminder,
+                    place: self.$locationPlace,
+                    onPickLocation: {
+                        self.nameFocused = false
+                        self.isPickingLocation = true
                     }
-                }
+                )
 
                 // Frequency
                 HabitFrequencyView(
@@ -125,12 +94,6 @@ struct NewHabitContentView: View {
                 )
                 .presentationDetents([.large])
                 .presentationDragIndicator(.hidden)
-            }
-            .onChange(of: self.habit.location) { _, location in
-                // Reminders fire in the background, so they need always authorization
-                if location != nil {
-                    self.state.requestAlwaysLocation()
-                }
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

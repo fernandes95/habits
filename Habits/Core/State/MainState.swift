@@ -198,7 +198,7 @@ class MainState: ObservableObject {
         do {
             try await self.habitsService.editHabit(habit)
 
-            if let location = habit.location {
+            if let location = habit.location, habit.hasLocationReminder {
                 self.locationService.startMonitoringRegion(
                     location: location.locationCoordinate,
                     habitIdentifier: habit.id.uuidString,
@@ -235,7 +235,7 @@ class MainState: ObservableObject {
         do {
             let newHabitId: UUID = try await self.habitsService.addHabit(habit)
 
-            if let location = habit.location {
+            if let location = habit.location, habit.hasLocationReminder {
                 self.locationService.startMonitoringRegion(
                     location: location.locationCoordinate,
                     habitIdentifier: newHabitId.uuidString,

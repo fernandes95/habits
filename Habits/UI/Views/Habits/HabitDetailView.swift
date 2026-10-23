@@ -21,7 +21,6 @@ struct HabitDetailView: View {
     @State private var isEditing: Bool = false
     @State private var editingHabit: Habit
     @State private var showingAlert = false
-    @State private var hasLocationReminder: Bool = false
 
     @State
     private var isPickingLocation: Bool = false
@@ -85,53 +84,16 @@ struct HabitDetailView: View {
                     isEditing: self.$isEditing
                 )
 
-                if !self.isEditing && self.habit.location != nil {
-                    Section(header: Text("habit_location_section_title")) {
-                        LocationCardView(location: self.habit.location!)
-                            .listRowBackground(Color.clear)
-                            .listRowInsets(EdgeInsets())
-                    }
-                }
-
-                if self.isEditing {
-                    if let location = self.editingHabit.location {
-                        LocationCardView(
-                            location: location,
-                            place: self.locationPlace,
-                            onTap: {
-                                self.isPickingLocation = true
-                            },
-                            onClear: {
-                                withAnimation {
-                                    self.editingHabit.location = nil
-                                    self.locationPlace = nil
-                                }
-                            }
-                        )
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets())
-                    } else {
-                        Button {
+                if self.isEditing || self.editingHabit.location != nil {
+                    HabitLocationSectionView(
+                        location: self.$editingHabit.location,
+                        hasLocationReminder: self.$editingHabit.hasLocationReminder,
+                        place: self.$locationPlace,
+                        isEditing: self.isEditing,
+                        onPickLocation: {
                             self.isPickingLocation = true
-                        } label: {
-                            HStack(spacing: 12) {
-                                Image(systemName: "location")
-                                    .font(.body.weight(.medium))
-                                Text("habit_location_button")
-                                    .font(.title3)
-                                Spacer()
-                            }
-                            .foregroundStyle(.secondary)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 14)
-                            .background(.fill.tertiary, in: .rect(cornerRadius: 26))
-                            .contentShape(.rect(cornerRadius: 26))
                         }
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets())
-                        .buttonStyle(.plain)
-                        .accessibilityIdentifier("new_habit_location")
-                    }
+                    )
                 }
 
                 Section(header: Text("habit_detail_history_section_title")) {

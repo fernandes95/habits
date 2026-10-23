@@ -90,6 +90,17 @@
         }
       }
     },
+    "general_open_settings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings"
+          }
+        }
+      }
+    },
     "general_today" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -233,6 +244,17 @@
         }
       }
     },
+    "habit_has_location_reminder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable location based reminder"
+          }
+        }
+      }
+    },
     "habit_interval_title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -262,6 +284,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Location to remind"
+          }
+        }
+      }
+    },
+    "habit_location_notifications_denied" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications are turned off for World of habits. To get location based reminders, allow notifications in Settings."
           }
         }
       }

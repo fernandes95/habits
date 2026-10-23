@@ -76,6 +76,7 @@
 		AEA4C92B308B7AEE00B71C76 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4C92A308B7AEE00B71C76 /* SplashView.swift */; };
 		AEA4C92D308BACA700B71C76 /* NewHabitLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4C92C308BACA600B71C76 /* NewHabitLocationView.swift */; };
 		AEA4C92F308BC83200B71C76 /* LocationCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4C92E308BC83000B71C76 /* LocationCardView.swift */; };
+		AEB1C0DE308C000600A1B2C3 /* HabitLocationSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB1C0DE308C000500A1B2C3 /* HabitLocationSectionView.swift */; };
 		AECA0CA13086AB7C00AC1AF2 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */; };
 		AECAF3193085FE5400AC1AF2 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECAF3183085FE5100AC1AF2 /* AppConfig.swift */; };
 		AEDAA9D72E60B9E10001ABA6 /* LocationSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */; };
@@ -167,6 +168,7 @@
 		AEA4C92A308B7AEE00B71C76 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		AEA4C92C308BACA600B71C76 /* NewHabitLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitLocationView.swift; sourceTree = "<group>"; };
 		AEA4C92E308BC83000B71C76 /* LocationCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCardView.swift; sourceTree = "<group>"; };
+		AEB1C0DE308C000500A1B2C3 /* HabitLocationSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitLocationSectionView.swift; sourceTree = "<group>"; };
 		AEAFF2552DF5FC1D00B03261 /* gpxmarques.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = gpxmarques.gpx; sourceTree = "<group>"; };
 		AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		AECAF3183085FE5100AC1AF2 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
@@ -269,6 +271,7 @@
 			isa = PBXGroup;
 			children = (
 				AEA4C92E308BC83000B71C76 /* LocationCardView.swift */,
+				AEB1C0DE308C000500A1B2C3 /* HabitLocationSectionView.swift */,
 				AEA4B5CE308908FE00B71C76 /* AddToolbarButton.swift */,
 				AEA4B5CC3089081100B71C76 /* SettingsToolbarButton.swift */,
 				AE3AA2222E66CDE8002F78E9 /* SpinnerView.swift */,
@@ -754,6 +757,7 @@
 				AE3AA2282E6707F0002F78E9 /* ConflictResolution.swift in Sources */,
 				AE7DD34F2E748801007BF33A /* HabitsService+Settings.swift in Sources */,
 				AEA4C92F308BC83200B71C76 /* LocationCardView.swift in Sources */,
+				AEB1C0DE308C000600A1B2C3 /* HabitLocationSectionView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -47,14 +47,14 @@ class HabitsService {
     /// Gets Habit by selected date
     ///
     /// - Parameter date: Date to filter Habits
-    /// - Parameter hasFilterLocation: Filters only habits with location
+    /// - Parameter hasFilterLocation: Filters only habits with location and the location reminder on
     /// - Returns: Array of Habits
     func getHabits(date: Date, hasFilterLocation: Bool = false) async throws -> [Habit] {
         let habitsFilterted = self.habits
             .filter { ($0.startDate.startOfDay ... $0.endDate.endOfDay) ~= date }
             .filter {
                 if hasFilterLocation {
-                    return $0.location != nil
+                    return $0.location != nil && $0.hasLocationReminder
                 } else {
                     return true
                 }
