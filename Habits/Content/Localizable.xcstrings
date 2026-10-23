@@ -35,17 +35,6 @@
         }
       }
     },
-    "general_continue" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continue"
-          }
-        }
-      }
-    },
     "general_dismiss" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -123,17 +112,6 @@
         }
       }
     },
-    "habit_delete_dialog_future" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete future habits"
-          }
-        }
-      }
-    },
     "habit_delete_dialog_single" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -178,13 +156,13 @@
         }
       }
     },
-    "habit_detail_remove_pin" : {
+    "habit_detail_save_without_reminder" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remove Pin"
+            "value" : "Save Without Reminder"
           }
         }
       }
@@ -218,17 +196,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Frequency"
-          }
-        }
-      }
-    },
-    "habit_has_alarm" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Has alarm"
           }
         }
       }
@@ -273,6 +240,61 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remove location"
+          }
+        }
+      }
+    },
+    "habit_location_always_message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To remind you when you arrive at the selected location, World of habits needs your location even when the app is closed. Without “Always”, you won’t get this reminder."
+          }
+        }
+      }
+    },
+    "habit_location_always_step_choose_always" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose **Always**"
+          }
+        }
+      }
+    },
+    "habit_location_always_step_open_settings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings"
+          }
+        }
+      }
+    },
+    "habit_location_always_step_tap_location" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap Location"
+          }
+        }
+      }
+    },
+    "habit_location_always_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow Location “Always”"
           }
         }
       }
@@ -464,45 +486,12 @@
         }
       }
     },
-    "habits_accessibility_next_day" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Next day"
-          }
-        }
-      }
-    },
-    "habits_accessibility_previous_day" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Previous day"
-          }
-        }
-      }
-    },
     "habits_accessibility_settings" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Settings"
-          }
-        }
-      }
-    },
-    "habits_title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Habits"
           }
         }
       }
@@ -514,6 +503,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Map"
+          }
+        }
+      }
+    },
+    "new_habit_add_without_reminder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Without Reminder"
           }
         }
       }
@@ -558,17 +558,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Give Notifications permission"
-          }
-        }
-      }
-    },
-    "new_habit_location_section_title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Location Reminder (Optional)"
           }
         }
       }

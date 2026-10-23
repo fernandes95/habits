@@ -9,6 +9,8 @@ import SwiftUI
 
 struct NewHabitContentView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
+    @Environment(\.scenePhase) private var scenePhase
 
     @EnvironmentObject
     private var router: HabitsRouter
@@ -24,6 +26,13 @@ struct NewHabitContentView: View {
 
     @State
     private var locationPlace: LocationPlaceDetails?
+
+    @State
+    private var isAskingLocationAlways: Bool = false
+
+    /// Adds the habit once the `Always` location sheet is dismissed
+    @State
+    private var shouldAddAfterLocationAlways: Bool = false
 
     @FocusState private var nameFocused: Bool
 
@@ -95,6 +104,37 @@ struct NewHabitContentView: View {
                 .presentationDetents([.large])
                 .presentationDragIndicator(.hidden)
             }
+            .sheet(isPresented: self.$isAskingLocationAlways, onDismiss: {
+                if self.shouldAddAfterLocationAlways {
+                    self.shouldAddAfterLocationAlways = false
+                    self.addHabit()
+                }
+            }, content: {
+                LocationAlwaysSheetContentView(
+                    openSettingsAction: {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            self.openURL(url)
+                        }
+                    },
+                    withoutReminderTitle: "new_habit_add_without_reminder",
+                    withoutReminderAction: {
+                        // Keeps the location but its region won't be monitored
+                        self.habit.hasLocationReminder = false
+                        self.shouldAddAfterLocationAlways = true
+                        self.isAskingLocationAlways = false
+                    },
+                    closeAction: {
+                        self.isAskingLocationAlways = false
+                    }
+                )
+            })
+            .onChange(of: self.scenePhase) { _, scenePhase in
+                // Coming back from Settings with `Always` allowed, the habit can be added as it is
+                if scenePhase == .active && self.isAskingLocationAlways && self.state.getLocationAuthorizationStatus() {
+                    self.shouldAddAfterLocationAlways = true
+                    self.isAskingLocationAlways = false
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("", systemImage: "xmark") {
@@ -121,6 +161,12 @@ struct NewHabitContentView: View {
     }
 
     private func addHabit() {
+        if self.state.needsLocationAlwaysAuthorization(for: self.habit) {
+            self.nameFocused = false
+            self.isAskingLocationAlways = true
+            return
+        }
+
         Task {
             if self.habit.startDate >= self.habit.endDate {
                 self.habit.endDate = self.habit.startDate

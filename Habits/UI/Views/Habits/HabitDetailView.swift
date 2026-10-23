@@ -10,6 +10,9 @@ import EventKitUI
 import MapKit
 
 struct HabitDetailView: View {
+    @Environment(\.openURL) private var openURL
+    @Environment(\.scenePhase) private var scenePhase
+
     @EnvironmentObject
     private var router: HabitsRouter
 
@@ -27,6 +30,13 @@ struct HabitDetailView: View {
 
     @State
     private var locationPlace: LocationPlaceDetails?
+
+    @State
+    private var isAskingLocationAlways: Bool = false
+
+    /// Saves the habit once the `Always` location sheet is dismissed
+    @State
+    private var shouldSaveAfterLocationAlways: Bool = false
 
     init(habit: Habit) {
         self.habit = habit
@@ -130,6 +140,37 @@ struct HabitDetailView: View {
             .presentationDetents([.large])
             .presentationDragIndicator(.hidden)
         }
+        .sheet(isPresented: self.$isAskingLocationAlways, onDismiss: {
+            if self.shouldSaveAfterLocationAlways {
+                self.shouldSaveAfterLocationAlways = false
+                self.saveHabit()
+            }
+        }, content: {
+            LocationAlwaysSheetContentView(
+                openSettingsAction: {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        self.openURL(url)
+                    }
+                },
+                withoutReminderTitle: "habit_detail_save_without_reminder",
+                withoutReminderAction: {
+                    // Keeps the location but its region won't be monitored
+                    self.editingHabit.hasLocationReminder = false
+                    self.shouldSaveAfterLocationAlways = true
+                    self.isAskingLocationAlways = false
+                },
+                closeAction: {
+                    self.isAskingLocationAlways = false
+                }
+            )
+        })
+        .onChange(of: self.scenePhase) { _, scenePhase in
+            // Coming back from Settings with `Always` allowed, the habit can be saved as it is
+            if scenePhase == .active && self.isAskingLocationAlways && self.state.getLocationAuthorizationStatus() {
+                self.shouldSaveAfterLocationAlways = true
+                self.isAskingLocationAlways = false
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button("general_cancel") {
@@ -140,10 +181,13 @@ struct HabitDetailView: View {
             ToolbarItem(placement: .confirmationAction) {
                 let title = self.isEditing ? "general_done" : "general_edit"
                 Button(LocalizedStringKey(title)) {
-                    if self.isEditing {
-                        updateHabit()
+                    if !self.isEditing {
+                        self.isEditing = true
+                    } else if self.state.needsLocationAlwaysAuthorization(for: self.editingHabit) {
+                        self.isAskingLocationAlways = true
+                    } else {
+                        self.saveHabit()
                     }
-                    self.isEditing = !self.isEditing
                 }
                 .disabled(!self.canContinue())
             }
@@ -157,6 +201,11 @@ struct HabitDetailView: View {
             } catch let error { print(error.localizedDescription) }
         }
         self.router.pop()
+    }
+
+    private func saveHabit() {
+        self.isEditing = false
+        self.updateHabit()
     }
 
     private func updateHabit() {

@@ -270,6 +270,14 @@ class MainState: ObservableObject {
         return status == .authorizedAlways
     }
 
+    /// Location reminders are only delivered with the `Always` location permission
+    ///
+    /// - Parameter habit: Habit about to be saved
+    /// - Returns: `true` when `habit` has a location reminder that can't be delivered yet
+    func needsLocationAlwaysAuthorization(for habit: Habit) -> Bool {
+        return habit.location != nil && habit.hasLocationReminder && !self.getLocationAuthorizationStatus()
+    }
+
     /// Get Notification Authorization Status
     func getNotificationsAuthorizationStatus() async throws -> Bool {
         let status = await self.notificationService.getNotificationStatus()
