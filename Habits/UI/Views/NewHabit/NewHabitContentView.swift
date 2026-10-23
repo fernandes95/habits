@@ -38,6 +38,14 @@ struct NewHabitContentView: View {
 
     var startDateIn: Date = .now
 
+    /// - Parameters:
+    ///   - startDateIn: First date the habit can start
+    ///   - location: Location already picked, e.g. tapped on the map
+    init(startDateIn: Date = .now, location: Habit.Location? = nil) {
+        self.startDateIn = startDateIn
+        self._habit = State(initialValue: Habit.empty.with(location: location))
+    }
+
     var body: some View {
         NavigationStack {
             Form {

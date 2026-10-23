@@ -37,7 +37,7 @@ internal final class AppRouter: ObservableObject {
                 .settingsToolbarButton()
                 .addToolbarButton { NewHabitContentView() }
         )
-        self.map = HabitsRouter(root: HabitsMapView().settingsToolbarButton())
+        self.map = HabitsRouter(root: HabitsMapView())
     }
 
     internal func router(for tab: AppTab) -> HabitsRouter {

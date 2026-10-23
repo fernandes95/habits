@@ -270,6 +270,13 @@ class MainState: ObservableObject {
         return status == .authorizedAlways
     }
 
+    /// Every saved habit with a location, regardless of the selected date
+    func getLocationHabits() -> [Habit] {
+        return self.habitsService.habits
+            .filter { $0.location != nil }
+            .map { Habit(habitEntity: $0) }
+    }
+
     /// Location reminders are only delivered with the `Always` location permission
     ///
     /// - Parameter habit: Habit about to be saved

@@ -496,17 +496,6 @@
         }
       }
     },
-    "map_title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Map"
-          }
-        }
-      }
-    },
     "new_habit_add_without_reminder" : {
       "extractionState" : "manual",
       "localizations" : {
