@@ -945,8 +945,8 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "World of habits";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Fetch events in all your calendars";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Give me permition for geofencing please";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Permition for map";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Allow location access to get reminded of your habits when you arrive at the places you set for them, even when the app is closed.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Allow location access to show where you are on the map while picking the places for your habit reminders.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
@@ -986,8 +986,8 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "World of habits";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Fetch events in all your calendars";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Give me permition for geofencing please";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Permition for map";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Allow location access to get reminded of your habits when you arrive at the places you set for them, even when the app is closed.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Allow location access to show where you are on the map while picking the places for your habit reminders.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = NO;

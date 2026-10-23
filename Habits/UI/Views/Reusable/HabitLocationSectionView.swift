@@ -44,7 +44,11 @@ struct HabitLocationSectionView: View {
                 )
                 .listRowInsets(EdgeInsets())
             } else if self.isEditing {
-                Button(action: self.onPickLocation) {
+                Button {
+                    // Only prompts the first time, while the location permission wasn't asked yet
+                    self.state.requestLocation()
+                    self.onPickLocation()
+                } label: {
                     HStack(spacing: 12) {
                         Image(systemName: "location")
                             .font(.body.weight(.medium))
