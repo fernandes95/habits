@@ -1354,13 +1354,35 @@
         }
       }
     },
-    "todos_title" : {
+    "todos_coming_soon_badge" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TODO"
+            "value" : "In the works"
+          }
+        }
+      }
+    },
+    "todos_coming_soon_message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To-dos are on their way. Until then, keep your streak going in Habits."
+          }
+        }
+      }
+    },
+    "todos_coming_soon_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coming Soon"
           }
         }
       }

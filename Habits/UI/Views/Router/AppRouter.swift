@@ -28,9 +28,7 @@ internal final class AppRouter: ObservableObject {
 
     internal init() {
         self.todo = HabitsRouter(
-            root: TodoView()
-                .settingsToolbarButton()
-                .addToolbarButton { NewHabitContentView() }
+            root: TodoView().settingsToolbarButton()
         )
         self.habits = HabitsRouter(
             root: HabitsView()
