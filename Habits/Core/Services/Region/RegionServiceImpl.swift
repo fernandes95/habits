@@ -161,6 +161,9 @@ final class RegionServiceImpl: RegionService {
     }
 
     func startMonitoringIfAuthorized() async throws {
+        // Creating the service session asks for location permission, it's only asked when the user picks a location
+        guard CLLocationManager().authorizationStatus == .authorizedAlways else { return }
+
         if self.serviceSession == nil {
            self.serviceSession = CLServiceSession(authorization: .always)
        }

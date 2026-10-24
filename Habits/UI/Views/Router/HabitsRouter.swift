@@ -21,6 +21,11 @@ internal class HabitsRouter: ObservableObject {
                     for: HabitsRouter.Route.self
                 ) { (route: HabitsRouter.Route) in
                     route
+                        // Pushed screens are full screen, the tab bar only shows on tab roots
+                        .toolbar(.hidden, for: .tabBar)
+                }
+                .sheet(item: self.$router.sheet) { (route: HabitsRouter.Route) in
+                    route
                 }
             }
         }
@@ -55,17 +60,41 @@ internal class HabitsRouter: ObservableObject {
     }
 
     @Published
-    internal private(set) var root: Root = Root(EmptyView())
+    internal private(set) var root: Root
 
     @Published
     private var navigationPaths: [Route] = []
 
-    internal init() {
-        replaceRoot(HabitsView())
+    @Published
+    private var sheet: Route?
+
+    /// Shows `view` as a bottom sheet over the current tab
+    internal func present<V: View>(
+        _ view: V,
+        detents: Set<PresentationDetent> = [.medium, .large]
+    ) {
+        self.sheet = Route(
+            view
+                .presentationDetents(detents)
+                .presentationDragIndicator(.visible)
+        )
+    }
+
+    internal func dismissSheet() {
+        self.sheet = nil
+    }
+
+    internal var isAtRoot: Bool {
+       self.navigationPaths.isEmpty
+    }
+
+    internal init<V: View>(root: V) {
+        self.root = Root(root)
     }
 
     internal func replaceRoot<V: View>(_ view: V) {
         self.root = Root(view)
+        self.navigationPaths.removeAll()
     }
 
     internal func push<V: View>(_ view: V) {
@@ -73,18 +102,20 @@ internal class HabitsRouter: ObservableObject {
     }
 
     internal func pop() {
+        guard !self.navigationPaths.isEmpty else { return }
         self.navigationPaths.removeLast()
     }
 
+    /// Removes the route with `id` and everything pushed after it
     internal func popTo(_ id: UUID) {
-        guard let index: Int = navigationPaths.lastIndex(where: { (route: Route) in
+        guard let index: Int = self.navigationPaths.lastIndex(where: { (route: Route) in
                 return route.id == id
             })
         else {
             return
         }
 
-        self.navigationPaths.removeSubrange(index...navigationPaths.endIndex)
+        self.navigationPaths.removeSubrange(index...)
     }
 
     internal func popToRoot() {

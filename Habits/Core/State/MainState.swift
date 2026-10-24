@@ -198,9 +198,14 @@ class MainState: ObservableObject {
         do {
             try await self.habitsService.editHabit(habit)
 
-            if let location = habit.location {
+            if let location = habit.location, habit.hasLocationReminder {
                 self.locationService.startMonitoringRegion(
                     location: location.locationCoordinate,
+                    habitIdentifier: habit.id.uuidString,
+                    habitName: habit.name
+                )
+            } else {
+                self.locationService.stopMonitoringRegion(
                     habitIdentifier: habit.id.uuidString,
                     habitName: habit.name
                 )
@@ -230,7 +235,7 @@ class MainState: ObservableObject {
         do {
             let newHabitId: UUID = try await self.habitsService.addHabit(habit)
 
-            if let location = habit.location {
+            if let location = habit.location, habit.hasLocationReminder {
                 self.locationService.startMonitoringRegion(
                     location: location.locationCoordinate,
                     habitIdentifier: newHabitId.uuidString,
@@ -263,6 +268,21 @@ class MainState: ObservableObject {
     func getLocationAuthorizationStatus() -> Bool {
         let status = self.locationService.getAuthorizationStatus()
         return status == .authorizedAlways
+    }
+
+    /// Every saved habit with a location, regardless of the selected date
+    func getLocationHabits() -> [Habit] {
+        return self.habitsService.habits
+            .filter { $0.location != nil }
+            .map { Habit(habitEntity: $0) }
+    }
+
+    /// Location reminders are only delivered with the `Always` location permission
+    ///
+    /// - Parameter habit: Habit about to be saved
+    /// - Returns: `true` when `habit` has a location reminder that can't be delivered yet
+    func needsLocationAlwaysAuthorization(for habit: Habit) -> Bool {
+        return habit.location != nil && habit.hasLocationReminder && !self.getLocationAuthorizationStatus()
     }
 
     /// Get Notification Authorization Status

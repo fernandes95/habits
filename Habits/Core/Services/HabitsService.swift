@@ -47,14 +47,14 @@ class HabitsService {
     /// Gets Habit by selected date
     ///
     /// - Parameter date: Date to filter Habits
-    /// - Parameter hasFilterLocation: Filters only habits with location
+    /// - Parameter hasFilterLocation: Filters only habits with location and the location reminder on
     /// - Returns: Array of Habits
     func getHabits(date: Date, hasFilterLocation: Bool = false) async throws -> [Habit] {
         let habitsFilterted = self.habits
             .filter { ($0.startDate.startOfDay ... $0.endDate.endOfDay) ~= date }
             .filter {
                 if hasFilterLocation {
-                    return $0.location != nil
+                    return $0.location != nil && $0.hasLocationReminder
                 } else {
                     return true
                 }
@@ -97,15 +97,16 @@ class HabitsService {
     /// - Parameter habit: Habit to add
     /// - Returns: New Habit UUID
     func addHabit(_ habit: Habit) async throws -> UUID {
-        var eventId: String = ""
-        var schedule: [Hour] = habit.schedule
+        let eventId: String = ""
+        let schedule: [Hour] = habit.schedule
         var location: HabitEntity.Location?
 
-        if habit.schedule.isEmpty {
+        // Won't use this feature for now
+        /*if habit.schedule.isEmpty {
             eventId = try await calendarService.createCalendarEvent(habit)
         } else {
             schedule = try await calendarService.createScheduleCalendarEvents(habit)
-        }
+        }*/
 
         if habit.location != nil {
             location = HabitEntity.Location(
@@ -147,14 +148,15 @@ class HabitsService {
     /// - Parameter habitEntity: HabitEntity to add
     func addHabit(_ habitEntity: HabitEntity) async throws {
         let habit = Habit(habitEntity: habitEntity)
-        var eventId: String = ""
-        var schedule: [Hour] = habit.schedule
+        let eventId: String = ""
+        let schedule: [Hour] = habit.schedule
 
-        if habit.schedule.isEmpty {
+        // Won't use this feature for now
+        /*if habit.schedule.isEmpty {
             eventId = try await calendarService.createCalendarEvent(habit)
         } else {
             schedule = try await calendarService.createScheduleCalendarEvents(habit)
-        }
+        }*/
 
         let newHabit: HabitEntity = habitEntity.with(
             eventId: eventId,

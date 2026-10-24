@@ -18,7 +18,7 @@ final class AppEnvironment {
 
     private init() {
         let habitsService = HabitsService()
-        let regionService = RegionServiceImpl(habitsService: habitsService, regionRadius: 100)
+        let regionService = RegionServiceImpl(habitsService: habitsService, regionRadius: .regionRadius)
 
         self.habitsService = habitsService
         self.regionService = regionService

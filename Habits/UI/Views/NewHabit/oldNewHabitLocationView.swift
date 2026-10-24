@@ -1,0 +1,185 @@
+//
+//  NewHabitLocationView.swift
+//  Habits
+//
+//  Created by Tiago Fernandes on 17/09/2024.
+//
+
+import SwiftUI
+import CoreLocation
+import MapKit
+
+struct OldNewHabitLocationView: View {
+    @EnvironmentObject
+    private var router: HabitsRouter
+
+    @EnvironmentObject
+    private var state: MainState
+
+    @Environment(\.scenePhase)
+    private var scenePhase: ScenePhase
+
+    @Binding
+    var habit: Habit
+
+    @State private var searchQuery: String = ""
+    @State private var selectedLocation: MKCoordinateRegion?
+    @State private var hasLocationAuth: Bool = false
+    @State private var hasNotificationAuth: Bool = false
+
+    private let locationSearchService: LocationSearchService = LocationSearchService(completer: .init())
+
+    var body: some View {
+        VStack {
+            Text("new_habit_location_title")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+
+            ZStack {
+                VStack {
+                    HStack {
+                        Image(systemName: "magnifyingglass").foregroundColor(.secondary)
+                        TextField("habit_location_search", text: $searchQuery)
+                            .onChange(of: self.searchQuery) { _, query in
+                                locationSearchService.update(queryFragment: query)
+                            }
+                            .submitLabel(.done)
+                        if searchQuery != "" {
+                            Image(systemName: "xmark.circle.fill")
+                                .imageScale(.medium)
+                                .foregroundColor(Color(.systemGray3))
+                                .padding(3)
+                                .onTapGesture {
+                                    withAnimation {
+                                        self.searchQuery = ""
+                                      }
+                                }
+                        }
+                    }
+                    .padding(10)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(12)
+                    .padding(.vertical, 10)
+
+                    ZStack {
+                        MapView(
+                            position: self.$selectedLocation,
+                            selectedLocation: self.$habit.location,
+                            canEdit: .constant(true)
+                        )
+
+                        if !self.searchQuery.isEmpty && !locationSearchService.completions.isEmpty {
+                            List {
+                                ForEach(locationSearchService.completions) { completion in
+                                    Button(
+                                        action: { selectCompletionLocation(completion) },
+                                        label: {
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                Text(completion.title)
+                                                    .font(.headline)
+                                                    .fontDesign(.rounded)
+                                                Text(completion.subTitle)
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+                            .listStyle(.plain)
+                        }
+                    }
+                }
+
+                // TODO IMPROVE THIS SCREEN
+                if !self.hasLocationAuth || !self.hasNotificationAuth {
+                    VStack(alignment: .center) {
+                        Text("new_habit_location_setttings_info")
+
+                        if !self.hasLocationAuth {
+                            Text("new_habit_location_settings_location")
+                        }
+
+                        if self.hasLocationAuth && !self.hasNotificationAuth {
+                            Text("new_habit_location_settings_notification")
+                        }
+                        Spacer()
+                        Button(action: {
+                            self.state.requestLocation()
+                        }, label: {
+                                Text("new_habit_location_permission_location_button")
+                                    .padding()
+                                    .foregroundStyle(Color.white)
+                                    .background(Color.blue)
+                                    .cornerRadius(40)
+                            }
+                        )
+                        Spacer()
+
+                        // TODO ADD THIS LOGIC TO LOCATION SERVICE
+                        Button(action: {
+                            self.updatePerms()
+                        }, label: {
+                                Text("new_habit_location_permission_notifications_button")
+                                    .padding()
+                                    .foregroundStyle(Color.white)
+                                    .background(Color.blue)
+                                    .cornerRadius(40)
+                            }
+                        )
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.white)
+                    Spacer()
+                }
+            }
+        }
+        .padding(.vertical)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("general_next") {
+                    self.state.requestAlwaysLocation()
+                    self.router.push(NewHabitResumeView(habit: self.$habit))
+                }
+            }
+        }
+        /*.onChange(of: self.scenePhase) { (newValue: ScenePhase) in
+            switch newValue {
+            case .active:
+                updatePerms()
+            default:
+                break
+            }
+        }*/
+    }
+
+    func updatePerms() {
+        Task {
+            do {
+                self.hasLocationAuth = self.state.getLocationAuthorizationStatus()
+                self.hasNotificationAuth = try await self.state.getNotificationsAuthorizationStatus()
+
+                if self.hasLocationAuth && !self.hasNotificationAuth {
+                    try await self.state.getNotificationsAuthorization()
+                    self.hasNotificationAuth = try await self.state.getNotificationsAuthorizationStatus()
+                }
+            } catch let error { print(error.localizedDescription) }
+        }
+    }
+
+    private func selectCompletionLocation(_ completion: LocationSearchCompletion) {
+        Task {
+            if let singleLocation = try? await locationSearchService
+                .search(for: completion) {
+                    selectedLocation = MKCoordinateRegion(
+                        center: singleLocation.location,
+                        latitudinalMeters: 150,
+                        longitudinalMeters: 150
+                    )
+                    self.searchQuery = ""
+                }
+        }
+    }
+}
+
+#Preview {
+    OldNewHabitLocationView(habit: .constant(Habit.empty))
+}

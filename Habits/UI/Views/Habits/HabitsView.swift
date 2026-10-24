@@ -16,6 +16,8 @@ struct HabitsView: View {
 
     @State private var didLoadData = false
 
+    @State private var showNewHabitSheet = false
+
     var body: some View {
         VStack {
             HeaderView(
@@ -45,21 +47,6 @@ struct HabitsView: View {
                         }
                     )
                 }
-
-                Button {
-                    self.router.push(NewHabitQuoteView())
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.title.weight(.medium))
-                        .padding()
-                        .background(Color.accentColor)
-                        .foregroundColor(.primary)
-                        .clipShape(Circle())
-                        .shadow(radius: 4, x: 0, y: 4)
-
-                }
-                .accessibilityLabel("habits_accessibility_new_habit")
-                .padding(20)
             }
             .background(
                 UnevenRoundedRectangle(topLeadingRadius: 24, topTrailingRadius: 24)
@@ -72,16 +59,6 @@ struct HabitsView: View {
             if !didLoadData {
                 self.reloadAll()
                 didLoadData = true
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
-                    self.router.push(SettingsView())
-                }, label: {
-                    Image(systemName: "gearshape.2.fill")
-                })
-                .accessibilityLabel("habits_accessibility_settings")
             }
         }
     }

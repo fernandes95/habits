@@ -72,13 +72,13 @@ struct NewHabitResumeView: View {
                         }
                     case .minDays:
                         HStack {
-                            Text("Minimum days")
+                            Text("habit_min_days")
                             Spacer()
                             Text("\(String(self.habit.frequencyType.minimumDays))")
                         }
                     case .minTimes:
                         HStack {
-                            Text("Minimum times")
+                            Text("habit_min_times")
                             Spacer()
                             Text("\(String(self.habit.frequencyType.minimumTimes))")
                         }
@@ -88,7 +88,7 @@ struct NewHabitResumeView: View {
                     Section(header: Text("new_habit_resume_schedule_section_title")) {
                         ForEach(self.habit.schedule) { hour in
                             if let index = self.habit.schedule.firstIndex(of: hour) {
-                                DatePicker("Hour #\(index + 1)",
+                                DatePicker("habit_schedule_hour \(index + 1)",
                                            selection: .constant(hour.date),
                                            displayedComponents: .hourAndMinute
                                 )
