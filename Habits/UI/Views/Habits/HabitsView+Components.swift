@@ -295,7 +295,7 @@ extension HabitsView {
         }
     }
 
-    // MARK: - Day swipe
+    // MARK: Day swipe
 
     /// Lets the user swipe the content horizontally to go to the previous / next day.
     /// The content follows the finger and slides out / in when the day changes.

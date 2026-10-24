@@ -21,7 +21,9 @@ internal final class HabitsServiceTests: XCTestCase {
 
     override internal func tearDown() async throws {
         self.sut = nil
-        try await DefaultStoreService().save(StoreEntity(habits: [], habitsArchived: [], habitsNotified: []))
+        try await DefaultStoreService().save(
+            StoreEntity(habits: [], habitsArchived: [], habitsNotified: [], appConfigs: AppConfig.empty)
+        )
         try await super.tearDown()
     }
     
@@ -48,7 +50,7 @@ internal final class HabitsServiceTests: XCTestCase {
         XCTAssertEqual(testHabit.name, loadedHabit!.name)
     }
     
-    internal func test_get_habit_by_uuid(id: UUID) async throws {
+    internal func test_get_habit_by_uuid() async throws {
         // Add Habit
         let habitId: UUID = try await addHabit(testHabit)
         
@@ -169,7 +171,7 @@ internal final class HabitsServiceTests: XCTestCase {
         XCTAssertEqual(closestHabit, habits.first)
     }*/
     
-    // MARK: - ABSTRACTIONS
+    // MARK: ABSTRACTIONS
     private func calendarAuthorizationMock() {
         // set up
         EKEventStore.swizzle()

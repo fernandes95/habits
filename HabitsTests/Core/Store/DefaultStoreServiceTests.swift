@@ -31,7 +31,10 @@ internal final class DefaultStoreServiceTests: XCTestCase {
     
     internal func test_save_and_load() async throws {
         let sut: DefaultStoreService = DefaultStoreService()
-        let emptyStore: StoreEntity = StoreEntity(habits: [], habitsArchived: [])
+        let emptyStore: StoreEntity = StoreEntity(
+            habits: [], habitsArchived: [],
+            habitsNotified: [], appConfigs: AppConfig.empty
+        )
         
         try await sut.save(emptyStore)
         

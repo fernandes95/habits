@@ -227,18 +227,6 @@ struct HabitDetailView: View {
     private func canContinue() -> Bool {
         guard isEditing else { return true }
 
-        switch editingHabit.frequency {
-        case .daily:
-            return true
-        case .interval:
-            if let interval = editingHabit.scheduleInterval {
-                return interval >= 2
-            }
-            return false
-        case .weekly:
-            return !editingHabit.frequencyType.weekFrequency.isEmpty
-        case .minDays: return self.habit.frequencyType.minimumDays > 0 && self.habit.frequencyType.minimumDays < 6
-        case .minTimes: return self.habit.frequencyType.minimumTimes > 0
-        }
+        return editingHabit.isValid
     }
 }

@@ -153,7 +153,7 @@ struct NewHabitContentView: View {
                     Button("general_add") {
                         self.addHabit()
                     }
-                    .disabled(self.habit.name.isEmpty)
+                    .disabled(!self.habit.isValid)
                 }
             }
         }

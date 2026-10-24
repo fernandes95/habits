@@ -83,15 +83,15 @@ struct HabitFrequencyView: View {
                     }
                 }
             case .minDays:
-                TextField("habit_min_days", value: self.$habit.frequencyType.minimumDays, formatter: self.formatter)
+                TextField("habit_min_days", text: self.numberText(self.$habit.frequencyType.minimumDays))
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .keyboardType(.decimalPad)
+                    .keyboardType(.numberPad)
                     .accessibilityIdentifier("")
                     .disabled(!isEditing)
             case .minTimes:
-                TextField("habit_min_times", value: self.$habit.frequencyType.minimumTimes, formatter: self.formatter)
+                TextField("habit_min_times", text: self.numberText(self.$habit.frequencyType.minimumTimes))
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .keyboardType(.decimalPad)
+                    .keyboardType(.numberPad)
                     .accessibilityIdentifier("")
                     .disabled(!isEditing)
             }
@@ -107,6 +107,8 @@ struct HabitFrequencyView: View {
                     )
 
                     datePicker
+                        // On touch down, before the picker opens and remembers the focused field
+                        .simultaneousGesture(DragGesture(minimumDistance: 0).onChanged { _ in self.dismissKeyboard() })
                         .swipeActions(edge: .trailing) {
                             if isEditing {
                                 Button(role: .destructive) {
@@ -127,6 +129,8 @@ struct HabitFrequencyView: View {
                 Text("habit_new_section_habit_schedule")
                 Spacer()
                 Button(action: {
+                    self.dismissKeyboard()
+
                     let calendar = Calendar.current
                     var date: Date = .now
                     var mainDateComponents: DateComponents = DateComponents()
@@ -174,5 +178,20 @@ struct HabitFrequencyView: View {
             }
         }
         .isHidden(!scheduleValidation)
+    }
+
+    /// Removes the focus from any text field. The hour picker gives the focus back to
+    /// the last focused field when it closes, so it has to be cleared before it opens.
+    private func dismissKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+
+    /// Text binding for a whole number field, so the habit updates on every keystroke
+    /// and not only when the field loses focus. `0` shows as an empty field so the placeholder is visible.
+    private func numberText(_ value: Binding<Int>) -> Binding<String> {
+        Binding(
+            get: { value.wrappedValue == 0 ? "" : String(value.wrappedValue) },
+            set: { value.wrappedValue = Int($0.filter(\.isNumber)) ?? 0 }
+        )
     }
 }

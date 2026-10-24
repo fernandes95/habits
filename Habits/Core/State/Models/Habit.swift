@@ -302,6 +302,29 @@ struct Habit: Identifiable, Equatable {
     }
 }
 
+// MARK: Validation
+extension Habit {
+    /// True when the habit can be added or saved from the add and edit habit forms.
+    var isValid: Bool {
+        guard !self.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !self.hasDuplicatedScheduleHours else { return false }
+
+        switch self.frequency {
+        case .daily: return true
+        case .interval: return (self.scheduleInterval ?? 0) > 2
+        case .weekly: return !self.frequencyType.weekFrequency.isEmpty
+        case .minDays: return (1...6).contains(self.frequencyType.minimumDays)
+        case .minTimes: return (3...100).contains(self.frequencyType.minimumTimes)
+        }
+    }
+
+    /// True when two schedule hours fire at the same hour and minute.
+    var hasDuplicatedScheduleHours: Bool {
+        let hours = self.schedule.map { $0.date.getHourAndMinutes() }
+        return Set(hours).count != hours.count
+    }
+}
+
 func getFrequency(_ frequency: String) -> Habit.Frequency {
     return switch frequency {
     case Habit.Frequency.weekly.rawValue:

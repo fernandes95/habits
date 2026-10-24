@@ -31,6 +31,10 @@
 		AE43FF0E2BF291BB008A7085 /* HabitsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43FF0D2BF291BB008A7085 /* HabitsTests.swift */; };
 		AE43FF172BF29254008A7085 /* DefaultStoreServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43FF162BF29254008A7085 /* DefaultStoreServiceTests.swift */; };
 		AE43FF192BF34583008A7085 /* HabitsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43FF182BF34583008A7085 /* HabitsServiceTests.swift */; };
+		AEC0DE012EB1A00000000004 /* Habit+TestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000014 /* Habit+TestFactory.swift */; };
+		AEC0DE012EB1A00000000003 /* HabitEditTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000013 /* HabitEditTests.swift */; };
+		AEC0DE012EB1A00000000002 /* HabitValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000012 /* HabitValidationTests.swift */; };
+		AEC0DE012EB1A00000000001 /* HabitAddTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000011 /* HabitAddTests.swift */; };
 		AE448A812B84E99F0034898F /* HabitDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A802B84E99F0034898F /* HabitDetailView.swift */; };
 		AE448A872B86632E0034898F /* HabitRouteIdEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A862B86632E0034898F /* HabitRouteIdEnvironmentKey.swift */; };
 		AE448A8A2B8664B40034898F /* HabitsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A892B8664B40034898F /* HabitsRouter.swift */; };
@@ -116,6 +120,10 @@
 		AE43FF0D2BF291BB008A7085 /* HabitsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsTests.swift; sourceTree = "<group>"; };
 		AE43FF162BF29254008A7085 /* DefaultStoreServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultStoreServiceTests.swift; sourceTree = "<group>"; };
 		AE43FF182BF34583008A7085 /* HabitsServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsServiceTests.swift; sourceTree = "<group>"; };
+		AEC0DE012EB1A00000000014 /* Habit+TestFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+TestFactory.swift"; sourceTree = "<group>"; };
+		AEC0DE012EB1A00000000013 /* HabitEditTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitEditTests.swift; sourceTree = "<group>"; };
+		AEC0DE012EB1A00000000012 /* HabitValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitValidationTests.swift; sourceTree = "<group>"; };
+		AEC0DE012EB1A00000000011 /* HabitAddTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitAddTests.swift; sourceTree = "<group>"; };
 		AE448A802B84E99F0034898F /* HabitDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailView.swift; sourceTree = "<group>"; };
 		AE448A862B86632E0034898F /* HabitRouteIdEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRouteIdEnvironmentKey.swift; sourceTree = "<group>"; };
 		AE448A892B8664B40034898F /* HabitsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsRouter.swift; sourceTree = "<group>"; };
@@ -211,6 +219,7 @@
 			isa = PBXGroup;
 			children = (
 				AE319CED2BF3AC3500754149 /* EKEventStore+Swizzle.swift */,
+				AEC0DE012EB1A00000000014 /* Habit+TestFactory.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -238,6 +247,9 @@
 			children = (
 				AE43FF152BF29234008A7085 /* Store */,
 				AE43FF182BF34583008A7085 /* HabitsServiceTests.swift */,
+				AEC0DE012EB1A00000000013 /* HabitEditTests.swift */,
+				AEC0DE012EB1A00000000012 /* HabitValidationTests.swift */,
+				AEC0DE012EB1A00000000011 /* HabitAddTests.swift */,
 				AE319CF12BF505BE00754149 /* CalendarServiceTests.swift */,
 			);
 			path = Core;
@@ -667,6 +679,10 @@
 			files = (
 				AE319CF22BF505BE00754149 /* CalendarServiceTests.swift in Sources */,
 				AE43FF192BF34583008A7085 /* HabitsServiceTests.swift in Sources */,
+				AEC0DE012EB1A00000000004 /* Habit+TestFactory.swift in Sources */,
+				AEC0DE012EB1A00000000003 /* HabitEditTests.swift in Sources */,
+				AEC0DE012EB1A00000000002 /* HabitValidationTests.swift in Sources */,
+				AEC0DE012EB1A00000000001 /* HabitAddTests.swift in Sources */,
 				AE43FF0E2BF291BB008A7085 /* HabitsTests.swift in Sources */,
 				AE43FF172BF29254008A7085 /* DefaultStoreServiceTests.swift in Sources */,
 				AE319CEE2BF3AC3500754149 /* EKEventStore+Swizzle.swift in Sources */,
@@ -915,7 +931,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"Habits/Preview Content\"";
 				DEVELOPMENT_TEAM = KD8RY2LWJD;
 				ENABLE_PREVIEWS = YES;
@@ -955,7 +971,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"Habits/Preview Content\"";
 				DEVELOPMENT_TEAM = KD8RY2LWJD;
 				ENABLE_PREVIEWS = YES;
