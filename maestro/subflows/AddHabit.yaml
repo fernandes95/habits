@@ -1,0 +1,12 @@
+appId: ${appId}
+---
+# The toolbar reports "Add" twice and only the inner one follows the disabled state,
+# so no disabled "Add" means the button is enabled
+- assertNotVisible:
+    text: ${output.buttonNewHabitAdd}
+    enabled: false
+- tapOn: ${output.buttonNewHabitAdd}
+
+# Back on the habits list of today
+- assertVisible: ${output.buttonHomeAdd}
+- assertVisible: ${output.habitName}

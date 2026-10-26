@@ -1,0 +1,31 @@
+appId: ${appId}
+---
+# Selects every week day that isn't selected yet
+- runFlow:
+    file: SelectWeekDay.yaml
+    env:
+      DAY: 1
+- runFlow:
+    file: SelectWeekDay.yaml
+    env:
+      DAY: 2
+- runFlow:
+    file: SelectWeekDay.yaml
+    env:
+      DAY: 3
+- runFlow:
+    file: SelectWeekDay.yaml
+    env:
+      DAY: 4
+- runFlow:
+    file: SelectWeekDay.yaml
+    env:
+      DAY: 5
+- runFlow:
+    file: SelectWeekDay.yaml
+    env:
+      DAY: 6
+- runFlow:
+    file: SelectWeekDay.yaml
+    env:
+      DAY: 7

@@ -1,0 +1,23 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# Adds a minimum times habit, with two schedule hours, forever
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetForever.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Minimum Times
+      VALUE: "5"
+- runFlow: ../subflows/AddScheduleHours.yaml
+- runFlow: ../subflows/AddHabit.yaml
+- runFlow:
+    file: ../subflows/AssertSavedSettings.yaml
+    env:
+      FREQUENCY: Minimum Times
+      VALUE: "5"
+      HAS_SCHEDULE: true
+      HAS_END_DATE: false
+      HAS_LOCATION: false
+      WEEK_DAYS: one

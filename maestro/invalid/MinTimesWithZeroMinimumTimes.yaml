@@ -1,0 +1,27 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# A valid minimum times habit with schedule, end date and location
+# can't be added once it has 0 minimum times
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/PickLocation.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Minimum Times
+      VALUE: "5"
+- runFlow: ../subflows/AddScheduleHours.yaml
+- runFlow: ../subflows/AssertAddEnabled.yaml
+
+- scrollUntilVisible:
+    element:
+      id: ${output.idMinTimes}
+    direction: UP
+- runFlow:
+    file: ../subflows/TypeNumber.yaml
+    env:
+      FIELD_ID: ${output.idMinTimes}
+      VALUE: "0"
+
+- runFlow: ../subflows/AssertAddDisabled.yaml

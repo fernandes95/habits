@@ -1,0 +1,11 @@
+appId: ${appId}
+---
+# Adds two schedule hours, 09:00 and 10:00
+- scrollUntilVisible:
+    element: ${output.buttonNewHabitScheduleAdd}
+- tapOn: ${output.buttonNewHabitScheduleAdd}
+- tapOn: ${output.buttonNewHabitScheduleAdd}
+- scrollUntilVisible:
+    element: "Hour #2"
+- assertVisible: "09:00"
+- assertVisible: "10:00"

@@ -1,0 +1,18 @@
+appId: ${appId}
+---
+# Starts from a clean install and opens the new habit sheet with the name filled
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+      location: always
+
+- assertVisible: ${output.buttonHomeAdd}
+- tapOn: ${output.buttonHomeAdd}
+- assertVisible:
+    id: ${output.idNewHabitName}
+- tapOn:
+    id: ${output.idNewHabitName}
+- inputText: ${output.habitName}
+# Return closes the keyboard so it doesn't cover the rest of the form
+- pressKey: Enter

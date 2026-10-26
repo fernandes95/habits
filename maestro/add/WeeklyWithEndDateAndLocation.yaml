@@ -1,0 +1,22 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# Adds a weekly habit, with an end date, with a location reminder
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/PickLocation.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Weekly
+      VALUE: ""
+- runFlow: ../subflows/AddHabit.yaml
+- runFlow:
+    file: ../subflows/AssertSavedSettings.yaml
+    env:
+      FREQUENCY: Weekly
+      VALUE: ""
+      HAS_SCHEDULE: false
+      HAS_END_DATE: true
+      HAS_LOCATION: true
+      WEEK_DAYS: one

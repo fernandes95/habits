@@ -29,6 +29,7 @@ struct HabitFrequencyView: View {
                     Text(frequency.rawValue).tag(frequency)
                 }
             }
+            .accessibilityIdentifier("habit_frequency")
             .onChange(of: self.habit.frequency) { _, frequency in
                 if frequency != .weekly {
                     self.habit.frequencyType.weekFrequency.removeAll()
@@ -58,6 +59,9 @@ struct HabitFrequencyView: View {
                         }
                     }
                     .contentShape(Rectangle())
+                    .accessibilityElement(children: .combine)
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityIdentifier("habit_week_day_\(day.rawValue)")
                     .onTapGesture {
                         if self.habit.frequencyType.weekFrequency.contains(day) {
                             self.habit.frequencyType.weekFrequency.removeAll(where: {$0 == day})
@@ -80,19 +84,20 @@ struct HabitFrequencyView: View {
                         Text("habit_interval_title")
                         Spacer()
                         Text("\(String(self.habit.scheduleInterval ?? 0))")
+                            .accessibilityIdentifier("habit_interval_value")
                     }
                 }
             case .minDays:
                 TextField("habit_min_days", text: self.numberText(self.$habit.frequencyType.minimumDays))
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .keyboardType(.numberPad)
-                    .accessibilityIdentifier("")
+                    .accessibilityIdentifier("habit_min_days")
                     .disabled(!isEditing)
             case .minTimes:
                 TextField("habit_min_times", text: self.numberText(self.$habit.frequencyType.minimumTimes))
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .keyboardType(.numberPad)
-                    .accessibilityIdentifier("")
+                    .accessibilityIdentifier("habit_min_times")
                     .disabled(!isEditing)
             }
         }

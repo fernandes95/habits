@@ -1,0 +1,26 @@
+appId: ${appId}
+---
+- scrollUntilVisible:
+    element:
+      id: ${output.idWeekDayPrefix}7
+- assertVisible:
+    id: ${output.idWeekDayPrefix}1
+    selected: true
+- assertVisible:
+    id: ${output.idWeekDayPrefix}2
+    selected: true
+- assertVisible:
+    id: ${output.idWeekDayPrefix}3
+    selected: true
+- assertVisible:
+    id: ${output.idWeekDayPrefix}4
+    selected: true
+- assertVisible:
+    id: ${output.idWeekDayPrefix}5
+    selected: true
+- assertVisible:
+    id: ${output.idWeekDayPrefix}6
+    selected: true
+- assertVisible:
+    id: ${output.idWeekDayPrefix}7
+    selected: true

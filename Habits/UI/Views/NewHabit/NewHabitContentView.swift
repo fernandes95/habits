@@ -74,6 +74,7 @@ struct NewHabitContentView: View {
                     }
 
                     Toggle("habit_has_end_date", isOn: $habit.hasNoEndDate)
+                        .accessibilityIdentifier("new_habit_is_forever")
                         .onChange(of: self.habit.hasNoEndDate) { _, hasNoEndDate in
                             if hasNoEndDate {
                                 let calendar = Calendar.current

@@ -1,0 +1,24 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# Adds a interval habit, changes it to minimum days
+# and checks the list shows it on the days minimum days allows
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetForever.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Interval
+      VALUE: "3"
+- runFlow: ../subflows/AddHabit.yaml
+
+- runFlow:
+    file: ../subflows/EditFrequency.yaml
+    env:
+      FREQUENCY: Minimum Days
+      VALUE: "3"
+- runFlow:
+    file: ../subflows/AssertListedDays.yaml
+    env:
+      FREQUENCY: Minimum Days

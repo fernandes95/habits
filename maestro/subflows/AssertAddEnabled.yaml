@@ -1,0 +1,6 @@
+appId: ${appId}
+---
+# No disabled "Add" means the button is enabled, see AddHabit.yaml
+- assertNotVisible:
+    text: ${output.buttonNewHabitAdd}
+    enabled: false

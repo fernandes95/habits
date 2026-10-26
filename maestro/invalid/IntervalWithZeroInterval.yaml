@@ -1,0 +1,27 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# A valid interval habit with schedule, end date and location
+# can't be added once it has an interval of 0
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/PickLocation.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Interval
+      VALUE: "3"
+- runFlow: ../subflows/AddScheduleHours.yaml
+- runFlow: ../subflows/AssertAddEnabled.yaml
+
+- scrollUntilVisible:
+    element:
+      id: ${output.idInterval}
+    direction: UP
+- runFlow:
+    file: ../subflows/TypeNumber.yaml
+    env:
+      FIELD_ID: ${output.idInterval}
+      VALUE: "0"
+
+- runFlow: ../subflows/AssertAddDisabled.yaml

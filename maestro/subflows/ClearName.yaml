@@ -1,0 +1,20 @@
+appId: ${appId}
+---
+# Erases the whole habit name. eraseText only deletes what's before the cursor and
+# the tap puts the cursor mid text, so the second tap lands after what's left of it.
+# Centered, so the field isn't left under the toolbar
+- scrollUntilVisible:
+    element:
+      id: ${output.idNewHabitName}
+    direction: UP
+    centerElement: true
+- tapOn:
+    id: ${output.idNewHabitName}
+- eraseText
+- tapOn:
+    id: ${output.idNewHabitName}
+- eraseText
+# Nothing but the "Title" placeholder is left
+- assertNotVisible:
+    id: ${output.idNewHabitName}
+    text: "(?!Title$).+"

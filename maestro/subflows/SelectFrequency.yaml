@@ -1,0 +1,59 @@
+appId: ${appId}
+---
+# Picks FREQUENCY and fills it with VALUE, weekly habits pick the day after today
+- scrollUntilVisible:
+    element:
+      id: ${output.idFrequency}
+- tapOn:
+    id: ${output.idFrequency}
+- tapOn: ${FREQUENCY}
+- assertVisible: "Frequency, ${FREQUENCY}"
+
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Weekly'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: ${output.idWeekDayPrefix + output.tomorrowWeekDay}
+      - tapOn:
+          id: ${output.idWeekDayPrefix + output.tomorrowWeekDay}
+      - assertVisible:
+          id: ${output.idWeekDayPrefix + output.tomorrowWeekDay}
+          selected: true
+
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Interval'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: ${output.idInterval}
+      - runFlow:
+          file: TypeNumber.yaml
+          env:
+            FIELD_ID: ${output.idInterval}
+
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Minimum Days'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: ${output.idMinDays}
+      - runFlow:
+          file: TypeNumber.yaml
+          env:
+            FIELD_ID: ${output.idMinDays}
+
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Minimum Times'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: ${output.idMinTimes}
+      - runFlow:
+          file: TypeNumber.yaml
+          env:
+            FIELD_ID: ${output.idMinTimes}

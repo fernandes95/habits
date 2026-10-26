@@ -6,4 +6,4 @@ var name = "Habit " + currentdate.getDate() + "/"
                 + currentdate.getHours() + ":"  
                 + currentdate.getMinutes() + ":" 
                 + currentdate.getSeconds();
-output.habitName = this.name
+output.habitName = name

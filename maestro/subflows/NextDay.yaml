@@ -1,0 +1,10 @@
+appId: ${appId}
+---
+# Swipes the habits list to the next day and waits until DAY_LABEL is the selected day
+- swipe:
+    start: 85%,60%
+    end: 15%,60%
+- waitForAnimationToEnd
+- assertVisible:
+    text: ${DAY_LABEL}
+    selected: true

@@ -1,0 +1,23 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# Adds a minimum days habit, with two schedule hours, with an end date, with a location reminder
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/PickLocation.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Minimum Days
+      VALUE: "3"
+- runFlow: ../subflows/AddScheduleHours.yaml
+- runFlow: ../subflows/AddHabit.yaml
+- runFlow:
+    file: ../subflows/AssertSavedSettings.yaml
+    env:
+      FREQUENCY: Minimum Days
+      VALUE: "3"
+      HAS_SCHEDULE: true
+      HAS_END_DATE: true
+      HAS_LOCATION: true
+      WEEK_DAYS: one

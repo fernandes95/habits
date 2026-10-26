@@ -1,0 +1,22 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# Adds a daily habit, forever, without schedule or location
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetForever.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Daily
+      VALUE: ""
+- runFlow: ../subflows/AddHabit.yaml
+- runFlow:
+    file: ../subflows/AssertSavedSettings.yaml
+    env:
+      FREQUENCY: Daily
+      VALUE: ""
+      HAS_SCHEDULE: false
+      HAS_END_DATE: false
+      HAS_LOCATION: false
+      WEEK_DAYS: one

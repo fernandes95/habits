@@ -1,0 +1,17 @@
+appId: ${appId}
+---
+# Selects the week day DAY when it isn't selected yet
+- scrollUntilVisible:
+    element:
+      id: ${output.idWeekDayPrefix + DAY}
+- runFlow:
+    when:
+      notVisible:
+        id: ${output.idWeekDayPrefix + DAY}
+        selected: true
+    commands:
+      - tapOn:
+          id: ${output.idWeekDayPrefix + DAY}
+- assertVisible:
+    id: ${output.idWeekDayPrefix + DAY}
+    selected: true

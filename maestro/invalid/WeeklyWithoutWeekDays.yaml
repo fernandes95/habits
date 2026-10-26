@@ -1,0 +1,27 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# A valid weekly habit with schedule, end date and location
+# can't be added once it has no week day
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/PickLocation.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Weekly
+      VALUE: ""
+- runFlow: ../subflows/AddScheduleHours.yaml
+- runFlow: ../subflows/AssertAddEnabled.yaml
+
+- scrollUntilVisible:
+    element:
+      id: ${output.idWeekDayPrefix + output.tomorrowWeekDay}
+    direction: UP
+- tapOn:
+    id: ${output.idWeekDayPrefix + output.tomorrowWeekDay}
+- assertNotVisible:
+    id: ${output.idWeekDayPrefix + output.tomorrowWeekDay}
+    selected: true
+
+- runFlow: ../subflows/AssertAddDisabled.yaml

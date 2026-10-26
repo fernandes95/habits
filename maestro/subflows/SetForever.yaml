@@ -1,0 +1,12 @@
+appId: ${appId}
+---
+# Turns "Is habit forever?" on, the end date goes away
+- tapOn:
+    text: "0"
+    childOf:
+      id: ${output.idNewHabitForever}
+- assertVisible:
+    text: "1"
+    childOf:
+      id: ${output.idNewHabitForever}
+- assertNotVisible: "End date"
