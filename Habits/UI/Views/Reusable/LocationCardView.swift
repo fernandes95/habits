@@ -7,7 +7,6 @@
 
 import SwiftUI
 import MapKit
-import Contacts
 
 /// Location row with the place name, its address and a small map with the pin.
 /// When `place` is nil the name and address are looked up from the coordinate,
@@ -81,8 +80,13 @@ struct LocationCardView: View {
         .contentShape(.rect)
     }
 
+    /// Place given, then the one saved with the location, then the looked up one
+    private var knownPlace: LocationPlaceDetails? {
+        self.place ?? self.location.place
+    }
+
     private var displayedPlace: LocationPlaceDetails? {
-        self.place ?? self.resolvedPlace
+        self.knownPlace ?? self.resolvedPlace
     }
 
     private var coordinateKey: String {
@@ -92,25 +96,15 @@ struct LocationCardView: View {
     /// Reverse geocodes the coordinate when no name or address was given
     private func resolvePlace() async {
         self.resolvedPlace = nil
-        guard self.place == nil else { return }
+        guard self.knownPlace == nil else { return }
 
         self.isResolving = true
         defer { self.isResolving = false }
 
-        let location = CLLocation(latitude: self.location.latitude, longitude: self.location.longitude)
-        guard let placemark: CLPlacemark = try? await CLGeocoder().reverseGeocodeLocation(location).first else {
-            return
-        }
-
-        let address: String? = placemark.postalAddress.map { (postalAddress: CNPostalAddress) in
-            CNPostalAddressFormatter
-                .string(from: postalAddress, style: .mailingAddress)
-                .replacingOccurrences(of: "\n", with: ", ")
-        }
-
-        guard let name = placemark.name ?? address else { return }
-
-        self.resolvedPlace = LocationPlaceDetails(name: name, address: address)
+        self.resolvedPlace = await LocationPlaceDetails.resolve(
+            latitude: self.location.latitude,
+            longitude: self.location.longitude
+        )
     }
 }
 

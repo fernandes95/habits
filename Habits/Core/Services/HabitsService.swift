@@ -104,7 +104,7 @@ class HabitsService {
     func addHabit(_ habit: Habit) async throws -> UUID {
         let eventId: String = ""
         let schedule: [Hour] = habit.schedule
-        var location: HabitEntity.Location?
+        let location: HabitEntity.Location? = habit.location?.entity
 
         // Won't use this feature for now
         /*if habit.schedule.isEmpty {
@@ -112,13 +112,6 @@ class HabitsService {
         } else {
             schedule = try await calendarService.createScheduleCalendarEvents(habit)
         }*/
-
-        if habit.location != nil {
-            location = HabitEntity.Location(
-                latitude: habit.location!.latitude,
-                longitude: habit.location!.longitude
-            )
-        }
 
         let newHabit: HabitEntity = HabitEntity(
             eventId: eventId,

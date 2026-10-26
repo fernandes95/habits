@@ -19,6 +19,10 @@ class LocationService: NSObject, ObservableObject {
     @Published
     var status: CLAuthorizationStatus?
 
+    /// Last known user location, used to show how far each habit location is
+    @Published
+    var currentLocation: CLLocation?
+
     // desiredAccuracy as kCLLocationAccuracyBestForNavigation to have the most accurate location
     // activityType as otherNavigation to include all type of navigation besides airborn
     init(habitsService: HabitsService, regionService: RegionService) {
@@ -124,6 +128,10 @@ extension LocationService: CLLocationManagerDelegate {
             .filter { $0.horizontalAccuracy > 0 && $0.horizontalAccuracy <= 200 }
             .filter { abs($0.timestamp.timeIntervalSinceNow) < 60 }
             .min { $0.horizontalAccuracy < $1.horizontalAccuracy }
+
+        if let location = usable {
+            self.currentLocation = location
+        }
 
         if let location = usable, !self.didRunInitialInsideCheck {
             self.didRunInitialInsideCheck = true

@@ -151,5 +151,8 @@ struct HabitEntity: Codable {
     internal struct Location: Codable {
         var latitude: Double
         var longitude: Double
+        /// Name of the place picked in the location search, nil for dropped pins and older habits
+        var name: String?
+        var address: String?
     }
 }

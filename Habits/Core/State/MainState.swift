@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import EventKit
+import CoreLocation
 
 @MainActor
 class MainState: ObservableObject {
@@ -31,6 +32,10 @@ class MainState: ObservableObject {
     @Published
     var selectedDate: Date = .now
 
+    /// Last known user location, nil while unknown or without location permission
+    @Published
+    var currentLocation: CLLocation?
+
     /// Habits of each loaded day, keyed by start of day
     private var habitsByDay: [Date: [Habit]] = [:]
 
@@ -49,6 +54,10 @@ class MainState: ObservableObject {
     init(environment: AppEnvironment) {
         self.habitsService = environment.habitsService
         self.locationService = environment.locationService
+
+        self.locationService.$currentLocation
+            .receive(on: DispatchQueue.main)
+            .assign(to: &self.$currentLocation)
     }
 
     func initHabits() async {
@@ -64,6 +73,17 @@ class MainState: ObservableObject {
 
     func requestLocationAuthorizationIfNeeded() {
         self.locationService.requestOneTimeLocation()
+    }
+
+    /// Asks for a fresh user location, only when location was already authorized
+    func refreshCurrentLocation() {
+        self.locationService.requestOneTimeLocation()
+    }
+
+    /// Distance in meters from the user to `location`, nil while the user location is unknown
+    func distance(to location: Habit.Location) -> CLLocationDistance? {
+        guard let currentLocation else { return nil }
+        return currentLocation.distance(from: CLLocation(latitude: location.latitude, longitude: location.longitude))
     }
 
     /// Get exportable document

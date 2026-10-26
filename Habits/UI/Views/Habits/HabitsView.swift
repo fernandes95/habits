@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct HabitsView: View {
+    @Environment(\.scenePhase) private var scenePhase
+
     @EnvironmentObject
     private var router: HabitsRouter
 
@@ -51,6 +54,7 @@ struct HabitsView: View {
                 case .all:
                     AllHabitsContentView(
                         list: self.state.allHabits,
+                        distance: self.state.distance(to:),
                         onItemAction: { habit in
                             router.push(HabitDetailView(habit: habit))
                         }
@@ -75,6 +79,12 @@ struct HabitsView: View {
                 self.selectToday()
             }
         }
+        .onChange(of: self.scenePhase) { _, scenePhase in
+            // The user may have moved while the app was in the background
+            if scenePhase == .active {
+                self.state.refreshCurrentLocation()
+            }
+        }
         .task {
             if !didLoadData {
                 self.reloadAll()
@@ -88,6 +98,7 @@ struct HabitsView: View {
             list: self.$state.habits,
             selectedDate: self.state.selectedDate,
             calendar: self.state.calendar,
+            distance: self.state.distance(to:),
             onItemStatusAction: { habit in
                 Task {
                     do {
@@ -160,6 +171,8 @@ private struct ContentView: View {
     let selectedDate: Date
     /// Calendar with the configured first day of the week
     let calendar: Calendar
+    /// Distance from the user to a habit location, nil while the user location is unknown
+    let distance: (Habit.Location) -> CLLocationDistance?
     var onItemStatusAction: (Habit) -> Void
     var onItemAction: (Habit) -> Void
 
@@ -175,6 +188,8 @@ private struct ContentView: View {
                     completedSteps: habit.completedCount,
                     totalSteps: totalSteps,
                     label: self.minDaysLabel(for: habit),
+                    location: habit.location,
+                    locationDistance: habit.location.flatMap { self.distance($0) },
                     status: $habit.isChecked,
                     statusAction: {
                         var habit = habit
@@ -205,6 +220,8 @@ private struct ContentView: View {
 /// Every saved habit, without a status, only the name and the way to its detail
 private struct AllHabitsContentView: View {
     let list: [Habit]
+    /// Distance from the user to a habit location, nil while the user location is unknown
+    let distance: (Habit.Location) -> CLLocationDistance?
     var onItemAction: (Habit) -> Void
 
     var body: some View {
@@ -215,6 +232,8 @@ private struct AllHabitsContentView: View {
             ListItem(
                 name: habit.name,
                 type: .noStatusListItem,
+                location: habit.location,
+                locationDistance: habit.location.flatMap { self.distance($0) },
                 status: .constant(false),
                 statusAction: {},
                 itemAction: { onItemAction(habit) }

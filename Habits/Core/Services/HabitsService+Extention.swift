@@ -33,9 +33,7 @@ extension HabitsService {
 
         /// Making sure the values are overridden
         updatedHabit.scheduleInterval = eventsHabit.scheduleInterval
-        updatedHabit.location = eventsHabit.location.map { location in
-            HabitEntity.Location(latitude: location.latitude, longitude: location.longitude)
-        }
+        updatedHabit.location = eventsHabit.location?.entity
 
         /// Statuses saved before `requiredCount` existed have no target. Stamp the previous target
         /// on them while it's still known, so the history keeps its colors after a type/target change.

@@ -41,6 +41,7 @@ struct HabitDetailView: View {
     init(habit: Habit) {
         self.habit = habit
         self._editingHabit = State(initialValue: habit)
+        self._locationPlace = State(initialValue: habit.location?.place)
     }
 
     var body: some View {
@@ -209,18 +210,22 @@ struct HabitDetailView: View {
     }
 
     private func updateHabit() {
+        // Saved with the habit so the list can show the place name
+        self.editingHabit.location?.place = self.locationPlace
         Task {
             do {
                 try await self.state.editHabit(habit: self.editingHabit)
                 let habitEdited = try await self.state.getHabit(habit: self.editingHabit)
                 self.habit = habitEdited
                 self.editingHabit = habitEdited
+                self.locationPlace = habitEdited.location?.place
             } catch let error { print(error.localizedDescription) }
         }
     }
 
     private func cancelEditHabit() {
         self.editingHabit = self.habit
+        self.locationPlace = self.habit.location?.place
         self.isEditing = false
     }
 

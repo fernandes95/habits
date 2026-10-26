@@ -298,19 +298,33 @@ struct Habit: Identifiable, Equatable {
             return lhs.locationCoordinate.latitude == rhs.locationCoordinate.latitude &&
             lhs.locationCoordinate.longitude == rhs.locationCoordinate.longitude &&
             lhs.region.center.latitude == rhs.region.center.latitude &&
-            lhs.region.center.longitude == rhs.region.center.longitude
+            lhs.region.center.longitude == rhs.region.center.longitude &&
+            lhs.place == rhs.place
         }
 
         var latitude: CLLocationDegrees
         var longitude: CLLocationDegrees
         var locationCoordinate: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
         var region: MKCoordinateRegion
+        /// Place picked in the location search, nil when the pin was dropped by hand
+        var place: LocationPlaceDetails?
 
-        init(latitude: Double, longitude: Double, region: MKCoordinateRegion) {
+        init(latitude: Double, longitude: Double, region: MKCoordinateRegion, place: LocationPlaceDetails? = nil) {
             self.latitude = latitude
             self.longitude = longitude
             self.locationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             self.region = region
+            self.place = place
+        }
+
+        /// Stored version of this location, keeping the picked place name and address
+        var entity: HabitEntity.Location {
+            HabitEntity.Location(
+                latitude: self.latitude,
+                longitude: self.longitude,
+                name: self.place?.name,
+                address: self.place?.address
+            )
         }
     }
 
@@ -380,6 +394,7 @@ func getLocation(location: HabitEntity.Location?) -> Habit.Location? {
         region: MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: location!.latitude, longitude: location!.longitude),
             latitudinalMeters: .mapDistance,
-            longitudinalMeters: .mapDistance)
+            longitudinalMeters: .mapDistance),
+        place: location!.name.map { LocationPlaceDetails(name: $0, address: location!.address) }
     )
 }

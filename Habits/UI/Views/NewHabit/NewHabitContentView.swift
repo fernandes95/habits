@@ -180,11 +180,13 @@ struct NewHabitContentView: View {
             if self.habit.startDate >= self.habit.endDate {
                 self.habit.endDate = self.habit.startDate
             }
-            let newHabit = self.habit
+            var newHabit = self.habit
                 .with(
                     createdDate: .now,
                     updatedDate: .now
                 )
+            // Saved with the habit so the list can show the place name
+            newHabit.location?.place = self.locationPlace
 
             do {
                 try await self.state.addHabit(newHabit)

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 enum ListItemType {
     /// Checkbox, name, progress label and detail arrow
@@ -20,6 +21,10 @@ struct ListItem: View {
     var completedSteps: Int = 0
     var totalSteps: Int = 0
     var label: String?
+    /// Shown under the name when set
+    var location: Habit.Location?
+    /// Distance from the user to `location`, nil while the user location is unknown
+    var locationDistance: CLLocationDistance?
     @Binding var status: Bool
     let statusAction: () -> Void
     let itemAction: () -> Void
@@ -29,15 +34,13 @@ struct ListItem: View {
             switch self.type {
             case .regularListItem:
                 Toggle(isOn: self.$status) {
-                    Text(self.name).strikethrough(status)
-                        .lineLimit(1)
+                    self.title
                 }
                 .padding([.vertical, .trailing])
                 .toggleStyle(CheckBoxStyle(completed: completedSteps, total: totalSteps))
                 .onTapGesture { statusAction() }
             case .noStatusListItem:
-                Text(self.name)
-                    .lineLimit(1)
+                self.title
                     // Same height as the checkbox, so every list has the same row height
                     .frame(minHeight: 36)
                     .padding([.vertical, .trailing])
@@ -57,6 +60,18 @@ struct ListItem: View {
                     .padding(.leading)
             })
             .padding([.vertical, .leading])
+        }
+    }
+
+    private var title: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(self.name)
+                .strikethrough(self.type == .regularListItem && self.status)
+                .lineLimit(1)
+
+            if let location {
+                HabitLocationLabel(location: location, distance: self.locationDistance)
+            }
         }
     }
 
@@ -139,8 +154,122 @@ struct CheckBoxStyle: ToggleStyle {
     }
 }
 
+/// Habit location shown under the habit name.
+/// Inside the habit region it reads "You're here • Place", outside it reads "Place • 1.2 km".
+struct HabitLocationLabel: View {
+    let location: Habit.Location
+    /// Distance from the user to the location, nil while the user location is unknown
+    let distance: CLLocationDistance?
+
+    @State private var place: LocationPlaceDetails?
+    @State private var isResolving: Bool = true
+
+    /// Same radius used to monitor the habit region
+    private var isInside: Bool {
+        guard let distance else { return false }
+        return distance <= .regionRadius
+    }
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "location.fill")
+                .font(.caption)
+                .foregroundStyle(self.isInside ? Color.blue : Color.secondary)
+
+            if self.isInside {
+                Text("habit_location_here")
+                    .fontWeight(.semibold)
+                    .fixedSize()
+                self.separator
+                self.placeName
+            } else {
+                self.placeName
+                if let formattedDistance {
+                    self.separator
+                    Text(verbatim: formattedDistance)
+                        .monospacedDigit()
+                        .fixedSize()
+                }
+            }
+        }
+        .font(.subheadline)
+        .foregroundStyle(self.isInside ? Color.primary : Color.secondary)
+        .accessibilityElement(children: .combine)
+        .task(id: self.coordinateKey) {
+            // Habits saved from the location search already know the place name
+            if let place = self.location.place {
+                self.place = place
+                self.isResolving = false
+                return
+            }
+            self.isResolving = true
+            self.place = await LocationPlaceDetails.resolve(
+                latitude: self.location.latitude,
+                longitude: self.location.longitude
+            )
+            self.isResolving = false
+        }
+    }
+
+    private var placeName: some View {
+        Group {
+            if let name = self.place?.name {
+                Text(verbatim: name)
+            } else {
+                Text("habit_location_pinned")
+            }
+        }
+        .lineLimit(1)
+        .redacted(reason: self.isResolving && self.place == nil ? .placeholder : [])
+    }
+
+    private var separator: some View {
+        Text(verbatim: "•")
+            .accessibilityHidden(true)
+    }
+
+    private var formattedDistance: String? {
+        guard let distance else { return nil }
+        return Measurement(value: distance, unit: UnitLength.meters).formatted(
+            .measurement(
+                width: .abbreviated,
+                usage: .road,
+                // 680 m, 1.2 km, 12 km
+                numberFormatStyle: .number.precision(.significantDigits(1...2))
+            )
+        )
+    }
+
+    private var coordinateKey: String {
+        "\(self.location.latitude),\(self.location.longitude),\(self.location.place?.name ?? "")"
+    }
+}
+
 #Preview {
+    let location = Habit.Location(
+        latitude: 38.7369,
+        longitude: -9.1426,
+        region: .around(CLLocationCoordinate2D(latitude: 38.7369, longitude: -9.1426))
+    )
+
     VStack {
+        ListItem(
+            name: "Gym",
+            location: location,
+            locationDistance: 40,
+            status: .constant(false),
+            statusAction: {},
+            itemAction: {}
+        )
+        ListItem(
+            name: "Read 20 pages",
+            totalSteps: 3,
+            location: location,
+            locationDistance: 1200,
+            status: .constant(false),
+            statusAction: {},
+            itemAction: {}
+        )
         ListItem(
             name: "LONG NAMEEEEEEEEEEEEEEEEEEEEE shfsjdfnsjdfbsljdfbs",
             status: .constant(false),
