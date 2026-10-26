@@ -35,6 +35,7 @@
 		AE448A872B86632E0034898F /* HabitRouteIdEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A862B86632E0034898F /* HabitRouteIdEnvironmentKey.swift */; };
 		AE448A8A2B8664B40034898F /* HabitsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A892B8664B40034898F /* HabitsRouter.swift */; };
 		AE448A8D2B8925D80034898F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AE448A8C2B8925D80034898F /* Localizable.xcstrings */; };
+		AEA4D1213090A00000B71C76 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AEA4D1203090A00000B71C76 /* InfoPlist.xcstrings */; };
 		AE448A902B8CECF60034898F /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A8F2B8CECF60034898F /* DateHelper.swift */; };
 		AE448A932B8D20160034898F /* StoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A922B8D20160034898F /* StoreService.swift */; };
 		AE448A952B8D20700034898F /* DefaultStoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A942B8D20700034898F /* DefaultStoreService.swift */; };
@@ -80,6 +81,7 @@
 		AEC0DE012EB1A00000000004 /* Habit+TestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000014 /* Habit+TestFactory.swift */; };
 		AEA4D1113090A00000B71C76 /* DefaultStoreService+Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4D1103090A00000B71C76 /* DefaultStoreService+Tests.swift */; };
 		AECA0CA13086AB7C00AC1AF2 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */; };
+		AEA4D1313090A00000B71C76 /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4D1303090A00000B71C76 /* AppLanguage.swift */; };
 		AECAF3193085FE5400AC1AF2 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECAF3183085FE5100AC1AF2 /* AppConfig.swift */; };
 		AEDAA9D72E60B9E10001ABA6 /* LocationSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */; };
 		AEDAA9D92E60BACD0001ABA6 /* LocationSearchCompletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDAA9D82E60BABF0001ABA6 /* LocationSearchCompletion.swift */; };
@@ -126,6 +128,7 @@
 		AE448A862B86632E0034898F /* HabitRouteIdEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRouteIdEnvironmentKey.swift; sourceTree = "<group>"; };
 		AE448A892B8664B40034898F /* HabitsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsRouter.swift; sourceTree = "<group>"; };
 		AE448A8C2B8925D80034898F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		AEA4D1203090A00000B71C76 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		AE448A8F2B8CECF60034898F /* DateHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
 		AE448A922B8D20160034898F /* StoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreService.swift; sourceTree = "<group>"; };
 		AE448A942B8D20700034898F /* DefaultStoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultStoreService.swift; sourceTree = "<group>"; };
@@ -174,6 +177,7 @@
 		AEC0DE012EB1A00000000014 /* Habit+TestFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+TestFactory.swift"; sourceTree = "<group>"; };
 		AEA4D1103090A00000B71C76 /* DefaultStoreService+Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DefaultStoreService+Tests.swift"; sourceTree = "<group>"; };
 		AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		AEA4D1303090A00000B71C76 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
 		AECAF3183085FE5100AC1AF2 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchService.swift; sourceTree = "<group>"; };
 		AEDAA9D82E60BABF0001ABA6 /* LocationSearchCompletion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchCompletion.swift; sourceTree = "<group>"; };
@@ -305,6 +309,7 @@
 			children = (
 				AEA3D6BE2B5E85B900A08F31 /* Assets.xcassets */,
 				AE448A8C2B8925D80034898F /* Localizable.xcstrings */,
+				AEA4D1203090A00000B71C76 /* InfoPlist.xcstrings */,
 			);
 			path = Content;
 			sourceTree = "<group>";
@@ -357,6 +362,7 @@
 			isa = PBXGroup;
 			children = (
 				AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */,
+				AEA4D1303090A00000B71C76 /* AppLanguage.swift */,
 				AE448A9B2B8DEC970034898F /* Habit.swift */,
 				AE43FF042BF28F4C008A7085 /* Habit+Default.swift */,
 				AE30E15F2BA4C182009E10CD /* Ocurrence.swift */,
@@ -622,6 +628,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"pt-PT",
 			);
 			mainGroup = AEA3D6AE2B5E85B700A08F31;
 			packageReferences = (
@@ -652,6 +659,7 @@
 				AEA4C929308B744000B71C76 /* LaunchScreen.storyboard in Resources */,
 				AEA3D6BF2B5E85B900A08F31 /* Assets.xcassets in Resources */,
 				AE448A8D2B8925D80034898F /* Localizable.xcstrings in Resources */,
+				AEA4D1213090A00000B71C76 /* InfoPlist.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -746,6 +754,7 @@
 				AEA4B5CD3089081200B71C76 /* SettingsToolbarButton.swift in Sources */,
 				AE30E1602BA4C182009E10CD /* Ocurrence.swift in Sources */,
 				AECA0CA13086AB7C00AC1AF2 /* AppTheme.swift in Sources */,
+				AEA4D1313090A00000B71C76 /* AppLanguage.swift in Sources */,
 				AEA4B5C03088F74300B71C76 /* TodoView.swift in Sources */,
 				AE9D9A112BB3328400CF3498 /* LocationService.swift in Sources */,
 				AEA3D6BB2B5E85B700A08F31 /* HabitsApp.swift in Sources */,

@@ -21,6 +21,12 @@
             "state" : "translated",
             "value" : "Add"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar"
+          }
         }
       }
     },
@@ -31,6 +37,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cancel"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
           }
         }
       }
@@ -43,6 +55,12 @@
             "state" : "translated",
             "value" : "Dismiss"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fechar"
+          }
         }
       }
     },
@@ -53,6 +71,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Done"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluído"
           }
         }
       }
@@ -65,6 +89,12 @@
             "state" : "translated",
             "value" : "Edit"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar"
+          }
         }
       }
     },
@@ -75,6 +105,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Next"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguinte"
           }
         }
       }
@@ -87,6 +123,12 @@
             "state" : "translated",
             "value" : "Open Settings"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Definições"
+          }
         }
       }
     },
@@ -97,6 +139,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Today"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoje"
           }
         }
       }
@@ -109,6 +157,63 @@
             "state" : "translated",
             "value" : "Category"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categoria"
+          }
+        }
+      }
+    },
+    "habit_category_bad" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bad habit"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mau hábito"
+          }
+        }
+      }
+    },
+    "habit_category_maintain" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep habit"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manter hábito"
+          }
+        }
+      }
+    },
+    "habit_category_new" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New habit"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novo hábito"
+          }
         }
       }
     },
@@ -119,6 +224,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete habit"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar hábito"
           }
         }
       }
@@ -131,6 +242,12 @@
             "state" : "translated",
             "value" : "Are you sure you wanto to delete this habit?"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem a certeza de que pretende apagar este hábito?"
+          }
         }
       }
     },
@@ -141,6 +258,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete habit"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar hábito"
           }
         }
       }
@@ -153,6 +276,12 @@
             "state" : "translated",
             "value" : "History"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Histórico"
+          }
         }
       }
     },
@@ -163,6 +292,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Save Without Reminder"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar sem lembrete"
           }
         }
       }
@@ -175,6 +310,12 @@
             "state" : "translated",
             "value" : "Habit detail"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalhe do hábito"
+          }
         }
       }
     },
@@ -185,6 +326,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "End date"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de fim"
           }
         }
       }
@@ -197,6 +344,97 @@
             "state" : "translated",
             "value" : "Frequency"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frequência"
+          }
+        }
+      }
+    },
+    "habit_frequency_daily" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diário"
+          }
+        }
+      }
+    },
+    "habit_frequency_interval" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interval"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intervalo"
+          }
+        }
+      }
+    },
+    "habit_frequency_min_days" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum Days"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mínimo de dias"
+          }
+        }
+      }
+    },
+    "habit_frequency_min_times" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimum Times"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mínimo de vezes"
+          }
+        }
+      }
+    },
+    "habit_frequency_weekly" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semanal"
+          }
         }
       }
     },
@@ -207,6 +445,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Is habit forever?"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O hábito é para sempre?"
           }
         }
       }
@@ -219,6 +463,12 @@
             "state" : "translated",
             "value" : "Enable location based reminder"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativar lembrete por localização"
+          }
         }
       }
     },
@@ -229,6 +479,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Days"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dias"
           }
         }
       }
@@ -241,6 +497,12 @@
             "state" : "translated",
             "value" : "Remove location"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover localização"
+          }
         }
       }
     },
@@ -251,6 +513,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "To remind you when you arrive at the selected location, World of habits needs your location even when the app is closed. Without “Always”, you won’t get this reminder."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para receber um lembrete quando chegar à localização selecionada, o World of habits precisa de aceder à sua localização mesmo com a app fechada. Sem “Sempre”, não receberá este lembrete."
           }
         }
       }
@@ -263,6 +531,12 @@
             "state" : "translated",
             "value" : "Choose **Always**"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha **Sempre**"
+          }
         }
       }
     },
@@ -273,6 +547,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open Settings"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra as Definições"
           }
         }
       }
@@ -285,6 +565,12 @@
             "state" : "translated",
             "value" : "Tap Location"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque em Localização"
+          }
         }
       }
     },
@@ -295,6 +581,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Allow Location “Always”"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir localização “Sempre”"
           }
         }
       }
@@ -307,6 +599,12 @@
             "state" : "translated",
             "value" : "Location to remind"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Localização para lembrar"
+          }
         }
       }
     },
@@ -317,6 +615,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Notifications are turned off for World of habits. To get location based reminders, allow notifications in Settings."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As notificações estão desativadas para o World of habits. Para receber lembretes por localização, permita as notificações nas Definições."
           }
         }
       }
@@ -329,6 +633,29 @@
             "state" : "translated",
             "value" : "Location"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Localização"
+          }
+        }
+      }
+    },
+    "habit_location_here" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You’re here"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Está aqui"
+          }
         }
       }
     },
@@ -339,6 +666,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pinned location"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Localização marcada"
           }
         }
       }
@@ -351,6 +684,12 @@
             "state" : "translated",
             "value" : "Search"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesquisar"
+          }
         }
       }
     },
@@ -361,6 +700,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Location"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Localização"
           }
         }
       }
@@ -373,6 +718,12 @@
             "state" : "translated",
             "value" : "Minimum days"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mínimo de dias"
+          }
         }
       }
     },
@@ -383,6 +734,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Minimum times"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mínimo de vezes"
           }
         }
       }
@@ -395,6 +752,12 @@
             "state" : "translated",
             "value" : "Name"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome"
+          }
         }
       }
     },
@@ -405,6 +768,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Habit frequency"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frequência do hábito"
           }
         }
       }
@@ -417,6 +786,12 @@
             "state" : "translated",
             "value" : "Habit info"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informação do hábito"
+          }
         }
       }
     },
@@ -427,6 +802,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Habit schedule (Optional)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horário do hábito (opcional)"
           }
         }
       }
@@ -439,6 +820,12 @@
             "state" : "translated",
             "value" : "Delete schedule hour"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar hora do horário"
+          }
         }
       }
     },
@@ -449,6 +836,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hour #%lld"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora n.º %lld"
           }
         }
       }
@@ -461,6 +854,12 @@
             "state" : "translated",
             "value" : "Start date"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data de início"
+          }
         }
       }
     },
@@ -471,6 +870,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "New habit"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novo hábito"
           }
         }
       }
@@ -483,6 +888,12 @@
             "state" : "translated",
             "value" : "New schedule hour"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova hora no horário"
+          }
         }
       }
     },
@@ -493,6 +904,12 @@
             "state" : "translated",
             "value" : "Settings"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Definições"
+          }
         }
       }
     },
@@ -502,6 +919,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "View mode"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo de visualização"
           }
         }
       }
@@ -514,6 +937,12 @@
             "state" : "translated",
             "value" : "All habits"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os hábitos"
+          }
         }
       }
     },
@@ -524,6 +953,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Today"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoje"
           }
         }
       }
@@ -536,6 +971,12 @@
             "state" : "translated",
             "value" : "Week view"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vista semanal"
+          }
         }
       }
     },
@@ -546,6 +987,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Add Without Reminder"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar sem lembrete"
           }
         }
       }
@@ -558,6 +1005,12 @@
             "state" : "translated",
             "value" : "Duration"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duração"
+          }
         }
       }
     },
@@ -568,6 +1021,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "How long do you want this habit to be?"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durante quanto tempo quer manter este hábito?"
           }
         }
       }
@@ -580,6 +1039,12 @@
             "state" : "translated",
             "value" : "Give Location permission"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dar permissão de localização"
+          }
         }
       }
     },
@@ -590,6 +1055,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Give Notifications permission"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dar permissão de notificações"
           }
         }
       }
@@ -602,6 +1073,12 @@
             "state" : "translated",
             "value" : "If you want location based notification for your habits, we’ll need your Always Location permissions and Notifications"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se quiser notificações por localização para os seus hábitos, vamos precisar da permissão de localização “Sempre” e das notificações."
+          }
         }
       }
     },
@@ -612,6 +1089,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "\nFollow the following steps to enable notification permissions:\n\n    1. Open Settings\n    2. Select notification\n    3. Select Allow notifications toggle"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\nSiga estes passos para ativar as notificações:\n\n    1. Abra as Definições\n    2. Selecione Notificações\n    3. Ative Permitir notificações"
           }
         }
       }
@@ -624,6 +1107,12 @@
             "state" : "translated",
             "value" : "This feature will send a notification based on the selected location.\nWe do not store any data regarding your location besides the selected location."
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta funcionalidade envia uma notificação com base na localização selecionada.\nNão guardamos dados sobre a sua localização além da localização selecionada."
+          }
         }
       }
     },
@@ -634,6 +1123,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Do you want to get reminders based on your location?"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quer receber lembretes com base na sua localização?"
           }
         }
       }
@@ -646,6 +1141,12 @@
             "state" : "translated",
             "value" : "Title"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Título"
+          }
         }
       }
     },
@@ -656,6 +1157,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "What habit do you want to start?"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Que hábito quer começar?"
           }
         }
       }
@@ -668,6 +1175,12 @@
             "state" : "translated",
             "value" : "Create"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criar"
+          }
         }
       }
     },
@@ -678,6 +1191,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Duration"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duração"
           }
         }
       }
@@ -690,6 +1209,12 @@
             "state" : "translated",
             "value" : "Location"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Localização"
+          }
         }
       }
     },
@@ -700,6 +1225,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Schedule"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horário"
           }
         }
       }
@@ -712,6 +1243,12 @@
             "state" : "translated",
             "value" : "Do you want to create a schedule?"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quer criar um horário?"
+          }
         }
       }
     },
@@ -722,6 +1259,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "New habit"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novo hábito"
           }
         }
       }
@@ -734,6 +1277,12 @@
             "state" : "translated",
             "value" : "“The great thing in this world is not so much where we are, but in what direction we are going.”\n\n―Oliver Wendell Holmes Jr."
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“O mais importante neste mundo não é tanto onde estamos, mas a direção em que seguimos.”\n\n―Oliver Wendell Holmes Jr."
+          }
         }
       }
     },
@@ -744,6 +1293,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Winners make a habit of manufacturing their own positive expectations in advance of the event.”\n\n―Brian Tracy"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Os vencedores criam o hábito de fabricar as suas próprias expectativas positivas antes de o acontecimento chegar.”\n\n―Brian Tracy"
           }
         }
       }
@@ -756,6 +1311,12 @@
             "state" : "translated",
             "value" : "“I can and I will. Watch me.”\n\n―Carrie Green, Female Entrepreneur Association"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Eu consigo e vou conseguir. Vejam só.”\n\n―Carrie Green, Female Entrepreneur Association"
+          }
         }
       }
     },
@@ -766,6 +1327,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“See yourself living in abundance and you will attract it.”\n\n―Rhonda Byrne"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Veja-se a viver em abundância e irá atraí-la.”\n\n―Rhonda Byrne"
           }
         }
       }
@@ -778,6 +1345,12 @@
             "state" : "translated",
             "value" : "“He who has a why to live can bear almost any how.”\n\n―Nietzsche"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Quem tem um porquê para viver suporta quase qualquer como.”\n\n―Nietzsche"
+          }
         }
       }
     },
@@ -788,6 +1361,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“The mystery of human existence lies not in just staying alive, but in finding something to live for.”\n\n―Fyodor Dostoyevsky"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“O mistério da existência humana não está apenas em continuar vivo, mas em encontrar algo pelo qual viver.”\n\n―Fiódor Dostoiévski"
           }
         }
       }
@@ -800,6 +1379,12 @@
             "state" : "translated",
             "value" : "“Would you like me to give you a formula for success? It’s quite simple, really: Double your rate of failure. You are thinking of failure as the enemy of success. But it isn’t at all. You can be discouraged by failure or you can learn from it, so go ahead and make mistakes. Make all you can. Because remember that’s where you will find success.”\n\n―Thomas J. Watson"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Quer que lhe dê uma fórmula para o sucesso? É bastante simples, na verdade: duplique a sua taxa de fracasso. Está a pensar no fracasso como inimigo do sucesso. Mas não é, de todo. Pode deixar-se desanimar pelo fracasso ou aprender com ele, por isso avance e cometa erros. Cometa todos os que puder. Porque lembre-se: é aí que vai encontrar o sucesso.”\n\n―Thomas J. Watson"
+          }
         }
       }
     },
@@ -810,6 +1395,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Do not wait; the time will never be ‘just right.’ Start where you stand, and work with whatever tools you may have at your command, and better tools will be found as you go along.”\n\n―Napoleon Hill"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Não espere; o momento nunca será o ‘certo’. Comece onde está e trabalhe com as ferramentas que tiver à disposição; melhores ferramentas irão surgindo pelo caminho.”\n\n―Napoleon Hill"
           }
         }
       }
@@ -822,6 +1413,12 @@
             "state" : "translated",
             "value" : "“Life is a journey, and if you fall in love with the journey, you will be in love forever.”\n\n―Peter Hagerty"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“A vida é uma viagem e, se nos apaixonarmos pela viagem, estaremos apaixonados para sempre.”\n\n―Peter Hagerty"
+          }
         }
       }
     },
@@ -832,6 +1429,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Success, like happiness, cannot be pursued. It must ensue. And it only does so as the unintended side of one’s personal dedication to a cause greater than oneself.”\n\n―Viktor Frankl"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“O sucesso, tal como a felicidade, não pode ser perseguido. Tem de acontecer. E só acontece como efeito secundário, não intencional, da dedicação pessoal a uma causa maior do que nós próprios.”\n\n―Viktor Frankl"
           }
         }
       }
@@ -844,6 +1447,12 @@
             "state" : "translated",
             "value" : "“You manifest what you believe, not what you want.”\n\n―Sonia Ricotti"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Manifestamos aquilo em que acreditamos, não aquilo que queremos.”\n\n―Sonia Ricotti"
+          }
         }
       }
     },
@@ -854,6 +1463,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Definiteness of purpose is the starting point from which one must begin”\n\n―Napoleon Hill"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“A definição de um propósito é o ponto de partida de onde se deve começar.”\n\n―Napoleon Hill"
           }
         }
       }
@@ -866,6 +1481,12 @@
             "state" : "translated",
             "value" : "“The two most important days in life are the day you born and the day you discover the reason why.”\n\n―Mark Twain"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Os dois dias mais importantes da vida são o dia em que nascemos e o dia em que descobrimos porquê.”\n\n―Mark Twain"
+          }
         }
       }
     },
@@ -876,6 +1497,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Set a goal, not only to follow world-class role models, but to become a world-class role model.”\n\n―Steve Siebold, Author"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Defina como objetivo não só seguir modelos de referência de nível mundial, mas tornar-se um.”\n\n―Steve Siebold, autor"
           }
         }
       }
@@ -888,6 +1515,12 @@
             "state" : "translated",
             "value" : "“The person without a purpose is like a ship without a rudder.”\n\n―Thomas Carlyle"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Uma pessoa sem propósito é como um navio sem leme.”\n\n―Thomas Carlyle"
+          }
         }
       }
     },
@@ -898,6 +1531,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Success is not to be pursued; it is attracted by the person you become.”\n\n―Jim Rohn"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“O sucesso não se persegue; é atraído pela pessoa em que nos tornamos.”\n\n―Jim Rohn"
           }
         }
       }
@@ -910,6 +1549,12 @@
             "state" : "translated",
             "value" : "“If you set your goals ridiculously high and it’s a failure, you will fail above everyone else’s success.”\n\n―James Cameron"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Se definirmos objetivos ridiculamente altos e falharmos, falharemos acima do sucesso de todos os outros.”\n\n―James Cameron"
+          }
         }
       }
     },
@@ -920,6 +1565,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Successful people do what unsuccessful people are not willing to do. Don’t wish it were easier; wish you were better.”\n\n―Jim Rohn"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“As pessoas de sucesso fazem o que as pessoas sem sucesso não estão dispostas a fazer. Não deseje que seja mais fácil; deseje ser melhor.”\n\n―Jim Rohn"
           }
         }
       }
@@ -932,6 +1583,12 @@
             "state" : "translated",
             "value" : "“The law of life is the law of belief.”\n\n―Joseph Murphy, Ph.D."
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“A lei da vida é a lei da crença.”\n\n―Joseph Murphy, Ph.D."
+          }
         }
       }
     },
@@ -942,6 +1599,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Remember that the happiest people are not those getting more, but those giving more.”\n\n―H. Jackson Brown Jr."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Lembre-se de que as pessoas mais felizes não são as que recebem mais, mas as que dão mais.”\n\n―H. Jackson Brown Jr."
           }
         }
       }
@@ -954,6 +1617,12 @@
             "state" : "translated",
             "value" : "“At some point, the pain of not doing it becomes greater than the pain of doing it.”\n\n―Steven Pressfield, The War of Art"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“A certa altura, a dor de não o fazer torna-se maior do que a dor de o fazer.”\n\n―Steven Pressfield, The War of Art"
+          }
         }
       }
     },
@@ -964,6 +1633,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“The key to life is accepting challenges. Once someone stops doing this, he’s dead.”\n\n―Bette Davis"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“A chave da vida é aceitar desafios. Quando alguém deixa de o fazer, está morto.”\n\n―Bette Davis"
           }
         }
       }
@@ -976,6 +1651,12 @@
             "state" : "translated",
             "value" : "“The only impossible journey is the one you never begin.”\n\n―Tony Robbins   "
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“A única viagem impossível é aquela que nunca começamos.”\n\n―Tony Robbins"
+          }
         }
       }
     },
@@ -986,6 +1667,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Go the extra mile, it’s never crowded.”\n\n―Jay Shetty"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Vá mais longe: nesse quilómetro extra nunca há multidões.”\n\n―Jay Shetty"
           }
         }
       }
@@ -998,6 +1685,12 @@
             "state" : "translated",
             "value" : "“Don’t be in the business of playing it safe. Be in the business of creating possibilities for greatness.”\n\n―Robert Iger, Chairman of Disney"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Não se dedique a jogar pelo seguro. Dedique-se a criar possibilidades de grandeza.”\n\n―Robert Iger, presidente da Disney"
+          }
         }
       }
     },
@@ -1008,6 +1701,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“There is a place that you are to fill and no one else can fill, something you are to do, which no one else can do.”\n\n―Florence Scovel Shinn, The Game of Life"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Há um lugar que nos cabe ocupar e que mais ninguém pode ocupar, algo que nos cabe fazer e que mais ninguém pode fazer.”\n\n―Florence Scovel Shinn, The Game of Life"
           }
         }
       }
@@ -1020,6 +1719,12 @@
             "state" : "translated",
             "value" : "“One of the secrets of life is to make stepping stones out of stumbling blocks.”\n\n―Jack Penn"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Um dos segredos da vida é transformar obstáculos em degraus.”\n\n―Jack Penn"
+          }
         }
       }
     },
@@ -1030,6 +1735,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Wheresoever you go, go with all your heart.”\n\n―Confucius"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Para onde quer que vá, vá de todo o coração.”\n\n―Confúcio"
           }
         }
       }
@@ -1042,6 +1753,12 @@
             "state" : "translated",
             "value" : "“And actually, it’s not repetition that creates habits. It’s emotions that creates habits.”\n\n―Rangan Chatterjee"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Na verdade, não é a repetição que cria hábitos. São as emoções que criam hábitos.”\n\n―Rangan Chatterjee"
+          }
         }
       }
     },
@@ -1052,6 +1769,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“To bring anything into your life, imagine that it’s already there.”\n\n―Richard Bach"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Para trazer qualquer coisa para a nossa vida, basta imaginar que já lá está.”\n\n―Richard Bach"
           }
         }
       }
@@ -1064,6 +1787,12 @@
             "state" : "translated",
             "value" : "“We become what we think about. Energy flows where attention goes.”\n\n―Rhonda Byrne"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Tornamo-nos naquilo em que pensamos. A energia flui para onde vai a atenção.”\n\n―Rhonda Byrne"
+          }
         }
       }
     },
@@ -1074,6 +1803,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“As long as you live, keep learning how to live.”\n\n―Seneca"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Enquanto viver, continue a aprender a viver.”\n\n―Séneca"
           }
         }
       }
@@ -1086,6 +1821,12 @@
             "state" : "translated",
             "value" : "“Whether you think you can or think you can’t, you’re right.”\n\n―Henry Ford"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Quer pense que consegue, quer pense que não consegue, tem razão.”\n\n―Henry Ford"
+          }
         }
       }
     },
@@ -1096,6 +1837,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“The secret of getting ahead is getting started.”\n\n―Mark Twain"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“O segredo para avançar é começar.”\n\n―Mark Twain"
           }
         }
       }
@@ -1108,6 +1855,12 @@
             "state" : "translated",
             "value" : "“I think goals should never be easy, they should force you to work, even if they are uncomfortable at the time.”\n\n—Michael Phelps"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Acho que os objetivos nunca devem ser fáceis; devem obrigar-nos a trabalhar, mesmo que sejam desconfortáveis no momento.”\n\n—Michael Phelps"
+          }
         }
       }
     },
@@ -1118,6 +1871,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“The price of greatness is responsibility.”\n\n―Winston Churchill"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“O preço da grandeza é a responsabilidade.”\n\n―Winston Churchill"
           }
         }
       }
@@ -1130,6 +1889,12 @@
             "state" : "translated",
             "value" : "“Good things come to people who wait, but better things come to those who go out and get them.”\n\n―Abraham Lincoln"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“As coisas boas chegam a quem espera, mas as melhores chegam a quem vai à procura delas.”\n\n―Abraham Lincoln"
+          }
         }
       }
     },
@@ -1140,6 +1905,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Destiny is not a matter of chance, it is a matter of choice.”\n\n―William Jennings Bryan"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“O destino não é uma questão de sorte, é uma questão de escolha.”\n\n―William Jennings Bryan"
           }
         }
       }
@@ -1152,6 +1923,12 @@
             "state" : "translated",
             "value" : "“What you do every day matters more than what you do once in a while”.\n\n―Gretchen Rubin"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“O que fazemos todos os dias importa mais do que o que fazemos de vez em quando.”\n\n―Gretchen Rubin"
+          }
         }
       }
     },
@@ -1162,6 +1939,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“Each day is an opportunity to craft your best life. Each day brings a chance to choose your greatness.”\n\n―Robin Sharma"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Cada dia é uma oportunidade para construir a nossa melhor vida. Cada dia traz a possibilidade de escolher a nossa grandeza.”\n\n―Robin Sharma"
           }
         }
       }
@@ -1174,6 +1957,12 @@
             "state" : "translated",
             "value" : "“It’s not about who you are today, it’s about who you want to become and the price you are willing to pay to get there.”\n\n―Tom Bilyeu, Founder Impact Theory"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Não se trata de quem somos hoje, mas de quem queremos vir a ser e do preço que estamos dispostos a pagar para lá chegar.”\n\n―Tom Bilyeu, fundador da Impact Theory"
+          }
         }
       }
     },
@@ -1184,6 +1973,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Appearance"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aparência"
           }
         }
       }
@@ -1196,6 +1991,12 @@
             "state" : "translated",
             "value" : "Theme"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tema"
+          }
         }
       }
     },
@@ -1206,6 +2007,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configs"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurações"
           }
         }
       }
@@ -1218,6 +2025,12 @@
             "state" : "translated",
             "value" : "Start of the weel"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Início da semana"
+          }
         }
       }
     },
@@ -1228,6 +2041,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Failed to export"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha ao exportar"
           }
         }
       }
@@ -1240,6 +2059,12 @@
             "state" : "translated",
             "value" : "Exported with success"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportado com sucesso"
+          }
         }
       }
     },
@@ -1250,6 +2075,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Failed to import"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha ao importar"
           }
         }
       }
@@ -1262,6 +2093,12 @@
             "state" : "translated",
             "value" : "Imported with success"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importado com sucesso"
+          }
         }
       }
     },
@@ -1272,6 +2109,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Data"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dados"
           }
         }
       }
@@ -1284,6 +2127,12 @@
             "state" : "translated",
             "value" : "Export data"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar dados"
+          }
         }
       }
     },
@@ -1294,6 +2143,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Import data"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importar dados"
           }
         }
       }
@@ -1306,6 +2161,12 @@
             "state" : "translated",
             "value" : "Delete all"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar todos"
+          }
         }
       }
     },
@@ -1316,6 +2177,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Duplicate all"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicar todos"
           }
         }
       }
@@ -1328,6 +2195,12 @@
             "state" : "translated",
             "value" : "Select an option to deal with duplicated habits."
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecione uma opção para lidar com os hábitos duplicados."
+          }
         }
       }
     },
@@ -1338,6 +2211,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Replace all"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Substituir todos"
           }
         }
       }
@@ -1350,6 +2229,63 @@
             "state" : "translated",
             "value" : "There are duplicated Habits"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Existem hábitos duplicados"
+          }
+        }
+      }
+    },
+    "settings_language_section_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma"
+          }
+        }
+      }
+    },
+    "settings_language_system_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistema"
+          }
+        }
+      }
+    },
+    "settings_language_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App language"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma da app"
+          }
         }
       }
     },
@@ -1360,6 +2296,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dark"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escuro"
           }
         }
       }
@@ -1372,6 +2314,12 @@
             "state" : "translated",
             "value" : "Light"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claro"
+          }
         }
       }
     },
@@ -1382,6 +2330,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "System"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistema"
           }
         }
       }
@@ -1394,6 +2348,12 @@
             "state" : "translated",
             "value" : "Settings"
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Definições"
+          }
         }
       }
     },
@@ -1404,6 +2364,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "In the works"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em desenvolvimento"
           }
         }
       }
@@ -1416,6 +2382,12 @@
             "state" : "translated",
             "value" : "To-dos are on their way. Until then, keep your streak going in Habits."
           }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As tarefas estão a caminho. Até lá, mantenha a sua sequência nos Hábitos."
+          }
         }
       }
     },
@@ -1426,6 +2398,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Coming Soon"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em breve"
           }
         }
       }

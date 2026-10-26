@@ -18,6 +18,7 @@ struct HabitsApp: App {
     @Environment(\.scenePhase) var scenePhase
 
     @AppStorage("appTheme") private var theme: AppTheme = .system
+    @AppStorage("appLanguage") private var language: AppLanguage = .system
 
     @State private var showSplash: Bool = true
 
@@ -46,6 +47,7 @@ struct HabitsApp: App {
                     }
                 }
                 .preferredColorScheme(theme.colorScheme)
+                .environment(\.locale, language.locale)
             }
         }
     }

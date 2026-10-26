@@ -11,6 +11,9 @@ struct HabitFrequencyView: View {
     @Binding private var habit: Habit
     @Binding private var isEditing: Bool
 
+    @Environment(\.locale)
+    private var locale: Locale
+
     let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -26,7 +29,7 @@ struct HabitFrequencyView: View {
         Section(header: Text("habit_new_section_habit_frequency")) {
             Picker("habit_frequency", selection: self.$habit.frequency) {
                 ForEach(Habit.Frequency.allCases) { frequency in
-                    Text(frequency.rawValue).tag(frequency)
+                    Text(frequency.title).tag(frequency)
                 }
             }
             .accessibilityIdentifier("habit_frequency")
@@ -52,7 +55,7 @@ struct HabitFrequencyView: View {
                 Spacer()
                 ForEach(WeekDay.allCases, id: \.self) { day in
                     HStack {
-                        Text(day.localizedName).tag(day)
+                        Text(day.localizedName(locale: self.locale)).tag(day)
                         Spacer()
                         if self.habit.frequencyType.weekFrequency.contains(day) {
                             Image(systemName: "checkmark")

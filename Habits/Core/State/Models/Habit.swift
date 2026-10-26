@@ -259,6 +259,15 @@ struct Habit: Identifiable, Equatable {
         var id: String {
             rawValue.capitalized
         }
+
+        /// Name shown to the user, `rawValue` is what gets saved
+        var title: LocalizedStringResource {
+            switch self {
+            case .new: "habit_category_new"
+            case .maintain: "habit_category_maintain"
+            case .bad: "habit_category_bad"
+            }
+        }
     }
 
     enum Frequency: String, Identifiable, CaseIterable {
@@ -270,6 +279,17 @@ struct Habit: Identifiable, Equatable {
 
         var id: String {
             rawValue.capitalized
+        }
+
+        /// Name shown to the user, `rawValue` is what gets saved
+        var title: LocalizedStringResource {
+            switch self {
+            case .daily: "habit_frequency_daily"
+            case .weekly: "habit_frequency_weekly"
+            case .interval: "habit_frequency_interval"
+            case .minDays: "habit_frequency_min_days"
+            case .minTimes: "habit_frequency_min_times"
+            }
         }
     }
 

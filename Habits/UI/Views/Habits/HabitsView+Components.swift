@@ -14,11 +14,11 @@ extension HabitsView {
 
         var body: some View {
             VStack(alignment: .leading, spacing: 2) {
-                Text(self.date.formatted(.dateTime.day().month(.wide)))
+                Text(self.date, format: .dateTime.day().month(.wide))
                     .font(.system(size: 34, weight: .bold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
-                Text(self.date.formatted(.dateTime.weekday(.wide)))
+                Text(self.date, format: .dateTime.weekday(.wide))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -52,6 +52,9 @@ extension HabitsView {
         @State private var visibleWeek: Int?
         /// True while the user is dragging the pager, used to tell user swipes from programmatic scrolls
         @State private var isUserScrolling = false
+
+        @Environment(\.locale)
+        private var locale: Locale
 
         private let referenceWeekStart: Date
         /// Amount of weeks reachable by swiping, before and after the current week (~19 years)
@@ -128,9 +131,11 @@ extension HabitsView {
                 self.showDatePicker = true
             } label: {
                 (
-                    Text(self.date.formatted(.dateTime.month(.wide).day()) + ", ")
+                    Text(self.date, format: .dateTime.month(.wide).day())
                         .foregroundStyle(Color.primary)
-                    + Text(self.date.formatted(.dateTime.year()))
+                    + Text(", ")
+                        .foregroundStyle(Color.primary)
+                    + Text(self.date, format: .dateTime.year())
                         .foregroundStyle(Color.primary)
                     + Text(" ")
                     + Text(Image(systemName: "chevron.right"))
@@ -147,7 +152,10 @@ extension HabitsView {
 
         // MARK: Week
         private var weekdaySymbols: some View {
-            let symbols = self.calendar.shortStandaloneWeekdaySymbols
+            var calendar = self.calendar
+            calendar.locale = self.locale
+            // Some languages have long short names ("segunda" in Portuguese), keep 3 letters so they fit
+            let symbols = calendar.shortStandaloneWeekdaySymbols.map { String($0.prefix(3)).capitalized }
             let first = self.calendar.firstWeekday - 1
             let ordered = Array(symbols[first...] + symbols[..<first])
 
