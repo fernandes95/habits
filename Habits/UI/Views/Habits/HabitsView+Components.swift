@@ -8,7 +8,38 @@
 import SwiftUI
 
 extension HabitsView {
-    internal struct HeaderView: View {
+    /// Header of the today mode: the day and month, with the weekday below
+    internal struct TodayHeaderView: View {
+        let date: Date
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(self.date.formatted(.dateTime.day().month(.wide)))
+                    .font(.system(size: 34, weight: .bold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                Text(self.date.formatted(.dateTime.weekday(.wide)))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 8)
+            .accessibilityElement(children: .combine)
+        }
+    }
+
+    /// Header of the all habits mode
+    internal struct AllHabitsHeaderView: View {
+        var body: some View {
+            Text("habits_mode_all")
+                .font(.system(size: 34, weight: .bold))
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 8)
+        }
+    }
+
+    internal struct WeekHeaderView: View {
         @Binding var date: Date
         let progress: [Date: Double]
         /// Calendar with the configured first day of the week

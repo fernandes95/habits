@@ -496,6 +496,49 @@
         }
       }
     },
+    "habits_accessibility_view_mode" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View mode"
+          }
+        }
+      }
+    },
+    "habits_mode_all" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All habits"
+          }
+        }
+      }
+    },
+    "habits_mode_today" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today"
+          }
+        }
+      }
+    },
+    "habits_mode_week" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Week view"
+          }
+        }
+      }
+    },
     "new_habit_add_without_reminder" : {
       "extractionState" : "manual",
       "localizations" : {

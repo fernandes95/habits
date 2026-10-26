@@ -14,12 +14,12 @@ internal final class HabitEditTests: XCTestCase {
 
     override internal func setUp() async throws {
         try await super.setUp()
-        self.sut = HabitsService()
+        self.sut = HabitsService(storeService: .tests())
     }
 
     override internal func tearDown() async throws {
         self.sut = nil
-        try await DefaultStoreService().save(
+        try await DefaultStoreService.tests().save(
             StoreEntity(habits: [], habitsArchived: [], habitsNotified: [], appConfigs: AppConfig.empty)
         )
         try await super.tearDown()

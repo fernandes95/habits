@@ -18,6 +18,10 @@ class MainState: ObservableObject {
     @Published
     var habits: [Habit] = []
 
+    /// Every saved habit regardless of the selected date, newest first
+    @Published
+    var allHabits: [Habit] = []
+
     @Published
     var configs: AppConfig = AppConfig.empty
 
@@ -106,6 +110,9 @@ class MainState: ObservableObject {
 
         self.habitsByDay = block
         self.updateProgress()
+        self.allHabits = self.habitsService.habits
+            .map { Habit(habitEntity: $0) }
+            .sorted { $0.createdDate > $1.createdDate }
         // The user may have moved to another day while loading, show whatever is selected now
         self.showHabits(of: self.selectedDate, animated: animated)
     }

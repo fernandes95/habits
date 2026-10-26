@@ -41,7 +41,8 @@ struct HabitEntity: Codable {
          updatedDate: Date = .now,
          hasLocationReminder: Bool = false,
          location: Location? = nil,
-         scheduleInterval: Int? = nil
+         scheduleInterval: Int? = nil,
+         createdDate: Date = .now
     ) {
         self.id = id
         self.eventId = eventId
@@ -59,7 +60,7 @@ struct HabitEntity: Codable {
         self.hasLocationReminder = hasLocationReminder
         self.location = location
         self.scheduleInterval = scheduleInterval
-        self.createdDate = .now
+        self.createdDate = createdDate
     }
 
     internal func with(
@@ -95,7 +96,9 @@ struct HabitEntity: Codable {
             updatedDate: updatedDate ?? self.updatedDate,
             hasLocationReminder: hasLocationReminder ?? self.hasLocationReminder,
             location: location ?? self.location,
-            scheduleInterval: scheduleInterval ?? self.scheduleInterval
+            scheduleInterval: scheduleInterval ?? self.scheduleInterval,
+            // Changes keep the original creation date
+            createdDate: self.createdDate
         )
     }
 

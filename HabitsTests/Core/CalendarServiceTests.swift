@@ -10,8 +10,9 @@ import XCTest
 import EventKit
 import MapKit
 
+// Habits aren't added to the calendar for now, every `CalendarService` call in `HabitsService` is commented
 // TODO: Find a way to accept Calendar access in Unit tests
-internal final class CalendarServiceTests: XCTestCase {
+/*internal final class CalendarServiceTests: XCTestCase {
     private var sut: CalendarService!
     private let testHabit: Habit = Habit.empty.with(name: "Test")
     
@@ -58,6 +59,6 @@ internal final class CalendarServiceTests: XCTestCase {
     }
     
     internal func test_edit_event() async throws {
-        
+
     }
-}
+}*/

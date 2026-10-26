@@ -13,7 +13,7 @@ internal final class DefaultStoreServiceTests: XCTestCase {
     
     override internal func setUp() async throws {
         try await super.setUp()
-        self.sut = DefaultStoreService()
+        self.sut = DefaultStoreService.tests()
     }
 
     override internal func tearDown() async throws {
@@ -22,15 +22,22 @@ internal final class DefaultStoreServiceTests: XCTestCase {
     }
     
     internal func test_file_url() async throws {
-        let sut: DefaultStoreService = DefaultStoreService()
+        let sut: DefaultStoreService = DefaultStoreService.tests()
         
         let path = try sut.fileURL()
         
         XCTAssertTrue(path.isFileURL)
     }
+
+    internal func test_tests_store_is_not_the_app_store() async throws {
+        let testsPath = try DefaultStoreService.tests().fileURL()
+        let appPath = try DefaultStoreService().fileURL()
+
+        XCTAssertNotEqual(testsPath, appPath)
+    }
     
     internal func test_save_and_load() async throws {
-        let sut: DefaultStoreService = DefaultStoreService()
+        let sut: DefaultStoreService = DefaultStoreService.tests()
         let emptyStore: StoreEntity = StoreEntity(
             habits: [], habitsArchived: [],
             habitsNotified: [], appConfigs: AppConfig.empty

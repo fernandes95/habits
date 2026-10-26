@@ -7,8 +7,16 @@
 
 import SwiftUI
 
+enum ListItemType {
+    /// Checkbox, name, progress label and detail arrow
+    case regularListItem
+    /// Only the name and the detail arrow
+    case noStatusListItem
+}
+
 struct ListItem: View {
     let name: String
+    var type: ListItemType = .regularListItem
     var completedSteps: Int = 0
     var totalSteps: Int = 0
     var label: String?
@@ -18,17 +26,26 @@ struct ListItem: View {
 
     var body: some View {
         HStack {
-            Toggle(isOn: self.$status) {
-                Text(self.name).strikethrough(status)
+            switch self.type {
+            case .regularListItem:
+                Toggle(isOn: self.$status) {
+                    Text(self.name).strikethrough(status)
+                        .lineLimit(1)
+                }
+                .padding([.vertical, .trailing])
+                .toggleStyle(CheckBoxStyle(completed: completedSteps, total: totalSteps))
+                .onTapGesture { statusAction() }
+            case .noStatusListItem:
+                Text(self.name)
                     .lineLimit(1)
+                    // Same height as the checkbox, so every list has the same row height
+                    .frame(minHeight: 36)
+                    .padding([.vertical, .trailing])
             }
-            .padding([.vertical, .trailing])
-            .toggleStyle(CheckBoxStyle(completed: completedSteps, total: totalSteps))
-            .onTapGesture { statusAction() }
 
             Spacer(minLength: 8)
 
-            if let progressLabel {
+            if self.type == .regularListItem, let progressLabel {
                 Text(progressLabel)
                     .font(.subheadline)
                     .monospacedDigit()
@@ -131,5 +148,12 @@ struct CheckBoxStyle: ToggleStyle {
             itemAction: {}
         )
         ListItem(name: "Test 1", status: .constant(true), statusAction: {}, itemAction: {})
+        ListItem(
+            name: "No status",
+            type: .noStatusListItem,
+            status: .constant(false),
+            statusAction: {},
+            itemAction: {}
+        )
     }
 }

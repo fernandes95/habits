@@ -18,30 +18,39 @@ struct HabitsView: View {
 
     @State private var showNewHabitSheet = false
 
+    @State private var viewMode: ViewMode = .today
+
     var body: some View {
         VStack {
-            HeaderView(
-                date: self.$state.selectedDate,
-                progress: self.state.dayProgress,
-                calendar: self.state.calendar,
-                changeDateAction: self.loadSelectedDate
-            )
+            Group {
+                switch self.viewMode {
+                case .today:
+                    TodayHeaderView(date: self.state.selectedDate)
+                case .week:
+                    WeekHeaderView(
+                        date: self.$state.selectedDate,
+                        progress: self.state.dayProgress,
+                        calendar: self.state.calendar,
+                        changeDateAction: self.loadSelectedDate
+                    )
+                case .all:
+                    AllHabitsHeaderView()
+                }
+            }
             .padding(.horizontal)
             .padding(.bottom, 12)
 
             ZStack(alignment: .bottomTrailing) {
-                DaySwipeContainer(onSwipe: changeDay) {
-                    ContentView(
-                        list: self.$state.habits,
-                        selectedDate: self.state.selectedDate,
-                        calendar: self.state.calendar,
-                        onItemStatusAction: { habit in
-                            Task {
-                                do {
-                                    try await self.state.updateHabit(habit: habit)
-                                } catch let error { print(error.localizedDescription) }
-                            }
-                        },
+                switch self.viewMode {
+                case .today:
+                    self.dayContent
+                case .week:
+                    DaySwipeContainer(onSwipe: changeDay) {
+                        self.dayContent
+                    }
+                case .all:
+                    AllHabitsContentView(
+                        list: self.state.allHabits,
                         onItemAction: { habit in
                             router.push(HabitDetailView(habit: habit))
                         }
@@ -55,11 +64,62 @@ struct HabitsView: View {
             )
         }
         .background(Color(.systemGroupedBackground))
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                self.modeMenu
+            }
+        }
+        .onChange(of: self.viewMode) { _, newMode in
+            // Today always shows the current day, even if another day was picked in the week view
+            if newMode == .today && !Calendar.current.isDateInToday(self.state.selectedDate) {
+                self.selectToday()
+            }
+        }
         .task {
             if !didLoadData {
                 self.reloadAll()
                 didLoadData = true
             }
+        }
+    }
+
+    private var dayContent: some View {
+        ContentView(
+            list: self.$state.habits,
+            selectedDate: self.state.selectedDate,
+            calendar: self.state.calendar,
+            onItemStatusAction: { habit in
+                Task {
+                    do {
+                        try await self.state.updateHabit(habit: habit)
+                    } catch let error { print(error.localizedDescription) }
+                }
+            },
+            onItemAction: { habit in
+                router.push(HabitDetailView(habit: habit))
+            }
+        )
+    }
+
+    private var modeMenu: some View {
+        Menu {
+            Picker("habits_accessibility_view_mode", selection: self.$viewMode) {
+                ForEach(ViewMode.allCases) { mode in
+                    Label(mode.title, systemImage: mode.systemImage)
+                        .tag(mode)
+                }
+            }
+        } label: {
+            Image(systemName: self.viewMode.systemImage)
+        }
+        .accessibilityLabel("habits_accessibility_view_mode")
+    }
+
+    private func selectToday() {
+        Task {
+            do {
+                try await state.selectDate(.now)
+            } catch let error { print(error.localizedDescription) }
         }
     }
 
@@ -124,6 +184,8 @@ private struct ContentView: View {
                     itemAction: { onItemAction(habit) }
                 )
                 .listRowSeparatorTint(dividerColor)
+                // No divider above the first habit
+                .listRowSeparator(habit.id == list.first?.id ? .hidden : .automatic, edges: .top)
             }
         }
         .listStyle(.plain)
@@ -137,5 +199,31 @@ private struct ContentView: View {
         guard habit.hasReachedMinDays(inWeekOf: self.selectedDate, calendar: self.calendar) else { return nil }
         let checkedDays = habit.checkedDays(inWeekOf: self.selectedDate, calendar: self.calendar)
         return "\(checkedDays)/\(habit.frequencyType.minimumDays)"
+    }
+}
+
+/// Every saved habit, without a status, only the name and the way to its detail
+private struct AllHabitsContentView: View {
+    let list: [Habit]
+    var onItemAction: (Habit) -> Void
+
+    var body: some View {
+        List(self.list) { habit in
+            let dividerColor = self.list.count == 1 ?
+                Color.black.opacity(0.0) : nil
+
+            ListItem(
+                name: habit.name,
+                type: .noStatusListItem,
+                status: .constant(false),
+                statusAction: {},
+                itemAction: { onItemAction(habit) }
+            )
+            .listRowSeparatorTint(dividerColor)
+            // No divider above the first habit
+            .listRowSeparator(habit.id == self.list.first?.id ? .hidden : .automatic, edges: .top)
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
     }
 }

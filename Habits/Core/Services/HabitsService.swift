@@ -9,7 +9,7 @@ import Foundation
 import EventKit
 
 class HabitsService {
-    internal let storeService: DefaultStoreService = DefaultStoreService()
+    internal let storeService: DefaultStoreService
     internal let calendarService: CalendarService = CalendarService()
     private let notificationService: NotificationService = NotificationService()
     private var didLoad = false
@@ -25,6 +25,11 @@ class HabitsService {
 
     internal var appConfigs: AppConfig {
         return store.appConfigs
+    }
+
+    /// - Parameter storeService: Where the habits are saved, the app's data file by default
+    init(storeService: DefaultStoreService = DefaultStoreService()) {
+        self.storeService = storeService
     }
 
     func loadIfNeeded() async throws {
