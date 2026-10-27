@@ -33,12 +33,16 @@ struct HabitLocationSectionView: View {
     @State
     private var isNotificationsDenied: Bool = false
 
+    @State
+    private var isResolvingPlace: Bool = false
+
     var body: some View {
         Section {
             if let location = self.location {
                 LocationCardView(
                     location: location,
                     place: self.place,
+                    isLoading: self.isResolvingPlace,
                     onTap: self.isEditing ? self.onPickLocation : nil,
                     onClear: self.isEditing ? self.clearLocation : nil
                 )
@@ -108,6 +112,31 @@ struct HabitLocationSectionView: View {
                 Text("habit_location_notifications_denied")
             }
         }
+        .task(id: self.resolvePlaceKey) {
+            await self.resolvePlaceIfNeeded()
+        }
+    }
+
+    /// Changes when the pin moves or the place is cleared, so a dropped pin gets its street looked up again
+    private var resolvePlaceKey: String {
+        guard let location = self.location else { return "" }
+        return "\(location.latitude),\(location.longitude),\(self.place == nil)"
+    }
+
+    /// Dropped pins have no place name, look up the street once here so it's saved with the habit
+    /// and the habits list never has to look it up
+    private func resolvePlaceIfNeeded() async {
+        guard let location = self.location, self.place == nil else {
+            self.isResolvingPlace = false
+            return
+        }
+
+        self.isResolvingPlace = true
+        let place = await LocationPlaceDetails.resolve(latitude: location.latitude, longitude: location.longitude)
+        // The pin moved or the section went away while looking it up
+        guard !Task.isCancelled else { return }
+        self.place = place
+        self.isResolvingPlace = false
     }
 
     private func clearLocation() {

@@ -70,7 +70,11 @@ struct ListItem: View {
                 .lineLimit(1)
 
             if let location {
-                HabitLocationLabel(location: location, distance: self.locationDistance)
+                HabitLocationLabel(
+                    location: location,
+                    distance: self.locationDistance,
+                    isCompleted: self.type == .regularListItem && self.status
+                )
             }
         }
     }
@@ -156,17 +160,21 @@ struct CheckBoxStyle: ToggleStyle {
 
 /// Habit location shown under the habit name.
 /// Inside the habit region it reads "You're here • Place", outside it reads "Place • 1.2 km".
+/// Once the habit is done it only shows the place.
 struct HabitLocationLabel: View {
     let location: Habit.Location
     /// Distance from the user to the location, nil while the user location is unknown
     let distance: CLLocationDistance?
+    /// Done habits don't need to tell where the user is
+    var isCompleted: Bool = false
 
-    @State private var place: LocationPlaceDetails?
-    @State private var isResolving: Bool = true
+    private var shownDistance: CLLocationDistance? {
+        self.isCompleted ? nil : self.distance
+    }
 
     /// Same radius used to monitor the habit region
     private var isInside: Bool {
-        guard let distance else { return false }
+        guard let distance = self.shownDistance else { return false }
         return distance <= .regionRadius
     }
 
@@ -195,32 +203,18 @@ struct HabitLocationLabel: View {
         .font(.subheadline)
         .foregroundStyle(self.isInside ? Color.primary : Color.secondary)
         .accessibilityElement(children: .combine)
-        .task(id: self.coordinateKey) {
-            // Habits saved from the location search already know the place name
-            if let place = self.location.place {
-                self.place = place
-                self.isResolving = false
-                return
-            }
-            self.isResolving = true
-            self.place = await LocationPlaceDetails.resolve(
-                latitude: self.location.latitude,
-                longitude: self.location.longitude
-            )
-            self.isResolving = false
-        }
     }
 
+    /// Name saved with the habit, older habits and pins dropped offline have none
     private var placeName: some View {
         Group {
-            if let name = self.place?.name {
+            if let name = self.location.place?.name {
                 Text(verbatim: name)
             } else {
                 Text("habit_location_pinned")
             }
         }
         .lineLimit(1)
-        .redacted(reason: self.isResolving && self.place == nil ? .placeholder : [])
     }
 
     private var separator: some View {
@@ -229,7 +223,7 @@ struct HabitLocationLabel: View {
     }
 
     private var formattedDistance: String? {
-        guard let distance else { return nil }
+        guard let distance = self.shownDistance else { return nil }
         return Measurement(value: distance, unit: UnitLength.meters).formatted(
             .measurement(
                 width: .abbreviated,
@@ -238,10 +232,6 @@ struct HabitLocationLabel: View {
                 numberFormatStyle: .number.precision(.significantDigits(1...2))
             )
         )
-    }
-
-    private var coordinateKey: String {
-        "\(self.location.latitude),\(self.location.longitude),\(self.location.place?.name ?? "")"
     }
 }
 

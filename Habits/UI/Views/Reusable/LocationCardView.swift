@@ -9,18 +9,16 @@ import SwiftUI
 import MapKit
 
 /// Location row with the place name, its address and a small map with the pin.
-/// When `place` is nil the name and address are looked up from the coordinate,
-/// so it also works for saved habits that only have coordinates.
+/// Without a place name it shows "Pinned location".
 struct LocationCardView: View {
     let location: Habit.Location
     var place: LocationPlaceDetails?
+    /// Shows a placeholder instead of the name while the place is being looked up
+    var isLoading: Bool = false
     /// Makes the name, address and map tappable, usually to open the location picker
     var onTap: (() -> Void)?
     /// Shows the remove button when set
     var onClear: (() -> Void)?
-
-    @State private var resolvedPlace: LocationPlaceDetails?
-    @State private var isResolving: Bool = false
 
     var body: some View {
         HStack(spacing: 12) {
@@ -48,9 +46,6 @@ struct LocationCardView: View {
         }
         .padding(16)
         .background(.fill.tertiary, in: .rect(cornerRadius: 26))
-        .task(id: self.coordinateKey) {
-            await self.resolvePlace()
-        }
     }
 
     private var content: some View {
@@ -73,38 +68,16 @@ struct LocationCardView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .redacted(reason: self.isResolving && self.displayedPlace == nil ? .placeholder : [])
+            .redacted(reason: self.isLoading && self.displayedPlace == nil ? .placeholder : [])
 
             LocationThumbnail(coordinate: self.location.locationCoordinate)
         }
         .contentShape(.rect)
     }
 
-    /// Place given, then the one saved with the location, then the looked up one
-    private var knownPlace: LocationPlaceDetails? {
-        self.place ?? self.location.place
-    }
-
+    /// Place given, then the one saved with the location
     private var displayedPlace: LocationPlaceDetails? {
-        self.knownPlace ?? self.resolvedPlace
-    }
-
-    private var coordinateKey: String {
-        "\(self.location.latitude),\(self.location.longitude)"
-    }
-
-    /// Reverse geocodes the coordinate when no name or address was given
-    private func resolvePlace() async {
-        self.resolvedPlace = nil
-        guard self.knownPlace == nil else { return }
-
-        self.isResolving = true
-        defer { self.isResolving = false }
-
-        self.resolvedPlace = await LocationPlaceDetails.resolve(
-            latitude: self.location.latitude,
-            longitude: self.location.longitude
-        )
+        self.place ?? self.location.place
     }
 }
 

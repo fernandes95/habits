@@ -16,21 +16,38 @@ struct LocationPlaceDetails: Equatable {
 }
 
 extension LocationPlaceDetails {
-    /// Places already looked up, keyed by coordinate, so lists don't geocode the same location again
-    @MainActor
-    private static var cache: [String: LocationPlaceDetails] = [:]
+    /// How long to wait for the geocoder, without a connection it may never answer
+    private static let resolveTimeout: Duration = .seconds(5)
 
     /// Reverse geocodes a coordinate into a place name and address.
-    /// Saved habits only keep coordinates, so this is how their place is shown.
-    @MainActor
+    /// Only used when a pin is dropped, the result is saved with the habit.
+    ///
+    /// - Returns: nil when nothing was found, the lookup failed or it took longer than `resolveTimeout`
     static func resolve(latitude: Double, longitude: Double) async -> LocationPlaceDetails? {
-        let key = "\(latitude),\(longitude)"
-        if let cached = self.cache[key] { return cached }
-
-        let location = CLLocation(latitude: latitude, longitude: longitude)
-        guard let placemark: CLPlacemark = try? await CLGeocoder().reverseGeocodeLocation(location).first else {
-            return nil
+        await withTaskGroup(of: LocationPlaceDetails?.self) { group in
+            group.addTask { await self.reverseGeocode(latitude: latitude, longitude: longitude) }
+            group.addTask {
+                try? await Task.sleep(for: self.resolveTimeout)
+                return nil
+            }
+            // Whichever finishes first wins, the other one is cancelled
+            let place = await group.next() ?? nil
+            group.cancelAll()
+            return place
         }
+    }
+
+    private static func reverseGeocode(latitude: Double, longitude: Double) async -> LocationPlaceDetails? {
+        let geocoder = CLGeocoder()
+        let location = CLLocation(latitude: latitude, longitude: longitude)
+
+        let placemark: CLPlacemark? = await withTaskCancellationHandler {
+            try? await geocoder.reverseGeocodeLocation(location).first
+        } onCancel: {
+            // Makes the pending lookup finish right away instead of waiting for the network
+            geocoder.cancelGeocode()
+        }
+        guard let placemark else { return nil }
 
         let address: String? = placemark.postalAddress.map { (postalAddress: CNPostalAddress) in
             CNPostalAddressFormatter
@@ -40,8 +57,6 @@ extension LocationPlaceDetails {
 
         guard let name = placemark.name ?? address else { return nil }
 
-        let place = LocationPlaceDetails(name: name, address: address)
-        self.cache[key] = place
-        return place
+        return LocationPlaceDetails(name: name, address: address)
     }
 }
