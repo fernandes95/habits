@@ -608,6 +608,23 @@
         }
       }
     },
+    "habit_location_here" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You’re here"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Está aqui"
+          }
+        }
+      }
+    },
     "habit_location_notifications_denied" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -638,23 +655,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Localização"
-          }
-        }
-      }
-    },
-    "habit_location_here" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You’re here"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Está aqui"
           }
         }
       }

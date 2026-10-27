@@ -133,7 +133,7 @@ extension HabitsView {
                 (
                     Text(self.date, format: .dateTime.month(.wide).day())
                         .foregroundStyle(Color.primary)
-                    + Text(", ")
+                    + Text(verbatim: ", ")
                         .foregroundStyle(Color.primary)
                     + Text(self.date, format: .dateTime.year())
                         .foregroundStyle(Color.primary)
