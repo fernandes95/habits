@@ -101,6 +101,7 @@ struct HabitDetailView: View {
                         hasLocationReminder: self.$editingHabit.hasLocationReminder,
                         place: self.$locationPlace,
                         isEditing: self.isEditing,
+                        isReminderPaused: self.state.isLocationReminderPaused(self.editingHabit),
                         onPickLocation: {
                             self.isPickingLocation = true
                         }

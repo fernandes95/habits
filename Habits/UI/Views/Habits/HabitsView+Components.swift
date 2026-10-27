@@ -28,6 +28,59 @@ extension HabitsView {
         }
     }
 
+    /// Shown while habits have their location reminder on but `Always` location isn't allowed,
+    /// tells how many habits can't remind and leads to the app's Settings
+    internal struct LocationRemindersPausedBanner: View {
+        let habitsCount: Int
+
+        @Environment(\.openURL) private var openURL
+
+        var body: some View {
+            VStack(spacing: 12) {
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: "location.slash.fill")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.stepAccent)
+                        .frame(width: 32, height: 32)
+                        .background(Color.stepAccent.opacity(0.18), in: .circle)
+                        .accessibilityHidden(true)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("habits_location_paused_title")
+                            .font(.subheadline.weight(.semibold))
+                        Text("habits_location_paused_message \(self.habitsCount)")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
+                Button {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        self.openURL(url)
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        Text("general_open_settings")
+                        Image(systemName: "arrow.up.right")
+                            .font(.footnote.weight(.semibold))
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(Color(.tertiarySystemFill), in: .capsule)
+                    .contentShape(.capsule)
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("habits_location_paused_open_settings")
+            }
+            .padding(14)
+            .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 20))
+            .accessibilityElement(children: .contain)
+        }
+    }
+
     /// Header of the all habits mode
     internal struct AllHabitsHeaderView: View {
         var body: some View {

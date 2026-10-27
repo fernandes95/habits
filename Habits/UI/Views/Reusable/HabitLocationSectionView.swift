@@ -27,6 +27,11 @@ struct HabitLocationSectionView: View {
 
     var isEditing: Bool = true
 
+    /// The reminder is on but can't remind, `Always` location isn't allowed.
+    /// Shows a Settings row and a note, the switch stays on and the reminder starts again once it's allowed.
+    /// Off while adding a habit, `Always` is still being asked there
+    var isReminderPaused: Bool = false
+
     /// Called when the location picker should be presented
     let onPickLocation: () -> Void
 
@@ -98,12 +103,38 @@ struct HabitLocationSectionView: View {
                     .contentShape(.rect)
                 }
                 .accessibilityIdentifier("new_habit_open_notification_settings")
+            } else if self.isReminderPaused {
+                // Also while only viewing the habit, it tells the user something is wrong
+                Button {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        self.openURL(url)
+                    }
+                } label: {
+                    HStack {
+                        Text("general_open_settings")
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                    }
+                    .contentShape(.rect)
+                }
+                .accessibilityIdentifier("habit_location_open_settings")
             }
         } header: {
             Text("habit_location_section_title")
         } footer: {
             if self.isEditing && self.isNotificationsDenied {
                 Text("habit_location_notifications_denied")
+            } else if self.isReminderPaused {
+                (
+                    Text(Image(systemName: "location.slash.fill"))
+                        .foregroundStyle(Color.stepAccent)
+                    + Text(verbatim: " ")
+                    + Text("habit_location_paused_footer_title")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.stepAccent)
+                    + Text(verbatim: " ")
+                    + Text("habit_location_paused_footer_message")
+                )
             }
         }
         .task(id: self.resolvePlaceKey) {

@@ -43,6 +43,15 @@ struct HabitsView: View {
             .padding(.horizontal)
             .padding(.bottom, 12)
 
+            // No close button, it stays until `Always` location is allowed again
+            let pausedCount = self.state.pausedLocationReminders.count
+            if pausedCount > 0 {
+                LocationRemindersPausedBanner(habitsCount: pausedCount)
+                    .padding(.horizontal)
+                    .padding(.bottom, 12)
+                    .transition(.opacity)
+            }
+
             ZStack(alignment: .bottomTrailing) {
                 switch self.viewMode {
                 case .today:
@@ -55,6 +64,7 @@ struct HabitsView: View {
                     AllHabitsContentView(
                         list: self.state.allHabits,
                         distance: self.state.distance(to:),
+                        isLocationReminderPaused: self.state.isLocationReminderPaused,
                         onItemAction: { habit in
                             router.push(HabitDetailView(habit: habit))
                         }
@@ -99,6 +109,7 @@ struct HabitsView: View {
             selectedDate: self.state.selectedDate,
             calendar: self.state.calendar,
             distance: self.state.distance(to:),
+            isLocationReminderPaused: self.state.isLocationReminderPaused,
             onItemStatusAction: { habit in
                 Task {
                     do {
@@ -173,6 +184,8 @@ private struct ContentView: View {
     let calendar: Calendar
     /// Distance from the user to a habit location, nil while the user location is unknown
     let distance: (Habit.Location) -> CLLocationDistance?
+    /// True when the habit's location reminder can't remind, `Always` location isn't allowed
+    let isLocationReminderPaused: (Habit) -> Bool
     var onItemStatusAction: (Habit) -> Void
     var onItemAction: (Habit) -> Void
 
@@ -190,6 +203,7 @@ private struct ContentView: View {
                     label: self.minDaysLabel(for: habit),
                     location: habit.location,
                     locationDistance: habit.location.flatMap { self.distance($0) },
+                    isLocationReminderPaused: self.isLocationReminderPaused(habit),
                     status: $habit.isChecked,
                     statusAction: {
                         var habit = habit
@@ -222,6 +236,8 @@ private struct AllHabitsContentView: View {
     let list: [Habit]
     /// Distance from the user to a habit location, nil while the user location is unknown
     let distance: (Habit.Location) -> CLLocationDistance?
+    /// True when the habit's location reminder can't remind, `Always` location isn't allowed
+    let isLocationReminderPaused: (Habit) -> Bool
     var onItemAction: (Habit) -> Void
 
     var body: some View {
@@ -234,6 +250,7 @@ private struct AllHabitsContentView: View {
                 type: .noStatusListItem,
                 location: habit.location,
                 locationDistance: habit.location.flatMap { self.distance($0) },
+                isLocationReminderPaused: self.isLocationReminderPaused(habit),
                 status: .constant(false),
                 statusAction: {},
                 itemAction: { onItemAction(habit) }

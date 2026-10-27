@@ -25,6 +25,8 @@ struct ListItem: View {
     var location: Habit.Location?
     /// Distance from the user to `location`, nil while the user location is unknown
     var locationDistance: CLLocationDistance?
+    /// The location reminder is on but can't remind, `Always` location isn't allowed
+    var isLocationReminderPaused: Bool = false
     @Binding var status: Bool
     let statusAction: () -> Void
     let itemAction: () -> Void
@@ -73,7 +75,8 @@ struct ListItem: View {
                 HabitLocationLabel(
                     location: location,
                     distance: self.locationDistance,
-                    isCompleted: self.type == .regularListItem && self.status
+                    isCompleted: self.type == .regularListItem && self.status,
+                    isReminderPaused: self.isLocationReminderPaused
                 )
             }
         }
@@ -161,12 +164,15 @@ struct CheckBoxStyle: ToggleStyle {
 /// Habit location shown under the habit name.
 /// Inside the habit region it reads "You're here • Place", outside it reads "Place • 1.2 km".
 /// Once the habit is done it only shows the place.
+/// While the reminder is paused it reads "Reminder paused • Place".
 struct HabitLocationLabel: View {
     let location: Habit.Location
     /// Distance from the user to the location, nil while the user location is unknown
     let distance: CLLocationDistance?
     /// Done habits don't need to tell where the user is
     var isCompleted: Bool = false
+    /// The reminder is on but can't remind, `Always` location isn't allowed
+    var isReminderPaused: Bool = false
 
     private var shownDistance: CLLocationDistance? {
         self.isCompleted ? nil : self.distance
@@ -179,6 +185,33 @@ struct HabitLocationLabel: View {
     }
 
     var body: some View {
+        if self.isReminderPaused {
+            self.pausedBody
+        } else {
+            self.locationBody
+        }
+    }
+
+    /// The words are there too, so it doesn't rely on the icon alone
+    private var pausedBody: some View {
+        HStack(spacing: 4) {
+            Group {
+                Image(systemName: "location.slash.fill")
+                    .font(.caption)
+                Text("habit_location_reminder_paused")
+                    .fontWeight(.semibold)
+                    .fixedSize()
+            }
+            .foregroundStyle(Color.stepAccent)
+            self.separator
+            self.placeName
+        }
+        .font(.subheadline)
+        .foregroundStyle(Color.secondary)
+        .accessibilityElement(children: .combine)
+    }
+
+    private var locationBody: some View {
         HStack(spacing: 4) {
             Image(systemName: "location.fill")
                 .font(.caption)

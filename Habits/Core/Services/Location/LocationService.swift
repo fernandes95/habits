@@ -113,6 +113,8 @@ extension LocationService: CLLocationManagerDelegate {
             self.requestOneTimeLocation()
         case .denied, .restricted:
             self.stopUpdatingLocation()
+            // The last location is stale without permission, the list would keep showing distances and "You're here"
+            self.currentLocation = nil
         case .notDetermined:
             break
         default:

@@ -36,6 +36,10 @@ class MainState: ObservableObject {
     @Published
     var currentLocation: CLLocation?
 
+    /// Location permission, nil until it's known. Updated when the user changes it in Settings
+    @Published
+    var locationStatus: CLAuthorizationStatus?
+
     /// Habits of each loaded day, keyed by start of day
     private var habitsByDay: [Date: [Habit]] = [:]
 
@@ -58,6 +62,10 @@ class MainState: ObservableObject {
         self.locationService.$currentLocation
             .receive(on: DispatchQueue.main)
             .assign(to: &self.$currentLocation)
+
+        self.locationService.$status
+            .receive(on: DispatchQueue.main)
+            .assign(to: &self.$locationStatus)
     }
 
     func initHabits() async {
@@ -84,6 +92,19 @@ class MainState: ObservableObject {
     func distance(to location: Habit.Location) -> CLLocationDistance? {
         guard let currentLocation else { return nil }
         return currentLocation.distance(from: CLLocation(latitude: location.latitude, longitude: location.longitude))
+    }
+
+    /// True when `habit` has its location reminder on but it can't remind,
+    /// `Always` location isn't allowed (turned off in Settings for example).
+    /// The reminder is kept and starts again once `Always` is allowed.
+    func isLocationReminderPaused(_ habit: Habit) -> Bool {
+        guard let locationStatus, locationStatus != .authorizedAlways else { return false }
+        return habit.location != nil && habit.hasLocationReminder && habit.endDate.endOfDay >= .now
+    }
+
+    /// Habits with a paused location reminder, see `isLocationReminderPaused`
+    var pausedLocationReminders: [Habit] {
+        return self.allHabits.filter { self.isLocationReminderPaused($0) }
     }
 
     /// Get exportable document

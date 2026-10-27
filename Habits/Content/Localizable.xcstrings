@@ -864,6 +864,52 @@
         }
       }
     },
+    "habit_location_paused_footer_message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Always” location is turned off for World of habits, so it can’t remind you when you arrive. Your reminder stays on and starts again once you allow it in Settings."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A localização “Sempre” está desativada para o World of habits, então você não vai receber lembretes quando chegar. O lembrete continua ativado e volta a funcionar assim que você permitir nos Ajustes."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A localização “Sempre” está desativada para o World of habits, por isso não vai receber lembretes quando chegar. O lembrete continua ativo e volta a funcionar assim que a permitir nas Definições."
+          }
+        }
+      }
+    },
+    "habit_location_paused_footer_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder paused."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lembrete pausado."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lembrete em pausa."
+          }
+        }
+      }
+    },
     "habit_location_picker_title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -906,6 +952,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Localização marcada"
+          }
+        }
+      }
+    },
+    "habit_location_reminder_paused" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder paused"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lembrete pausado"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lembrete em pausa"
           }
         }
       }
@@ -1249,6 +1318,88 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modo de visualização"
+          }
+        }
+      }
+    },
+    "habits_location_paused_message %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Allow “Always” location in Settings so we can remind you when you arrive. %lld habit is affected."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Allow “Always” location in Settings so we can remind you when you arrive. %lld habits are affected."
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Permita a localização “Sempre” nos Ajustes para receber lembretes quando chegar. %lld hábito está afetado."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Permita a localização “Sempre” nos Ajustes para receber lembretes quando chegar. %lld hábitos estão afetados."
+                }
+              }
+            }
+          }
+        },
+        "pt-PT" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Permita a localização “Sempre” nas Definições para receber lembretes quando chegar. %lld hábito está afetado."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Permita a localização “Sempre” nas Definições para receber lembretes quando chegar. %lld hábitos estão afetados."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "habits_location_paused_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Location reminders are paused"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os lembretes por localização estão pausados"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os lembretes por localização estão em pausa"
           }
         }
       }
