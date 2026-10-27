@@ -109,10 +109,8 @@ extension LocationService: CLLocationManagerDelegate {
             self.requestOneTimeLocation()
             Task { try? await self.regionService.startMonitoringIfAuthorized() }
         case .authorizedWhenInUse:
-            Task {
-               try? await Task.sleep(for: .seconds(0.5))
-               manager.requestAlwaysAuthorization()
-            }
+            // Enough for the map, `Always` is only asked when a location reminder is turned on
+            self.requestOneTimeLocation()
         case .denied, .restricted:
             self.stopUpdatingLocation()
         case .notDetermined:

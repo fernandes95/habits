@@ -206,7 +206,8 @@ class MainState: ObservableObject {
         do {
             try await self.habitsService.updateHabit(habit, selectedDate: self.selectedDate)
 
-            if let location = habit.location {
+            // Only habits with the location reminder on are monitored, the location alone isn't enough
+            if let location = habit.location, habit.hasLocationReminder {
                 self.locationService.startMonitoringRegion(
                     location: location.locationCoordinate,
                     habitIdentifier: habit.id.uuidString,

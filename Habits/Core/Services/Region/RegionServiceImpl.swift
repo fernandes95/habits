@@ -60,6 +60,12 @@ final class RegionServiceImpl: RegionService {
             return
         }
 
+        // The location reminder was turned off, the habit keeps its location but isn't monitored anymore
+        guard habitEntity.hasLocationReminder else {
+            try await self.stopMonitoringRegion(habitIdentifier: id, habitName: habitEntity.name)
+            return
+        }
+
         // stop monitoring habit that already finished
         if habitEntity.endDate.startOfDay < .now.startOfDay {
             try await self.stopMonitoringRegion(habitIdentifier: id)
@@ -146,7 +152,8 @@ final class RegionServiceImpl: RegionService {
     }
 
     func checkAlreadyInsideRegion(currentLocation: CLLocation) async throws {
-        let habits = try await habitsService.getHabits(date: .now)
+        // Only habits with the location reminder on, a location alone doesn't remind
+        let habits = try await habitsService.getHabits(date: .now, hasFilterLocation: true)
 
         for habit in habits {
             guard let coord = habit.location?.locationCoordinate else { continue }

@@ -74,12 +74,6 @@ struct HabitLocationSectionView: View {
                         self.requestNotificationsAuthorization()
                     }
                 }
-                .onChange(of: self.location) { _, location in
-                    // Reminders fire in the background, so they need always authorization
-                    if location != nil {
-                        self.state.requestAlwaysLocation()
-                    }
-                }
                 .onAppear {
                     self.refreshNotificationsDenied()
                 }
@@ -147,21 +141,25 @@ struct HabitLocationSectionView: View {
         }
     }
 
-    /// Location reminders are delivered as notifications, the switch goes back off if they aren't allowed
+    /// Location reminders are delivered as notifications, the switch goes back off if they aren't allowed.
+    /// Once notifications are allowed, asks for `Always` location, reminders fire in the background.
+    /// One after the other, iOS only shows one permission alert at a time.
     private func requestNotificationsAuthorization() {
         Task {
             do {
-                if try await self.state.getNotificationsAuthorizationStatus() {
-                    return
+                if try await !self.state.getNotificationsAuthorizationStatus() {
+                    try await self.state.getNotificationsAuthorization()
                 }
-                try await self.state.getNotificationsAuthorization()
 
                 if try await !self.state.getNotificationsAuthorizationStatus() {
                     withAnimation {
                         self.hasLocationReminder = false
                         self.isNotificationsDenied = self.state.notificationStatus == .denied
                     }
+                    return
                 }
+
+                self.state.requestAlwaysLocation()
             } catch let error { print(error.localizedDescription) }
         }
     }
