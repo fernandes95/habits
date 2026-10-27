@@ -37,6 +37,12 @@
             "value" : "Fetch events in all your calendars"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acessar os eventos de todos os seus calendários"
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -55,6 +61,12 @@
             "value" : "Allow location access to get reminded of your habits when you arrive at the places you set for them, even when the app is closed."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permita o acesso à localização para receber lembretes dos seus hábitos quando chegar aos lugares definidos para eles, mesmo com o app fechado."
+          }
+        },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "translated",
@@ -71,6 +83,12 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Allow location access to show where you are on the map while picking the places for your habit reminders."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permita o acesso à localização para mostrar onde você está no mapa enquanto escolhe os lugares para os lembretes dos seus hábitos."
           }
         },
         "pt-PT" : {

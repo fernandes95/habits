@@ -9,7 +9,7 @@ import SwiftUI
 
 /// Language the app is shown in, picked in the settings
 enum AppLanguage: String, CaseIterable, Identifiable {
-    case system, english, portuguese
+    case system, english, portuguese, portugueseBrazil
     var id: String { rawValue }
 
     /// Locale applied to the whole app, it keeps the device region so only the language changes
@@ -18,6 +18,7 @@ enum AppLanguage: String, CaseIterable, Identifiable {
         case .system: return .autoupdatingCurrent
         case .english: return Locale(languageCode: .english, languageRegion: Locale.current.region)
         case .portuguese: return Locale(languageCode: .portuguese, languageRegion: .portugal)
+        case .portugueseBrazil: return Locale(languageCode: .portuguese, languageRegion: .brazil)
         }
     }
 
@@ -27,6 +28,7 @@ enum AppLanguage: String, CaseIterable, Identifiable {
         case .system: return Text("settings_language_system_title")
         case .english: return Text(verbatim: "English")
         case .portuguese: return Text(verbatim: "Português (Portugal)")
+        case .portugueseBrazil: return Text(verbatim: "Português (Brasil)")
         }
     }
 }
