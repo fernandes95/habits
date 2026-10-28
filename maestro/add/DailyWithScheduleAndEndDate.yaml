@@ -19,4 +19,3 @@ onFlowStart:
       HAS_SCHEDULE: true
       HAS_END_DATE: true
       HAS_LOCATION: false
-      WEEK_DAYS: one

@@ -14,6 +14,9 @@ struct HabitFrequencyView: View {
     @Environment(\.locale)
     private var locale: Locale
 
+    @EnvironmentObject
+    private var state: MainState
+
     let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -26,10 +29,11 @@ struct HabitFrequencyView: View {
     }
 
     var body: some View {
-        Section(header: Text("habit_new_section_habit_frequency")) {
-            Picker("habit_frequency", selection: self.$habit.frequency) {
-                ForEach(Habit.Frequency.allCases) { frequency in
-                    Text(frequency.title).tag(frequency)
+        Section {
+            Picker("habit_frequency", selection: self.pickerFrequency) {
+                // Weekly is not picked, it comes from the selected week days
+                ForEach(Habit.Frequency.allCases.filter { $0 != .weekly }) { frequency in
+                    Text(frequency == .daily ? "habit_frequency_week_days" : frequency.title).tag(frequency)
                 }
             }
             .accessibilityIdentifier("habit_frequency")
@@ -50,31 +54,8 @@ struct HabitFrequencyView: View {
             .disabled(!isEditing)
 
             switch self.habit.frequency {
-            case .daily: EmptyView()
-            case .weekly:
-                Spacer()
-                ForEach(WeekDay.allCases, id: \.self) { day in
-                    HStack {
-                        Text(day.localizedName(locale: self.locale)).tag(day)
-                        Spacer()
-                        if self.habit.frequencyType.weekFrequency.contains(day) {
-                            Image(systemName: "checkmark")
-                        }
-                    }
-                    .contentShape(Rectangle())
-                    .accessibilityElement(children: .combine)
-                    .accessibilityAddTraits(.isButton)
-                    .accessibilityIdentifier("habit_week_day_\(day.rawValue)")
-                    .onTapGesture {
-                        if self.habit.frequencyType.weekFrequency.contains(day) {
-                            self.habit.frequencyType.weekFrequency.removeAll(where: {$0 == day})
-                        } else {
-                            self.habit.frequencyType.weekFrequency.append(day)
-                        }
-                    }
-                }
-                .disabled(!isEditing)
-
+            case .daily, .weekly:
+                self.weekDaysView
             case .interval:
                 if isEditing {
                     TextField("habit_interval_title", value: self.$habit.scheduleInterval, formatter: self.formatter)
@@ -102,6 +83,12 @@ struct HabitFrequencyView: View {
                     .keyboardType(.numberPad)
                     .accessibilityIdentifier("habit_min_times")
                     .disabled(!isEditing)
+            }
+        } header: {
+            Text("habit_new_section_habit_frequency")
+        } footer: {
+            if self.habit.frequency == .daily || self.habit.frequency == .weekly {
+                self.weekDaysFooter
             }
         }
 
@@ -186,6 +173,77 @@ struct HabitFrequencyView: View {
             }
         }
         .isHidden(!scheduleValidation)
+    }
+
+    // MARK: Week days
+
+    /// Picker selection, `.weekly` shows as `.daily` since both are picked with the week days
+    private var pickerFrequency: Binding<Habit.Frequency> {
+        Binding(
+            get: { self.habit.frequency == .weekly ? .daily : self.habit.frequency },
+            set: { frequency in
+                guard !(frequency == .daily && self.habit.frequency == .weekly) else { return }
+                self.habit.frequency = frequency
+            }
+        )
+    }
+
+    /// Week days ordered by the start of the week setting
+    private var orderedWeekDays: [WeekDay] {
+        let first = self.state.calendar.firstWeekday - 1
+        let days = WeekDay.allCases
+        return Array(days[first...] + days[..<first])
+    }
+
+    private var weekDaysView: some View {
+        var calendar = self.state.calendar
+        calendar.locale = self.locale
+        let symbols = calendar.veryShortStandaloneWeekdaySymbols
+
+        return HStack(spacing: 0) {
+            ForEach(self.orderedWeekDays) { day in
+                let isSelected = self.habit.repeatWeekDays.contains(day)
+
+                Button {
+                    self.habit.toggleWeekDay(day)
+                } label: {
+                    Text(symbols[day.rawValue - 1])
+                        .font(.system(size: 17, weight: isSelected ? .semibold : .regular))
+                        .foregroundStyle(isSelected ? Color.white : Color.primary)
+                        .frame(width: 40, height: 40)
+                        .background(isSelected ? Color.dayProgress : Color.dayTrack, in: .circle)
+                }
+                .buttonStyle(.plain)
+                .frame(maxWidth: .infinity)
+                .accessibilityLabel(day.localizedName(locale: self.locale))
+                .accessibilityAddTraits(isSelected ? .isSelected : [])
+                .accessibilityIdentifier("habit_week_day_\(day.rawValue)")
+            }
+        }
+        .padding(.vertical, 4)
+        .animation(.easeInOut(duration: 0.2), value: self.habit.repeatWeekDays)
+        .disabled(!isEditing)
+    }
+
+    @ViewBuilder
+    private var weekDaysFooter: some View {
+        let days = self.habit.repeatWeekDays
+
+        if days.count == WeekDay.allCases.count {
+            Text("habit_frequency_every_day_hint")
+        } else if days.isEmpty {
+            Text("habit_frequency_no_days")
+        } else {
+            Text("habit_frequency_every_days \(self.weekDayNames(days))")
+        }
+    }
+
+    /// Names of `days` in week order, like "Monday, Wednesday, Friday"
+    private func weekDayNames(_ days: Set<WeekDay>) -> String {
+        return self.orderedWeekDays
+            .filter { days.contains($0) }
+            .map { $0.localizedName(locale: self.locale) }
+            .joined(separator: ", ")
     }
 
     /// Removes the focus from any text field. The hour picker gives the focus back to

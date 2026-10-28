@@ -35,7 +35,6 @@
 		AE448A872B86632E0034898F /* HabitRouteIdEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A862B86632E0034898F /* HabitRouteIdEnvironmentKey.swift */; };
 		AE448A8A2B8664B40034898F /* HabitsRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A892B8664B40034898F /* HabitsRouter.swift */; };
 		AE448A8D2B8925D80034898F /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AE448A8C2B8925D80034898F /* Localizable.xcstrings */; };
-		AEA4D1213090A00000B71C76 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AEA4D1203090A00000B71C76 /* InfoPlist.xcstrings */; };
 		AE448A902B8CECF60034898F /* DateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A8F2B8CECF60034898F /* DateHelper.swift */; };
 		AE448A932B8D20160034898F /* StoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A922B8D20160034898F /* StoreService.swift */; };
 		AE448A952B8D20700034898F /* DefaultStoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE448A942B8D20700034898F /* DefaultStoreService.swift */; };
@@ -61,7 +60,6 @@
 		AEA4B5C03088F74300B71C76 /* TodoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5BE3088F74300B71C76 /* TodoView.swift */; };
 		AEA4B5C43088F74500B71C76 /* HabitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5C13088F74500B71C76 /* HabitsView.swift */; };
 		AEA4B5C53088F74500B71C76 /* HabitsView+Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5C23088F74500B71C76 /* HabitsView+Components.swift */; };
-		AEA4D1013090A00000B71C76 /* HabitsView+ViewMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4D1003090A00000B71C76 /* HabitsView+ViewMode.swift */; };
 		AEA4B5C73088F74B00B71C76 /* HabitsMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5C63088F74700B71C76 /* HabitsMapView.swift */; };
 		AEA4B5C93088F85E00B71C76 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5C83088F85C00B71C76 /* AppRouter.swift */; };
 		AEA4B5CB3088F87300B71C76 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5CA3088F87200B71C76 /* RootTabView.swift */; };
@@ -72,6 +70,10 @@
 		AEA4C92B308B7AEE00B71C76 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4C92A308B7AEE00B71C76 /* SplashView.swift */; };
 		AEA4C92D308BACA700B71C76 /* NewHabitLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4C92C308BACA600B71C76 /* NewHabitLocationView.swift */; };
 		AEA4C92F308BC83200B71C76 /* LocationCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4C92E308BC83000B71C76 /* LocationCardView.swift */; };
+		AEA4D1013090A00000B71C76 /* HabitsView+ViewMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4D1003090A00000B71C76 /* HabitsView+ViewMode.swift */; };
+		AEA4D1113090A00000B71C76 /* DefaultStoreService+Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4D1103090A00000B71C76 /* DefaultStoreService+Tests.swift */; };
+		AEA4D1213090A00000B71C76 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AEA4D1203090A00000B71C76 /* InfoPlist.xcstrings */; };
+		AEA4D1313090A00000B71C76 /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4D1303090A00000B71C76 /* AppLanguage.swift */; };
 		AEB1C0DE308C000200A1B2C3 /* LocationPlaceDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB1C0DE308C000100A1B2C3 /* LocationPlaceDetails.swift */; };
 		AEB1C0DE308C000600A1B2C3 /* HabitLocationSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB1C0DE308C000500A1B2C3 /* HabitLocationSectionView.swift */; };
 		AEB1C0DE308C000800A1B2C3 /* LocationAlwaysSheetContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB1C0DE308C000700A1B2C3 /* LocationAlwaysSheetContentView.swift */; };
@@ -79,9 +81,8 @@
 		AEC0DE012EB1A00000000002 /* HabitValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000012 /* HabitValidationTests.swift */; };
 		AEC0DE012EB1A00000000003 /* HabitEditTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000013 /* HabitEditTests.swift */; };
 		AEC0DE012EB1A00000000004 /* Habit+TestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000014 /* Habit+TestFactory.swift */; };
-		AEA4D1113090A00000B71C76 /* DefaultStoreService+Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4D1103090A00000B71C76 /* DefaultStoreService+Tests.swift */; };
+		AEC0DE012EB1A00000000005 /* HabitWeekDaysTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000015 /* HabitWeekDaysTests.swift */; };
 		AECA0CA13086AB7C00AC1AF2 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */; };
-		AEA4D1313090A00000B71C76 /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4D1303090A00000B71C76 /* AppLanguage.swift */; };
 		AECAF3193085FE5400AC1AF2 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECAF3183085FE5100AC1AF2 /* AppConfig.swift */; };
 		AEDAA9D72E60B9E10001ABA6 /* LocationSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */; };
 		AEDAA9D92E60BACD0001ABA6 /* LocationSearchCompletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDAA9D82E60BABF0001ABA6 /* LocationSearchCompletion.swift */; };
@@ -128,7 +129,6 @@
 		AE448A862B86632E0034898F /* HabitRouteIdEnvironmentKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRouteIdEnvironmentKey.swift; sourceTree = "<group>"; };
 		AE448A892B8664B40034898F /* HabitsRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsRouter.swift; sourceTree = "<group>"; };
 		AE448A8C2B8925D80034898F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		AEA4D1203090A00000B71C76 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		AE448A8F2B8CECF60034898F /* DateHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHelper.swift; sourceTree = "<group>"; };
 		AE448A922B8D20160034898F /* StoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreService.swift; sourceTree = "<group>"; };
 		AE448A942B8D20700034898F /* DefaultStoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultStoreService.swift; sourceTree = "<group>"; };
@@ -156,7 +156,6 @@
 		AEA4B5BE3088F74300B71C76 /* TodoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoView.swift; sourceTree = "<group>"; };
 		AEA4B5C13088F74500B71C76 /* HabitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsView.swift; sourceTree = "<group>"; };
 		AEA4B5C23088F74500B71C76 /* HabitsView+Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HabitsView+Components.swift"; sourceTree = "<group>"; };
-		AEA4D1003090A00000B71C76 /* HabitsView+ViewMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HabitsView+ViewMode.swift"; sourceTree = "<group>"; };
 		AEA4B5C63088F74700B71C76 /* HabitsMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsMapView.swift; sourceTree = "<group>"; };
 		AEA4B5C83088F85C00B71C76 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		AEA4B5CA3088F87200B71C76 /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
@@ -167,6 +166,10 @@
 		AEA4C92A308B7AEE00B71C76 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		AEA4C92C308BACA600B71C76 /* NewHabitLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitLocationView.swift; sourceTree = "<group>"; };
 		AEA4C92E308BC83000B71C76 /* LocationCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCardView.swift; sourceTree = "<group>"; };
+		AEA4D1003090A00000B71C76 /* HabitsView+ViewMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HabitsView+ViewMode.swift"; sourceTree = "<group>"; };
+		AEA4D1103090A00000B71C76 /* DefaultStoreService+Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DefaultStoreService+Tests.swift"; sourceTree = "<group>"; };
+		AEA4D1203090A00000B71C76 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
+		AEA4D1303090A00000B71C76 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
 		AEAFF2552DF5FC1D00B03261 /* gpxmarques.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = gpxmarques.gpx; sourceTree = "<group>"; };
 		AEB1C0DE308C000100A1B2C3 /* LocationPlaceDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPlaceDetails.swift; sourceTree = "<group>"; };
 		AEB1C0DE308C000500A1B2C3 /* HabitLocationSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitLocationSectionView.swift; sourceTree = "<group>"; };
@@ -175,9 +178,8 @@
 		AEC0DE012EB1A00000000012 /* HabitValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitValidationTests.swift; sourceTree = "<group>"; };
 		AEC0DE012EB1A00000000013 /* HabitEditTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitEditTests.swift; sourceTree = "<group>"; };
 		AEC0DE012EB1A00000000014 /* Habit+TestFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+TestFactory.swift"; sourceTree = "<group>"; };
-		AEA4D1103090A00000B71C76 /* DefaultStoreService+Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DefaultStoreService+Tests.swift"; sourceTree = "<group>"; };
+		AEC0DE012EB1A00000000015 /* HabitWeekDaysTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitWeekDaysTests.swift; sourceTree = "<group>"; };
 		AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
-		AEA4D1303090A00000B71C76 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
 		AECAF3183085FE5100AC1AF2 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchService.swift; sourceTree = "<group>"; };
 		AEDAA9D82E60BABF0001ABA6 /* LocationSearchCompletion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchCompletion.swift; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 				AE43FF182BF34583008A7085 /* HabitsServiceTests.swift */,
 				AEC0DE012EB1A00000000013 /* HabitEditTests.swift */,
 				AEC0DE012EB1A00000000012 /* HabitValidationTests.swift */,
+				AEC0DE012EB1A00000000015 /* HabitWeekDaysTests.swift */,
 				AEC0DE012EB1A00000000011 /* HabitAddTests.swift */,
 				AE319CF12BF505BE00754149 /* CalendarServiceTests.swift */,
 			);
@@ -698,6 +701,7 @@
 				AEA4D1113090A00000B71C76 /* DefaultStoreService+Tests.swift in Sources */,
 				AEC0DE012EB1A00000000003 /* HabitEditTests.swift in Sources */,
 				AEC0DE012EB1A00000000002 /* HabitValidationTests.swift in Sources */,
+				AEC0DE012EB1A00000000005 /* HabitWeekDaysTests.swift in Sources */,
 				AEC0DE012EB1A00000000001 /* HabitAddTests.swift in Sources */,
 				AE43FF0E2BF291BB008A7085 /* HabitsTests.swift in Sources */,
 				AE43FF172BF29254008A7085 /* DefaultStoreServiceTests.swift in Sources */,

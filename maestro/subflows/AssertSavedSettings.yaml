@@ -2,7 +2,7 @@ appId: ${appId}
 ---
 # Opens the habit detail and checks it was saved with FREQUENCY, VALUE, HAS_SCHEDULE, HAS_END_DATE and HAS_LOCATION
 - runFlow: OpenHabitDetail.yaml
-- assertVisible: "Frequency, ${FREQUENCY}"
+- assertVisible: "Frequency, ${FREQUENCY == 'Daily' || FREQUENCY == 'Weekly' ? output.frequencyWeekDays : FREQUENCY}"
 
 # End date is only shown for habits that end
 - runFlow:
@@ -19,17 +19,20 @@ appId: ${appId}
 # Checked top to bottom: frequency, schedule, then location
 - runFlow:
     when:
-      true: ${FREQUENCY == 'Weekly' && typeof WEEK_DAYS !== 'undefined' && WEEK_DAYS == 'all'}
+      true: ${FREQUENCY == 'Daily'}
     file: AssertAllWeekDaysSelected.yaml
 - runFlow:
     when:
-      true: ${FREQUENCY == 'Weekly' && (typeof WEEK_DAYS === 'undefined' || WEEK_DAYS != 'all')}
+      true: ${FREQUENCY == 'Weekly'}
     commands:
       - scrollUntilVisible:
           element:
             id: ${output.idWeekDayPrefix + output.tomorrowWeekDay}
       - assertVisible:
           id: ${output.idWeekDayPrefix + output.tomorrowWeekDay}
+          selected: true
+      - assertNotVisible:
+          id: ${output.idWeekDayPrefix + output.todayWeekDay}
           selected: true
 
 - runFlow:

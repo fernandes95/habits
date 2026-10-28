@@ -1,26 +1,23 @@
 appId: ${appId}
 ---
-# Picks FREQUENCY and fills it with VALUE, weekly habits pick the day after today
+# Picks FREQUENCY and fills it with VALUE.
+# Daily and weekly share the week days option: daily selects every day, weekly only the day after today
 - scrollUntilVisible:
     element:
       id: ${output.idFrequency}
 - tapOn:
     id: ${output.idFrequency}
-- tapOn: ${FREQUENCY}
-- assertVisible: "Frequency, ${FREQUENCY}"
+- tapOn: "${FREQUENCY == 'Daily' || FREQUENCY == 'Weekly' ? output.frequencyWeekDays : FREQUENCY}"
+- assertVisible: "Frequency, ${FREQUENCY == 'Daily' || FREQUENCY == 'Weekly' ? output.frequencyWeekDays : FREQUENCY}"
 
 - runFlow:
     when:
+      true: ${FREQUENCY == 'Daily'}
+    file: SelectAllWeekDays.yaml
+- runFlow:
+    when:
       true: ${FREQUENCY == 'Weekly'}
-    commands:
-      - scrollUntilVisible:
-          element:
-            id: ${output.idWeekDayPrefix + output.tomorrowWeekDay}
-      - tapOn:
-          id: ${output.idWeekDayPrefix + output.tomorrowWeekDay}
-      - assertVisible:
-          id: ${output.idWeekDayPrefix + output.tomorrowWeekDay}
-          selected: true
+    file: SelectOnlyTomorrow.yaml
 
 - runFlow:
     when:

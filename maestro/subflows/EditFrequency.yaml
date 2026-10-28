@@ -13,7 +13,7 @@ appId: ${appId}
 - tapOn: ${output.buttonHabitDetailDone}
 - assertVisible: ${output.buttonHabitDetailEdit}
 - scrollUntilVisible:
-    element: "Frequency, ${FREQUENCY}"
+    element: "Frequency, ${FREQUENCY == 'Daily' || FREQUENCY == 'Weekly' ? output.frequencyWeekDays : FREQUENCY}"
     direction: UP
 
 - tapOn: ${output.buttonHabitDetailBack}

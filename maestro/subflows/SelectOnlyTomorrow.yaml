@@ -1,0 +1,49 @@
+appId: ${appId}
+---
+# Selects the day after today and skips every other week day, so the habit is weekly
+- runFlow:
+    file: SelectWeekDay.yaml
+    env:
+      DAY: ${output.tomorrowWeekDay}
+- runFlow:
+    when:
+      true: ${output.tomorrowWeekDay != '1'}
+    file: DeselectWeekDay.yaml
+    env:
+      DAY: 1
+- runFlow:
+    when:
+      true: ${output.tomorrowWeekDay != '2'}
+    file: DeselectWeekDay.yaml
+    env:
+      DAY: 2
+- runFlow:
+    when:
+      true: ${output.tomorrowWeekDay != '3'}
+    file: DeselectWeekDay.yaml
+    env:
+      DAY: 3
+- runFlow:
+    when:
+      true: ${output.tomorrowWeekDay != '4'}
+    file: DeselectWeekDay.yaml
+    env:
+      DAY: 4
+- runFlow:
+    when:
+      true: ${output.tomorrowWeekDay != '5'}
+    file: DeselectWeekDay.yaml
+    env:
+      DAY: 5
+- runFlow:
+    when:
+      true: ${output.tomorrowWeekDay != '6'}
+    file: DeselectWeekDay.yaml
+    env:
+      DAY: 6
+- runFlow:
+    when:
+      true: ${output.tomorrowWeekDay != '7'}
+    file: DeselectWeekDay.yaml
+    env:
+      DAY: 7

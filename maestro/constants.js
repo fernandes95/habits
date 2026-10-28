@@ -4,6 +4,8 @@
 // HOME
 output.buttonHomeAdd = "New habit"
 output.buttonHomeListItemArrow = "Forward"
+output.buttonHomeViewMode = "View mode"
+output.buttonHomeWeekView = "Week view"
 
 // NEW HABIT
 output.buttonNewHabitAdd = "Add"
@@ -21,6 +23,8 @@ output.idInterval = "new_habit_schedule_interval"
 output.idIntervalValue = "habit_interval_value"
 output.idMinDays = "habit_min_days"
 output.idMinTimes = "habit_min_times"
+// Picker option of daily and weekly habits, the week days picked decide which one it is
+output.frequencyWeekDays = "Days of the week"
 
 // Followed by the WeekDay raw value, 1 is Sunday
 output.idWeekDayPrefix = "habit_week_day_"

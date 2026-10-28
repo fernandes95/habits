@@ -81,6 +81,7 @@ extension Habit {
 
     /// Changes the frequency like `HabitFrequencyView` does: the values of the other
     /// frequencies are cleared and the new one is filled with a valid value.
+    /// Daily and weekly come from the picked week days, every day or only `testWeekDay`.
     func changingFrequency(to frequency: Frequency) -> Habit {
         var habit: Habit = self
         habit.applyValidSettings(for: frequency)

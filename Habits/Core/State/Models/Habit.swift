@@ -359,6 +359,32 @@ extension Habit {
     }
 }
 
+// MARK: Week days
+extension Habit {
+    /// Days the habit repeats on, every day for `.daily` habits
+    var repeatWeekDays: Set<WeekDay> {
+        self.frequency == .daily ? Set(WeekDay.allCases) : Set(self.frequencyType.weekFrequency)
+    }
+
+    /// Selects or skips `day`. Every day selected is a `.daily` habit, only some of them is `.weekly`
+    mutating func toggleWeekDay(_ day: WeekDay) {
+        var days = self.repeatWeekDays
+        if days.contains(day) {
+            days.remove(day)
+        } else {
+            days.insert(day)
+        }
+
+        if days.count == WeekDay.allCases.count {
+            self.frequency = .daily
+            self.frequencyType.weekFrequency.removeAll()
+        } else {
+            self.frequency = .weekly
+            self.frequencyType.weekFrequency = WeekDay.allCases.filter { days.contains($0) }
+        }
+    }
+}
+
 func getFrequency(_ frequency: String) -> Habit.Frequency {
     return switch frequency {
     case Habit.Frequency.weekly.rawValue:
