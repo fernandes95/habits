@@ -19,6 +19,7 @@ struct Habit: Identifiable, Equatable {
     var hasNoEndDate: Bool
     var frequency: Frequency
     var frequencyType: Ocurrence
+    var goal: Goal?
     var completedCount: Int
     var category: Category
     var scheduleInterval: Int?
@@ -50,7 +51,8 @@ struct Habit: Identifiable, Equatable {
         updatedDate: Date,
         hasLocationReminder: Bool = false,
         location: Location? = nil,
-        scheduleInterval: Int? = nil
+        scheduleInterval: Int? = nil,
+        goal: Goal? = nil
     ) {
         self.id = id
         self.eventId = eventId
@@ -71,6 +73,7 @@ struct Habit: Identifiable, Equatable {
         self.hasLocationReminder = hasLocationReminder
         self.location = location
         self.scheduleInterval = scheduleInterval
+        self.goal = goal
     }
 
     internal func with(
@@ -91,7 +94,8 @@ struct Habit: Identifiable, Equatable {
         createdDate: Date? = nil,
         updatedDate: Date? = nil,
         hasLocationReminder: Bool? = nil,
-        location: Location? = nil
+        location: Location? = nil,
+        goal: Goal? = nil
     ) -> Self {
         return Self(
             id: self.id,
@@ -112,7 +116,8 @@ struct Habit: Identifiable, Equatable {
             updatedDate: updatedDate ?? self.updatedDate,
             hasLocationReminder: hasLocationReminder ?? self.hasLocationReminder,
             location: location ?? self.location,
-            scheduleInterval: scheduleInterval ?? self.scheduleInterval
+            scheduleInterval: scheduleInterval ?? self.scheduleInterval,
+            goal: goal ?? self.goal
         )
     }
 
@@ -127,6 +132,7 @@ struct Habit: Identifiable, Equatable {
         self.frequencyType = habitEntity.frequencyType
         self.category = getCategory(habitEntity.category)
         self.scheduleInterval = habitEntity.scheduleInterval
+        self.goal = habitEntity.goal
 
         self.schedule = habitEntity.schedule.map { hourEntity in
             return Hour(
@@ -138,7 +144,7 @@ struct Habit: Identifiable, Equatable {
         }
 
         self.isChecked = false
-        let currentTarget: Int? = frequency == .minTimes ? habitEntity.frequencyType.minimumTimes : nil
+        let currentTarget: Int? = habitEntity.goal?.value
         self.history = habitEntity.statusList.map { status in
             DayRecord(
                 date: status.date,
@@ -168,12 +174,12 @@ struct Habit: Identifiable, Equatable {
     }
 
     /// Progress of this habit on the date it was loaded for, between 0 and 1.
-    /// `.minTimes` habits count partial progress, every other habit is either done or not.
+    /// Habits with a goal count partial progress, every other habit is either done or not.
     var dayProgress: Double {
         if self.isChecked { return 1 }
 
-        if self.frequency == .minTimes, self.frequencyType.minimumTimes > 0 {
-            return min(Double(self.completedCount) / Double(self.frequencyType.minimumTimes), 1)
+        if let goal = self.goal, goal.value > 0 {
+            return min(Double(self.completedCount) / Double(goal.value), 1)
         }
 
         return 0
@@ -275,7 +281,6 @@ struct Habit: Identifiable, Equatable {
         case weekly = "Weekly"
         case interval = "Interval"
         case minDays = "Minimum Days"
-        case minTimes = "Minimum Times"
 
         var id: String {
             rawValue.capitalized
@@ -288,7 +293,6 @@ struct Habit: Identifiable, Equatable {
             case .weekly: "habit_frequency_weekly"
             case .interval: "habit_frequency_interval"
             case .minDays: "habit_frequency_min_days"
-            case .minTimes: "habit_frequency_min_times"
             }
         }
     }
@@ -343,12 +347,13 @@ extension Habit {
         guard !self.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
               !self.hasDuplicatedScheduleHours else { return false }
 
+        if let goal = self.goal, !goal.isValid { return false }
+
         switch self.frequency {
         case .daily: return true
         case .interval: return (self.scheduleInterval ?? 0) > 2
         case .weekly: return !self.frequencyType.weekFrequency.isEmpty
         case .minDays: return (1...6).contains(self.frequencyType.minimumDays)
-        case .minTimes: return (3...100).contains(self.frequencyType.minimumTimes)
         }
     }
 
@@ -393,8 +398,6 @@ func getFrequency(_ frequency: String) -> Habit.Frequency {
         .interval
     case Habit.Frequency.minDays.rawValue:
         .minDays
-    case Habit.Frequency.minTimes.rawValue:
-        .minTimes
     default:
         .daily
     }

@@ -5,6 +5,7 @@ onFlowStart:
 # A valid minimum days habit with schedule, end date and location
 # can't be added once it has a name with only spaces
 - runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetEndDate.yaml
 - runFlow: ../subflows/PickLocation.yaml
 - runFlow:
     file: ../subflows/SelectFrequency.yaml

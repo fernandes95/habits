@@ -25,4 +25,10 @@ extension View {
             self
         }
     }
+
+    /// Lets the user close the keyboard of a form by dragging the form down,
+    /// needed by the number pads that have no return key.
+    func keyboardDismissable() -> some View {
+        self.scrollDismissesKeyboard(.interactively)
+    }
 }

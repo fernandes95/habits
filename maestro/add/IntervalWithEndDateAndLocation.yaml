@@ -4,6 +4,7 @@ onFlowStart:
 ---
 # Adds a interval habit, with an end date, with a location reminder
 - runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetEndDate.yaml
 - runFlow: ../subflows/PickLocation.yaml
 - runFlow:
     file: ../subflows/SelectFrequency.yaml

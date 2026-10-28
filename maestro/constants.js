@@ -22,7 +22,9 @@ output.idFrequency = "habit_frequency"
 output.idInterval = "new_habit_schedule_interval"
 output.idIntervalValue = "habit_interval_value"
 output.idMinDays = "habit_min_days"
-output.idMinTimes = "habit_min_times"
+// GOAL, minimum times flows are daily habits with a times goal
+output.idGoal = "habit_goal"
+output.idGoalValue = "habit_goal_value"
 // Picker option of daily and weekly habits, the week days picked decide which one it is
 output.frequencyWeekDays = "Days of the week"
 

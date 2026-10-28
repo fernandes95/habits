@@ -17,6 +17,7 @@
 		AE30E1582B9F7428009E10CD /* CalendarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1572B9F7428009E10CD /* CalendarService.swift */; };
 		AE30E1602BA4C182009E10CD /* Ocurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E15F2BA4C182009E10CD /* Ocurrence.swift */; };
 		AE30E1622BA88B5B009E10CD /* WeekDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1612BA88B5B009E10CD /* WeekDay.swift */; };
+		AE30E1712BA4C182009E10CD /* Goal.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1702BA4C182009E10CD /* Goal.swift */; };
 		AE319CEE2BF3AC3500754149 /* EKEventStore+Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE319CED2BF3AC3500754149 /* EKEventStore+Swizzle.swift */; };
 		AE319CF22BF505BE00754149 /* CalendarServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE319CF12BF505BE00754149 /* CalendarServiceTests.swift */; };
 		AE32F8102BED08BD0095DD1A /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE32F80F2BED08BD0095DD1A /* ViewModifiers.swift */; };
@@ -82,6 +83,7 @@
 		AEC0DE012EB1A00000000003 /* HabitEditTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000013 /* HabitEditTests.swift */; };
 		AEC0DE012EB1A00000000004 /* Habit+TestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000014 /* Habit+TestFactory.swift */; };
 		AEC0DE012EB1A00000000005 /* HabitWeekDaysTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000015 /* HabitWeekDaysTests.swift */; };
+		AEC0DE012EB1A00000000006 /* HabitGoalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000016 /* HabitGoalTests.swift */; };
 		AECA0CA13086AB7C00AC1AF2 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */; };
 		AECAF3193085FE5400AC1AF2 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECAF3183085FE5100AC1AF2 /* AppConfig.swift */; };
 		AEDAA9D72E60B9E10001ABA6 /* LocationSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */; };
@@ -109,6 +111,7 @@
 		AE30E1572B9F7428009E10CD /* CalendarService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarService.swift; sourceTree = "<group>"; };
 		AE30E15F2BA4C182009E10CD /* Ocurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ocurrence.swift; sourceTree = "<group>"; };
 		AE30E1612BA88B5B009E10CD /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
+		AE30E1702BA4C182009E10CD /* Goal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goal.swift; sourceTree = "<group>"; };
 		AE319CED2BF3AC3500754149 /* EKEventStore+Swizzle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EKEventStore+Swizzle.swift"; sourceTree = "<group>"; };
 		AE319CF12BF505BE00754149 /* CalendarServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarServiceTests.swift; sourceTree = "<group>"; };
 		AE32F80F2BED08BD0095DD1A /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
@@ -179,6 +182,7 @@
 		AEC0DE012EB1A00000000013 /* HabitEditTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitEditTests.swift; sourceTree = "<group>"; };
 		AEC0DE012EB1A00000000014 /* Habit+TestFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+TestFactory.swift"; sourceTree = "<group>"; };
 		AEC0DE012EB1A00000000015 /* HabitWeekDaysTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitWeekDaysTests.swift; sourceTree = "<group>"; };
+		AEC0DE012EB1A00000000016 /* HabitGoalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitGoalTests.swift; sourceTree = "<group>"; };
 		AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		AECAF3183085FE5100AC1AF2 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchService.swift; sourceTree = "<group>"; };
@@ -261,6 +265,7 @@
 				AEC0DE012EB1A00000000013 /* HabitEditTests.swift */,
 				AEC0DE012EB1A00000000012 /* HabitValidationTests.swift */,
 				AEC0DE012EB1A00000000015 /* HabitWeekDaysTests.swift */,
+				AEC0DE012EB1A00000000016 /* HabitGoalTests.swift */,
 				AEC0DE012EB1A00000000011 /* HabitAddTests.swift */,
 				AE319CF12BF505BE00754149 /* CalendarServiceTests.swift */,
 			);
@@ -369,6 +374,7 @@
 				AE448A9B2B8DEC970034898F /* Habit.swift */,
 				AE43FF042BF28F4C008A7085 /* Habit+Default.swift */,
 				AE30E15F2BA4C182009E10CD /* Ocurrence.swift */,
+				AE30E1702BA4C182009E10CD /* Goal.swift */,
 				AE30E1612BA88B5B009E10CD /* WeekDay.swift */,
 			);
 			path = Models;
@@ -702,6 +708,7 @@
 				AEC0DE012EB1A00000000003 /* HabitEditTests.swift in Sources */,
 				AEC0DE012EB1A00000000002 /* HabitValidationTests.swift in Sources */,
 				AEC0DE012EB1A00000000005 /* HabitWeekDaysTests.swift in Sources */,
+				AEC0DE012EB1A00000000006 /* HabitGoalTests.swift in Sources */,
 				AEC0DE012EB1A00000000001 /* HabitAddTests.swift in Sources */,
 				AE43FF0E2BF291BB008A7085 /* HabitsTests.swift in Sources */,
 				AE43FF172BF29254008A7085 /* DefaultStoreServiceTests.swift in Sources */,
@@ -758,6 +765,7 @@
 				AE30E1582B9F7428009E10CD /* CalendarService.swift in Sources */,
 				AEA4B5CD3089081200B71C76 /* SettingsToolbarButton.swift in Sources */,
 				AE30E1602BA4C182009E10CD /* Ocurrence.swift in Sources */,
+				AE30E1712BA4C182009E10CD /* Goal.swift in Sources */,
 				AECA0CA13086AB7C00AC1AF2 /* AppTheme.swift in Sources */,
 				AEA4D1313090A00000B71C76 /* AppLanguage.swift in Sources */,
 				AEA4B5C03088F74300B71C76 /* TodoView.swift in Sources */,

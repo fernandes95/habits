@@ -5,6 +5,7 @@ onFlowStart:
 # A valid daily habit with schedule, end date and location
 # can't be added once it has an empty name
 - runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetEndDate.yaml
 - runFlow: ../subflows/PickLocation.yaml
 - runFlow:
     file: ../subflows/SelectFrequency.yaml

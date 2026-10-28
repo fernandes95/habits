@@ -102,6 +102,7 @@ struct NewHabitContentView: View {
                     isEditing: .constant(true)
                 )
             }
+            .keyboardDismissable()
             .navigationTitle("new_habit_title")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear { self.nameFocused = true }

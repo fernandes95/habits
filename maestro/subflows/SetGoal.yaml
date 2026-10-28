@@ -1,0 +1,44 @@
+appId: ${appId}
+---
+# Turns the goal on when ON is true, off otherwise. On, the habit is a minimum times habit
+- scrollUntilVisible:
+    element:
+      id: ${output.idGoal}
+- runFlow:
+    when:
+      true: ${ON == 'true'}
+    commands:
+      - runFlow:
+          when:
+            visible:
+              text: "0"
+              childOf:
+                id: ${output.idGoal}
+          commands:
+            - tapOn:
+                text: "0"
+                childOf:
+                  id: ${output.idGoal}
+      - assertVisible:
+          text: "1"
+          childOf:
+            id: ${output.idGoal}
+- runFlow:
+    when:
+      true: ${ON != 'true'}
+    commands:
+      - runFlow:
+          when:
+            visible:
+              text: "1"
+              childOf:
+                id: ${output.idGoal}
+          commands:
+            - tapOn:
+                text: "1"
+                childOf:
+                  id: ${output.idGoal}
+      - assertVisible:
+          text: "0"
+          childOf:
+            id: ${output.idGoal}

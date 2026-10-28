@@ -1,10 +1,17 @@
 appId: ${appId}
 ---
-# Turns "Is habit forever?" on, the end date goes away
-- tapOn:
-    text: "0"
-    childOf:
-      id: ${output.idNewHabitForever}
+# Makes sure "Is habit forever?" is on, new habits are forever by default
+- runFlow:
+    when:
+      visible:
+        text: "0"
+        childOf:
+          id: ${output.idNewHabitForever}
+    commands:
+      - tapOn:
+          text: "0"
+          childOf:
+            id: ${output.idNewHabitForever}
 - assertVisible:
     text: "1"
     childOf:

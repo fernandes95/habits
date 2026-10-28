@@ -31,6 +31,10 @@ struct ListItem: View {
     let statusAction: () -> Void
     let itemAction: () -> Void
 
+    /// Changes on every checkbox tap, so the haptic plays on taps and not when the list reloads
+    @State private var statusTaps: Int = 0
+    @State private var statusFeedback: SensoryFeedback?
+
     var body: some View {
         HStack {
             switch self.type {
@@ -40,7 +44,12 @@ struct ListItem: View {
                 }
                 .padding([.vertical, .trailing])
                 .toggleStyle(CheckBoxStyle(completed: completedSteps, total: totalSteps))
-                .onTapGesture { statusAction() }
+                .onTapGesture {
+                    self.statusFeedback = self.feedbackForStatusTap
+                    self.statusTaps += 1
+                    statusAction()
+                }
+                .sensoryFeedback(trigger: self.statusTaps) { _, _ in self.statusFeedback }
             case .noStatusListItem:
                 self.title
                     // Same height as the checkbox, so every list has the same row height
@@ -80,6 +89,13 @@ struct ListItem: View {
                 )
             }
         }
+    }
+
+    /// Success when the tap checks the habit, a tick for each step of a goal, a light tap when it unchecks
+    private var feedbackForStatusTap: SensoryFeedback {
+        if self.status { return .impact(weight: .light) }
+        if self.totalSteps > 0 && self.completedSteps + 1 < self.totalSteps { return .increase }
+        return .success
     }
 
     private var progressLabel: String? {

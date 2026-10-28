@@ -161,38 +161,28 @@ internal final class HabitAddTests: XCTestCase {
         try await self.assertAdded(Habit.make(.minDays, hasSchedule: true, hasEndDate: true, hasLocation: true))
     }
 
-    // MARK: Minimum Times
+    // MARK: Goal
 
-    internal func test_add_min_times_habit() async throws {
-        try await self.assertAdded(Habit.make(.minTimes))
+    internal func test_add_daily_habit_with_goal() async throws {
+        try await self.assertAdded(Habit.make(.daily, hasGoal: true))
     }
 
-    internal func test_add_min_times_habit_with_schedule() async throws {
-        try await self.assertAdded(Habit.make(.minTimes, hasSchedule: true))
+    internal func test_add_weekly_habit_with_goal() async throws {
+        try await self.assertAdded(Habit.make(.weekly, hasGoal: true))
     }
 
-    internal func test_add_min_times_habit_with_end_date() async throws {
-        try await self.assertAdded(Habit.make(.minTimes, hasEndDate: true))
+    internal func test_add_interval_habit_with_goal() async throws {
+        try await self.assertAdded(Habit.make(.interval, hasGoal: true))
     }
 
-    internal func test_add_min_times_habit_with_location() async throws {
-        try await self.assertAdded(Habit.make(.minTimes, hasLocation: true))
+    internal func test_add_min_days_habit_with_goal() async throws {
+        try await self.assertAdded(Habit.make(.minDays, hasGoal: true))
     }
 
-    internal func test_add_min_times_habit_with_schedule_and_end_date() async throws {
-        try await self.assertAdded(Habit.make(.minTimes, hasSchedule: true, hasEndDate: true))
-    }
-
-    internal func test_add_min_times_habit_with_schedule_and_location() async throws {
-        try await self.assertAdded(Habit.make(.minTimes, hasSchedule: true, hasLocation: true))
-    }
-
-    internal func test_add_min_times_habit_with_end_date_and_location() async throws {
-        try await self.assertAdded(Habit.make(.minTimes, hasEndDate: true, hasLocation: true))
-    }
-
-    internal func test_add_min_times_habit_with_schedule_end_date_and_location() async throws {
-        try await self.assertAdded(Habit.make(.minTimes, hasSchedule: true, hasEndDate: true, hasLocation: true))
+    internal func test_add_habit_with_goal_schedule_end_date_and_location() async throws {
+        try await self.assertAdded(
+            Habit.make(.daily, hasSchedule: true, hasEndDate: true, hasLocation: true, hasGoal: true)
+        )
     }
 
     // MARK: Limits
@@ -225,16 +215,16 @@ internal final class HabitAddTests: XCTestCase {
         try await self.assertAdded(habit)
     }
 
-    internal func test_add_min_times_habit_with_lowest_minimum_times() async throws {
-        var habit: Habit = Habit.make(.minTimes)
-        habit.frequencyType.minimumTimes = 3
+    internal func test_add_habit_with_lowest_goal() async throws {
+        var habit: Habit = Habit.make(.daily, hasGoal: true)
+        habit.goal?.value = 2
 
         try await self.assertAdded(habit)
     }
 
-    internal func test_add_min_times_habit_with_highest_minimum_times() async throws {
-        var habit: Habit = Habit.make(.minTimes)
-        habit.frequencyType.minimumTimes = 100
+    internal func test_add_habit_with_highest_goal() async throws {
+        var habit: Habit = Habit.make(.daily, hasGoal: true)
+        habit.goal?.value = 100
 
         try await self.assertAdded(habit)
     }
@@ -258,6 +248,7 @@ internal final class HabitAddTests: XCTestCase {
         XCTAssertEqual(listedHabit.frequency, habit.frequency, file: file, line: line)
         XCTAssertEqual(listedHabit.frequencyType, habit.frequencyType, file: file, line: line)
         XCTAssertEqual(listedHabit.scheduleInterval, habit.scheduleInterval, file: file, line: line)
+        XCTAssertEqual(listedHabit.goal, habit.goal, file: file, line: line)
         XCTAssertEqual(listedHabit.startDate, habit.startDate, file: file, line: line)
         XCTAssertEqual(listedHabit.endDate, habit.endDate, file: file, line: line)
         XCTAssertEqual(listedHabit.hasNoEndDate, habit.hasNoEndDate, file: file, line: line)

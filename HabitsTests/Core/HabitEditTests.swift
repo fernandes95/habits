@@ -9,6 +9,7 @@
 import XCTest
 
 /// Changes a habit from each frequency to every other one and checks the habits list follows the new frequency.
+/// Goals are edited on their own and stay when the frequency changes.
 internal final class HabitEditTests: XCTestCase {
     private var sut: HabitsService!
 
@@ -51,14 +52,6 @@ internal final class HabitEditTests: XCTestCase {
         try await self.assertListed(habitId, as: .minDays)
     }
 
-    internal func test_edit_daily_habit_to_min_times() async throws {
-        let habitId: UUID = try await self.sut.addHabit(Habit.make(.daily))
-
-        try await self.editHabit(habitId, to: .minTimes)
-
-        try await self.assertListed(habitId, as: .minTimes)
-    }
-
     // MARK: From Weekly
 
     internal func test_edit_weekly_habit_to_daily() async throws {
@@ -83,14 +76,6 @@ internal final class HabitEditTests: XCTestCase {
         try await self.editHabit(habitId, to: .minDays)
 
         try await self.assertListed(habitId, as: .minDays)
-    }
-
-    internal func test_edit_weekly_habit_to_min_times() async throws {
-        let habitId: UUID = try await self.sut.addHabit(Habit.make(.weekly))
-
-        try await self.editHabit(habitId, to: .minTimes)
-
-        try await self.assertListed(habitId, as: .minTimes)
     }
 
     // MARK: From Interval
@@ -119,14 +104,6 @@ internal final class HabitEditTests: XCTestCase {
         try await self.assertListed(habitId, as: .minDays)
     }
 
-    internal func test_edit_interval_habit_to_min_times() async throws {
-        let habitId: UUID = try await self.sut.addHabit(Habit.make(.interval))
-
-        try await self.editHabit(habitId, to: .minTimes)
-
-        try await self.assertListed(habitId, as: .minTimes)
-    }
-
     // MARK: From Minimum Days
 
     internal func test_edit_min_days_habit_to_daily() async throws {
@@ -153,46 +130,38 @@ internal final class HabitEditTests: XCTestCase {
         try await self.assertListed(habitId, as: .interval)
     }
 
-    internal func test_edit_min_days_habit_to_min_times() async throws {
-        let habitId: UUID = try await self.sut.addHabit(Habit.make(.minDays))
+    // MARK: Goal
 
-        try await self.editHabit(habitId, to: .minTimes)
+    internal func test_add_goal_to_weekly_habit_keeps_its_week_days() async throws {
+        let habitId: UUID = try await self.sut.addHabit(Habit.make(.weekly))
 
-        try await self.assertListed(habitId, as: .minTimes)
+        try await self.editHabit(habitId) { $0.goal = Habit.testGoal }
+
+        try await self.assertListed(habitId, as: .weekly, goal: Habit.testGoal)
     }
 
-    // MARK: From Minimum Times
+    internal func test_remove_goal_from_daily_habit() async throws {
+        let habitId: UUID = try await self.sut.addHabit(Habit.make(.daily, hasGoal: true))
 
-    internal func test_edit_min_times_habit_to_daily() async throws {
-        let habitId: UUID = try await self.sut.addHabit(Habit.make(.minTimes))
+        try await self.editHabit(habitId) { $0.goal = nil }
 
-        try await self.editHabit(habitId, to: .daily)
-
-        try await self.assertListed(habitId, as: .daily)
+        try await self.assertListed(habitId, as: .daily, goal: nil)
     }
 
-    internal func test_edit_min_times_habit_to_weekly() async throws {
-        let habitId: UUID = try await self.sut.addHabit(Habit.make(.minTimes))
+    internal func test_change_goal_value() async throws {
+        let habitId: UUID = try await self.sut.addHabit(Habit.make(.daily, hasGoal: true))
 
-        try await self.editHabit(habitId, to: .weekly)
+        try await self.editHabit(habitId) { $0.goal?.value = 8 }
 
-        try await self.assertListed(habitId, as: .weekly)
+        try await self.assertListed(habitId, as: .daily, goal: Goal(type: .times, value: 8))
     }
 
-    internal func test_edit_min_times_habit_to_interval() async throws {
-        let habitId: UUID = try await self.sut.addHabit(Habit.make(.minTimes))
+    internal func test_edit_frequency_of_habit_with_goal_keeps_the_goal() async throws {
+        let habitId: UUID = try await self.sut.addHabit(Habit.make(.daily, hasGoal: true))
 
         try await self.editHabit(habitId, to: .interval)
 
-        try await self.assertListed(habitId, as: .interval)
-    }
-
-    internal func test_edit_min_times_habit_to_min_days() async throws {
-        let habitId: UUID = try await self.sut.addHabit(Habit.make(.minTimes))
-
-        try await self.editHabit(habitId, to: .minDays)
-
-        try await self.assertListed(habitId, as: .minDays)
+        try await self.assertListed(habitId, as: .interval, goal: Habit.testGoal)
     }
 
     // MARK: ABSTRACTIONS
@@ -204,19 +173,31 @@ internal final class HabitEditTests: XCTestCase {
         file: StaticString = #filePath,
         line: UInt = #line
     ) async throws {
+        try await self.editHabit(habitId, file: file, line: line) { $0 = $0.changingFrequency(to: frequency) }
+    }
+
+    /// Edits the stored habit like the habit detail screen does, with the changes made by `change`.
+    private func editHabit(
+        _ habitId: UUID,
+        file: StaticString = #filePath,
+        line: UInt = #line,
+        change: (inout Habit) -> Void
+    ) async throws {
         let storedHabit: HabitEntity? = try await self.sut.getHabit(id: habitId)
         let habitEntity: HabitEntity = try XCTUnwrap(storedHabit, "The habit wasn't added", file: file, line: line)
-        let editedHabit: Habit = Habit(habitEntity: habitEntity).changingFrequency(to: frequency)
+        var editedHabit: Habit = Habit(habitEntity: habitEntity)
+        change(&editedHabit)
         XCTAssertTrue(editedHabit.isValid, "The done button would be disabled", file: file, line: line)
 
         try await self.sut.editHabit(editedHabit)
     }
 
-    /// Checks the habit keeps only the settings of `frequency`
+    /// Checks the habit keeps only the settings of `frequency`, has `goal`
     /// and is listed exactly on the days that frequency allows.
     private func assertListed(
         _ habitId: UUID,
         as frequency: Habit.Frequency,
+        goal: Goal? = nil,
         file: StaticString = #filePath,
         line: UInt = #line
     ) async throws {
@@ -225,7 +206,7 @@ internal final class HabitEditTests: XCTestCase {
 
         // Days after the start date where the habit must and must not be listed
         let (listedDays, hiddenDays): ([Int], [Int]) = switch frequency {
-        case .daily, .minDays, .minTimes: ([0, 1, 2], [])
+        case .daily, .minDays: ([0, 1, 2], [])
         // Picked week day is the day after the start date
         case .weekly: ([1], [2])
         case .interval: ([0, Habit.testInterval], Array(1..<Habit.testInterval))
@@ -244,6 +225,7 @@ internal final class HabitEditTests: XCTestCase {
             XCTAssertEqual(listedHabit.frequency, frequency, file: file, line: line)
             XCTAssertEqual(listedHabit.frequencyType, expected.frequencyType, file: file, line: line)
             XCTAssertEqual(listedHabit.scheduleInterval, expected.scheduleInterval, file: file, line: line)
+            XCTAssertEqual(listedHabit.goal, goal, file: file, line: line)
         }
 
         for offset in hiddenDays {

@@ -192,7 +192,7 @@ private struct ContentView: View {
     var body: some View {
         List {
             ForEach($list) { $habit in
-                let totalSteps = habit.frequency == .minTimes ? habit.frequencyType.minimumTimes : 0
+                let totalSteps = habit.goal?.value ?? 0
                 let dividerColor = $list.count == 1 ?
                     Color.black.opacity(0.0) : nil
 

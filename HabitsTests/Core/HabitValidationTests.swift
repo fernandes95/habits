@@ -90,30 +90,22 @@ internal final class HabitValidationTests: XCTestCase {
         self.assertInvalid(.minDays) { $0.frequencyType.minimumDays = 7 }
     }
 
-    // MARK: Minimum Times
+    // MARK: Goal
 
-    internal func test_min_times_habit_with_empty_name_is_invalid() {
-        self.assertInvalid(.minTimes) { $0.name = "" }
+    internal func test_habit_with_zero_goal_is_invalid() {
+        self.assertInvalid(.daily) { $0.goal = Goal(type: .times, value: 0) }
     }
 
-    internal func test_min_times_habit_with_blank_name_is_invalid() {
-        self.assertInvalid(.minTimes) { $0.name = "   " }
+    internal func test_habit_with_goal_of_one_is_invalid() {
+        self.assertInvalid(.daily) { $0.goal = Goal(type: .times, value: 1) }
     }
 
-    internal func test_min_times_habit_with_duplicated_schedule_hours_is_invalid() {
-        self.assertInvalid(.minTimes) { $0.schedule.append(Habit.testHour(9, on: $0.startDate)) }
+    internal func test_habit_with_goal_of_101_is_invalid() {
+        self.assertInvalid(.daily) { $0.goal = Goal(type: .times, value: 101) }
     }
 
-    internal func test_min_times_habit_with_zero_minimum_times_is_invalid() {
-        self.assertInvalid(.minTimes) { $0.frequencyType.minimumTimes = 0 }
-    }
-
-    internal func test_min_times_habit_with_two_minimum_times_is_invalid() {
-        self.assertInvalid(.minTimes) { $0.frequencyType.minimumTimes = 2 }
-    }
-
-    internal func test_min_times_habit_with_101_minimum_times_is_invalid() {
-        self.assertInvalid(.minTimes) { $0.frequencyType.minimumTimes = 101 }
+    internal func test_weekly_habit_with_invalid_goal_is_invalid() {
+        self.assertInvalid(.weekly) { $0.goal = Goal(type: .times, value: 1) }
     }
 
     // MARK: ABSTRACTIONS

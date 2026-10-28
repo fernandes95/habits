@@ -4,6 +4,7 @@ onFlowStart:
 ---
 # Adds a daily habit, with an end date
 - runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetEndDate.yaml
 - runFlow:
     file: ../subflows/SelectFrequency.yaml
     env:

@@ -132,6 +132,7 @@ struct HabitDetailView: View {
                 Button("general_cancel", role: .cancel) { }
             }
         }
+        .keyboardDismissable()
         .navigationBarBackButtonHidden(self.isEditing)
         .navigationTitle("habit_detail_title")
         .sheet(isPresented: self.$isPickingLocation) {

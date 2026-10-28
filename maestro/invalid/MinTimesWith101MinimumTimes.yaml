@@ -5,6 +5,7 @@ onFlowStart:
 # A valid minimum times habit with schedule, end date and location
 # can't be added once it has 101 minimum times
 - runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetEndDate.yaml
 - runFlow: ../subflows/PickLocation.yaml
 - runFlow:
     file: ../subflows/SelectFrequency.yaml
@@ -16,12 +17,12 @@ onFlowStart:
 
 - scrollUntilVisible:
     element:
-      id: ${output.idMinTimes}
+      id: ${output.idGoalValue}
     direction: UP
 - runFlow:
     file: ../subflows/TypeNumber.yaml
     env:
-      FIELD_ID: ${output.idMinTimes}
+      FIELD_ID: ${output.idGoalValue}
       VALUE: "101"
 
 - runFlow: ../subflows/AssertAddDisabled.yaml

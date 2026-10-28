@@ -34,11 +34,11 @@ extension HabitsService {
         /// Making sure the values are overridden
         updatedHabit.scheduleInterval = eventsHabit.scheduleInterval
         updatedHabit.location = eventsHabit.location?.entity
+        updatedHabit.goal = eventsHabit.goal
 
         /// Statuses saved before `requiredCount` existed have no target. Stamp the previous target
         /// on them while it's still known, so the history keeps its colors after a type/target change.
-        if oldHabit.frequency == .minTimes {
-            let previousTarget: Int = oldHabit.frequencyType.minimumTimes
+        if let previousTarget: Int = oldHabit.goal?.value {
             for statusIndex in updatedHabit.statusList.indices
             where updatedHabit.statusList[statusIndex].requiredCount == nil {
                 updatedHabit.statusList[statusIndex].requiredCount = previousTarget
@@ -56,15 +56,16 @@ extension HabitsService {
         var status: HabitEntity.Status = statusIndex.map { habitEntity.statusList[$0] }
             ?? HabitEntity.Status(date: selectedDate)
 
-        if habit.frequency == .minTimes {
+        // Habits with a goal are checked once they're done `goal.value` times in the day
+        if let goal = habit.goal {
             if status.isChecked {
                 status.count = 0
                 status.isChecked = false
             } else {
                 status.count += 1
-                status.isChecked = status.count == habit.frequencyType.minimumTimes
+                status.isChecked = status.count == goal.value
             }
-            status.requiredCount = habit.frequencyType.minimumTimes
+            status.requiredCount = goal.value
         } else {
             status.isChecked = habit.isChecked
         }

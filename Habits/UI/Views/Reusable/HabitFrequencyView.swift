@@ -47,9 +47,6 @@ struct HabitFrequencyView: View {
                 if frequency != .minDays {
                     self.habit.frequencyType.minimumDays = 0
                 }
-                if frequency != .minTimes {
-                    self.habit.frequencyType.minimumTimes = 0
-                }
             }
             .disabled(!isEditing)
 
@@ -77,19 +74,17 @@ struct HabitFrequencyView: View {
                     .keyboardType(.numberPad)
                     .accessibilityIdentifier("habit_min_days")
                     .disabled(!isEditing)
-            case .minTimes:
-                TextField("habit_min_times", text: self.numberText(self.$habit.frequencyType.minimumTimes))
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .keyboardType(.numberPad)
-                    .accessibilityIdentifier("habit_min_times")
-                    .disabled(!isEditing)
             }
         } header: {
             Text("habit_new_section_habit_frequency")
         } footer: {
-            if self.habit.frequency == .daily || self.habit.frequency == .weekly {
+            if self.isWeekDaysFrequency {
                 self.weekDaysFooter
             }
+        }
+
+        if isEditing || self.habit.goal != nil {
+            self.goalSection
         }
 
         let scheduleValidation: Bool = self.habit.schedule.count > 0 || self.habit.schedule.count == 0 && isEditing
@@ -175,14 +170,36 @@ struct HabitFrequencyView: View {
         .isHidden(!scheduleValidation)
     }
 
+    /// Removes the focus from any text field. The hour picker gives the focus back to
+    /// the last focused field when it closes, so it has to be cleared before it opens.
+    private func dismissKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+
+    /// Text binding for a whole number field, so the habit updates on every keystroke
+    /// and not only when the field loses focus. `0` shows as an empty field so the placeholder is visible.
+    private func numberText(_ value: Binding<Int>) -> Binding<String> {
+        Binding(
+            get: { value.wrappedValue == 0 ? "" : String(value.wrappedValue) },
+            set: { value.wrappedValue = Int($0.filter(\.isNumber)) ?? 0 }
+        )
+    }
+}
+
+extension HabitFrequencyView {
     // MARK: Week days
+
+    /// Daily and weekly are both picked with the week days option
+    private var isWeekDaysFrequency: Bool {
+        self.habit.frequency == .daily || self.habit.frequency == .weekly
+    }
 
     /// Picker selection, `.weekly` shows as `.daily` since both are picked with the week days
     private var pickerFrequency: Binding<Habit.Frequency> {
         Binding(
-            get: { self.habit.frequency == .weekly ? .daily : self.habit.frequency },
+            get: { self.isWeekDaysFrequency ? .daily : self.habit.frequency },
             set: { frequency in
-                guard !(frequency == .daily && self.habit.frequency == .weekly) else { return }
+                guard !(frequency == .daily && self.isWeekDaysFrequency) else { return }
                 self.habit.frequency = frequency
             }
         )
@@ -246,18 +263,92 @@ struct HabitFrequencyView: View {
             .joined(separator: ", ")
     }
 
-    /// Removes the focus from any text field. The hour picker gives the focus back to
-    /// the last focused field when it closes, so it has to be cleared before it opens.
-    private func dismissKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    // MARK: Goal
+
+    /// Goal on starts a times goal of the default value, off removes it. Goals work with every frequency
+    private var hasGoal: Binding<Bool> {
+        Binding(
+            get: { self.habit.goal != nil },
+            set: { isOn in
+                self.habit.goal = isOn ? Goal(type: .times, value: Goal.defaultValue) : nil
+            }
+        )
     }
 
-    /// Text binding for a whole number field, so the habit updates on every keystroke
-    /// and not only when the field loses focus. `0` shows as an empty field so the placeholder is visible.
-    private func numberText(_ value: Binding<Int>) -> Binding<String> {
+    private var goalValue: Binding<Int> {
         Binding(
-            get: { value.wrappedValue == 0 ? "" : String(value.wrappedValue) },
-            set: { value.wrappedValue = Int($0.filter(\.isNumber)) ?? 0 }
+            get: { self.habit.goal?.value ?? 0 },
+            set: { self.habit.goal?.value = $0 }
         )
+    }
+
+    private var goalType: Binding<GoalType> {
+        Binding(
+            get: { self.habit.goal?.type ?? .times },
+            set: { self.habit.goal?.type = $0 }
+        )
+    }
+
+    private var goalSection: some View {
+        Section {
+            Toggle("habit_goal", isOn: self.hasGoal)
+                .accessibilityIdentifier("habit_goal")
+                .disabled(!isEditing)
+
+            if let goal = self.habit.goal {
+                HStack {
+                    TextField("habit_goal_value", text: self.numberText(self.goalValue))
+                        .keyboardType(.numberPad)
+                        .accessibilityIdentifier("habit_goal_value")
+
+                    // Menu so the icons are only shown in the list, not next to the picked type
+                    Menu {
+                        Picker("habit_goal_type", selection: self.goalType) {
+                            ForEach(GoalType.allCases, id: \.self) { type in
+                                Label(type.title, systemImage: type.systemImage).tag(type)
+                            }
+                        }
+                    } label: {
+                        HStack(spacing: 4) {
+                            Text(goal.type.title)
+                            Image(systemName: "chevron.up.chevron.down")
+                                .font(.footnote.weight(.semibold))
+                        }
+                        .foregroundStyle(Color.secondary)
+                    }
+                    .accessibilityIdentifier("habit_goal_type")
+                    .fixedSize()
+                }
+                .disabled(!isEditing)
+            }
+        } footer: {
+            if let goal = self.habit.goal {
+                if goal.value > 0 {
+                    Text(goal.type.hint(value: goal.value))
+                }
+            } else {
+                Text("habit_goal_off_hint")
+            }
+        }
+    }
+}
+
+private extension GoalType {
+    var title: LocalizedStringKey {
+        switch self {
+        case .times: "habit_goal_times_a_day"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .times: "textformat.123"
+        }
+    }
+
+    func hint(value: Int) -> LocalizedStringKey {
+        switch self {
+        case .times: "habit_goal_times_a_day_hint \(value)"
+        }
     }
 }

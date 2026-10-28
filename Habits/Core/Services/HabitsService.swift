@@ -132,7 +132,8 @@ class HabitsService {
             hasAlarm: habit.hasAlarm,
             hasLocationReminder: habit.hasLocationReminder,
             location: location,
-            scheduleInterval: habit.scheduleInterval
+            scheduleInterval: habit.scheduleInterval,
+            goal: habit.goal
         )
 
         self.store.habits.append(newHabit)
@@ -233,7 +234,7 @@ class HabitsService {
         }
     }
 
-    /// Get Habits with frequency type .daily, .minTimes and .minDays.
+    /// Get Habits with frequency type .daily and .minDays.
     ///
     /// - Parameters:
     ///   - date: Selected Date to filter
@@ -249,8 +250,7 @@ class HabitsService {
 
         return habits.filter {
             $0.frequency == .daily ||
-            $0.frequency == .minDays ||
-            $0.frequency == .minTimes
+            $0.frequency == .minDays
         }
     }
 

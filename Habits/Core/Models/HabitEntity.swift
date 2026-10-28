@@ -16,6 +16,7 @@ struct HabitEntity: Codable {
     var hasNoEndDate: Bool
     var frequency: String
     var frequencyType: Ocurrence
+    var goal: Goal?
     var category: String
     var statusList: [Status]
     var schedule: [Hour]
@@ -42,6 +43,7 @@ struct HabitEntity: Codable {
          hasLocationReminder: Bool = false,
          location: Location? = nil,
          scheduleInterval: Int? = nil,
+         goal: Goal? = nil,
          createdDate: Date = .now
     ) {
         self.id = id
@@ -60,6 +62,7 @@ struct HabitEntity: Codable {
         self.hasLocationReminder = hasLocationReminder
         self.location = location
         self.scheduleInterval = scheduleInterval
+        self.goal = goal
         self.createdDate = createdDate
     }
 
@@ -97,7 +100,7 @@ struct HabitEntity: Codable {
             hasLocationReminder: hasLocationReminder ?? self.hasLocationReminder,
             location: location ?? self.location,
             scheduleInterval: scheduleInterval ?? self.scheduleInterval,
-            // Changes keep the original creation date
+            goal: self.goal,
             createdDate: self.createdDate
         )
     }
@@ -119,7 +122,8 @@ struct HabitEntity: Codable {
             updatedDate: self.updatedDate,
             hasLocationReminder: self.hasLocationReminder,
             location: self.location,
-            scheduleInterval: self.scheduleInterval
+            scheduleInterval: self.scheduleInterval,
+            goal: self.goal
         )
     }
 
@@ -151,7 +155,6 @@ struct HabitEntity: Codable {
     internal struct Location: Codable {
         var latitude: Double
         var longitude: Double
-        /// Name of the place picked in the location search, nil for dropped pins and older habits
         var name: String?
         var address: String?
     }

@@ -2,7 +2,7 @@ appId: ${appId}
 ---
 # Opens the habit detail and checks it was saved with FREQUENCY, VALUE, HAS_SCHEDULE, HAS_END_DATE and HAS_LOCATION
 - runFlow: OpenHabitDetail.yaml
-- assertVisible: "Frequency, ${FREQUENCY == 'Daily' || FREQUENCY == 'Weekly' ? output.frequencyWeekDays : FREQUENCY}"
+- assertVisible: "Frequency, ${FREQUENCY == 'Daily' || FREQUENCY == 'Weekly' || FREQUENCY == 'Minimum Times' ? output.frequencyWeekDays : FREQUENCY}"
 
 # End date is only shown for habits that end
 - runFlow:
@@ -61,9 +61,9 @@ appId: ${appId}
     commands:
       - scrollUntilVisible:
           element:
-            id: ${output.idMinTimes}
+            id: ${output.idGoalValue}
       - assertVisible:
-          id: ${output.idMinTimes}
+          id: ${output.idGoalValue}
           text: ${VALUE}
 
 - runFlow:

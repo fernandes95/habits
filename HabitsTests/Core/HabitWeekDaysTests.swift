@@ -10,6 +10,7 @@ import XCTest
 
 /// Week days picked in the habit frequency: every day selected is a daily habit,
 /// only some of them is a weekly habit and no day can't be added.
+/// A goal is separate and stays when the days change.
 internal final class HabitWeekDaysTests: XCTestCase {
     // MARK: Daily
 
@@ -26,6 +27,18 @@ internal final class HabitWeekDaysTests: XCTestCase {
 
         XCTAssertEqual(habit.frequency, .weekly)
         XCTAssertEqual(habit.frequencyType.weekFrequency, [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday])
+        XCTAssertTrue(habit.isValid)
+    }
+
+    // MARK: Goal
+
+    internal func test_skipping_a_day_of_a_habit_with_goal_keeps_the_goal() {
+        var habit: Habit = Habit.make(.daily, hasGoal: true)
+
+        habit.toggleWeekDay(.sunday)
+
+        XCTAssertEqual(habit.frequency, .weekly)
+        XCTAssertEqual(habit.goal, Habit.testGoal)
         XCTAssertTrue(habit.isValid)
     }
 
