@@ -44,7 +44,10 @@ class NotificationService {
         let notificationContent = UNMutableNotificationContent()
         let requestIndentifer = identifier ?? UUID().uuidString
 
-        notificationContent.title = "Habits"
+        // Same name as under the app icon, "World of habits"
+        notificationContent.title = Bundle.main.localizedInfoDictionary?["CFBundleDisplayName"] as? String
+            ?? Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
+            ?? "World of habits"
         notificationContent.subtitle = subTitle
         notificationContent.sound = UNNotificationSound.default
 
