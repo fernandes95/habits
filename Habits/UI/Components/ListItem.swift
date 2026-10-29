@@ -147,16 +147,48 @@ struct SegmentedRing: View {
     }
 }
 
+/// Continuous ring filling clockwise from the top, for goals with too many steps to show as segments
+struct ProgressRing: View {
+    let completed: Int
+    let total: Int
+    var lineWidth: CGFloat = 3
+
+    private var progress: Double {
+        guard total > 0 else { return 0 }
+        return min(Double(completed) / Double(total), 1)
+    }
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .inset(by: lineWidth / 2)
+                .stroke(Color.dayTrack, lineWidth: lineWidth)
+            Circle()
+                .inset(by: lineWidth / 2)
+                .trim(from: 0, to: progress)
+                .stroke(Color.stepAccent, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+        }
+        .animation(.easeInOut(duration: 0.3), value: progress)
+    }
+}
+
 struct CheckBoxStyle: ToggleStyle {
     var completed: Int = 0
     var total: Int
     var ringSize: CGFloat = 36
     var markSize: CGFloat = 20
 
+    /// Most steps shown as segments, more than that and the segments get too small to read
+    static let maxSegments: Int = 8
+
     func makeBody(configuration: Configuration) -> some View {
         HStack {
             ZStack {
-                if total > 1 {
+                if total > Self.maxSegments {
+                    ProgressRing(completed: completed, total: total)
+                        .frame(width: ringSize, height: ringSize)
+                } else if total > 1 {
                     SegmentedRing(completed: completed, total: total)
                         .frame(width: ringSize, height: ringSize)
                 }
@@ -305,6 +337,14 @@ struct HabitLocationLabel: View {
             totalSteps: 3,
             location: location,
             locationDistance: 1200,
+            status: .constant(false),
+            statusAction: {},
+            itemAction: {}
+        )
+        ListItem(
+            name: "Drink water",
+            completedSteps: 4,
+            totalSteps: 10,
             status: .constant(false),
             statusAction: {},
             itemAction: {}
