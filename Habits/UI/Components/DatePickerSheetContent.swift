@@ -9,6 +9,8 @@ import SwiftUI
 
 struct DatePickerSheetContent: View {
     @Binding var datePickerDate: Date
+    /// First day that can be picked, any day when nil
+    var earliestDate: Date?
     var todayAction: () -> Void
     var doneAction: () -> Void
     var todayButtonDisabled: Bool
@@ -28,6 +30,7 @@ struct DatePickerSheetContent: View {
             DatePicker(
                 "",
                 selection: $datePickerDate,
+                in: (self.earliestDate ?? .distantPast)...,
                 displayedComponents: [.date]
             )
             .datePickerStyle(.graphical)

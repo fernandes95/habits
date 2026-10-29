@@ -122,4 +122,22 @@ extension HabitsService {
         self.store.appConfigs = configs
         try await self.save()
     }
+
+    /// Sets the install date the first time the app runs, then only moves it back to fit older habits.
+    /// Data saved before the install date existed gets the oldest habit date instead of today,
+    /// imported habits older than the install date move it back too.
+    ///
+    /// - Parameter now: Today, used when there's no install date and no older habit
+    func updateInstallDate(now: Date = .now) async throws {
+        let oldestHabitDate: Date? = self.store.habits
+            .flatMap { [$0.createdDate, $0.startDate] }
+            .min()
+        let candidates: [Date] = [self.store.appConfigs.installDate ?? now, oldestHabitDate].compactMap { $0 }
+        guard let installDate: Date = candidates.min()?.startOfDay,
+              installDate != self.store.appConfigs.installDate
+        else { return }
+
+        self.store.appConfigs.installDate = installDate
+        try await self.save()
+    }
 }

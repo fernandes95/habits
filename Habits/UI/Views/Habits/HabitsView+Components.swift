@@ -97,6 +97,8 @@ extension HabitsView {
         let progress: [Date: Double]
         /// Calendar with the configured first day of the week
         let calendar: Calendar
+        /// First day that can be selected, days before it can't be picked or swiped to
+        let earliestDate: Date
         var changeDateAction: () -> Void
 
         @State private var showDatePicker = false
@@ -113,15 +115,22 @@ extension HabitsView {
         /// Amount of weeks reachable by swiping, before and after the current week (~19 years)
         private static let weekRange: ClosedRange<Int> = -1000...1000
 
+        /// Weeks shown by the pager, from the week of `earliestDate`
+        private var weeks: [Int] {
+            Array(self.weekOffset(for: self.earliestDate)...Self.weekRange.upperBound)
+        }
+
         init(
             date: Binding<Date>,
             progress: [Date: Double],
             calendar: Calendar,
+            earliestDate: Date,
             changeDateAction: @escaping () -> Void
         ) {
             self._date = date
             self.progress = progress
             self.calendar = calendar
+            self.earliestDate = earliestDate
             self.changeDateAction = changeDateAction
             let referenceWeekStart = calendar.dateInterval(of: .weekOfYear, for: .now)?.start
                 ?? Date.now.startOfDay
@@ -148,6 +157,7 @@ extension HabitsView {
             .sheet(isPresented: $showDatePicker) {
                 DatePickerSheetContent(
                     datePickerDate: self.$datePickerDate,
+                    earliestDate: self.earliestDate,
                     todayAction: {
                         self.showDatePicker = false
                         self.date = Date()
@@ -226,13 +236,15 @@ extension HabitsView {
         private var weekPager: some View {
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 0) {
-                    ForEach(Self.weekRange, id: \.self) { week in
+                    ForEach(self.weeks, id: \.self) { week in
                         WeekRow(
                             days: self.days(ofWeek: week),
                             selectedDate: self.date,
                             progress: self.progress,
+                            earliestDate: self.earliestDate,
                             onSelect: { day in
-                                guard !self.calendar.isDate(day, inSameDayAs: self.date) else { return }
+                                guard !self.calendar.isDate(day, inSameDayAs: self.date),
+                                      day >= self.earliestDate else { return }
                                 self.date = day
                                 self.changeDateAction()
                             }
@@ -266,7 +278,8 @@ extension HabitsView {
         private func selectFirstDayOfVisibleWeek() {
             guard let visibleWeek, visibleWeek != self.weekOffset(for: self.date) else { return }
             guard let firstDay = self.days(ofWeek: visibleWeek).first else { return }
-            self.date = firstDay
+            // The week of the earliest date can start before it
+            self.date = max(firstDay, self.earliestDate)
             self.changeDateAction()
         }
 
@@ -295,19 +308,24 @@ extension HabitsView {
         let days: [Date]
         let selectedDate: Date
         let progress: [Date: Double]
+        /// Days before it are dimmed and can't be selected
+        let earliestDate: Date
         let onSelect: (Date) -> Void
 
         var body: some View {
             HStack(spacing: 0) {
                 ForEach(self.days, id: \.self) { day in
+                    let isEnabled = day >= self.earliestDate
                     DayProgressCell(
                         date: day,
                         isSelected: Calendar.current.isDate(day, inSameDayAs: self.selectedDate),
                         progress: self.progress[day.startOfDay]
                     )
+                    .opacity(isEnabled ? 1 : 0.3)
                     .frame(maxWidth: .infinity)
                     .contentShape(Rectangle())
                     .onTapGesture { self.onSelect(day) }
+                    .disabled(!isEnabled)
                 }
             }
         }
@@ -392,6 +410,8 @@ extension HabitsView {
     /// Lets the user swipe the content horizontally to go to the previous / next day.
     /// The content follows the finger and slides out / in when the day changes.
     internal struct DaySwipeContainer<Content: View>: View {
+        /// False when there's no day in that direction (-1 previous, 1 next), the content bounces back
+        var canSwipe: (Int) -> Bool = { _ in true }
         let onSwipe: (Int) async -> Void
         @ViewBuilder let content: Content
 
@@ -414,19 +434,23 @@ extension HabitsView {
                                 self.axis = horizontal ? .horizontal : .vertical
                             }
                             guard self.axis == .horizontal else { return }
-                            self.offset = value.translation.width * 0.6
+                            // Swipe right -> previous day, it resists when there's no day to go to
+                            let direction = value.translation.width > 0 ? -1 : 1
+                            let resistance: CGFloat = self.canSwipe(direction) ? 0.6 : 0.15
+                            self.offset = value.translation.width * resistance
                         }
                         .onEnded { value in
                             defer { self.axis = nil }
                             guard self.axis == .horizontal else { return }
 
                             let distance = value.predictedEndTranslation.width
-                            guard abs(distance) > self.threshold else {
+                            let direction = distance < 0 ? 1 : -1
+                            guard abs(distance) > self.threshold, self.canSwipe(direction) else {
                                 withAnimation(.snappy) { self.offset = 0 }
                                 return
                             }
                             // Swipe left -> next day, swipe right -> previous day
-                            self.slide(direction: distance < 0 ? 1 : -1)
+                            self.slide(direction: direction)
                         }
                 )
         }

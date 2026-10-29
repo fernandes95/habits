@@ -71,6 +71,7 @@ class MainState: ObservableObject {
     func initHabits() async {
         do {
             try await self.habitsService.load()
+            try await self.habitsService.updateInstallDate()
             self.getConfigs()
             try await self.loadHabits(date: selectedDate)
             self.requestLocationAuthorizationIfNeeded()
@@ -117,6 +118,7 @@ class MainState: ObservableObject {
     /// - Parameter data: Imported data
     func importHabits(url: URL) async throws -> Bool? {
         self.duplicatedHabits = try await self.habitsService.importHabits(from: url)
+        try await self.updateInstallDate()
 
         guard let habits: [HabitEntity] = self.duplicatedHabits else { return nil }
 
@@ -138,8 +140,15 @@ class MainState: ObservableObject {
             habits: self.duplicatedHabits ?? [],
             resolution: resolution
         )
+        try await self.updateInstallDate()
         try await self.loadHabits(date: self.selectedDate)
         }
+    }
+
+    /// Moves the install date back when an imported habit is older, the week view can go back to it
+    private func updateInstallDate() async throws {
+        try await self.habitsService.updateInstallDate()
+        self.getConfigs()
     }
 
     /// Reloads the whole block around `date`.

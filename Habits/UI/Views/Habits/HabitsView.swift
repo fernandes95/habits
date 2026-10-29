@@ -34,6 +34,7 @@ struct HabitsView: View {
                         date: self.$state.selectedDate,
                         progress: self.state.dayProgress,
                         calendar: self.state.calendar,
+                        earliestDate: self.state.configs.earliestDate,
                         changeDateAction: self.loadSelectedDate
                     )
                 case .all:
@@ -57,7 +58,7 @@ struct HabitsView: View {
                 case .today:
                     self.dayContent
                 case .week:
-                    DaySwipeContainer(onSwipe: changeDay) {
+                    DaySwipeContainer(canSwipe: self.canChangeDay, onSwipe: changeDay) {
                         self.dayContent
                     }
                 case .all:
@@ -177,9 +178,16 @@ struct HabitsView: View {
         }
     }
 
+    /// False when moving by `days` goes before the earliest date
+    private func canChangeDay(by days: Int) -> Bool {
+        guard let newDate = Calendar.current.date(byAdding: .day, value: days, to: state.selectedDate) else { return false }
+        return newDate.startOfDay >= self.state.configs.earliestDate
+    }
+
     /// Moves the selected date by `days` (negative goes back) and waits until it's loaded
     private func changeDay(by days: Int) async {
-        guard let newDate = Calendar.current.date(byAdding: .day, value: days, to: state.selectedDate) else { return }
+        guard self.canChangeDay(by: days),
+              let newDate = Calendar.current.date(byAdding: .day, value: days, to: state.selectedDate) else { return }
         do {
             try await state.selectDate(newDate, animated: false)
         } catch let error { print(error.localizedDescription) }
