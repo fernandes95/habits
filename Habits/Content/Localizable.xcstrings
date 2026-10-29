@@ -1347,6 +1347,121 @@
         }
       }
     },
+    "habit_reset_dialog_message_day %lld %lld %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You logged %1$lld of %2$lld on %3$@. This only changes that day, your history stays."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você registrou %1$lld de %2$lld em %3$@. Isso só altera esse dia, seu histórico continua."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registaste %1$lld de %2$lld em %3$@. Isto só altera esse dia, o teu histórico mantém-se."
+          }
+        }
+      }
+    },
+    "habit_reset_dialog_message_today %lld %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You logged %1$lld of %2$lld today. This only changes today, your history stays."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você registrou %1$lld de %2$lld hoje. Isso só altera hoje, seu histórico continua."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registaste %1$lld de %2$lld hoje. Isto só altera o dia de hoje, o teu histórico mantém-se."
+          }
+        }
+      }
+    },
+    "habit_reset_dialog_reset" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset Progress"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redefinir progresso"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repor progresso"
+          }
+        }
+      }
+    },
+    "habit_reset_dialog_title %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset %@?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redefinir %@?"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repor %@?"
+          }
+        }
+      }
+    },
+    "habit_reset_dialog_undo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undo Last Step"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desfazer último passo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desfazer último passo"
+          }
+        }
+      }
+    },
     "habit_schedule_delete" : {
       "extractionState" : "manual",
       "localizations" : {

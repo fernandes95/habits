@@ -117,6 +117,20 @@ struct HabitsView: View {
                     } catch let error { print(error.localizedDescription) }
                 }
             },
+            onItemUndoStepAction: { habit in
+                Task {
+                    do {
+                        try await self.state.undoLastStep(habit: habit)
+                    } catch let error { print(error.localizedDescription) }
+                }
+            },
+            onItemResetAction: { habit in
+                Task {
+                    do {
+                        try await self.state.resetProgress(habit: habit)
+                    } catch let error { print(error.localizedDescription) }
+                }
+            },
             onItemAction: { habit in
                 router.push(HabitDetailView(habit: habit))
             }
@@ -187,7 +201,19 @@ private struct ContentView: View {
     /// True when the habit's location reminder can't remind, `Always` location isn't allowed
     let isLocationReminderPaused: (Habit) -> Bool
     var onItemStatusAction: (Habit) -> Void
+    var onItemUndoStepAction: (Habit) -> Void
+    var onItemResetAction: (Habit) -> Void
     var onItemAction: (Habit) -> Void
+
+    /// Done habit with a goal the user tapped, asks before changing its steps
+    @State private var habitToReset: Habit?
+
+    private var isResetDialogPresented: Binding<Bool> {
+        Binding(
+            get: { self.habitToReset != nil },
+            set: { if !$0 { self.habitToReset = nil } }
+        )
+    }
 
     var body: some View {
         List {
@@ -206,6 +232,12 @@ private struct ContentView: View {
                     isLocationReminderPaused: self.isLocationReminderPaused(habit),
                     status: $habit.isChecked,
                     statusAction: {
+                        // Every step is done, one more tap would lose them all
+                        if habit.goal != nil && habit.isChecked {
+                            self.habitToReset = habit
+                            return
+                        }
+
                         var habit = habit
                         habit.isChecked = !habit.isChecked
                         onItemStatusAction(habit)
@@ -221,6 +253,32 @@ private struct ContentView: View {
         .scrollContentBackground(.hidden)
         // Keeps the empty area swipeable when there are no habits
         .contentShape(Rectangle())
+        .alert(
+            Text("habit_reset_dialog_title \(self.habitToReset?.name ?? "")"),
+            isPresented: self.isResetDialogPresented,
+            presenting: self.habitToReset
+        ) { habit in
+            Button("habit_reset_dialog_undo") {
+                onItemUndoStepAction(habit)
+            }
+            Button("habit_reset_dialog_reset", role: .destructive) {
+                onItemResetAction(habit)
+            }
+            Button("general_cancel", role: .cancel) { }
+        } message: { habit in
+            self.resetMessage(for: habit)
+        }
+    }
+
+    /// Steps logged out of the goal, and which day the reset changes
+    private func resetMessage(for habit: Habit) -> Text {
+        let goal: Int = habit.goal?.value ?? 0
+        if Calendar.current.isDateInToday(self.selectedDate) {
+            return Text("habit_reset_dialog_message_today \(habit.completedCount) \(goal)")
+        }
+
+        let day: String = self.selectedDate.formatted(.dateTime.day().month(.wide))
+        return Text("habit_reset_dialog_message_day \(habit.completedCount) \(goal) \(day)")
     }
 
     /// `checkedDays/minimumDays` for `.minDays` habits that reached the minimum in the selected week, nil otherwise

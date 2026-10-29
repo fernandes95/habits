@@ -239,6 +239,26 @@ class MainState: ObservableObject {
         } catch let error { print(error.localizedDescription) }
     }
 
+    /// Removes the last step of `habit` on the selected date and loads all habits from selected date
+    ///
+    /// - Parameter habit: Habit with a goal to update
+    func undoLastStep(habit: Habit) async throws {
+        do {
+            try await self.habitsService.undoLastStep(habit, selectedDate: self.selectedDate)
+            try await loadHabits(date: self.selectedDate)
+        } catch let error { print(error.localizedDescription) }
+    }
+
+    /// Clears the progress of `habit` on the selected date and loads all habits from selected date
+    ///
+    /// - Parameter habit: Habit with a goal to update
+    func resetProgress(habit: Habit) async throws {
+        do {
+            try await self.habitsService.resetProgress(habit, selectedDate: self.selectedDate)
+            try await loadHabits(date: self.selectedDate)
+        } catch let error { print(error.localizedDescription) }
+    }
+
     /// Saves edited Habit settings without changing the status of any day,
     /// and loads all habits from selected date
     ///

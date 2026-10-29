@@ -59,6 +59,52 @@ internal final class HabitGoalTests: XCTestCase {
         XCTAssertFalse(listedHabit.isChecked)
     }
 
+    // MARK: Reset dialog
+
+    internal func test_undoing_the_last_step_of_a_done_habit_removes_one_step() async throws {
+        let habit: Habit = Habit.make(.daily, hasGoal: true)
+        let day: Date = habit.startDate
+        let habitId: UUID = try await self.sut.addHabit(habit)
+        let doneHabit: Habit = try await self.complete(habitId, on: day)
+
+        try await self.sut.undoLastStep(doneHabit, selectedDate: day)
+        let listedHabit: Habit = try await self.listedHabit(habitId, on: day)
+
+        XCTAssertEqual(listedHabit.completedCount, Habit.testGoal.value - 1)
+        XCTAssertFalse(listedHabit.isChecked, "Still checked after removing a step")
+    }
+
+    internal func test_tapping_after_undoing_the_last_step_checks_the_habit_again() async throws {
+        let habit: Habit = Habit.make(.daily, hasGoal: true)
+        let day: Date = habit.startDate
+        let habitId: UUID = try await self.sut.addHabit(habit)
+        let doneHabit: Habit = try await self.complete(habitId, on: day)
+
+        try await self.sut.undoLastStep(doneHabit, selectedDate: day)
+        let listedHabit: Habit = try await self.tap(habitId, on: day)
+
+        XCTAssertEqual(listedHabit.completedCount, Habit.testGoal.value)
+        XCTAssertTrue(listedHabit.isChecked)
+    }
+
+    internal func test_resetting_progress_clears_only_that_day() async throws {
+        let habit: Habit = Habit.make(.daily, hasGoal: true)
+        let day: Date = habit.startDate
+        let nextDay: Date = day.adding(days: 1)
+        let habitId: UUID = try await self.sut.addHabit(habit)
+        let doneHabit: Habit = try await self.complete(habitId, on: day)
+        _ = try await self.complete(habitId, on: nextDay)
+
+        try await self.sut.resetProgress(doneHabit, selectedDate: day)
+        let resetHabit: Habit = try await self.listedHabit(habitId, on: day)
+        let otherDayHabit: Habit = try await self.listedHabit(habitId, on: nextDay)
+
+        XCTAssertEqual(resetHabit.completedCount, 0)
+        XCTAssertFalse(resetHabit.isChecked)
+        XCTAssertEqual(otherDayHabit.completedCount, Habit.testGoal.value, "Another day changed")
+        XCTAssertTrue(otherDayHabit.isChecked)
+    }
+
     internal func test_habit_without_goal_is_checked_with_one_tap() async throws {
         let habit: Habit = Habit.make(.weekly)
         let day: Date = habit.startDate.adding(days: 1)
@@ -99,6 +145,16 @@ internal final class HabitGoalTests: XCTestCase {
         let habit: Habit = try await self.listedHabit(habitId, on: day, file: file, line: line)
         try await self.sut.updateHabit(habit.with(isChecked: !habit.isChecked), selectedDate: day)
         return try await self.listedHabit(habitId, on: day, file: file, line: line)
+    }
+
+    /// Taps the habit until its goal is reached on `day` and returns the done habit
+    private func complete(_ habitId: UUID, on day: Date, file: StaticString = #filePath, line: UInt = #line) async throws -> Habit {
+        var habit: Habit = try await self.listedHabit(habitId, on: day, file: file, line: line)
+        for _ in 0..<Habit.testGoal.value where !habit.isChecked {
+            habit = try await self.tap(habitId, on: day, file: file, line: line)
+        }
+        XCTAssertTrue(habit.isChecked, "Not done after reaching the goal", file: file, line: line)
+        return habit
     }
 
     private func listedHabit(

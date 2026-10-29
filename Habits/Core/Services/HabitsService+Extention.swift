@@ -78,6 +78,24 @@ extension HabitsService {
         }
     }
 
+    /// Applies `change` to the status of `habit` on `date` and saves it, nothing happens if the day has no status
+    internal func changeStatus(
+        of habit: Habit,
+        on date: Date,
+        _ change: (inout HabitEntity.Status) -> Void
+    ) async throws {
+        guard let index: Int = self.store.habits.firstIndex(where: { $0.id == habit.id }),
+              let statusIndex: Int = self.store.habits[index].statusList.firstIndex(where: {
+                  $0.date.startOfDay == date.startOfDay
+              })
+        else { return }
+
+        change(&self.store.habits[index].statusList[statusIndex])
+        self.store.habits[index].statusList[statusIndex].updatedDate = .now
+        self.store.habits[index].updatedDate = .now
+        try await self.save()
+    }
+
     internal func manageUpdateEvents(habit: Habit, oldHabit: Habit) async throws -> Habit {
         var habitUpdated: Habit = habit
 

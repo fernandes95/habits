@@ -198,6 +198,34 @@ class HabitsService {
         try await self.save()
     }
 
+    /// Removes the last step of a habit with a goal on `selectedDate`, a done habit isn't done anymore.
+    /// Used from the reset dialog of the habits list.
+    ///
+    /// - Parameters:
+    ///   - habit: Habit to update
+    ///   - selectedDate: Day of the status to change
+    func undoLastStep(_ habit: Habit, selectedDate: Date) async throws {
+        try await self.changeStatus(of: habit, on: selectedDate) { status in
+            // Older statuses were saved without a target, fall back to the current one.
+            let required: Int? = status.requiredCount ?? habit.goal?.value
+            status.count = max(status.count - 1, 0)
+            status.isChecked = required.map { status.count >= $0 } ?? false
+        }
+    }
+
+    /// Clears the progress of a habit on `selectedDate`, every other day is left untouched.
+    /// Used from the reset dialog of the habits list.
+    ///
+    /// - Parameters:
+    ///   - habit: Habit to update
+    ///   - selectedDate: Day of the status to change
+    func resetProgress(_ habit: Habit, selectedDate: Date) async throws {
+        try await self.changeStatus(of: habit, on: selectedDate) { status in
+            status.count = 0
+            status.isChecked = false
+        }
+    }
+
     /// Updates existing Habit settings only, the status of any day is left untouched.
     /// Used when the user edits a habit in the detail screen.
     ///
