@@ -31,6 +31,10 @@ struct ListItem: View {
     var locationDistance: CLLocationDistance?
     /// The location reminder is on but can't remind, `Always` location isn't allowed
     var isLocationReminderPaused: Bool = false
+    /// The habit has reminder hours or a location reminder but notifications aren't allowed
+    var isNotificationReminderPaused: Bool = false
+    /// The location reminder is on, a paused one shows in the location label instead of its own line
+    var hasLocationReminder: Bool = false
     /// Reminder hours of the day, shown under the name when there are any
     var hourChips: [Habit.HourChip] = []
     var hourAction: (Habit.HourChip) -> Void = { _ in }
@@ -44,6 +48,10 @@ struct ListItem: View {
 
     /// Briefly checked after doing an hour that isn't the last one, the habit itself stays unchecked
     @State private var isShowingHourCheck: Bool = false
+
+    private var showsLocationReminder: Bool {
+        self.location != nil && self.hasLocationReminder
+    }
 
     private var hasHourChips: Bool {
         self.type == .regularListItem && !self.hourChips.isEmpty
@@ -138,12 +146,18 @@ struct ListItem: View {
                 .strikethrough(self.type == .regularListItem && self.status)
                 .lineLimit(1)
 
+            // A habit with a location reminder already tells it in the location label
+            if self.isNotificationReminderPaused && !self.showsLocationReminder {
+                NotificationRemindersPausedLabel()
+            }
+
             if let location {
                 HabitLocationLabel(
                     location: location,
                     distance: self.locationDistance,
                     isCompleted: self.type == .regularListItem && self.status,
-                    isReminderPaused: self.isLocationReminderPaused
+                    isLocationPaused: self.isLocationReminderPaused,
+                    isNotificationsPaused: self.isNotificationReminderPaused && self.showsLocationReminder
                 )
             }
         }
@@ -401,10 +415,28 @@ private struct HourChipView: View {
     }
 }
 
+/// Shown under the habit name while its reminder hours can't remind, notifications aren't allowed.
+/// The words are there too, so it doesn't rely on the icon alone
+struct NotificationRemindersPausedLabel: View {
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "bell.slash")
+                .font(.caption)
+            Text("habit_notifications_reminder_paused")
+                .fontWeight(.semibold)
+                .lineLimit(1)
+        }
+        .font(.subheadline)
+        .foregroundStyle(Color.stepAccent)
+        .accessibilityElement(children: .combine)
+    }
+}
+
 /// Habit location shown under the habit name.
 /// Inside the habit region it reads "You're here • Place", outside it reads "Place • 1.2 km".
 /// Once the habit is done it only shows the place.
-/// While the reminder is paused it reads "Reminder paused • Place".
+/// While the reminder is paused it reads "Reminder paused • Place", with a location icon when `Always` location
+/// is off, a bell when notifications are off, or both.
 struct HabitLocationLabel: View {
     let location: Habit.Location
     /// Distance from the user to the location, nil while the user location is unknown
@@ -412,7 +444,13 @@ struct HabitLocationLabel: View {
     /// Done habits don't need to tell where the user is
     var isCompleted: Bool = false
     /// The reminder is on but can't remind, `Always` location isn't allowed
-    var isReminderPaused: Bool = false
+    var isLocationPaused: Bool = false
+    /// The reminder is on but can't remind, notifications aren't allowed
+    var isNotificationsPaused: Bool = false
+
+    private var isReminderPaused: Bool {
+        self.isLocationPaused || self.isNotificationsPaused
+    }
 
     private var shownDistance: CLLocationDistance? {
         self.isCompleted ? nil : self.distance
@@ -436,8 +474,15 @@ struct HabitLocationLabel: View {
     private var pausedBody: some View {
         HStack(spacing: 4) {
             Group {
-                Image(systemName: "location.slash.fill")
-                    .font(.caption)
+                // One icon for each missing permission
+                if self.isNotificationsPaused {
+                    Image(systemName: "bell.slash")
+                        .font(.caption)
+                }
+                if self.isLocationPaused {
+                    Image(systemName: "location.slash.fill")
+                        .font(.caption)
+                }
                 Text("habit_location_reminder_paused")
                     .fontWeight(.semibold)
                     .fixedSize()

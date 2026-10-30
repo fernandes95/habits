@@ -63,6 +63,7 @@ struct HabitsView: View {
                         list: self.state.allHabits,
                         distance: self.state.distance(to:),
                         isLocationReminderPaused: self.state.isLocationReminderPaused,
+                        isNotificationReminderPaused: self.state.isNotificationReminderPaused,
                         onItemAction: { habit in
                             router.push(HabitDetailView(habit: habit))
                         }
@@ -110,6 +111,7 @@ struct HabitsView: View {
             calendar: self.state.calendar,
             distance: self.state.distance(to:),
             isLocationReminderPaused: self.state.isLocationReminderPaused,
+            isNotificationReminderPaused: self.state.isNotificationReminderPaused,
             onItemStatusAction: { habit in
                 Task {
                     do {
@@ -221,6 +223,8 @@ struct HabitsDayContentView: View {
     let distance: (Habit.Location) -> CLLocationDistance?
     /// True when the habit's location reminder can't remind, `Always` location isn't allowed
     let isLocationReminderPaused: (Habit) -> Bool
+    /// True when the habit's reminder hours can't remind, notifications aren't allowed
+    let isNotificationReminderPaused: (Habit) -> Bool
     var onItemStatusAction: (Habit) -> Void
     var onItemUndoStepAction: (Habit) -> Void
     var onItemResetAction: (Habit) -> Void
@@ -266,6 +270,8 @@ struct HabitsDayContentView: View {
                         location: habit.location,
                         locationDistance: habit.location.flatMap { self.distance($0) },
                         isLocationReminderPaused: self.isLocationReminderPaused(habit),
+                        isNotificationReminderPaused: self.isNotificationReminderPaused(habit),
+                        hasLocationReminder: habit.hasLocationReminder,
                         hourChips: self.hourChips(of: habit, now: context.date),
                         hourAction: { chip in self.hourTapped(chip, of: habit) },
                         status: $habit.isChecked,
@@ -359,6 +365,8 @@ private struct AllHabitsContentView: View {
     let distance: (Habit.Location) -> CLLocationDistance?
     /// True when the habit's location reminder can't remind, `Always` location isn't allowed
     let isLocationReminderPaused: (Habit) -> Bool
+    /// True when the habit's reminder hours can't remind, notifications aren't allowed
+    let isNotificationReminderPaused: (Habit) -> Bool
     var onItemAction: (Habit) -> Void
 
     var body: some View {
@@ -372,6 +380,8 @@ private struct AllHabitsContentView: View {
                 location: habit.location,
                 locationDistance: habit.location.flatMap { self.distance($0) },
                 isLocationReminderPaused: self.isLocationReminderPaused(habit),
+                isNotificationReminderPaused: self.isNotificationReminderPaused(habit),
+                hasLocationReminder: habit.hasLocationReminder,
                 status: .constant(false),
                 statusAction: {},
                 itemAction: { onItemAction(habit) }

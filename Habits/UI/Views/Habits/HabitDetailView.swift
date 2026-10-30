@@ -45,91 +45,79 @@ struct HabitDetailView: View {
     }
 
     var body: some View {
-        VStack {
-            Form {
-                Section(header: Text("habit_new_section_habit_info")) {
-                    TextField("habit_name", text: self.$editingHabit.name)
-                        .disabled(!self.isEditing)
+        Form {
+            Section(header: Text("habit_new_section_habit_info")) {
+                TextField("habit_name", text: self.$editingHabit.name)
+                    .disabled(!self.isEditing)
 
-                    /*Picker("habit_category", selection: self.$habit.category) {
-                        ForEach(Habit.Category.allCases) { category in
-                            Text(category.rawValue).tag(category)
-                        }
-                    }
-                    .disabled(!self.isEditing)*/
-
-                    DatePicker("habit_start_date", selection: self.$habit.startDate,
-                               in: self.$habit.startDate.wrappedValue...,
-                               displayedComponents: .date
-                    )
-                    .disabled(true)
-
-                    if !self.editingHabit.hasNoEndDate && self.isEditing ||
-                        !self.habit.hasNoEndDate && !self.isEditing {
-                        DatePicker("habit_end_date", selection: self.$editingHabit.endDate,
-                                   in: habit.startDate...,
-                                   displayedComponents: .date)
-                        .disabled(!self.isEditing)
-                    }
-
-                    if self.isEditing {
-                        Toggle("habit_has_end_date", isOn: $editingHabit.hasNoEndDate)
-                            .onChange(of: self.editingHabit.hasNoEndDate) { _, hasNoEndDate in
-                                if hasNoEndDate {
-                                    let calendar = Calendar.current
-                                    let endDate = calendar.date(
-                                        byAdding: .year,
-                                        value: 100,
-                                        to: self.editingHabit.endDate
-                                    )!
-                                    self.editingHabit.endDate = endDate
-                                } else {
-                                    self.editingHabit.endDate = self.habit.startDate
-                                }
-                            }
+                /*Picker("habit_category", selection: self.$habit.category) {
+                    ForEach(Habit.Category.allCases) { category in
+                        Text(category.rawValue).tag(category)
                     }
                 }
+                .disabled(!self.isEditing)*/
 
-                HabitFrequencyView(
-                    habit: self.$editingHabit,
-                    isEditing: self.$isEditing
+                DatePicker("habit_start_date", selection: self.$habit.startDate,
+                           in: self.$habit.startDate.wrappedValue...,
+                           displayedComponents: .date
                 )
+                .disabled(true)
 
-                if self.isEditing || self.editingHabit.location != nil {
-                    HabitLocationSectionView(
-                        location: self.$editingHabit.location,
-                        hasLocationReminder: self.$editingHabit.hasLocationReminder,
-                        place: self.$locationPlace,
-                        isEditing: self.isEditing,
-                        isReminderPaused: self.state.isLocationReminderPaused(self.editingHabit),
-                        onPickLocation: {
-                            self.isPickingLocation = true
-                        }
-                    )
-                }
-
-                Section(header: Text("habit_detail_history_section_title")) {
-                    HabitCalendarView(
-                        startDate: self.habit.createdDate,
-                        history: self.habit.history
-                    )
+                // The end date can't be changed for now, habits that already have one still show it
+                if !self.habit.hasNoEndDate {
+                    DatePicker("habit_end_date", selection: self.$editingHabit.endDate,
+                               in: habit.startDate...,
+                               displayedComponents: .date)
+                    .disabled(true)
                 }
             }
 
-            Button(role: .destructive) {
-                self.showingAlert = true
-            } label: {
-                Label("habit_detail_delete", systemImage: "trash")
+            HabitFrequencyView(
+                habit: self.$editingHabit,
+                isEditing: self.$isEditing
+            )
+
+            if self.isEditing || self.editingHabit.location != nil {
+                HabitLocationSectionView(
+                    location: self.$editingHabit.location,
+                    hasLocationReminder: self.$editingHabit.hasLocationReminder,
+                    place: self.$locationPlace,
+                    isEditing: self.isEditing,
+                    isReminderPaused: self.state.isLocationReminderPaused(self.editingHabit),
+                    onPickLocation: {
+                        self.isPickingLocation = true
+                    }
+                )
             }
-            .confirmationDialog(
-                "habit_delete_dialog_title",
-                isPresented: self.$showingAlert,
-                titleVisibility: .visible
-            ) {
-                Button("habit_delete_dialog_single", role: .destructive) {
-                    deleteHabit()
+
+            Section(header: Text("habit_detail_history_section_title")) {
+                HabitCalendarView(
+                    startDate: self.habit.createdDate,
+                    history: self.habit.history
+                )
+            }
+
+            // Last in the list, so it's only reached on purpose
+            Section {
+                Button(role: .destructive) {
+                    self.showingAlert = true
+                } label: {
+                    Label("habit_detail_delete", systemImage: "trash")
+                        .frame(maxWidth: .infinity)
+                        // The form tints the icon with the accent color, the whole label is destructive
+                        .foregroundStyle(Color.red)
                 }
-                Button("general_cancel", role: .cancel) { }
+                // On the button, so the dialog points at it
+                .confirmationDialog(
+                    "habit_delete_dialog_title",
+                    isPresented: self.$showingAlert,
+                    titleVisibility: .visible
+                ) {
+                    Button("habit_delete_dialog_single", role: .destructive) {
+                        deleteHabit()
+                    }
+                    Button("general_cancel", role: .cancel) { }
+                }
             }
         }
         .keyboardDismissable()

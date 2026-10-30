@@ -108,6 +108,13 @@ class MainState: ObservableObject {
         return self.allHabits.filter { self.isLocationReminderPaused($0) }
     }
 
+    /// True when `habit` has reminder hours or a location reminder that can't remind, notifications were denied.
+    /// The reminders are kept and remind again once notifications are allowed.
+    func isNotificationReminderPaused(_ habit: Habit) -> Bool {
+        let hasReminder = !habit.reminderHours.isEmpty || (habit.location != nil && habit.hasLocationReminder)
+        return self.notificationStatus == .denied && hasReminder && habit.endDate.endOfDay >= .now
+    }
+
     /// Habits with time or location reminders that can't remind, notifications were denied.
     /// The reminders are kept and start again once notifications are allowed.
     var pausedNotificationReminders: [Habit] {
