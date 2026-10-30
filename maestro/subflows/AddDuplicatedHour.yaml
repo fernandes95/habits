@@ -1,20 +1,14 @@
 appId: ${appId}
 ---
-# Starting with 09:00 and 10:00, adds 11:00 and 12:00 and moves 12:00 back to 09:00.
-# Swiping down on the open hour wheel moves it 3 hours back.
+# Starting with 09:00 and 10:00, moves 10:00 back to 09:00.
+# Tapping the row above the selected one on the hour wheel moves it 1 hour back.
 - scrollUntilVisible:
-    element: ${output.buttonNewHabitScheduleAdd}
-- tapOn: ${output.buttonNewHabitScheduleAdd}
-- tapOn: ${output.buttonNewHabitScheduleAdd}
-- scrollUntilVisible:
-    element: "Hour #4"
+    element: "Hour #2"
     centerElement: true
-- tapOn: "12:00"
-- swipe:
-    from:
-      text: "12 o.clock"
-    direction: DOWN
-    duration: 1500
+- tapOn: "10:00"
+- tapOn:
+    text: "10 o.clock"
+    point: "50%,37%"
 - assertVisible: "09 o.clock"
 # Closes the hour wheel
 - tapOn:

@@ -3,3 +3,6 @@ flows:
   - "add/*"
   - "invalid/*"
   - "edit/*"
+# Habits can't have an end date for now, remove this to run the end date flows again
+excludeTags:
+  - endDate

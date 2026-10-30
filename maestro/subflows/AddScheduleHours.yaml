@@ -4,8 +4,13 @@ appId: ${appId}
 - scrollUntilVisible:
     element:
       id: "habit_reminder"
+# Tapping the row only hits the label, the switch is its "0"/"1" value
 - tapOn:
-    id: "habit_reminder"
+    text: "0"
+    childOf:
+      id: "habit_reminder"
+# On, the reminder adds its first hour
+- assertVisible: "Hour #1"
 - scrollUntilVisible:
     element: ${output.buttonNewHabitScheduleAdd}
 - tapOn: ${output.buttonNewHabitScheduleAdd}

@@ -1,4 +1,7 @@
 appId: ${appId}
+# The end date can't be set for now, excluded in config.yaml
+tags:
+  - endDate
 onFlowStart:
   - runFlow: ../env.yaml
 ---
