@@ -61,6 +61,7 @@ struct HabitsView: View {
                 case .all:
                     AllHabitsContentView(
                         list: self.state.allHabits,
+                        isEmptyStateVisible: self.state.didLoadHabits && self.state.allHabits.isEmpty,
                         distance: self.state.distance(to:),
                         isLocationReminderPaused: self.state.isLocationReminderPaused,
                         isNotificationReminderPaused: self.state.isNotificationReminderPaused,
@@ -107,6 +108,7 @@ struct HabitsView: View {
     private var dayContent: some View {
         HabitsDayContentView(
             list: self.$state.habits,
+            isEmptyStateVisible: self.state.didLoadHabits && self.state.allHabits.isEmpty,
             selectedDate: self.state.selectedDate,
             calendar: self.state.calendar,
             distance: self.state.distance(to:),
@@ -209,6 +211,22 @@ struct HabitsView: View {
     }
 }
 
+/// Shown instead of the list when there are no habits at all
+struct HabitsEmptyView: View {
+    var body: some View {
+        VStack(spacing: 8) {
+            Text("habits_empty_title")
+                .font(.title3.bold())
+            Text("habits_empty_description")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .multilineTextAlignment(.center)
+        .padding(.horizontal, 32)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
 extension Color {
     static let dayProgress = Color(red: 0.39, green: 0.77, blue: 0.39)
     static let dayTrack = Color(.systemGray5)
@@ -216,6 +234,8 @@ extension Color {
 
 struct HabitsDayContentView: View {
     @Binding var list: [Habit]
+    /// True when there are no habits at all, not just on this day
+    var isEmptyStateVisible: Bool = false
     let selectedDate: Date
     /// Calendar with the configured first day of the week
     let calendar: Calendar
@@ -254,6 +274,42 @@ struct HabitsDayContentView: View {
     }
 
     var body: some View {
+        Group {
+            if self.isEmptyStateVisible {
+                HabitsEmptyView()
+            } else {
+                self.habitsList
+            }
+        }
+        // Keeps the empty area swipeable when there are no habits
+        .contentShape(Rectangle())
+        .alert(
+            Text("habit_reset_dialog_title \(self.habitToReset?.name ?? "")"),
+            isPresented: self.isResetDialogPresented,
+            presenting: self.habitToReset
+        ) { habit in
+            Button("habit_reset_dialog_undo") {
+                onItemUndoStepAction(habit)
+            }
+            Button("habit_reset_dialog_reset", role: .destructive) {
+                onItemResetAction(habit)
+            }
+            Button("general_cancel", role: .cancel) { }
+        } message: { habit in
+            self.resetMessage(for: habit)
+        }
+        .modifier(HourResetAlert(reset: self.$hourToReset) { reset in
+            onItemUncheckHourAction(reset.habit, reset.chip.id)
+        })
+        .onChange(of: self.scenePhase) { _, scenePhase in
+            if scenePhase != .active { self.selectedHours = [:] }
+        }
+        .onChange(of: self.selectedDate) {
+            self.selectedHours = [:]
+        }
+    }
+
+    private var habitsList: some View {
         List {
             ForEach($list) { $habit in
                 let totalSteps = habit.goal?.value ?? 0
@@ -287,32 +343,6 @@ struct HabitsDayContentView: View {
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
-        // Keeps the empty area swipeable when there are no habits
-        .contentShape(Rectangle())
-        .alert(
-            Text("habit_reset_dialog_title \(self.habitToReset?.name ?? "")"),
-            isPresented: self.isResetDialogPresented,
-            presenting: self.habitToReset
-        ) { habit in
-            Button("habit_reset_dialog_undo") {
-                onItemUndoStepAction(habit)
-            }
-            Button("habit_reset_dialog_reset", role: .destructive) {
-                onItemResetAction(habit)
-            }
-            Button("general_cancel", role: .cancel) { }
-        } message: { habit in
-            self.resetMessage(for: habit)
-        }
-        .modifier(HourResetAlert(reset: self.$hourToReset) { reset in
-            onItemUncheckHourAction(reset.habit, reset.chip.id)
-        })
-        .onChange(of: self.scenePhase) { _, scenePhase in
-            if scenePhase != .active { self.selectedHours = [:] }
-        }
-        .onChange(of: self.selectedDate) {
-            self.selectedHours = [:]
-        }
     }
 
     private func statusTapped(_ habit: Habit) {
@@ -361,6 +391,8 @@ struct HabitsDayContentView: View {
 /// Every saved habit, without a status, only the name and the way to its detail
 private struct AllHabitsContentView: View {
     let list: [Habit]
+    /// True once the habits are loaded and there are none
+    var isEmptyStateVisible: Bool = false
     /// Distance from the user to a habit location, nil while the user location is unknown
     let distance: (Habit.Location) -> CLLocationDistance?
     /// True when the habit's location reminder can't remind, `Always` location isn't allowed
@@ -370,6 +402,14 @@ private struct AllHabitsContentView: View {
     var onItemAction: (Habit) -> Void
 
     var body: some View {
+        if self.isEmptyStateVisible {
+            HabitsEmptyView()
+        } else {
+            self.habitsList
+        }
+    }
+
+    private var habitsList: some View {
         List(self.list) { habit in
             let dividerColor = self.list.count == 1 ?
                 Color.black.opacity(0.0) : nil
