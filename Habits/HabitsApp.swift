@@ -50,6 +50,15 @@ struct HabitsApp: App {
                 .environment(\.locale, language.locale)
             }
         }
+        .onChange(of: self.scenePhase) { _, scenePhase in
+            // Keeps the reminders going while the app isn't opened
+            if scenePhase == .background && self.isProduction {
+                AppEnvironment.shared.scheduleReminderRefresh()
+            }
+        }
+        .backgroundTask(.appRefresh(AppEnvironment.reminderRefreshTaskId)) {
+            await AppEnvironment.shared.refreshReminders()
+        }
     }
 
     private var isProduction: Bool {

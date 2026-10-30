@@ -11,4 +11,5 @@ extension Logger {
     private static var subsystem  = Bundle.main.bundleIdentifier!
 
     static let location = Logger(subsystem: subsystem, category: "location")
+    static let reminders = Logger(subsystem: subsystem, category: "reminders")
 }
