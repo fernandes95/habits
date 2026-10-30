@@ -143,7 +143,7 @@ extension HabitsDayContentView {
     func hourStatusTapped(_ habit: Habit) {
         if habit.isChecked {
             if let hourId = habit.lastCheckedHourId {
-                onItemHourAction(habit, hourId)
+                onItemUncheckHourAction(habit, hourId)
             }
             return
         }
@@ -157,7 +157,7 @@ extension HabitsDayContentView {
         if isHourDone {
             self.selectedHours[habit.id] = nil
         }
-        onItemHourAction(habit, selected.id)
+        onItemCheckHourAction(habit, selected.id)
     }
 
     func hourTapped(_ chip: Habit.HourChip, of habit: Habit) {
@@ -167,7 +167,7 @@ extension HabitsDayContentView {
             if habit.isChecked {
                 self.hourToReset = HourReset(habit: habit, chip: chip)
             } else {
-                onItemHourAction(habit, chip.id)
+                onItemUncheckHourAction(habit, chip.id)
             }
         case .missed:
             self.selectedHours[habit.id] = chip.id

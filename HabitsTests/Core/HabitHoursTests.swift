@@ -88,12 +88,12 @@ internal final class HabitHoursTests: XCTestCase {
         let habitId: UUID = try await self.sut.addHabit(habit)
         let hours: [Hour] = try await self.listedHabit(habitId, on: day).reminderHours
 
-        var listedHabit: Habit = try await self.toggle(habitId, hour: hours[0], on: day)
+        var listedHabit: Habit = try await self.check(habitId, hour: hours[0], on: day)
         XCTAssertFalse(listedHabit.isChecked, "Checked with an hour still to do")
         XCTAssertNotNil(listedHabit.checkedHours[hours[0].id])
         XCTAssertEqual(listedHabit.dayProgress, 0.5)
 
-        listedHabit = try await self.toggle(habitId, hour: hours[1], on: day)
+        listedHabit = try await self.check(habitId, hour: hours[1], on: day)
         XCTAssertTrue(listedHabit.isChecked)
         XCTAssertEqual(listedHabit.dayProgress, 1)
     }
@@ -103,10 +103,10 @@ internal final class HabitHoursTests: XCTestCase {
         let day: Date = habit.startDate
         let habitId: UUID = try await self.sut.addHabit(habit)
         let hours: [Hour] = try await self.listedHabit(habitId, on: day).reminderHours
-        _ = try await self.toggle(habitId, hour: hours[0], on: day)
-        _ = try await self.toggle(habitId, hour: hours[1], on: day)
+        _ = try await self.check(habitId, hour: hours[0], on: day)
+        _ = try await self.check(habitId, hour: hours[1], on: day)
 
-        let listedHabit: Habit = try await self.toggle(habitId, hour: hours[0], on: day)
+        let listedHabit: Habit = try await self.uncheck(habitId, hour: hours[0], on: day)
 
         XCTAssertFalse(listedHabit.isChecked)
         XCTAssertNil(listedHabit.checkedHours[hours[0].id])
@@ -121,18 +121,18 @@ internal final class HabitHoursTests: XCTestCase {
 
         var listedHabit: Habit = try await self.listedHabit(habitId, on: day)
         for step in 1..<Habit.testGoal.value {
-            listedHabit = try await self.toggle(habitId, hour: hours[0], on: day)
+            listedHabit = try await self.check(habitId, hour: hours[0], on: day)
             XCTAssertEqual(listedHabit.completedCount, step)
             XCTAssertNil(listedHabit.checkedHours[hours[0].id], "Hour done before reaching the goal")
         }
 
-        listedHabit = try await self.toggle(habitId, hour: hours[0], on: day)
+        listedHabit = try await self.check(habitId, hour: hours[0], on: day)
         XCTAssertNotNil(listedHabit.checkedHours[hours[0].id])
         XCTAssertEqual(listedHabit.completedCount, 0, "Steps didn't start again for the next hour")
         XCTAssertFalse(listedHabit.isChecked)
 
         for _ in 0..<Habit.testGoal.value {
-            listedHabit = try await self.toggle(habitId, hour: hours[1], on: day)
+            listedHabit = try await self.check(habitId, hour: hours[1], on: day)
         }
         XCTAssertTrue(listedHabit.isChecked)
         XCTAssertEqual(listedHabit.completedCount, Habit.testGoal.value, "The last hour lost its steps")
@@ -150,13 +150,13 @@ internal final class HabitHoursTests: XCTestCase {
         XCTAssertEqual(listedHabit.hoursGoalProgress?.total, total)
 
         for _ in 0..<Habit.testGoal.value {
-            listedHabit = try await self.toggle(habitId, hour: hours[0], on: day)
+            listedHabit = try await self.check(habitId, hour: hours[0], on: day)
         }
-        listedHabit = try await self.toggle(habitId, hour: hours[1], on: day)
+        listedHabit = try await self.check(habitId, hour: hours[1], on: day)
         XCTAssertEqual(listedHabit.hoursGoalProgress?.completed, Habit.testGoal.value + 1)
 
         for _ in 1..<Habit.testGoal.value {
-            listedHabit = try await self.toggle(habitId, hour: hours[1], on: day)
+            listedHabit = try await self.check(habitId, hour: hours[1], on: day)
         }
         XCTAssertTrue(listedHabit.isChecked)
         XCTAssertEqual(listedHabit.hoursGoalProgress?.completed, total, "Counted the last hour twice")
@@ -170,7 +170,7 @@ internal final class HabitHoursTests: XCTestCase {
         var doneHabit: Habit = try await self.listedHabit(habitId, on: day)
         for hour in hours {
             for _ in 0..<Habit.testGoal.value {
-                doneHabit = try await self.toggle(habitId, hour: hour, on: day)
+                doneHabit = try await self.check(habitId, hour: hour, on: day)
             }
         }
 
@@ -189,12 +189,82 @@ internal final class HabitHoursTests: XCTestCase {
         let habitId: UUID = try await self.sut.addHabit(habit)
         let hours: [Hour] = try await self.listedHabit(habitId, on: day).reminderHours
 
-        let listedHabit: Habit = try await self.toggle(habitId, hour: hours[0], on: day)
+        let listedHabit: Habit = try await self.check(habitId, hour: hours[0], on: day)
         let record: Habit.DayRecord = try XCTUnwrap(listedHabit.history.first)
 
         XCTAssertEqual(record.count, 1)
         XCTAssertEqual(record.requiredCount, 2)
         XCTAssertFalse(record.isChecked)
+    }
+
+    // MARK: Repeated taps
+
+    internal func test_doing_an_hour_twice_keeps_it_done() async throws {
+        let habit: Habit = Habit.make(.daily, hasSchedule: true)
+        let day: Date = habit.startDate
+        let habitId: UUID = try await self.sut.addHabit(habit)
+        let listedHabit: Habit = try await self.listedHabit(habitId, on: day)
+        let hour: Hour = listedHabit.reminderHours[0]
+
+        // Both taps start from the same listed habit, like a double tap before the list reloads
+        try await self.sut.checkHour(listedHabit, hourId: hour.id, selectedDate: day)
+        try await self.sut.checkHour(listedHabit, hourId: hour.id, selectedDate: day)
+        let doneHabit: Habit = try await self.listedHabit(habitId, on: day)
+
+        XCTAssertNotNil(doneHabit.checkedHours[hour.id], "The second tap undid the hour")
+    }
+
+    internal func test_undoing_an_hour_that_isnt_done_changes_nothing() async throws {
+        let habit: Habit = Habit.make(.daily, hasSchedule: true)
+        let day: Date = habit.startDate
+        let habitId: UUID = try await self.sut.addHabit(habit)
+        let hours: [Hour] = try await self.listedHabit(habitId, on: day).reminderHours
+
+        let listedHabit: Habit = try await self.uncheck(habitId, hour: hours[0], on: day)
+
+        XCTAssertNil(listedHabit.checkedHours[hours[0].id], "Undoing did the hour")
+        XCTAssertFalse(listedHabit.isChecked)
+    }
+
+    // MARK: Editing hours
+
+    internal func test_removing_the_hour_left_completes_the_day() async throws {
+        let habit: Habit = Habit.make(.daily, hasSchedule: true)
+        let day: Date = habit.startDate
+        let habitId: UUID = try await self.sut.addHabit(habit)
+        let hours: [Hour] = try await self.listedHabit(habitId, on: day).reminderHours
+        var listedHabit: Habit = try await self.check(habitId, hour: hours[0], on: day)
+
+        listedHabit.schedule.removeAll { $0.id == hours[1].id }
+        try await self.sut.editHabit(listedHabit)
+        let editedHabit: Habit = try await self.listedHabit(habitId, on: day)
+
+        XCTAssertTrue(editedHabit.isChecked, "Every hour left is done but the day isn't")
+    }
+
+    internal func test_adding_an_hour_to_a_done_day_reopens_it() async throws {
+        let habit: Habit = Habit.make(.daily, hasSchedule: true, hasGoal: true)
+        let day: Date = habit.startDate
+        let habitId: UUID = try await self.sut.addHabit(habit)
+        let hours: [Hour] = try await self.listedHabit(habitId, on: day).reminderHours
+        var listedHabit: Habit = try await self.listedHabit(habitId, on: day)
+        for hour in hours {
+            for _ in 0..<Habit.testGoal.value {
+                listedHabit = try await self.check(habitId, hour: hour, on: day)
+            }
+        }
+        XCTAssertTrue(listedHabit.isChecked)
+
+        let newHour: Hour = Habit.testHour(20, on: day)
+        listedHabit.schedule.append(newHour)
+        try await self.sut.editHabit(listedHabit)
+        let editedHabit: Habit = try await self.listedHabit(habitId, on: day)
+
+        XCTAssertFalse(editedHabit.isChecked, "Done with a new hour still to do")
+        XCTAssertEqual(editedHabit.completedCount, 0, "The new hour starts with the last hour's steps")
+        XCTAssertEqual(editedHabit.hoursGoalProgress?.completed, Habit.testGoal.value * hours.count)
+        let states = editedHabit.hourChips(on: day, now: day).map(\.state)
+        XCTAssertEqual(states, [.done, .done, .selected])
     }
 
     // MARK: ABSTRACTIONS
@@ -212,10 +282,17 @@ internal final class HabitHoursTests: XCTestCase {
         return habit.hourChips(on: day, now: now, selectedHourId: selectedHourId).map(\.state)
     }
 
-    /// Does or undoes `hour` on `day` like the habits list does and returns the habit listed afterwards
-    private func toggle(_ habitId: UUID, hour: Hour, on day: Date) async throws -> Habit {
+    /// Does `hour` on `day` like the habits list does and returns the habit listed afterwards
+    private func check(_ habitId: UUID, hour: Hour, on day: Date) async throws -> Habit {
         let habit: Habit = try await self.listedHabit(habitId, on: day)
-        try await self.sut.toggleHour(habit, hourId: hour.id, selectedDate: day)
+        try await self.sut.checkHour(habit, hourId: hour.id, selectedDate: day)
+        return try await self.listedHabit(habitId, on: day)
+    }
+
+    /// Undoes `hour` on `day` like the habits list does and returns the habit listed afterwards
+    private func uncheck(_ habitId: UUID, hour: Hour, on day: Date) async throws -> Habit {
+        let habit: Habit = try await self.listedHabit(habitId, on: day)
+        try await self.sut.uncheckHour(habit, hourId: hour.id, selectedDate: day)
         return try await self.listedHabit(habitId, on: day)
     }
 

@@ -131,10 +131,17 @@ struct HabitsView: View {
                     } catch let error { print(error.localizedDescription) }
                 }
             },
-            onItemHourAction: { habit, hourId in
+            onItemCheckHourAction: { habit, hourId in
                 Task {
                     do {
-                        try await self.state.toggleHour(habit: habit, hourId: hourId)
+                        try await self.state.checkHour(habit: habit, hourId: hourId)
+                    } catch let error { print(error.localizedDescription) }
+                }
+            },
+            onItemUncheckHourAction: { habit, hourId in
+                Task {
+                    do {
+                        try await self.state.uncheckHour(habit: habit, hourId: hourId)
                     } catch let error { print(error.localizedDescription) }
                 }
             },
@@ -217,8 +224,10 @@ struct HabitsDayContentView: View {
     var onItemStatusAction: (Habit) -> Void
     var onItemUndoStepAction: (Habit) -> Void
     var onItemResetAction: (Habit) -> Void
-    /// Does or undoes a reminder hour of the habit
-    var onItemHourAction: (Habit, UUID) -> Void
+    /// Does a reminder hour of the habit, or a step of it with a goal
+    var onItemCheckHourAction: (Habit, UUID) -> Void
+    /// Undoes a done reminder hour of the habit
+    var onItemUncheckHourAction: (Habit, UUID) -> Void
     var onItemAction: (Habit) -> Void
 
     @Environment(\.scenePhase) private var scenePhase
@@ -290,7 +299,7 @@ struct HabitsDayContentView: View {
             self.resetMessage(for: habit)
         }
         .modifier(HourResetAlert(reset: self.$hourToReset) { reset in
-            onItemHourAction(reset.habit, reset.chip.id)
+            onItemUncheckHourAction(reset.habit, reset.chip.id)
         })
         .onChange(of: self.scenePhase) { _, scenePhase in
             if scenePhase != .active { self.selectedHours = [:] }
