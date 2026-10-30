@@ -164,7 +164,33 @@ internal final class HabitEditTests: XCTestCase {
         try await self.assertListed(habitId, as: .interval, goal: Habit.testGoal)
     }
 
-    // MARK: ABSTRACTIONS
+    // MARK: Reminder
+
+    /// Reminders and day statuses are tied to the hour id, editing the habit must not change it
+    internal func test_edit_habit_keeps_the_reminder_hour_ids() async throws {
+        let habitId: UUID = try await self.sut.addHabit(Habit.make(.daily, hasSchedule: true))
+        let storedAddedHabit: HabitEntity? = try await self.sut.getHabit(id: habitId)
+        let addedHabit: HabitEntity = try XCTUnwrap(storedAddedHabit)
+
+        try await self.editHabit(habitId) { $0.name = "Renamed" }
+
+        let storedEditedHabit: HabitEntity? = try await self.sut.getHabit(id: habitId)
+        let editedHabit: HabitEntity = try XCTUnwrap(storedEditedHabit)
+        XCTAssertEqual(editedHabit.schedule.map(\.id), addedHabit.schedule.map(\.id))
+    }
+
+    internal func test_turn_reminder_off_keeps_the_hours() async throws {
+        let habitId: UUID = try await self.sut.addHabit(Habit.make(.daily, hasSchedule: true))
+
+        try await self.editHabit(habitId) { $0.hasAlarm = false }
+
+        let storedEditedHabit: HabitEntity? = try await self.sut.getHabit(id: habitId)
+        let editedHabit: HabitEntity = try XCTUnwrap(storedEditedHabit)
+        XCTAssertFalse(editedHabit.hasAlarm)
+        XCTAssertEqual(editedHabit.schedule.count, 2)
+    }
+
+        // MARK: ABSTRACTIONS
 
     /// Edits the stored habit like the habit detail screen does, changing only its frequency.
     private func editHabit(

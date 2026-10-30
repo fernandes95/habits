@@ -108,7 +108,33 @@ internal final class HabitValidationTests: XCTestCase {
         self.assertInvalid(.weekly) { $0.goal = Goal(type: .times, value: 1) }
     }
 
-    // MARK: ABSTRACTIONS
+    // MARK: Reminder
+
+    /// Hours kept while the reminder is off are hidden, the user couldn't fix them
+    internal func test_habit_with_duplicated_hours_and_reminder_off_is_valid() {
+        var habit: Habit = Habit.make(.daily, hasSchedule: true)
+        habit.schedule.append(Habit.testHour(9, on: habit.startDate))
+        habit.hasAlarm = false
+
+        XCTAssertTrue(habit.isValid)
+    }
+
+    internal func test_reminder_hours_are_empty_with_reminder_off() {
+        var habit: Habit = Habit.make(.daily, hasSchedule: true)
+        habit.hasAlarm = false
+
+        XCTAssertTrue(habit.reminderHours.isEmpty)
+        XCTAssertEqual(habit.schedule.count, 2, "The hours stay saved for when the reminder is back on")
+    }
+
+    internal func test_reminder_hours_are_sorted_by_time_of_day() {
+        var habit: Habit = Habit.make(.daily, hasSchedule: true)
+        habit.schedule.insert(Habit.testHour(21, on: habit.startDate.adding(days: -3)), at: 0)
+
+        XCTAssertEqual(habit.reminderHours.map(\.minutesOfDay), [9 * 60, 10 * 60, 21 * 60])
+    }
+
+        // MARK: ABSTRACTIONS
 
     /// Starts from a valid habit with a schedule, an end date and a location,
     /// breaks one field with `breakField` and checks the habit can't be added.

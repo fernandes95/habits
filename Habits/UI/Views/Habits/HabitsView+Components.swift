@@ -28,17 +28,22 @@ extension HabitsView {
         }
     }
 
-    /// Shown while habits have their location reminder on but `Always` location isn't allowed,
-    /// tells how many habits can't remind and leads to the app's Settings
-    internal struct LocationRemindersPausedBanner: View {
-        let habitsCount: Int
+    /// Shown while habits have reminders that can't remind because a permission is missing,
+    /// tells how many habits are affected and leads to the right Settings page
+    internal struct RemindersPausedBanner: View {
+        let systemImage: String
+        let title: LocalizedStringKey
+        let message: LocalizedStringKey
+        /// Settings page where the missing permission is allowed
+        let settingsURLString: String
+        let settingsAccessibilityIdentifier: String
 
         @Environment(\.openURL) private var openURL
 
         var body: some View {
             VStack(spacing: 12) {
                 HStack(alignment: .top, spacing: 12) {
-                    Image(systemName: "location.slash.fill")
+                    Image(systemName: self.systemImage)
                         .font(.subheadline)
                         .foregroundStyle(Color.stepAccent)
                         .frame(width: 32, height: 32)
@@ -46,9 +51,9 @@ extension HabitsView {
                         .accessibilityHidden(true)
 
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("habits_location_paused_title")
+                        Text(self.title)
                             .font(.subheadline.weight(.semibold))
-                        Text("habits_location_paused_message \(self.habitsCount)")
+                        Text(self.message)
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
@@ -57,7 +62,7 @@ extension HabitsView {
                 }
 
                 Button {
-                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                    if let url = URL(string: self.settingsURLString) {
                         self.openURL(url)
                     }
                 } label: {
@@ -73,11 +78,57 @@ extension HabitsView {
                     .contentShape(.capsule)
                 }
                 .buttonStyle(.plain)
-                .accessibilityIdentifier("habits_location_paused_open_settings")
+                .accessibilityIdentifier(self.settingsAccessibilityIdentifier)
             }
             .padding(14)
             .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 20))
             .accessibilityElement(children: .contain)
+        }
+    }
+
+    /// Shown while habits have their location reminder on but `Always` location isn't allowed
+    internal struct LocationRemindersPausedBanner: View {
+        let habitsCount: Int
+
+        var body: some View {
+            RemindersPausedBanner(
+                systemImage: "location.slash.fill",
+                title: "habits_location_paused_title",
+                message: "habits_location_paused_message \(self.habitsCount)",
+                settingsURLString: UIApplication.openSettingsURLString,
+                settingsAccessibilityIdentifier: "habits_location_paused_open_settings"
+            )
+        }
+    }
+
+    /// Shown while habits have time or location reminders but notifications aren't allowed
+    internal struct NotificationRemindersPausedBanner: View {
+        let habitsCount: Int
+
+        var body: some View {
+            RemindersPausedBanner(
+                systemImage: "bell.slash.fill",
+                title: "habits_notifications_paused_title",
+                message: "habits_notifications_paused_message \(self.habitsCount)",
+                settingsURLString: UIApplication.openNotificationSettingsURLString,
+                settingsAccessibilityIdentifier: "habits_notifications_paused_open_settings"
+            )
+        }
+    }
+
+    /// Shown while notifications and `Always` location are both off and habits rely on them.
+    /// The app's Settings page has both the notifications and the location rows
+    internal struct AllRemindersPausedBanner: View {
+        let habitsCount: Int
+
+        var body: some View {
+            RemindersPausedBanner(
+                systemImage: "bell.slash.fill",
+                title: "habits_notifications_paused_title",
+                message: "habits_all_reminders_paused_message \(self.habitsCount)",
+                settingsURLString: UIApplication.openSettingsURLString,
+                settingsAccessibilityIdentifier: "habits_all_reminders_paused_open_settings"
+            )
         }
     }
 

@@ -108,7 +108,17 @@ class MainState: ObservableObject {
         return self.allHabits.filter { self.isLocationReminderPaused($0) }
     }
 
-    /// Get exportable document
+    /// Habits with time or location reminders that can't remind, notifications were denied.
+    /// The reminders are kept and start again once notifications are allowed.
+    var pausedNotificationReminders: [Habit] {
+        guard self.notificationStatus == .denied else { return [] }
+        return self.allHabits.filter { habit in
+            let hasReminder = !habit.reminderHours.isEmpty || (habit.location != nil && habit.hasLocationReminder)
+            return hasReminder && habit.endDate.endOfDay >= .now
+        }
+    }
+
+        /// Get exportable document
     func getDataDocument() async throws -> ExportableDocument {
         return await self.habitsService.exportDataDocument()
     }
@@ -165,6 +175,17 @@ class MainState: ObservableObject {
             .sorted { $0.createdDate > $1.createdDate }
         // The user may have moved to another day while loading, show whatever is selected now
         self.showHabits(of: self.selectedDate, animated: animated)
+        // Any change to the habits can change their reminders
+        await self.syncReminders()
+    }
+
+    /// Schedules the reminders of the coming days again, see `HabitsService.syncReminders`
+    func syncReminders() async {
+        // Also keeps the notifications banner up to date, the permission can change in Settings
+        self.notificationStatus = await self.notificationService.getNotificationStatus()
+        do {
+            try await self.habitsService.syncReminders()
+        } catch let error { print(error.localizedDescription) }
     }
 
     /// Selects a day using the loaded block, and loads the missing days around it if needed.

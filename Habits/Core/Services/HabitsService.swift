@@ -11,7 +11,7 @@ import EventKit
 class HabitsService {
     internal let storeService: DefaultStoreService
     internal let calendarService: CalendarService = CalendarService()
-    private let notificationService: NotificationService = NotificationService()
+    internal let notificationService: NotificationService = NotificationService()
     private var didLoad = false
 
     internal var store: StoreEntity = StoreEntity(
@@ -240,8 +240,8 @@ class HabitsService {
         try await self.save()
     }
 
-    /// Transfers Habit to Habits Archived list
-    /// and deletes all calendar and notifications related to the habit
+    /// Transfers Habit to Habits Archived list and deletes all calendar events related to the habit.
+    /// Its reminders go away on the next `syncReminders`
     func removeHabit(habitId: UUID) async throws {
         if let index: Int = self.habits.firstIndex(where: { $0.id == habitId }) {
             let deleteHabit: HabitEntity = self.habits[index]
@@ -254,7 +254,6 @@ class HabitsService {
             } else {
                 for hour in deleteHabit.schedule {
                     calendarService.deleteEventById(eventId: hour.eventId)
-                    notificationService.removePendingNotification(identifer: hour.notificationId)
                 }
             }
 

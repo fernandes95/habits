@@ -87,93 +87,9 @@ struct HabitFrequencyView: View {
             self.goalSection
         }
 
-        let scheduleValidation: Bool = self.habit.schedule.count > 0 || self.habit.schedule.count == 0 && isEditing
-        Section {
-            ForEach(self.$habit.schedule) { $hour in
-                if let index = self.habit.schedule.firstIndex(of: hour) {
-                    let datePicker = DatePicker("habit_schedule_hour \(index + 1)",
-                                                selection: $hour.date,
-                                                displayedComponents: .hourAndMinute
-                    )
-
-                    datePicker
-                        // On touch down, before the picker opens and remembers the focused field
-                        .simultaneousGesture(DragGesture(minimumDistance: 0).onChanged { _ in self.dismissKeyboard() })
-                        .swipeActions(edge: .trailing) {
-                            if isEditing {
-                                Button(role: .destructive) {
-                                    self.habit.schedule.remove(at: index)
-
-                                    if self.habit.schedule.isEmpty {
-                                        self.habit.hasAlarm = false
-                                    }
-                                } label: {
-                                    Label("habit_schedule_delete", systemImage: "trash")
-                                }
-                            }
-                        }
-                }
-            }.disabled(!isEditing)
-        } header: {
-            HStack {
-                Text("habit_new_section_habit_schedule")
-                Spacer()
-                Button(action: {
-                    self.dismissKeyboard()
-
-                    let calendar = Calendar.current
-                    var date: Date = .now
-                    var mainDateComponents: DateComponents = DateComponents()
-
-                    if self.habit.schedule.isEmpty {
-                        var dateComponents = calendar.dateComponents(
-                            [.day, .month, .year, .hour, .minute],
-                            from: self.habit.startDate
-                        )
-                        dateComponents.hour = 09
-                        dateComponents.minute = 00
-                        dateComponents.second = 00
-
-                        mainDateComponents = dateComponents
-
-                        self.habit.hasAlarm = true
-                    } else {
-                        let scheduleSorted = self.habit.schedule.sorted { (lhs: Hour, rhs: Hour) in
-                            return (lhs.date < rhs.date)
-                        }
-                        if let hour = scheduleSorted.last {
-                            var dateComponents = calendar.dateComponents(
-                                [.day, .month, .year, .hour, .minute],
-                                from: hour.date
-                            )
-                            dateComponents.hour = (dateComponents.hour ?? 9) + 1
-                            dateComponents.minute = dateComponents.minute
-
-                            mainDateComponents = dateComponents
-                        }
-                    }
-
-                    if let newDate = calendar.date(from: mainDateComponents) {
-                        date = newDate
-                    }
-
-                    self.habit.schedule.append(
-                        Hour(eventId: "", date: date)
-                    )
-                }, label: {
-                    Image(systemName: "plus")
-                })
-                .isHidden(!isEditing)
-                .accessibilityLabel("habits_accessibility_new_schedule_hour")
-            }
+        if isEditing || self.habit.hasAlarm {
+            HabitReminderSectionView(habit: self.$habit, isEditing: isEditing)
         }
-        .isHidden(!scheduleValidation)
-    }
-
-    /// Removes the focus from any text field. The hour picker gives the focus back to
-    /// the last focused field when it closes, so it has to be cleared before it opens.
-    private func dismissKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 
     /// Text binding for a whole number field, so the habit updates on every keystroke

@@ -1347,6 +1347,144 @@
         }
       }
     },
+    "habit_reminder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lembrete"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lembrete"
+          }
+        }
+      }
+    },
+    "habit_reminder_add_time" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add time"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar horário"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar hora"
+          }
+        }
+      }
+    },
+    "habit_reminder_denied_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your times are saved. You’ll get them once notifications are allowed."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus horários estão salvos. Você vai recebê-los assim que as notificações forem permitidas."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As tuas horas estão guardadas. Vais recebê-las assim que as notificações forem permitidas."
+          }
+        }
+      }
+    },
+    "habit_reminder_notifications_denied" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifications are turned off for World of habits. Allow them in Settings to get these reminders."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As notificações estão desativadas para o World of habits. Permita-as nos Ajustes para receber estes lembretes."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As notificações estão desativadas para o World of habits. Permite-as nas Definições para receberes estes lembretes."
+          }
+        }
+      }
+    },
+    "habit_reminder_off_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get a notification at the times you pick."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Receba uma notificação nos horários que você escolher."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recebe uma notificação nas horas que escolheres."
+          }
+        }
+      }
+    },
+    "habit_reminder_on_hint %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You’ll get a notification at %@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você vai receber uma notificação às %@."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vais receber uma notificação às %@."
+          }
+        }
+      }
+    },
     "habit_reset_dialog_message_day %lld %lld %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1621,6 +1759,65 @@
         }
       }
     },
+    "habits_all_reminders_paused_message %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Notifications and “Always” location are turned off for World of habits. Allow both in Settings to get your reminders. %lld habit is affected."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Notifications and “Always” location are turned off for World of habits. Allow both in Settings to get your reminders. %lld habits are affected."
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "As notificações e a localização “Sempre” estão desativadas para o World of habits. Permita ambas nos Ajustes para receber seus lembretes. %lld hábito está afetado."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "As notificações e a localização “Sempre” estão desativadas para o World of habits. Permita ambas nos Ajustes para receber seus lembretes. %lld hábitos estão afetados."
+                }
+              }
+            }
+          }
+        },
+        "pt-PT" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "As notificações e a localização “Sempre” estão desativadas para o World of habits. Permita ambas nas Definições para receber os seus lembretes. %lld hábito está afetado."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "As notificações e a localização “Sempre” estão desativadas para o World of habits. Permita ambas nas Definições para receber os seus lembretes. %lld hábitos estão afetados."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "habits_location_paused_message %lld" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1768,6 +1965,88 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vista semanal"
+          }
+        }
+      }
+    },
+    "habits_notifications_paused_message %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Notifications are turned off for World of habits. Allow them in Settings to get your reminders. %lld habit is affected."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Notifications are turned off for World of habits. Allow them in Settings to get your reminders. %lld habits are affected."
+                }
+              }
+            }
+          }
+        },
+        "pt-BR" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "As notificações estão desativadas para o World of habits. Permita-as nos Ajustes para receber seus lembretes. %lld hábito está afetado."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "As notificações estão desativadas para o World of habits. Permita-as nos Ajustes para receber seus lembretes. %lld hábitos estão afetados."
+                }
+              }
+            }
+          }
+        },
+        "pt-PT" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "As notificações estão desativadas para o World of habits. Permita-as nas Definições para receber os seus lembretes. %lld hábito está afetado."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "As notificações estão desativadas para o World of habits. Permita-as nas Definições para receber os seus lembretes. %lld hábitos estão afetados."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "habits_notifications_paused_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminders are paused"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os lembretes estão pausados"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os lembretes estão em pausa"
           }
         }
       }

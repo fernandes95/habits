@@ -28,6 +28,7 @@
 		AE3AA2282E6707F0002F78E9 /* ConflictResolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA2272E6707EC002F78E9 /* ConflictResolution.swift */; };
 		AE3AA22B2E6AD165002F78E9 /* Hour.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3AA22A2E6AD163002F78E9 /* Hour.swift */; };
 		AE3FCFED2D1E315200E25F46 /* HabitFrequencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3FCFEC2D1E314D00E25F46 /* HabitFrequencyView.swift */; };
+		AEC2D0A1308D000200A1B2C3 /* Habit+Reminder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2D0A1308D000100A1B2C3 /* Habit+Reminder.swift */; };
 		AE43FF052BF28F4C008A7085 /* Habit+Default.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43FF042BF28F4C008A7085 /* Habit+Default.swift */; };
 		AE43FF0E2BF291BB008A7085 /* HabitsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43FF0D2BF291BB008A7085 /* HabitsTests.swift */; };
 		AE43FF172BF29254008A7085 /* DefaultStoreServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE43FF162BF29254008A7085 /* DefaultStoreServiceTests.swift */; };
@@ -76,6 +77,7 @@
 		AEA4D1213090A00000B71C76 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AEA4D1203090A00000B71C76 /* InfoPlist.xcstrings */; };
 		AEA4D1313090A00000B71C76 /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4D1303090A00000B71C76 /* AppLanguage.swift */; };
 		AEB1C0DE308C000200A1B2C3 /* LocationPlaceDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB1C0DE308C000100A1B2C3 /* LocationPlaceDetails.swift */; };
+		AEC2D0A1308D000400A1B2C3 /* HabitReminderSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2D0A1308D000300A1B2C3 /* HabitReminderSectionView.swift */; };
 		AEB1C0DE308C000600A1B2C3 /* HabitLocationSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB1C0DE308C000500A1B2C3 /* HabitLocationSectionView.swift */; };
 		AEB1C0DE308C000800A1B2C3 /* LocationAlwaysSheetContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB1C0DE308C000700A1B2C3 /* LocationAlwaysSheetContentView.swift */; };
 		AEC0DE012EB1A00000000001 /* HabitAddTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000011 /* HabitAddTests.swift */; };
@@ -123,6 +125,7 @@
 		AE3AA2272E6707EC002F78E9 /* ConflictResolution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictResolution.swift; sourceTree = "<group>"; };
 		AE3AA22A2E6AD163002F78E9 /* Hour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hour.swift; sourceTree = "<group>"; };
 		AE3FCFEC2D1E314D00E25F46 /* HabitFrequencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitFrequencyView.swift; sourceTree = "<group>"; };
+		AEC2D0A1308D000100A1B2C3 /* Habit+Reminder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+Reminder.swift"; sourceTree = "<group>"; };
 		AE43FF042BF28F4C008A7085 /* Habit+Default.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+Default.swift"; sourceTree = "<group>"; };
 		AE43FF0B2BF291BB008A7085 /* HabitsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HabitsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE43FF0D2BF291BB008A7085 /* HabitsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsTests.swift; sourceTree = "<group>"; };
@@ -175,6 +178,7 @@
 		AEA4D1303090A00000B71C76 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
 		AEAFF2552DF5FC1D00B03261 /* gpxmarques.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = gpxmarques.gpx; sourceTree = "<group>"; };
 		AEB1C0DE308C000100A1B2C3 /* LocationPlaceDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPlaceDetails.swift; sourceTree = "<group>"; };
+		AEC2D0A1308D000300A1B2C3 /* HabitReminderSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitReminderSectionView.swift; sourceTree = "<group>"; };
 		AEB1C0DE308C000500A1B2C3 /* HabitLocationSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitLocationSectionView.swift; sourceTree = "<group>"; };
 		AEB1C0DE308C000700A1B2C3 /* LocationAlwaysSheetContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationAlwaysSheetContentView.swift; sourceTree = "<group>"; };
 		AEC0DE012EB1A00000000011 /* HabitAddTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitAddTests.swift; sourceTree = "<group>"; };
@@ -284,6 +288,7 @@
 			isa = PBXGroup;
 			children = (
 				AEA4C92E308BC83000B71C76 /* LocationCardView.swift */,
+				AEC2D0A1308D000300A1B2C3 /* HabitReminderSectionView.swift */,
 				AEB1C0DE308C000500A1B2C3 /* HabitLocationSectionView.swift */,
 				AEA4B5CE308908FE00B71C76 /* AddToolbarButton.swift */,
 				AEA4B5CC3089081100B71C76 /* SettingsToolbarButton.swift */,
@@ -372,6 +377,7 @@
 				AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */,
 				AEA4D1303090A00000B71C76 /* AppLanguage.swift */,
 				AE448A9B2B8DEC970034898F /* Habit.swift */,
+				AEC2D0A1308D000100A1B2C3 /* Habit+Reminder.swift */,
 				AE43FF042BF28F4C008A7085 /* Habit+Default.swift */,
 				AE30E15F2BA4C182009E10CD /* Ocurrence.swift */,
 				AE30E1702BA4C182009E10CD /* Goal.swift */,
@@ -771,6 +777,7 @@
 				AEA4B5C03088F74300B71C76 /* TodoView.swift in Sources */,
 				AE9D9A112BB3328400CF3498 /* LocationService.swift in Sources */,
 				AEA3D6BB2B5E85B700A08F31 /* HabitsApp.swift in Sources */,
+				AEC2D0A1308D000200A1B2C3 /* Habit+Reminder.swift in Sources */,
 				AE43FF052BF28F4C008A7085 /* Habit+Default.swift in Sources */,
 				AE2B2A4A2BB07223004669B6 /* NotificationService.swift in Sources */,
 				AE3AA21C2E61170B002F78E9 /* LocationSearchResult.swift in Sources */,
@@ -783,6 +790,7 @@
 				AE3AA2282E6707F0002F78E9 /* ConflictResolution.swift in Sources */,
 				AE7DD34F2E748801007BF33A /* HabitsService+Settings.swift in Sources */,
 				AEA4C92F308BC83200B71C76 /* LocationCardView.swift in Sources */,
+				AEC2D0A1308D000400A1B2C3 /* HabitReminderSectionView.swift in Sources */,
 				AEB1C0DE308C000600A1B2C3 /* HabitLocationSectionView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

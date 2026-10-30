@@ -44,14 +44,11 @@ struct HabitsView: View {
             .padding(.horizontal)
             .padding(.bottom, 12)
 
-            // No close button, it stays until `Always` location is allowed again
-            let pausedCount = self.state.pausedLocationReminders.count
-            if pausedCount > 0 {
-                LocationRemindersPausedBanner(habitsCount: pausedCount)
-                    .padding(.horizontal)
-                    .padding(.bottom, 12)
-                    .transition(.opacity)
-            }
+            // No close button, it stays until the missing permissions are allowed again
+            self.remindersPausedBanner
+                .padding(.horizontal)
+                .padding(.bottom, 12)
+                .transition(.opacity)
 
             ZStack(alignment: .bottomTrailing) {
                 switch self.viewMode {
@@ -94,6 +91,8 @@ struct HabitsView: View {
             // The user may have moved while the app was in the background
             if scenePhase == .active {
                 self.state.refreshCurrentLocation()
+                // Notifications may have been allowed in Settings, and the reminder days move forward
+                Task { await self.state.syncReminders() }
             }
         }
         .task {
@@ -101,6 +100,23 @@ struct HabitsView: View {
                 self.reloadAll()
                 didLoadData = true
             }
+        }
+    }
+
+    /// One banner for the reminders that can't remind. With notifications and `Always` location
+    /// both off it's a single banner, each habit counted once, instead of two stacked banners
+    @ViewBuilder
+    private var remindersPausedBanner: some View {
+        let notificationsPaused = self.state.pausedNotificationReminders
+        let locationPaused = self.state.pausedLocationReminders
+
+        if !notificationsPaused.isEmpty && !locationPaused.isEmpty {
+            let habitsCount = Set((notificationsPaused + locationPaused).map(\.id)).count
+            AllRemindersPausedBanner(habitsCount: habitsCount)
+        } else if !notificationsPaused.isEmpty {
+            NotificationRemindersPausedBanner(habitsCount: notificationsPaused.count)
+        } else if !locationPaused.isEmpty {
+            LocationRemindersPausedBanner(habitsCount: locationPaused.count)
         }
     }
 

@@ -21,7 +21,9 @@ extension HabitsService {
             frequencyType: eventsHabit.frequencyType,
             category: eventsHabit.category.rawValue,
             schedule: eventsHabit.schedule.map { hour in
+                // Same id, so the hour keeps its reminders and day statuses
                 return Hour(
+                    id: hour.id,
                     eventId: hour.eventId,
                     notificationId: hour.notificationId,
                     date: hour.date

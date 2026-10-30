@@ -11,7 +11,6 @@ import SwiftUI
 
 class CalendarService {
     private let eventStore: EKEventStore = EKEventStore()
-    private let notificationService: NotificationService = NotificationService()
 
     private func getEventStoreAuthStatus() async throws -> EKAuthorizationStatus {
         return EKEventStore.authorizationStatus(for: .event)
@@ -64,7 +63,7 @@ class CalendarService {
     ///
     func createScheduleCalendarEvents(_ habit: Habit) async throws -> [Hour] {
         guard try await verifyAuthStatus() else {
-            return try await notificationService.manageLocalNotifications(habit: habit)
+            return habit.schedule
         }
 
         var newSchedule: [Hour] = habit.schedule
@@ -105,7 +104,7 @@ class CalendarService {
 
     func manageScheduleEvents(_ habit: Habit, oldHabit: Habit) async throws -> [Hour] {
         guard try await verifyAuthStatus() else {
-            return try await notificationService.manageScheduledNotifications(habit, oldHabit: oldHabit)
+            return habit.schedule
         }
 
         var newSchedule: [Hour] = habit.schedule

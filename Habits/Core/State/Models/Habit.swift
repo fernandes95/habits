@@ -357,9 +357,10 @@ extension Habit {
         }
     }
 
-    /// True when two schedule hours fire at the same hour and minute.
+    /// True when two reminder hours fire at the same hour and minute.
+    /// Hours kept while the reminder is off are hidden, so they don't count.
     var hasDuplicatedScheduleHours: Bool {
-        let hours = self.schedule.map { $0.date.getHourAndMinutes() }
+        let hours = self.reminderHours.map(\.minutesOfDay)
         return Set(hours).count != hours.count
     }
 }

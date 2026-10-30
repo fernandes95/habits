@@ -104,94 +104,47 @@ class NotificationService {
         notificationCenter.removePendingNotificationRequests(withIdentifiers: identifiers)
     }
 
-    /// Creates notifications from Schedule in Habit
+    /// Replaces every pending habit reminder with `reminders`, other notifications are left untouched.
     ///
-    /// Creates notification for each item in Schedule with the Habit name as Notification Content Title
+    /// Reminders are one-off notifications for a single day, so a checked hour can drop its reminder
+    /// without touching the other days.
     ///
-    /// - Parameter habit: Habit populate notification
-    func manageLocalNotifications(habit: Habit) async throws -> [Hour] {
-        guard try await self.notificationAuthorization() else {
-            return habit.schedule
-        }
+    /// - Parameter reminders: Reminders to schedule, iOS keeps at most 64 pending notifications
+    func replaceReminders(_ reminders: [Reminder]) async {
+        let pending: [UNNotificationRequest] = await self.notificationCenter.pendingNotificationRequests()
+        let oldIdentifiers: [String] = pending
+            .map(\.identifier)
+            .filter { $0.hasPrefix(Reminder.identifierPrefix) }
+        self.notificationCenter.removePendingNotificationRequests(withIdentifiers: oldIdentifiers)
 
-        var newSchedule = habit.schedule
-        for hour in habit.schedule {
-            let requestId = UUID().uuidString
-
-            try await self.requestNotification(
-                subTitle: habit.name,
-                date: hour.date, identifier: requestId)
-
-            if let index = newSchedule.firstIndex(of: hour) {
-                newSchedule[index].notificationId = requestId
-            }
-        }
-
-        return newSchedule
-    }
-
-    /// Removes pending notifications where items from `Old Schedule` aren't in the `New Schedule`
-    ///
-    /// - Parameter newSchedule: New Habit Schedule
-    /// - Parameter oldSchedule: Old Habit Schedule
-    private func removeNotifications(newSchedule: [Hour], oldSchedule: [Hour]) {
-        for hour in oldSchedule {
-            // swiftlint:disable:next for_where
-            if !newSchedule.contains(where: {$0.id == hour.id}) {
-                self.removePendingNotification(identifer: hour.notificationId)
-            }
-        }
-    }
-
-    /// Managing Pending Notifications 
-    ///
-    /// First: Removes pending notification that where removed from `Old Habit`
-    /// Second: Verifies if hours in `New Habit` Schedule where updated, if true removes pending notification
-    /// Third: Creates new notifications
-    ///
-    /// - Parameter habit: New habit
-    /// - Parameter oldHabit: Old habit
-    func manageScheduledNotifications(_ habit: Habit, oldHabit: Habit) async throws -> [Hour] {
-        guard try await self.notificationAuthorization() else {
-            return habit.schedule
-        }
-
-        var newSchedule: [Hour] = habit.schedule
-
-        // REMOVE NOTIFICATIONS FROM SCHEDULE THAT WERE DELETED
-        self.removeNotifications(newSchedule: habit.schedule, oldSchedule: oldHabit.schedule)
-
-        // MANAGE EDITED AND NEW HOURS IN SCHEDULE
-        for hour in habit.schedule {
-            let newRequestId = UUID().uuidString
-            var canRequestNotification: Bool = true
-
-            if hour.notificationId != nil {
-                if let oldHourIndex = oldHabit.schedule.firstIndex(of: hour) {
-                    let oldHour = oldHabit.schedule[oldHourIndex]
-                    canRequestNotification = hour.date != oldHour.date
-                }
-
-                if canRequestNotification {
-                    self.removePendingNotification(identifer: hour.notificationId)
-                }
-            }
-
-            if canRequestNotification {
+        for reminder in reminders {
+            do {
                 try await self.requestNotification(
-                    subTitle: habit.name,
-                    date: hour.date,
-                    identifier: newRequestId)
-
-                if let index = newSchedule.firstIndex(of: hour) {
-                    newSchedule[index].notificationId = newRequestId
-                }
-            }
+                    subTitle: reminder.title,
+                    date: reminder.date,
+                    identifier: reminder.identifier
+                )
+            } catch { print(error.localizedDescription) }
         }
-
-        return newSchedule
     }
+}
 
+extension NotificationService {
+    /// Notification of a habit hour on one day
+    struct Reminder: Equatable {
+        static let identifierPrefix: String = "habit_reminder_"
+
+        let habitId: UUID
+        let hourId: UUID
+        let title: String
+        let date: Date
+
+        /// Same habit, hour and day always get the same identifier
+        var identifier: String {
+            let day = self.date.formatted(.iso8601.year().month().day())
+            return "\(Self.identifierPrefix)\(self.habitId.uuidString)_\(self.hourId.uuidString)_\(day)"
+        }
+    }
 }
 
 extension NotificationService {
