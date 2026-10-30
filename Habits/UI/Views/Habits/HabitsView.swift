@@ -15,7 +15,7 @@ struct HabitsView: View {
     private var router: HabitsRouter
 
     @EnvironmentObject
-    private var state: MainState
+    var state: MainState
 
     @State private var didLoadData = false
 
@@ -103,25 +103,8 @@ struct HabitsView: View {
         }
     }
 
-    /// One banner for the reminders that can't remind. With notifications and `Always` location
-    /// both off it's a single banner, each habit counted once, instead of two stacked banners
-    @ViewBuilder
-    private var remindersPausedBanner: some View {
-        let notificationsPaused = self.state.pausedNotificationReminders
-        let locationPaused = self.state.pausedLocationReminders
-
-        if !notificationsPaused.isEmpty && !locationPaused.isEmpty {
-            let habitsCount = Set((notificationsPaused + locationPaused).map(\.id)).count
-            AllRemindersPausedBanner(habitsCount: habitsCount)
-        } else if !notificationsPaused.isEmpty {
-            NotificationRemindersPausedBanner(habitsCount: notificationsPaused.count)
-        } else if !locationPaused.isEmpty {
-            LocationRemindersPausedBanner(habitsCount: locationPaused.count)
-        }
-    }
-
     private var dayContent: some View {
-        ContentView(
+        HabitsDayContentView(
             list: self.$state.habits,
             selectedDate: self.state.selectedDate,
             calendar: self.state.calendar,
@@ -145,6 +128,13 @@ struct HabitsView: View {
                 Task {
                     do {
                         try await self.state.resetProgress(habit: habit)
+                    } catch let error { print(error.localizedDescription) }
+                }
+            },
+            onItemHourAction: { habit, hourId in
+                Task {
+                    do {
+                        try await self.state.toggleHour(habit: habit, hourId: hourId)
                     } catch let error { print(error.localizedDescription) }
                 }
             },
@@ -215,7 +205,7 @@ extension Color {
     static let dayTrack = Color(.systemGray5)
 }
 
-private struct ContentView: View {
+struct HabitsDayContentView: View {
     @Binding var list: [Habit]
     let selectedDate: Date
     /// Calendar with the configured first day of the week
@@ -227,10 +217,21 @@ private struct ContentView: View {
     var onItemStatusAction: (Habit) -> Void
     var onItemUndoStepAction: (Habit) -> Void
     var onItemResetAction: (Habit) -> Void
+    /// Does or undoes a reminder hour of the habit
+    var onItemHourAction: (Habit, UUID) -> Void
     var onItemAction: (Habit) -> Void
+
+    @Environment(\.scenePhase) private var scenePhase
 
     /// Done habit with a goal the user tapped, asks before changing its steps
     @State private var habitToReset: Habit?
+
+    /// Done hour of a complete habit the user tapped, asks before undoing it
+    @State var hourToReset: HourReset?
+
+    /// Missed hour the user picked to do now, keyed by habit id.
+    /// Only until the hour is done, picked again, or the app is left, the hour stays missed otherwise
+    @State var selectedHours: [UUID: UUID] = [:]
 
     private var isResetDialogPresented: Binding<Bool> {
         Binding(
@@ -246,28 +247,24 @@ private struct ContentView: View {
                 let dividerColor = $list.count == 1 ?
                     Color.black.opacity(0.0) : nil
 
-                ListItem(
-                    name: habit.name,
-                    completedSteps: habit.completedCount,
-                    totalSteps: totalSteps,
-                    label: self.minDaysLabel(for: habit),
-                    location: habit.location,
-                    locationDistance: habit.location.flatMap { self.distance($0) },
-                    isLocationReminderPaused: self.isLocationReminderPaused(habit),
-                    status: $habit.isChecked,
-                    statusAction: {
-                        // Every step is done, one more tap would lose them all
-                        if habit.goal != nil && habit.isChecked {
-                            self.habitToReset = habit
-                            return
-                        }
-
-                        var habit = habit
-                        habit.isChecked = !habit.isChecked
-                        onItemStatusAction(habit)
-                    },
-                    itemAction: { onItemAction(habit) }
-                )
+                // Hours turn missed as time goes by
+                TimelineView(.everyMinute) { context in
+                    ListItem(
+                        name: habit.name,
+                        completedSteps: habit.completedCount,
+                        totalSteps: totalSteps,
+                        label: self.minDaysLabel(for: habit) ?? self.hoursGoalLabel(for: habit),
+                        location: habit.location,
+                        locationDistance: habit.location.flatMap { self.distance($0) },
+                        isLocationReminderPaused: self.isLocationReminderPaused(habit),
+                        hourChips: self.hourChips(of: habit, now: context.date),
+                        hourAction: { chip in self.hourTapped(chip, of: habit) },
+                        status: $habit.isChecked,
+                        statusAction: { self.statusTapped(habit) },
+                        itemAction: { onItemAction(habit) }
+                    )
+                }
+                .listItemRowInsets()
                 .listRowSeparatorTint(dividerColor)
                 // No divider above the first habit
                 .listRowSeparator(habit.id == list.first?.id ? .hidden : .automatic, edges: .top)
@@ -292,17 +289,50 @@ private struct ContentView: View {
         } message: { habit in
             self.resetMessage(for: habit)
         }
+        .modifier(HourResetAlert(reset: self.$hourToReset) { reset in
+            onItemHourAction(reset.habit, reset.chip.id)
+        })
+        .onChange(of: self.scenePhase) { _, scenePhase in
+            if scenePhase != .active { self.selectedHours = [:] }
+        }
+        .onChange(of: self.selectedDate) {
+            self.selectedHours = [:]
+        }
     }
 
-    /// Steps logged out of the goal, and which day the reset changes
-    private func resetMessage(for habit: Habit) -> Text {
-        let goal: Int = habit.goal?.value ?? 0
-        if Calendar.current.isDateInToday(self.selectedDate) {
-            return Text("habit_reset_dialog_message_today \(habit.completedCount) \(goal)")
+    private func statusTapped(_ habit: Habit) {
+        // Every step is done, one more tap would lose them all
+        if habit.goal != nil && habit.isChecked {
+            self.habitToReset = habit
+            return
         }
 
+        if !habit.reminderHours.isEmpty {
+            self.hourStatusTapped(habit)
+            return
+        }
+
+        var habit = habit
+        habit.isChecked = !habit.isChecked
+        onItemStatusAction(habit)
+    }
+
+    /// Steps logged out of the goal, on how many reminder hours, and which day the reset changes
+    private func resetMessage(for habit: Habit) -> Text {
+        let goal: Int = habit.goal?.value ?? 0
+        let isToday: Bool = Calendar.current.isDateInToday(self.selectedDate)
         let day: String = self.selectedDate.formatted(.dateTime.day().month(.wide))
-        return Text("habit_reset_dialog_message_day \(habit.completedCount) \(goal) \(day)")
+
+        let hours: Int = habit.reminderHours.count
+        if hours > 0 {
+            return isToday
+                ? Text("habit_reset_dialog_hours_message_today \(habit.completedCount) \(goal) \(hours)")
+                : Text("habit_reset_dialog_hours_message_day \(habit.completedCount) \(goal) \(hours) \(day)")
+        }
+
+        return isToday
+            ? Text("habit_reset_dialog_message_today \(habit.completedCount) \(goal)")
+            : Text("habit_reset_dialog_message_day \(habit.completedCount) \(goal) \(day)")
     }
 
     /// `checkedDays/minimumDays` for `.minDays` habits that reached the minimum in the selected week, nil otherwise
@@ -337,6 +367,7 @@ private struct AllHabitsContentView: View {
                 statusAction: {},
                 itemAction: { onItemAction(habit) }
             )
+            .listItemRowInsets()
             .listRowSeparatorTint(dividerColor)
             // No divider above the first habit
             .listRowSeparator(habit.id == self.list.first?.id ? .hidden : .automatic, edges: .top)

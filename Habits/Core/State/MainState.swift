@@ -269,6 +269,19 @@ class MainState: ObservableObject {
         } catch let error { print(error.localizedDescription) }
     }
 
+    /// Does or undoes one reminder hour of `habit` on the selected date, see `HabitsService.toggleHour`.
+    /// Doing an hour before its time cancels its reminder, the reminders are synced again on load
+    ///
+    /// - Parameters:
+    ///   - habit: Habit with reminder hours
+    ///   - hourId: Hour to do or undo
+    func toggleHour(habit: Habit, hourId: UUID) async throws {
+        do {
+            try await self.habitsService.toggleHour(habit, hourId: hourId, selectedDate: self.selectedDate)
+            try await loadHabits(date: self.selectedDate)
+        } catch let error { print(error.localizedDescription) }
+    }
+
     /// Removes the last step of `habit` on the selected date and loads all habits from selected date
     ///
     /// - Parameter habit: Habit with a goal to update

@@ -80,6 +80,66 @@ extension HabitsService {
         }
     }
 
+    /// Does or undoes one reminder hour of `habit` on `selectedDate`.
+    /// Without a goal the hour is done with one tap. With a goal each tap is a step, the hour is done
+    /// once the goal is reached and the steps start again for the next hour.
+    /// The habit is checked once every reminder hour is done, undoing any hour unchecks it.
+    ///
+    /// - Parameters:
+    ///   - habit: Habit with reminder hours
+    ///   - hourId: Hour to do, or to undo when it's already done
+    ///   - selectedDate: Day of the status to change
+    func toggleHour(_ habit: Habit, hourId: UUID, selectedDate: Date) async throws {
+        guard let index: Int = self.store.habits.firstIndex(where: { $0.id == habit.id }) else { return }
+
+        var habitEntity: HabitEntity = self.store.habits[index]
+        let storedHabit: Habit = Habit(habitEntity: habitEntity)
+        let hourIds: Set<UUID> = Set(storedHabit.reminderHours.map(\.id))
+        let statusIndex: Int? = habitEntity.statusList.firstIndex(where: {
+            $0.date.startOfDay == selectedDate.startOfDay
+        })
+        var status: HabitEntity.Status = statusIndex.map { habitEntity.statusList[$0] }
+            ?? HabitEntity.Status(date: selectedDate)
+
+        // Days checked before hours could be done count every hour as done
+        var hours: [HabitEntity.HourCheck] = status.hours
+            ?? (status.isChecked ? hourIds.map { HabitEntity.HourCheck(hourId: $0, date: status.updatedDate) } : [])
+
+        if let doneIndex = hours.firstIndex(where: { $0.hourId == hourId }) {
+            hours.remove(at: doneIndex)
+            // The steps of a done day belong to its last hour
+            if status.isChecked && storedHabit.goal != nil { status.count = 0 }
+            status.isChecked = false
+        } else {
+            var isHourDone = true
+            if let goal = storedHabit.goal {
+                status.count += 1
+                status.requiredCount = goal.value
+                isHourDone = status.count >= goal.value
+            }
+
+            if isHourDone {
+                hours.append(HabitEntity.HourCheck(hourId: hourId, date: .now))
+                status.isChecked = hourIds.isSubset(of: Set(hours.map(\.hourId)))
+                // Steps start again for the next hour, the last hour keeps them so the day shows the goal reached
+                if !status.isChecked { status.count = 0 }
+            }
+        }
+
+        status.hours = hours
+        status.updatedDate = .now
+
+        if let statusIndex {
+            habitEntity.statusList[statusIndex] = status
+        } else {
+            habitEntity.statusList.append(status)
+        }
+        habitEntity.updatedDate = .now
+
+        self.store.habits[index] = habitEntity
+        try await self.save()
+    }
+
     /// Applies `change` to the status of `habit` on `date` and saves it, nothing happens if the day has no status
     internal func changeStatus(
         of habit: Habit,

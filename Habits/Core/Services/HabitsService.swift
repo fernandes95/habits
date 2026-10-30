@@ -208,6 +208,10 @@ class HabitsService {
         try await self.changeStatus(of: habit, on: selectedDate) { status in
             // Older statuses were saved without a target, fall back to the current one.
             let required: Int? = status.requiredCount ?? habit.goal?.value
+            // The last step of a done day finished its last hour, that hour isn't done anymore
+            if status.isChecked, let lastHour = status.hours?.max(by: { $0.date < $1.date }) {
+                status.hours?.removeAll { $0.hourId == lastHour.hourId }
+            }
             status.count = max(status.count - 1, 0)
             status.isChecked = required.map { status.count >= $0 } ?? false
         }
@@ -223,6 +227,7 @@ class HabitsService {
         try await self.changeStatus(of: habit, on: selectedDate) { status in
             status.count = 0
             status.isChecked = false
+            if status.hours != nil { status.hours = [] }
         }
     }
 

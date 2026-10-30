@@ -30,7 +30,7 @@ extension HabitsService {
     static let maxReminders: Int = 60
 
     /// Schedules the reminders of the next `reminderDays` days, every older pending reminder is replaced.
-    /// Hours already passed, and days the habit is already done, get no reminder.
+    /// Hours already passed or done, and days the habit is already done, get no reminder.
     ///
     /// - Parameter now: Current date, reminders before it are skipped
     func syncReminders(now: Date = .now) async throws {
@@ -45,8 +45,8 @@ extension HabitsService {
         var reminders: [NotificationService.Reminder] = []
         for day in days {
             for habit in habitsByDay[day] ?? [] where !habit.isChecked {
-                // Hours checked before their time will be skipped here too, once hours can be checked
-                for hour in habit.reminderHours {
+                // An hour done before its time doesn't remind anymore
+                for hour in habit.reminderHours where habit.checkedHours[hour.id] == nil {
                     guard let date = hour.date(on: day), date > now else { continue }
                     reminders.append(
                         NotificationService.Reminder(habitId: habit.id, hourId: hour.id, title: habit.name, date: date)

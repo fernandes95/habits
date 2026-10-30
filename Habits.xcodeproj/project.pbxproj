@@ -62,6 +62,7 @@
 		AEA4B5C03088F74300B71C76 /* TodoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5BE3088F74300B71C76 /* TodoView.swift */; };
 		AEA4B5C43088F74500B71C76 /* HabitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5C13088F74500B71C76 /* HabitsView.swift */; };
 		AEA4B5C53088F74500B71C76 /* HabitsView+Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5C23088F74500B71C76 /* HabitsView+Components.swift */; };
+		AEC2D0A1308D000700A1B2C3 /* HabitsView+Reminders.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2D0A1308D000800A1B2C3 /* HabitsView+Reminders.swift */; };
 		AEA4B5C73088F74B00B71C76 /* HabitsMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5C63088F74700B71C76 /* HabitsMapView.swift */; };
 		AEA4B5C93088F85E00B71C76 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5C83088F85C00B71C76 /* AppRouter.swift */; };
 		AEA4B5CB3088F87300B71C76 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4B5CA3088F87200B71C76 /* RootTabView.swift */; };
@@ -86,6 +87,7 @@
 		AEC0DE012EB1A00000000004 /* Habit+TestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000014 /* Habit+TestFactory.swift */; };
 		AEC0DE012EB1A00000000005 /* HabitWeekDaysTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000015 /* HabitWeekDaysTests.swift */; };
 		AEC0DE012EB1A00000000006 /* HabitGoalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000016 /* HabitGoalTests.swift */; };
+		AEC2D0A1308D000500A1B2C3 /* HabitHoursTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2D0A1308D000600A1B2C3 /* HabitHoursTests.swift */; };
 		AECA0CA13086AB7C00AC1AF2 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */; };
 		AECAF3193085FE5400AC1AF2 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECAF3183085FE5100AC1AF2 /* AppConfig.swift */; };
 		AEDAA9D72E60B9E10001ABA6 /* LocationSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */; };
@@ -162,6 +164,7 @@
 		AEA4B5BE3088F74300B71C76 /* TodoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoView.swift; sourceTree = "<group>"; };
 		AEA4B5C13088F74500B71C76 /* HabitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsView.swift; sourceTree = "<group>"; };
 		AEA4B5C23088F74500B71C76 /* HabitsView+Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HabitsView+Components.swift"; sourceTree = "<group>"; };
+		AEC2D0A1308D000800A1B2C3 /* HabitsView+Reminders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HabitsView+Reminders.swift"; sourceTree = "<group>"; };
 		AEA4B5C63088F74700B71C76 /* HabitsMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsMapView.swift; sourceTree = "<group>"; };
 		AEA4B5C83088F85C00B71C76 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		AEA4B5CA3088F87200B71C76 /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
@@ -187,6 +190,7 @@
 		AEC0DE012EB1A00000000014 /* Habit+TestFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+TestFactory.swift"; sourceTree = "<group>"; };
 		AEC0DE012EB1A00000000015 /* HabitWeekDaysTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitWeekDaysTests.swift; sourceTree = "<group>"; };
 		AEC0DE012EB1A00000000016 /* HabitGoalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitGoalTests.swift; sourceTree = "<group>"; };
+		AEC2D0A1308D000600A1B2C3 /* HabitHoursTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitHoursTests.swift; sourceTree = "<group>"; };
 		AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		AECAF3183085FE5100AC1AF2 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchService.swift; sourceTree = "<group>"; };
@@ -270,6 +274,7 @@
 				AEC0DE012EB1A00000000012 /* HabitValidationTests.swift */,
 				AEC0DE012EB1A00000000015 /* HabitWeekDaysTests.swift */,
 				AEC0DE012EB1A00000000016 /* HabitGoalTests.swift */,
+				AEC2D0A1308D000600A1B2C3 /* HabitHoursTests.swift */,
 				AEC0DE012EB1A00000000011 /* HabitAddTests.swift */,
 				AE319CF12BF505BE00754149 /* CalendarServiceTests.swift */,
 			);
@@ -536,6 +541,7 @@
 				AE448A802B84E99F0034898F /* HabitDetailView.swift */,
 				AEA4B5C13088F74500B71C76 /* HabitsView.swift */,
 				AEA4B5C23088F74500B71C76 /* HabitsView+Components.swift */,
+				AEC2D0A1308D000800A1B2C3 /* HabitsView+Reminders.swift */,
 				AEA4D1003090A00000B71C76 /* HabitsView+ViewMode.swift */,
 			);
 			path = Habits;
@@ -715,6 +721,7 @@
 				AEC0DE012EB1A00000000002 /* HabitValidationTests.swift in Sources */,
 				AEC0DE012EB1A00000000005 /* HabitWeekDaysTests.swift in Sources */,
 				AEC0DE012EB1A00000000006 /* HabitGoalTests.swift in Sources */,
+				AEC2D0A1308D000500A1B2C3 /* HabitHoursTests.swift in Sources */,
 				AEC0DE012EB1A00000000001 /* HabitAddTests.swift in Sources */,
 				AE43FF0E2BF291BB008A7085 /* HabitsTests.swift in Sources */,
 				AE43FF172BF29254008A7085 /* DefaultStoreServiceTests.swift in Sources */,
@@ -762,6 +769,7 @@
 				AEA4C92D308BACA700B71C76 /* NewHabitLocationView.swift in Sources */,
 				AEA4B5C43088F74500B71C76 /* HabitsView.swift in Sources */,
 				AEA4B5C53088F74500B71C76 /* HabitsView+Components.swift in Sources */,
+				AEC2D0A1308D000700A1B2C3 /* HabitsView+Reminders.swift in Sources */,
 				AEA4D1013090A00000B71C76 /* HabitsView+ViewMode.swift in Sources */,
 				AEA4B5CF3089090300B71C76 /* AddToolbarButton.swift in Sources */,
 				AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */,

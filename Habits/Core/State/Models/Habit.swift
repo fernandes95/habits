@@ -31,6 +31,8 @@ struct Habit: Identifiable, Equatable {
     var updatedDate: Date
     var hasLocationReminder: Bool
     var location: Location?
+    /// Reminder hours done on the date the habit was loaded for, with when they were done
+    var checkedHours: [UUID: Date] = [:]
 
     init(
         id: UUID,
@@ -97,7 +99,7 @@ struct Habit: Identifiable, Equatable {
         location: Location? = nil,
         goal: Goal? = nil
     ) -> Self {
-        return Self(
+        var habit = Self(
             id: self.id,
             eventId: eventId ?? self.eventId,
             name: name ?? self.name,
@@ -119,6 +121,8 @@ struct Habit: Identifiable, Equatable {
             scheduleInterval: scheduleInterval ?? self.scheduleInterval,
             goal: goal ?? self.goal
         )
+        habit.checkedHours = self.checkedHours
+        return habit
     }
 
     init(habitEntity: HabitEntity, selectedDate: Date? = nil) {
@@ -145,8 +149,13 @@ struct Habit: Identifiable, Equatable {
 
         self.isChecked = false
         let currentTarget: Int? = habitEntity.goal?.value
+        let hoursCount: Int = habitEntity.hasAlarm ? habitEntity.schedule.count : 0
         self.history = habitEntity.statusList.map { status in
-            DayRecord(
+            // Days with reminder hours count the hours done, so a day with missed hours is partly done
+            if let hours = status.hours, hoursCount > 0 {
+                return DayRecord(date: status.date, count: hours.count, requiredCount: hoursCount, isChecked: status.isChecked)
+            }
+            return DayRecord(
                 date: status.date,
                 count: status.count,
                 // Older statuses were saved without a target, fall back to the current one.
@@ -170,6 +179,10 @@ struct Habit: Identifiable, Equatable {
                 self.isChecked = status.isChecked
                 self.completedCount = status.count
                 self.updatedDate = status.updatedDate
+                self.checkedHours = Dictionary(
+                    (status.hours ?? []).map { ($0.hourId, $0.date) },
+                    uniquingKeysWith: { first, _ in first }
+                )
             }
     }
 
@@ -178,11 +191,20 @@ struct Habit: Identifiable, Equatable {
     var dayProgress: Double {
         if self.isChecked { return 1 }
 
-        if let goal = self.goal, goal.value > 0 {
-            return min(Double(self.completedCount) / Double(goal.value), 1)
+        let goalProgress: Double = if let goal = self.goal, goal.value > 0 {
+            min(Double(self.completedCount) / Double(goal.value), 1)
+        } else {
+            0
         }
 
-        return 0
+        // Each reminder hour is an equal part of the day, the steps fill the hour being done
+        let hours = self.reminderHours
+        if !hours.isEmpty {
+            let doneHours = hours.filter { self.checkedHours[$0.id] != nil }.count
+            return min((Double(doneHours) + goalProgress) / Double(hours.count), 1)
+        }
+
+        return goalProgress
     }
 
     /// Number of different days this habit was checked during the week of `date`.

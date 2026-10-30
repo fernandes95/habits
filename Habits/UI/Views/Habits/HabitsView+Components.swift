@@ -28,110 +28,6 @@ extension HabitsView {
         }
     }
 
-    /// Shown while habits have reminders that can't remind because a permission is missing,
-    /// tells how many habits are affected and leads to the right Settings page
-    internal struct RemindersPausedBanner: View {
-        let systemImage: String
-        let title: LocalizedStringKey
-        let message: LocalizedStringKey
-        /// Settings page where the missing permission is allowed
-        let settingsURLString: String
-        let settingsAccessibilityIdentifier: String
-
-        @Environment(\.openURL) private var openURL
-
-        var body: some View {
-            VStack(spacing: 12) {
-                HStack(alignment: .top, spacing: 12) {
-                    Image(systemName: self.systemImage)
-                        .font(.subheadline)
-                        .foregroundStyle(Color.stepAccent)
-                        .frame(width: 32, height: 32)
-                        .background(Color.stepAccent.opacity(0.18), in: .circle)
-                        .accessibilityHidden(true)
-
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(self.title)
-                            .font(.subheadline.weight(.semibold))
-                        Text(self.message)
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-
-                Button {
-                    if let url = URL(string: self.settingsURLString) {
-                        self.openURL(url)
-                    }
-                } label: {
-                    HStack(spacing: 4) {
-                        Text("general_open_settings")
-                        Image(systemName: "arrow.up.right")
-                            .font(.footnote.weight(.semibold))
-                    }
-                    .font(.subheadline.weight(.semibold))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-                    .background(Color(.tertiarySystemFill), in: .capsule)
-                    .contentShape(.capsule)
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier(self.settingsAccessibilityIdentifier)
-            }
-            .padding(14)
-            .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 20))
-            .accessibilityElement(children: .contain)
-        }
-    }
-
-    /// Shown while habits have their location reminder on but `Always` location isn't allowed
-    internal struct LocationRemindersPausedBanner: View {
-        let habitsCount: Int
-
-        var body: some View {
-            RemindersPausedBanner(
-                systemImage: "location.slash.fill",
-                title: "habits_location_paused_title",
-                message: "habits_location_paused_message \(self.habitsCount)",
-                settingsURLString: UIApplication.openSettingsURLString,
-                settingsAccessibilityIdentifier: "habits_location_paused_open_settings"
-            )
-        }
-    }
-
-    /// Shown while habits have time or location reminders but notifications aren't allowed
-    internal struct NotificationRemindersPausedBanner: View {
-        let habitsCount: Int
-
-        var body: some View {
-            RemindersPausedBanner(
-                systemImage: "bell.slash.fill",
-                title: "habits_notifications_paused_title",
-                message: "habits_notifications_paused_message \(self.habitsCount)",
-                settingsURLString: UIApplication.openNotificationSettingsURLString,
-                settingsAccessibilityIdentifier: "habits_notifications_paused_open_settings"
-            )
-        }
-    }
-
-    /// Shown while notifications and `Always` location are both off and habits rely on them.
-    /// The app's Settings page has both the notifications and the location rows
-    internal struct AllRemindersPausedBanner: View {
-        let habitsCount: Int
-
-        var body: some View {
-            RemindersPausedBanner(
-                systemImage: "bell.slash.fill",
-                title: "habits_notifications_paused_title",
-                message: "habits_all_reminders_paused_message \(self.habitsCount)",
-                settingsURLString: UIApplication.openSettingsURLString,
-                settingsAccessibilityIdentifier: "habits_all_reminders_paused_open_settings"
-            )
-        }
-    }
-
     /// Header of the all habits mode
     internal struct AllHabitsHeaderView: View {
         var body: some View {
@@ -469,6 +365,8 @@ extension HabitsView {
         @State private var offset: CGFloat = 0
         @State private var width: CGFloat = 0
         @State private var axis: Axis?
+        /// Locked while something inside scrolls sideways, like the hours of a habit
+        @State private var lock = DaySwipeLock()
 
         private let threshold: CGFloat = 80
 
@@ -485,6 +383,14 @@ extension HabitsView {
                                 self.axis = horizontal ? .horizontal : .vertical
                             }
                             guard self.axis == .horizontal else { return }
+
+                            // Something inside started scrolling, the drag is theirs until the finger lifts.
+                            // It can start a little after the drag, so it's checked on every change
+                            guard !self.lock.isLocked else {
+                                self.axis = .vertical
+                                withAnimation(.snappy) { self.offset = 0 }
+                                return
+                            }
                             // Swipe right -> previous day, it resists when there's no day to go to
                             let direction = value.translation.width > 0 ? -1 : 1
                             let resistance: CGFloat = self.canSwipe(direction) ? 0.6 : 0.15
@@ -504,6 +410,7 @@ extension HabitsView {
                             self.slide(direction: direction)
                         }
                 )
+                .environment(\.daySwipeLock, self.lock)
         }
 
         private func slide(direction: Int) {
@@ -519,5 +426,23 @@ extension HabitsView {
                 }
             }
         }
+    }
+}
+
+/// Stops the day swipe while a view inside scrolls sideways, so the drag scrolls only that view.
+/// A class so locking doesn't redraw the day
+final class DaySwipeLock {
+    var isLocked: Bool = false
+}
+
+private struct DaySwipeLockEnvironmentKey: EnvironmentKey {
+    static let defaultValue: DaySwipeLock? = nil
+}
+
+extension EnvironmentValues {
+    /// Set inside the swipeable day of the week view, nil anywhere else
+    internal var daySwipeLock: DaySwipeLock? {
+        get { self[DaySwipeLockEnvironmentKey.self] }
+        set { self[DaySwipeLockEnvironmentKey.self] = newValue }
     }
 }
