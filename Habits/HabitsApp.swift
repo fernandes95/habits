@@ -18,6 +18,7 @@ struct HabitsApp: App {
     @Environment(\.scenePhase) var scenePhase
 
     @AppStorage("appTheme") private var theme: AppTheme = .system
+    @AppStorage("appLanguage") private var language: AppLanguage = .system
 
     @State private var showSplash: Bool = true
 
@@ -46,7 +47,17 @@ struct HabitsApp: App {
                     }
                 }
                 .preferredColorScheme(theme.colorScheme)
+                .environment(\.locale, language.locale)
             }
+        }
+        .onChange(of: self.scenePhase) { _, scenePhase in
+            // Keeps the reminders going while the app isn't opened
+            if scenePhase == .background && self.isProduction {
+                AppEnvironment.shared.scheduleReminderRefresh()
+            }
+        }
+        .backgroundTask(.appRefresh(AppEnvironment.reminderRefreshTaskId)) {
+            await AppEnvironment.shared.refreshReminders()
         }
     }
 

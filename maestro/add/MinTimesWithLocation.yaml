@@ -1,0 +1,23 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# Adds a minimum times habit, with a location reminder, forever
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetForever.yaml
+- runFlow: ../subflows/PickLocation.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Minimum Times
+      VALUE: "5"
+- runFlow: ../subflows/AddHabit.yaml
+- runFlow:
+    file: ../subflows/AssertSavedSettings.yaml
+    env:
+      FREQUENCY: Minimum Times
+      VALUE: "5"
+      HAS_SCHEDULE: false
+      HAS_END_DATE: false
+      HAS_LOCATION: true
+      WEEK_DAYS: one

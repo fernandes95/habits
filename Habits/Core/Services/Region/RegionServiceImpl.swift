@@ -18,6 +18,9 @@ final class RegionServiceImpl: RegionService {
     private var eventTask: Task<Void, Never>?
     private var serviceSession: CLServiceSession?
     private let regionRadius: CLLocationDistance
+    /// Habits being reminded right now. Entering a region and the inside check at launch can remind
+    /// the same habit at the same time, both would pass the "notified today" check before either saves it.
+    private var remindingHabitIds: Set<String> = []
 
     init(habitsService: HabitsService, regionRadius: CLLocationDistance) {
         self.habitsService = habitsService
@@ -55,8 +58,19 @@ final class RegionServiceImpl: RegionService {
     }
 
     private func remindUser(id: String) async throws {
+        // Checked and claimed before the first await, so a second call for the same habit stops here
+        guard !self.remindingHabitIds.contains(id) else { return }
+        self.remindingHabitIds.insert(id)
+        defer { self.remindingHabitIds.remove(id) }
+
         guard let habitEntity: HabitEntity = try await self.habitsService.getHabitEntity(id: id) else {
             try await stopMonitoringRegion(habitIdentifier: id)
+            return
+        }
+
+        // The location reminder was turned off, the habit keeps its location but isn't monitored anymore
+        guard habitEntity.hasLocationReminder else {
+            try await self.stopMonitoringRegion(habitIdentifier: id, habitName: habitEntity.name)
             return
         }
 
@@ -76,7 +90,12 @@ final class RegionServiceImpl: RegionService {
             return
         }
 
-        try await self.notificationService.requestInstantNotification(subTitle: "Don't forget to: \(habitEntity.name)")
+        // One identifier per habit and day, a repeated request replaces the pending one instead of showing twice
+        let day: String = Date.now.formatted(.iso8601.year().month().day())
+        try await self.notificationService.requestInstantNotification(
+            subTitle: "Don't forget to: \(habitEntity.name)",
+            identifier: "location-\(habitEntity.id.uuidString)-\(day)"
+        )
         try await self.habitsService.notifiedHabit(habitId: habitEntity.id)
     }
 
@@ -146,7 +165,8 @@ final class RegionServiceImpl: RegionService {
     }
 
     func checkAlreadyInsideRegion(currentLocation: CLLocation) async throws {
-        let habits = try await habitsService.getHabits(date: .now)
+        // Only habits with the location reminder on, a location alone doesn't remind
+        let habits = try await habitsService.getHabits(date: .now, hasFilterLocation: true)
 
         for habit in habits {
             guard let coord = habit.location?.locationCoordinate else { continue }

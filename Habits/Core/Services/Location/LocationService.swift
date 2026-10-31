@@ -19,6 +19,10 @@ class LocationService: NSObject, ObservableObject {
     @Published
     var status: CLAuthorizationStatus?
 
+    /// Last known user location, used to show how far each habit location is
+    @Published
+    var currentLocation: CLLocation?
+
     // desiredAccuracy as kCLLocationAccuracyBestForNavigation to have the most accurate location
     // activityType as otherNavigation to include all type of navigation besides airborn
     init(habitsService: HabitsService, regionService: RegionService) {
@@ -105,12 +109,12 @@ extension LocationService: CLLocationManagerDelegate {
             self.requestOneTimeLocation()
             Task { try? await self.regionService.startMonitoringIfAuthorized() }
         case .authorizedWhenInUse:
-            Task {
-               try? await Task.sleep(for: .seconds(0.5))
-               manager.requestAlwaysAuthorization()
-            }
+            // Enough for the map, `Always` is only asked when a location reminder is turned on
+            self.requestOneTimeLocation()
         case .denied, .restricted:
             self.stopUpdatingLocation()
+            // The last location is stale without permission, the list would keep showing distances and "You're here"
+            self.currentLocation = nil
         case .notDetermined:
             break
         default:
@@ -124,6 +128,10 @@ extension LocationService: CLLocationManagerDelegate {
             .filter { $0.horizontalAccuracy > 0 && $0.horizontalAccuracy <= 200 }
             .filter { abs($0.timestamp.timeIntervalSinceNow) < 60 }
             .min { $0.horizontalAccuracy < $1.horizontalAccuracy }
+
+        if let location = usable {
+            self.currentLocation = location
+        }
 
         if let location = usable, !self.didRunInitialInsideCheck {
             self.didRunInitialInsideCheck = true

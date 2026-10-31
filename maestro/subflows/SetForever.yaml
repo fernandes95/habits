@@ -1,0 +1,4 @@
+appId: ${appId}
+---
+# New habits are forever, the "Is habit forever?" switch and the end date aren't offered for now
+- assertNotVisible: "End date"

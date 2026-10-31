@@ -8,13 +8,20 @@
 import Foundation
 
 class DefaultStoreService: StoreService {
+    /// Name of the data file inside the documents directory
+    private let fileName: String
+
+    init(fileName: String = "habits.data") {
+        self.fileName = fileName
+    }
+
     /// Data file path
     internal func fileURL() throws -> URL {
         try FileManager.default.url(for: .documentDirectory,
                                     in: .userDomainMask,
                                     appropriateFor: nil,
                                     create: false)
-        .appendingPathComponent("habits.data")
+        .appendingPathComponent(self.fileName)
     }
 
     /// Load all Data from local file

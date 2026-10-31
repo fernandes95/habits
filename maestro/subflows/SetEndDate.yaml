@@ -1,0 +1,19 @@
+appId: ${appId}
+---
+# Turns "Is habit forever?" off, new habits are forever by default, so the end date shows
+- runFlow:
+    when:
+      visible:
+        text: "1"
+        childOf:
+          id: ${output.idNewHabitForever}
+    commands:
+      - tapOn:
+          text: "1"
+          childOf:
+            id: ${output.idNewHabitForever}
+- assertVisible:
+    text: "0"
+    childOf:
+      id: ${output.idNewHabitForever}
+- assertVisible: "End date"

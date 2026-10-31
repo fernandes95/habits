@@ -1,0 +1,26 @@
+appId: ${appId}
+# The end date can't be set for now, excluded in config.yaml
+tags:
+  - endDate
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# Adds a interval habit, with two schedule hours, with an end date
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetEndDate.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Interval
+      VALUE: "3"
+- runFlow: ../subflows/AddScheduleHours.yaml
+- runFlow: ../subflows/AddHabit.yaml
+- runFlow:
+    file: ../subflows/AssertSavedSettings.yaml
+    env:
+      FREQUENCY: Interval
+      VALUE: "3"
+      HAS_SCHEDULE: true
+      HAS_END_DATE: true
+      HAS_LOCATION: false
+      WEEK_DAYS: one

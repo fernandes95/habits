@@ -9,9 +9,9 @@ import Foundation
 import EventKit
 
 class HabitsService {
-    internal let storeService: DefaultStoreService = DefaultStoreService()
+    internal let storeService: DefaultStoreService
     internal let calendarService: CalendarService = CalendarService()
-    private let notificationService: NotificationService = NotificationService()
+    internal let notificationService: NotificationService = NotificationService()
     private var didLoad = false
 
     internal var store: StoreEntity = StoreEntity(
@@ -25,6 +25,11 @@ class HabitsService {
 
     internal var appConfigs: AppConfig {
         return store.appConfigs
+    }
+
+    /// - Parameter storeService: Where the habits are saved, the app's data file by default
+    init(storeService: DefaultStoreService = DefaultStoreService()) {
+        self.storeService = storeService
     }
 
     func loadIfNeeded() async throws {
@@ -99,7 +104,7 @@ class HabitsService {
     func addHabit(_ habit: Habit) async throws -> UUID {
         let eventId: String = ""
         let schedule: [Hour] = habit.schedule
-        var location: HabitEntity.Location?
+        let location: HabitEntity.Location? = habit.location?.entity
 
         // Won't use this feature for now
         /*if habit.schedule.isEmpty {
@@ -107,13 +112,6 @@ class HabitsService {
         } else {
             schedule = try await calendarService.createScheduleCalendarEvents(habit)
         }*/
-
-        if habit.location != nil {
-            location = HabitEntity.Location(
-                latitude: habit.location!.latitude,
-                longitude: habit.location!.longitude
-            )
-        }
 
         let newHabit: HabitEntity = HabitEntity(
             eventId: eventId,
@@ -134,7 +132,8 @@ class HabitsService {
             hasAlarm: habit.hasAlarm,
             hasLocationReminder: habit.hasLocationReminder,
             location: location,
-            scheduleInterval: habit.scheduleInterval
+            scheduleInterval: habit.scheduleInterval,
+            goal: habit.goal
         )
 
         self.store.habits.append(newHabit)
@@ -199,6 +198,39 @@ class HabitsService {
         try await self.save()
     }
 
+    /// Removes the last step of a habit with a goal on `selectedDate`, a done habit isn't done anymore.
+    /// Used from the reset dialog of the habits list.
+    ///
+    /// - Parameters:
+    ///   - habit: Habit to update
+    ///   - selectedDate: Day of the status to change
+    func undoLastStep(_ habit: Habit, selectedDate: Date) async throws {
+        try await self.changeStatus(of: habit, on: selectedDate) { status in
+            // Older statuses were saved without a target, fall back to the current one.
+            let required: Int? = status.requiredCount ?? habit.goal?.value
+            // The last step of a done day finished its last hour, that hour isn't done anymore
+            if status.isChecked, let lastHour = status.hours?.max(by: { $0.date < $1.date }) {
+                status.hours?.removeAll { $0.hourId == lastHour.hourId }
+            }
+            status.count = max(status.count - 1, 0)
+            status.isChecked = required.map { status.count >= $0 } ?? false
+        }
+    }
+
+    /// Clears the progress of a habit on `selectedDate`, every other day is left untouched.
+    /// Used from the reset dialog of the habits list.
+    ///
+    /// - Parameters:
+    ///   - habit: Habit to update
+    ///   - selectedDate: Day of the status to change
+    func resetProgress(_ habit: Habit, selectedDate: Date) async throws {
+        try await self.changeStatus(of: habit, on: selectedDate) { status in
+            status.count = 0
+            status.isChecked = false
+            if status.hours != nil { status.hours = [] }
+        }
+    }
+
     /// Updates existing Habit settings only, the status of any day is left untouched.
     /// Used when the user edits a habit in the detail screen.
     ///
@@ -213,8 +245,8 @@ class HabitsService {
         try await self.save()
     }
 
-    /// Transfers Habit to Habits Archived list
-    /// and deletes all calendar and notifications related to the habit
+    /// Transfers Habit to Habits Archived list and deletes all calendar events related to the habit.
+    /// Its reminders go away on the next `syncReminders`
     func removeHabit(habitId: UUID) async throws {
         if let index: Int = self.habits.firstIndex(where: { $0.id == habitId }) {
             let deleteHabit: HabitEntity = self.habits[index]
@@ -227,7 +259,6 @@ class HabitsService {
             } else {
                 for hour in deleteHabit.schedule {
                     calendarService.deleteEventById(eventId: hour.eventId)
-                    notificationService.removePendingNotification(identifer: hour.notificationId)
                 }
             }
 
@@ -235,7 +266,7 @@ class HabitsService {
         }
     }
 
-    /// Get Habits with frequency type .daily, .minTimes and .minDays.
+    /// Get Habits with frequency type .daily and .minDays.
     ///
     /// - Parameters:
     ///   - date: Selected Date to filter
@@ -251,8 +282,7 @@ class HabitsService {
 
         return habits.filter {
             $0.frequency == .daily ||
-            $0.frequency == .minDays ||
-            $0.frequency == .minTimes
+            $0.frequency == .minDays
         }
     }
 

@@ -19,6 +19,7 @@ struct Habit: Identifiable, Equatable {
     var hasNoEndDate: Bool
     var frequency: Frequency
     var frequencyType: Ocurrence
+    var goal: Goal?
     var completedCount: Int
     var category: Category
     var scheduleInterval: Int?
@@ -30,6 +31,8 @@ struct Habit: Identifiable, Equatable {
     var updatedDate: Date
     var hasLocationReminder: Bool
     var location: Location?
+    /// Reminder hours done on the date the habit was loaded for, with when they were done
+    var checkedHours: [UUID: Date] = [:]
 
     init(
         id: UUID,
@@ -50,7 +53,8 @@ struct Habit: Identifiable, Equatable {
         updatedDate: Date,
         hasLocationReminder: Bool = false,
         location: Location? = nil,
-        scheduleInterval: Int? = nil
+        scheduleInterval: Int? = nil,
+        goal: Goal? = nil
     ) {
         self.id = id
         self.eventId = eventId
@@ -71,6 +75,7 @@ struct Habit: Identifiable, Equatable {
         self.hasLocationReminder = hasLocationReminder
         self.location = location
         self.scheduleInterval = scheduleInterval
+        self.goal = goal
     }
 
     internal func with(
@@ -91,9 +96,10 @@ struct Habit: Identifiable, Equatable {
         createdDate: Date? = nil,
         updatedDate: Date? = nil,
         hasLocationReminder: Bool? = nil,
-        location: Location? = nil
+        location: Location? = nil,
+        goal: Goal? = nil
     ) -> Self {
-        return Self(
+        var habit = Self(
             id: self.id,
             eventId: eventId ?? self.eventId,
             name: name ?? self.name,
@@ -112,8 +118,11 @@ struct Habit: Identifiable, Equatable {
             updatedDate: updatedDate ?? self.updatedDate,
             hasLocationReminder: hasLocationReminder ?? self.hasLocationReminder,
             location: location ?? self.location,
-            scheduleInterval: scheduleInterval ?? self.scheduleInterval
+            scheduleInterval: scheduleInterval ?? self.scheduleInterval,
+            goal: goal ?? self.goal
         )
+        habit.checkedHours = self.checkedHours
+        return habit
     }
 
     init(habitEntity: HabitEntity, selectedDate: Date? = nil) {
@@ -127,6 +136,7 @@ struct Habit: Identifiable, Equatable {
         self.frequencyType = habitEntity.frequencyType
         self.category = getCategory(habitEntity.category)
         self.scheduleInterval = habitEntity.scheduleInterval
+        self.goal = habitEntity.goal
 
         self.schedule = habitEntity.schedule.map { hourEntity in
             return Hour(
@@ -138,9 +148,14 @@ struct Habit: Identifiable, Equatable {
         }
 
         self.isChecked = false
-        let currentTarget: Int? = frequency == .minTimes ? habitEntity.frequencyType.minimumTimes : nil
+        let currentTarget: Int? = habitEntity.goal?.value
+        let hoursCount: Int = habitEntity.hasAlarm ? habitEntity.schedule.count : 0
         self.history = habitEntity.statusList.map { status in
-            DayRecord(
+            // Days with reminder hours count the hours done, so a day with missed hours is partly done
+            if let hours = status.hours, hoursCount > 0 {
+                return DayRecord(date: status.date, count: hours.count, requiredCount: hoursCount, isChecked: status.isChecked)
+            }
+            return DayRecord(
                 date: status.date,
                 count: status.count,
                 // Older statuses were saved without a target, fall back to the current one.
@@ -164,19 +179,32 @@ struct Habit: Identifiable, Equatable {
                 self.isChecked = status.isChecked
                 self.completedCount = status.count
                 self.updatedDate = status.updatedDate
+                self.checkedHours = Dictionary(
+                    (status.hours ?? []).map { ($0.hourId, $0.date) },
+                    uniquingKeysWith: { first, _ in first }
+                )
             }
     }
 
     /// Progress of this habit on the date it was loaded for, between 0 and 1.
-    /// `.minTimes` habits count partial progress, every other habit is either done or not.
+    /// Habits with a goal count partial progress, every other habit is either done or not.
     var dayProgress: Double {
         if self.isChecked { return 1 }
 
-        if self.frequency == .minTimes, self.frequencyType.minimumTimes > 0 {
-            return min(Double(self.completedCount) / Double(self.frequencyType.minimumTimes), 1)
+        let goalProgress: Double = if let goal = self.goal, goal.value > 0 {
+            min(Double(self.completedCount) / Double(goal.value), 1)
+        } else {
+            0
         }
 
-        return 0
+        // Each reminder hour is an equal part of the day, the steps fill the hour being done
+        let hours = self.reminderHours
+        if !hours.isEmpty {
+            let doneHours = hours.filter { self.checkedHours[$0.id] != nil }.count
+            return min((Double(doneHours) + goalProgress) / Double(hours.count), 1)
+        }
+
+        return goalProgress
     }
 
     /// Number of different days this habit was checked during the week of `date`.
@@ -259,6 +287,15 @@ struct Habit: Identifiable, Equatable {
         var id: String {
             rawValue.capitalized
         }
+
+        /// Name shown to the user, `rawValue` is what gets saved
+        var title: LocalizedStringResource {
+            switch self {
+            case .new: "habit_category_new"
+            case .maintain: "habit_category_maintain"
+            case .bad: "habit_category_bad"
+            }
+        }
     }
 
     enum Frequency: String, Identifiable, CaseIterable {
@@ -266,10 +303,19 @@ struct Habit: Identifiable, Equatable {
         case weekly = "Weekly"
         case interval = "Interval"
         case minDays = "Minimum Days"
-        case minTimes = "Minimum Times"
 
         var id: String {
             rawValue.capitalized
+        }
+
+        /// Name shown to the user, `rawValue` is what gets saved
+        var title: LocalizedStringResource {
+            switch self {
+            case .daily: "habit_frequency_daily"
+            case .weekly: "habit_frequency_weekly"
+            case .interval: "habit_frequency_interval"
+            case .minDays: "habit_frequency_min_days"
+            }
         }
     }
 
@@ -278,19 +324,33 @@ struct Habit: Identifiable, Equatable {
             return lhs.locationCoordinate.latitude == rhs.locationCoordinate.latitude &&
             lhs.locationCoordinate.longitude == rhs.locationCoordinate.longitude &&
             lhs.region.center.latitude == rhs.region.center.latitude &&
-            lhs.region.center.longitude == rhs.region.center.longitude
+            lhs.region.center.longitude == rhs.region.center.longitude &&
+            lhs.place == rhs.place
         }
 
         var latitude: CLLocationDegrees
         var longitude: CLLocationDegrees
         var locationCoordinate: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
         var region: MKCoordinateRegion
+        /// Place picked in the location search, nil when the pin was dropped by hand
+        var place: LocationPlaceDetails?
 
-        init(latitude: Double, longitude: Double, region: MKCoordinateRegion) {
+        init(latitude: Double, longitude: Double, region: MKCoordinateRegion, place: LocationPlaceDetails? = nil) {
             self.latitude = latitude
             self.longitude = longitude
             self.locationCoordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             self.region = region
+            self.place = place
+        }
+
+        /// Stored version of this location, keeping the picked place name and address
+        var entity: HabitEntity.Location {
+            HabitEntity.Location(
+                latitude: self.latitude,
+                longitude: self.longitude,
+                name: self.place?.name,
+                address: self.place?.address
+            )
         }
     }
 
@@ -302,6 +362,57 @@ struct Habit: Identifiable, Equatable {
     }
 }
 
+// MARK: Validation
+extension Habit {
+    /// True when the habit can be added or saved from the add and edit habit forms.
+    var isValid: Bool {
+        guard !self.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !self.hasDuplicatedScheduleHours else { return false }
+
+        if let goal = self.goal, !goal.isValid { return false }
+
+        switch self.frequency {
+        case .daily: return true
+        case .interval: return (self.scheduleInterval ?? 0) > 2
+        case .weekly: return !self.frequencyType.weekFrequency.isEmpty
+        case .minDays: return (1...6).contains(self.frequencyType.minimumDays)
+        }
+    }
+
+    /// True when two reminder hours fire at the same hour and minute.
+    /// Hours kept while the reminder is off are hidden, so they don't count.
+    var hasDuplicatedScheduleHours: Bool {
+        let hours = self.reminderHours.map(\.minutesOfDay)
+        return Set(hours).count != hours.count
+    }
+}
+
+// MARK: Week days
+extension Habit {
+    /// Days the habit repeats on, every day for `.daily` habits
+    var repeatWeekDays: Set<WeekDay> {
+        self.frequency == .daily ? Set(WeekDay.allCases) : Set(self.frequencyType.weekFrequency)
+    }
+
+    /// Selects or skips `day`. Every day selected is a `.daily` habit, only some of them is `.weekly`
+    mutating func toggleWeekDay(_ day: WeekDay) {
+        var days = self.repeatWeekDays
+        if days.contains(day) {
+            days.remove(day)
+        } else {
+            days.insert(day)
+        }
+
+        if days.count == WeekDay.allCases.count {
+            self.frequency = .daily
+            self.frequencyType.weekFrequency.removeAll()
+        } else {
+            self.frequency = .weekly
+            self.frequencyType.weekFrequency = WeekDay.allCases.filter { days.contains($0) }
+        }
+    }
+}
+
 func getFrequency(_ frequency: String) -> Habit.Frequency {
     return switch frequency {
     case Habit.Frequency.weekly.rawValue:
@@ -310,8 +421,6 @@ func getFrequency(_ frequency: String) -> Habit.Frequency {
         .interval
     case Habit.Frequency.minDays.rawValue:
         .minDays
-    case Habit.Frequency.minTimes.rawValue:
-        .minTimes
     default:
         .daily
     }
@@ -337,6 +446,7 @@ func getLocation(location: HabitEntity.Location?) -> Habit.Location? {
         region: MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: location!.latitude, longitude: location!.longitude),
             latitudinalMeters: .mapDistance,
-            longitudinalMeters: .mapDistance)
+            longitudinalMeters: .mapDistance),
+        place: location!.name.map { LocationPlaceDetails(name: $0, address: location!.address) }
     )
 }

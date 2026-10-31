@@ -19,5 +19,10 @@ enum WeekDay: Int, Identifiable, CaseIterable, Codable {
 
     var ekWeekday: EKWeekday { EKWeekday(rawValue: rawValue) ?? .sunday }
 
-    var localizedName: String { Calendar.current.standaloneWeekdaySymbols[rawValue - 1] }
+    /// Weekday name in the language of `locale`, pass the app's locale so it follows the language setting
+    func localizedName(locale: Locale = .current) -> String {
+        var calendar = Calendar.current
+        calendar.locale = locale
+        return calendar.standaloneWeekdaySymbols[rawValue - 1].capitalized
+    }
 }

@@ -1,0 +1,25 @@
+appId: ${appId}
+# The end date can't be set for now, excluded in config.yaml
+tags:
+  - endDate
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# Adds a daily habit, with an end date, with a location reminder
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetEndDate.yaml
+- runFlow: ../subflows/PickLocation.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Daily
+      VALUE: ""
+- runFlow: ../subflows/AddHabit.yaml
+- runFlow:
+    file: ../subflows/AssertSavedSettings.yaml
+    env:
+      FREQUENCY: Daily
+      VALUE: ""
+      HAS_SCHEDULE: false
+      HAS_END_DATE: true
+      HAS_LOCATION: true

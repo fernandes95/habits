@@ -8,11 +8,44 @@
 import SwiftUI
 
 extension HabitsView {
-    internal struct HeaderView: View {
+    /// Header of the today mode: the day and month, with the weekday below
+    internal struct TodayHeaderView: View {
+        let date: Date
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(self.date, format: .dateTime.day().month(.wide))
+                    .font(.system(size: 34, weight: .bold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                Text(self.date, format: .dateTime.weekday(.wide))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 8)
+            .accessibilityElement(children: .combine)
+        }
+    }
+
+    /// Header of the all habits mode
+    internal struct AllHabitsHeaderView: View {
+        var body: some View {
+            Text("habits_mode_all")
+                .font(.system(size: 34, weight: .bold))
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 8)
+        }
+    }
+
+    internal struct WeekHeaderView: View {
         @Binding var date: Date
         let progress: [Date: Double]
         /// Calendar with the configured first day of the week
         let calendar: Calendar
+        /// First day that can be selected, days before it can't be picked or swiped to
+        let earliestDate: Date
         var changeDateAction: () -> Void
 
         @State private var showDatePicker = false
@@ -22,19 +55,29 @@ extension HabitsView {
         /// True while the user is dragging the pager, used to tell user swipes from programmatic scrolls
         @State private var isUserScrolling = false
 
+        @Environment(\.locale)
+        private var locale: Locale
+
         private let referenceWeekStart: Date
         /// Amount of weeks reachable by swiping, before and after the current week (~19 years)
         private static let weekRange: ClosedRange<Int> = -1000...1000
+
+        /// Weeks shown by the pager, from the week of `earliestDate`
+        private var weeks: [Int] {
+            Array(self.weekOffset(for: self.earliestDate)...Self.weekRange.upperBound)
+        }
 
         init(
             date: Binding<Date>,
             progress: [Date: Double],
             calendar: Calendar,
+            earliestDate: Date,
             changeDateAction: @escaping () -> Void
         ) {
             self._date = date
             self.progress = progress
             self.calendar = calendar
+            self.earliestDate = earliestDate
             self.changeDateAction = changeDateAction
             let referenceWeekStart = calendar.dateInterval(of: .weekOfYear, for: .now)?.start
                 ?? Date.now.startOfDay
@@ -61,6 +104,7 @@ extension HabitsView {
             .sheet(isPresented: $showDatePicker) {
                 DatePickerSheetContent(
                     datePickerDate: self.$datePickerDate,
+                    earliestDate: self.earliestDate,
                     todayAction: {
                         self.showDatePicker = false
                         self.date = Date()
@@ -97,9 +141,11 @@ extension HabitsView {
                 self.showDatePicker = true
             } label: {
                 (
-                    Text(self.date.formatted(.dateTime.month(.wide).day()) + ", ")
+                    Text(self.date, format: .dateTime.month(.wide).day())
                         .foregroundStyle(Color.primary)
-                    + Text(self.date.formatted(.dateTime.year()))
+                    + Text(verbatim: ", ")
+                        .foregroundStyle(Color.primary)
+                    + Text(self.date, format: .dateTime.year())
                         .foregroundStyle(Color.primary)
                     + Text(" ")
                     + Text(Image(systemName: "chevron.right"))
@@ -116,7 +162,10 @@ extension HabitsView {
 
         // MARK: Week
         private var weekdaySymbols: some View {
-            let symbols = self.calendar.shortStandaloneWeekdaySymbols
+            var calendar = self.calendar
+            calendar.locale = self.locale
+            // Some languages have long short names ("segunda" in Portuguese), keep 3 letters so they fit
+            let symbols = calendar.shortStandaloneWeekdaySymbols.map { String($0.prefix(3)).capitalized }
             let first = self.calendar.firstWeekday - 1
             let ordered = Array(symbols[first...] + symbols[..<first])
 
@@ -134,13 +183,15 @@ extension HabitsView {
         private var weekPager: some View {
             ScrollView(.horizontal) {
                 LazyHStack(spacing: 0) {
-                    ForEach(Self.weekRange, id: \.self) { week in
+                    ForEach(self.weeks, id: \.self) { week in
                         WeekRow(
                             days: self.days(ofWeek: week),
                             selectedDate: self.date,
                             progress: self.progress,
+                            earliestDate: self.earliestDate,
                             onSelect: { day in
-                                guard !self.calendar.isDate(day, inSameDayAs: self.date) else { return }
+                                guard !self.calendar.isDate(day, inSameDayAs: self.date),
+                                      day >= self.earliestDate else { return }
                                 self.date = day
                                 self.changeDateAction()
                             }
@@ -174,7 +225,8 @@ extension HabitsView {
         private func selectFirstDayOfVisibleWeek() {
             guard let visibleWeek, visibleWeek != self.weekOffset(for: self.date) else { return }
             guard let firstDay = self.days(ofWeek: visibleWeek).first else { return }
-            self.date = firstDay
+            // The week of the earliest date can start before it
+            self.date = max(firstDay, self.earliestDate)
             self.changeDateAction()
         }
 
@@ -203,19 +255,24 @@ extension HabitsView {
         let days: [Date]
         let selectedDate: Date
         let progress: [Date: Double]
+        /// Days before it are dimmed and can't be selected
+        let earliestDate: Date
         let onSelect: (Date) -> Void
 
         var body: some View {
             HStack(spacing: 0) {
                 ForEach(self.days, id: \.self) { day in
+                    let isEnabled = day >= self.earliestDate
                     DayProgressCell(
                         date: day,
                         isSelected: Calendar.current.isDate(day, inSameDayAs: self.selectedDate),
                         progress: self.progress[day.startOfDay]
                     )
+                    .opacity(isEnabled ? 1 : 0.3)
                     .frame(maxWidth: .infinity)
                     .contentShape(Rectangle())
                     .onTapGesture { self.onSelect(day) }
+                    .disabled(!isEnabled)
                 }
             }
         }
@@ -295,17 +352,21 @@ extension HabitsView {
         }
     }
 
-    // MARK: - Day swipe
+    // MARK: Day swipe
 
     /// Lets the user swipe the content horizontally to go to the previous / next day.
     /// The content follows the finger and slides out / in when the day changes.
     internal struct DaySwipeContainer<Content: View>: View {
+        /// False when there's no day in that direction (-1 previous, 1 next), the content bounces back
+        var canSwipe: (Int) -> Bool = { _ in true }
         let onSwipe: (Int) async -> Void
         @ViewBuilder let content: Content
 
         @State private var offset: CGFloat = 0
         @State private var width: CGFloat = 0
         @State private var axis: Axis?
+        /// Locked while something inside scrolls sideways, like the hours of a habit
+        @State private var lock = DaySwipeLock()
 
         private let threshold: CGFloat = 80
 
@@ -322,21 +383,34 @@ extension HabitsView {
                                 self.axis = horizontal ? .horizontal : .vertical
                             }
                             guard self.axis == .horizontal else { return }
-                            self.offset = value.translation.width * 0.6
+
+                            // Something inside started scrolling, the drag is theirs until the finger lifts.
+                            // It can start a little after the drag, so it's checked on every change
+                            guard !self.lock.isLocked else {
+                                self.axis = .vertical
+                                withAnimation(.snappy) { self.offset = 0 }
+                                return
+                            }
+                            // Swipe right -> previous day, it resists when there's no day to go to
+                            let direction = value.translation.width > 0 ? -1 : 1
+                            let resistance: CGFloat = self.canSwipe(direction) ? 0.6 : 0.15
+                            self.offset = value.translation.width * resistance
                         }
                         .onEnded { value in
                             defer { self.axis = nil }
                             guard self.axis == .horizontal else { return }
 
                             let distance = value.predictedEndTranslation.width
-                            guard abs(distance) > self.threshold else {
+                            let direction = distance < 0 ? 1 : -1
+                            guard abs(distance) > self.threshold, self.canSwipe(direction) else {
                                 withAnimation(.snappy) { self.offset = 0 }
                                 return
                             }
                             // Swipe left -> next day, swipe right -> previous day
-                            self.slide(direction: distance < 0 ? 1 : -1)
+                            self.slide(direction: direction)
                         }
                 )
+                .environment(\.daySwipeLock, self.lock)
         }
 
         private func slide(direction: Int) {
@@ -352,5 +426,23 @@ extension HabitsView {
                 }
             }
         }
+    }
+}
+
+/// Stops the day swipe while a view inside scrolls sideways, so the drag scrolls only that view.
+/// A class so locking doesn't redraw the day
+final class DaySwipeLock {
+    var isLocked: Bool = false
+}
+
+private struct DaySwipeLockEnvironmentKey: EnvironmentKey {
+    static let defaultValue: DaySwipeLock? = nil
+}
+
+extension EnvironmentValues {
+    /// Set inside the swipeable day of the week view, nil anywhere else
+    internal var daySwipeLock: DaySwipeLock? {
+        get { self[DaySwipeLockEnvironmentKey.self] }
+        set { self[DaySwipeLockEnvironmentKey.self] = newValue }
     }
 }

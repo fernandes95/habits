@@ -1,0 +1,17 @@
+appId: ${appId}
+---
+# Skips the week day DAY when it is selected
+- scrollUntilVisible:
+    element:
+      id: ${output.idWeekDayPrefix + DAY}
+- runFlow:
+    when:
+      visible:
+        id: ${output.idWeekDayPrefix + DAY}
+        selected: true
+    commands:
+      - tapOn:
+          id: ${output.idWeekDayPrefix + DAY}
+- assertNotVisible:
+    id: ${output.idWeekDayPrefix + DAY}
+    selected: true

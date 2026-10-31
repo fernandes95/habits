@@ -1,0 +1,5 @@
+appId: ${appId}
+---
+- assertVisible:
+    text: ${output.buttonNewHabitAdd}
+    enabled: false

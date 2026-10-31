@@ -16,6 +16,9 @@ struct HabitCalendarView: View {
     @State
     private var selectedMonth: Date = .now
 
+    @Environment(\.locale)
+    private var locale: Locale
+
     init(startDate: Date, history: [Habit.DayRecord]) {
         self.startDate = startDate
         self.records = Dictionary(
@@ -62,16 +65,16 @@ struct HabitCalendarView: View {
     }
 
     private var monthTitle: String {
-        let title: String = self.selectedMonth.formatted(.dateTime.month(.wide))
+        let title: String = self.selectedMonth.formatted(.dateTime.month(.wide).locale(self.locale))
         let isCurrentYear: Bool = self.calendar.isDate(
             self.selectedMonth,
             equalTo: .now,
             toGranularity: .year
         )
 
-        guard !isCurrentYear else { return title.capitalized }
+        guard !isCurrentYear else { return title.capitalized(with: self.locale) }
 
-        return "\(title.capitalized) \(self.selectedMonth.formatted(.dateTime.year()))"
+        return "\(title.capitalized(with: self.locale)) \(self.selectedMonth.formatted(.dateTime.year().locale(self.locale)))"
     }
 
     /// First day of the month the habit was created in.

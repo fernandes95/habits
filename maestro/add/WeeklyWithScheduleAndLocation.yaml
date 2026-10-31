@@ -1,0 +1,23 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# Adds a weekly habit, with two schedule hours, with a location reminder, forever
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetForever.yaml
+- runFlow: ../subflows/PickLocation.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Weekly
+      VALUE: ""
+- runFlow: ../subflows/AddScheduleHours.yaml
+- runFlow: ../subflows/AddHabit.yaml
+- runFlow:
+    file: ../subflows/AssertSavedSettings.yaml
+    env:
+      FREQUENCY: Weekly
+      VALUE: ""
+      HAS_SCHEDULE: true
+      HAS_END_DATE: false
+      HAS_LOCATION: true

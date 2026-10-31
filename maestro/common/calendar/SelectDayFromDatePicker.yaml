@@ -5,7 +5,7 @@ appId: ${appId}
     text: "Date Picker"
     index: ${DATEPICKER_INDEX}
 - assertVisible:
-    id: ${buttonDatePickerNextMonthId}
+    id: ${output.buttonDatePickerNextMonthId}
 
 # If day to select is on the next month, selects the next month button
 - runFlow:
@@ -13,7 +13,7 @@ appId: ${appId}
       true: ${output.isNewHabitEndDaySameMonth == false}
     commands: 
       - tapOn: 
-          id: ${buttonDatePickerNextMonthId}
+          id: ${output.buttonDatePickerNextMonthId}
 
 # Select Day
 - tapOn: ${output.newHabitEndDay}
@@ -22,4 +22,4 @@ appId: ${appId}
 - tapOn: 
     point: 100,200
 - assertNotVisible: 
-    id: ${buttonDatePickerNextMonthId}
+    id: ${output.buttonDatePickerNextMonthId}

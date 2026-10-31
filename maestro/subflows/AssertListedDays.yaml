@@ -1,0 +1,58 @@
+appId: ${appId}
+---
+# Starting today, checks the habit is listed exactly on the days FREQUENCY allows.
+# Weekly habits picked the day after today, interval habits repeat every 3 days.
+# Days are changed by swiping the list, which only the week view allows.
+- runFlow: SelectWeekView.yaml
+
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Daily' || FREQUENCY == 'Minimum Days' || FREQUENCY == 'Minimum Times'}
+    commands:
+      - assertVisible: ${output.habitName}
+      - runFlow:
+          file: NextDay.yaml
+          env:
+            DAY_LABEL: ${output.dayLabel1}
+      - assertVisible: ${output.habitName}
+      - runFlow:
+          file: NextDay.yaml
+          env:
+            DAY_LABEL: ${output.dayLabel2}
+      - assertVisible: ${output.habitName}
+
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Weekly'}
+    commands:
+      - runFlow:
+          file: NextDay.yaml
+          env:
+            DAY_LABEL: ${output.dayLabel1}
+      - assertVisible: ${output.habitName}
+      - runFlow:
+          file: NextDay.yaml
+          env:
+            DAY_LABEL: ${output.dayLabel2}
+      - assertNotVisible: ${output.habitName}
+
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Interval'}
+    commands:
+      - assertVisible: ${output.habitName}
+      - runFlow:
+          file: NextDay.yaml
+          env:
+            DAY_LABEL: ${output.dayLabel1}
+      - assertNotVisible: ${output.habitName}
+      - runFlow:
+          file: NextDay.yaml
+          env:
+            DAY_LABEL: ${output.dayLabel2}
+      - assertNotVisible: ${output.habitName}
+      - runFlow:
+          file: NextDay.yaml
+          env:
+            DAY_LABEL: ${output.dayLabel3}
+      - assertVisible: ${output.habitName}

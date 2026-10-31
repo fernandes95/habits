@@ -1,0 +1,24 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# Adds a daily habit, changes it to weekly
+# and checks the list shows it on the days weekly allows
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetForever.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Daily
+      VALUE: ""
+- runFlow: ../subflows/AddHabit.yaml
+
+- runFlow:
+    file: ../subflows/EditFrequency.yaml
+    env:
+      FREQUENCY: Weekly
+      VALUE: ""
+- runFlow:
+    file: ../subflows/AssertListedDays.yaml
+    env:
+      FREQUENCY: Weekly

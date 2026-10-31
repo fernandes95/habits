@@ -17,6 +17,12 @@ struct SettingsView: View {
     @AppStorage("appTheme")
     private var theme: AppTheme = .system
 
+    @AppStorage("appLanguage")
+    private var language: AppLanguage = .system
+
+    @Environment(\.locale)
+    private var locale: Locale
+
     @State private var isImporting: Bool = false
     @State private var isExporting: Bool = false
     @State private var isLoading: Bool = false
@@ -85,7 +91,7 @@ struct SettingsView: View {
                     Section {
                         Picker("settings_configs_week_title", selection: self.$state.configs.startOfWeek) {
                             ForEach(WeekDay.allCases) { day in
-                                Text(day.localizedName).tag(day)
+                                Text(day.localizedName(locale: self.locale)).tag(day)
                             }
                         }
                     } header: {
@@ -100,10 +106,19 @@ struct SettingsView: View {
                     } header: {
                         Text("settings_appearance_section_title")
                     }
+                    Section {
+                        Picker("settings_language_title", selection: self.$language) {
+                            ForEach(AppLanguage.allCases) { language in
+                                language.name.tag(language)
+                            }
+                        }
+                    } header: {
+                        Text("settings_language_section_title")
+                    }
                 }
                 .listStyle(.grouped)
             }
-            .navigationTitle("settings_title")
+            .navigationTitle(String(localized: LocalizedStringResource("settings_title", locale: self.locale)))
             .opacity(isLoading ? 0.5 : 1)
             .alert(
                 showAlert.value,

@@ -1,0 +1,62 @@
+appId: ${appId}
+---
+# Picks FREQUENCY and fills it with VALUE.
+# Daily and weekly share the week days option: daily selects every day, weekly only the day after today.
+# Minimum times isn't a frequency anymore, it's a daily habit with a times goal of VALUE.
+# Every other frequency turns the goal off.
+- scrollUntilVisible:
+    element:
+      id: ${output.idFrequency}
+- tapOn:
+    id: ${output.idFrequency}
+- tapOn: "${FREQUENCY == 'Daily' || FREQUENCY == 'Weekly' || FREQUENCY == 'Minimum Times' ? output.frequencyWeekDays : FREQUENCY}"
+- assertVisible: "Frequency, ${FREQUENCY == 'Daily' || FREQUENCY == 'Weekly' || FREQUENCY == 'Minimum Times' ? output.frequencyWeekDays : FREQUENCY}"
+
+- runFlow:
+    file: SetGoal.yaml
+    env:
+      ON: ${FREQUENCY == 'Minimum Times'}
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Daily' || FREQUENCY == 'Minimum Times'}
+    file: SelectAllWeekDays.yaml
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Weekly'}
+    file: SelectOnlyTomorrow.yaml
+
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Interval'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: ${output.idInterval}
+      - runFlow:
+          file: TypeNumber.yaml
+          env:
+            FIELD_ID: ${output.idInterval}
+
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Minimum Days'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: ${output.idMinDays}
+      - runFlow:
+          file: TypeNumber.yaml
+          env:
+            FIELD_ID: ${output.idMinDays}
+
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Minimum Times'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: ${output.idGoalValue}
+      - runFlow:
+          file: TypeNumber.yaml
+          env:
+            FIELD_ID: ${output.idGoalValue}

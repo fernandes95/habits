@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import EventKit
+import CoreLocation
 
 @MainActor
 class MainState: ObservableObject {
@@ -18,6 +19,14 @@ class MainState: ObservableObject {
     @Published
     var habits: [Habit] = []
 
+    /// Every saved habit regardless of the selected date, newest first
+    @Published
+    var allHabits: [Habit] = []
+
+    /// False until the habits are loaded the first time, so nothing says there are none before that
+    @Published
+    private(set) var didLoadHabits: Bool = false
+
     @Published
     var configs: AppConfig = AppConfig.empty
 
@@ -26,6 +35,17 @@ class MainState: ObservableObject {
 
     @Published
     var selectedDate: Date = .now
+
+    /// Last known user location, nil while unknown or without location permission
+    @Published
+    var currentLocation: CLLocation?
+
+    /// Location permission, nil until it's known. Updated when the user changes it in Settings
+    @Published
+    var locationStatus: CLAuthorizationStatus?
+
+    /// Start of the day that was today when the habits were last loaded, to notice when midnight passes
+    private var loadedToday: Date = Date.now.startOfDay
 
     /// Habits of each loaded day, keyed by start of day
     private var habitsByDay: [Date: [Habit]] = [:]
@@ -45,11 +65,20 @@ class MainState: ObservableObject {
     init(environment: AppEnvironment) {
         self.habitsService = environment.habitsService
         self.locationService = environment.locationService
+
+        self.locationService.$currentLocation
+            .receive(on: DispatchQueue.main)
+            .assign(to: &self.$currentLocation)
+
+        self.locationService.$status
+            .receive(on: DispatchQueue.main)
+            .assign(to: &self.$locationStatus)
     }
 
     func initHabits() async {
         do {
             try await self.habitsService.load()
+            try await self.habitsService.updateInstallDate()
             self.getConfigs()
             try await self.loadHabits(date: selectedDate)
             self.requestLocationAuthorizationIfNeeded()
@@ -62,7 +91,48 @@ class MainState: ObservableObject {
         self.locationService.requestOneTimeLocation()
     }
 
-    /// Get exportable document
+    /// Asks for a fresh user location, only when location was already authorized
+    func refreshCurrentLocation() {
+        self.locationService.requestOneTimeLocation()
+    }
+
+    /// Distance in meters from the user to `location`, nil while the user location is unknown
+    func distance(to location: Habit.Location) -> CLLocationDistance? {
+        guard let currentLocation else { return nil }
+        return currentLocation.distance(from: CLLocation(latitude: location.latitude, longitude: location.longitude))
+    }
+
+    /// True when `habit` has its location reminder on but it can't remind,
+    /// `Always` location isn't allowed (turned off in Settings for example).
+    /// The reminder is kept and starts again once `Always` is allowed.
+    func isLocationReminderPaused(_ habit: Habit) -> Bool {
+        guard let locationStatus, locationStatus != .authorizedAlways else { return false }
+        return habit.location != nil && habit.hasLocationReminder && habit.endDate.endOfDay >= .now
+    }
+
+    /// Habits with a paused location reminder, see `isLocationReminderPaused`
+    var pausedLocationReminders: [Habit] {
+        return self.allHabits.filter { self.isLocationReminderPaused($0) }
+    }
+
+    /// True when `habit` has reminder hours or a location reminder that can't remind, notifications were denied.
+    /// The reminders are kept and remind again once notifications are allowed.
+    func isNotificationReminderPaused(_ habit: Habit) -> Bool {
+        let hasReminder = !habit.reminderHours.isEmpty || (habit.location != nil && habit.hasLocationReminder)
+        return self.notificationStatus == .denied && hasReminder && habit.endDate.endOfDay >= .now
+    }
+
+    /// Habits with time or location reminders that can't remind, notifications were denied.
+    /// The reminders are kept and start again once notifications are allowed.
+    var pausedNotificationReminders: [Habit] {
+        guard self.notificationStatus == .denied else { return [] }
+        return self.allHabits.filter { habit in
+            let hasReminder = !habit.reminderHours.isEmpty || (habit.location != nil && habit.hasLocationReminder)
+            return hasReminder && habit.endDate.endOfDay >= .now
+        }
+    }
+
+        /// Get exportable document
     func getDataDocument() async throws -> ExportableDocument {
         return await self.habitsService.exportDataDocument()
     }
@@ -72,6 +142,7 @@ class MainState: ObservableObject {
     /// - Parameter data: Imported data
     func importHabits(url: URL) async throws -> Bool? {
         self.duplicatedHabits = try await self.habitsService.importHabits(from: url)
+        try await self.updateInstallDate()
 
         guard let habits: [HabitEntity] = self.duplicatedHabits else { return nil }
 
@@ -93,8 +164,15 @@ class MainState: ObservableObject {
             habits: self.duplicatedHabits ?? [],
             resolution: resolution
         )
+        try await self.updateInstallDate()
         try await self.loadHabits(date: self.selectedDate)
         }
+    }
+
+    /// Moves the install date back when an imported habit is older, the week view can go back to it
+    private func updateInstallDate() async throws {
+        try await self.habitsService.updateInstallDate()
+        self.getConfigs()
     }
 
     /// Reloads the whole block around `date`.
@@ -106,8 +184,38 @@ class MainState: ObservableObject {
 
         self.habitsByDay = block
         self.updateProgress()
+        self.allHabits = self.habitsService.habits
+            .map { Habit(habitEntity: $0) }
+            .sorted { $0.createdDate > $1.createdDate }
+        self.didLoadHabits = true
         // The user may have moved to another day while loading, show whatever is selected now
         self.showHabits(of: self.selectedDate, animated: animated)
+        // Any change to the habits can change their reminders
+        await self.syncReminders()
+    }
+
+    /// Reloads the habits once the day changes, since the app can stay open past midnight.
+    /// The selected day moves to the new today only if it was today, a day picked in the week view stays.
+    ///
+    /// - Parameter now: Current date, the day is compared to the one the habits were loaded on
+    func refreshDayIfNeeded(now: Date = .now) async {
+        let today = now.startOfDay
+        guard today != self.loadedToday else { return }
+
+        let wasToday = self.selectedDate.startOfDay == self.loadedToday
+        self.loadedToday = today
+        do {
+            try await self.loadHabits(date: wasToday ? now : self.selectedDate, animated: false)
+        } catch let error { print(error.localizedDescription) }
+    }
+
+    /// Schedules the reminders of the coming days again, see `HabitsService.syncReminders`
+    func syncReminders() async {
+        // Also keeps the notifications banner up to date, the permission can change in Settings
+        self.notificationStatus = await self.notificationService.getNotificationStatus()
+        do {
+            try await self.habitsService.syncReminders()
+        } catch let error { print(error.localizedDescription) }
     }
 
     /// Selects a day using the loaded block, and loads the missing days around it if needed.
@@ -179,13 +287,59 @@ class MainState: ObservableObject {
         do {
             try await self.habitsService.updateHabit(habit, selectedDate: self.selectedDate)
 
-            if let location = habit.location {
+            // Only habits with the location reminder on are monitored, the location alone isn't enough
+            if let location = habit.location, habit.hasLocationReminder {
                 self.locationService.startMonitoringRegion(
                     location: location.locationCoordinate,
                     habitIdentifier: habit.id.uuidString,
                     habitName: habit.name
                 )
             }
+            try await loadHabits(date: self.selectedDate)
+        } catch let error { print(error.localizedDescription) }
+    }
+
+    /// Does one reminder hour of `habit` on the selected date, see `HabitsService.checkHour`.
+    /// Doing an hour before its time cancels its reminder, the reminders are synced again on load
+    ///
+    /// - Parameters:
+    ///   - habit: Habit with reminder hours
+    ///   - hourId: Hour to do
+    func checkHour(habit: Habit, hourId: UUID) async throws {
+        do {
+            try await self.habitsService.checkHour(habit, hourId: hourId, selectedDate: self.selectedDate)
+            try await loadHabits(date: self.selectedDate)
+        } catch let error { print(error.localizedDescription) }
+    }
+
+    /// Undoes one done reminder hour of `habit` on the selected date, see `HabitsService.uncheckHour`
+    ///
+    /// - Parameters:
+    ///   - habit: Habit with reminder hours
+    ///   - hourId: Hour to undo
+    func uncheckHour(habit: Habit, hourId: UUID) async throws {
+        do {
+            try await self.habitsService.uncheckHour(habit, hourId: hourId, selectedDate: self.selectedDate)
+            try await loadHabits(date: self.selectedDate)
+        } catch let error { print(error.localizedDescription) }
+    }
+
+    /// Removes the last step of `habit` on the selected date and loads all habits from selected date
+    ///
+    /// - Parameter habit: Habit with a goal to update
+    func undoLastStep(habit: Habit) async throws {
+        do {
+            try await self.habitsService.undoLastStep(habit, selectedDate: self.selectedDate)
+            try await loadHabits(date: self.selectedDate)
+        } catch let error { print(error.localizedDescription) }
+    }
+
+    /// Clears the progress of `habit` on the selected date and loads all habits from selected date
+    ///
+    /// - Parameter habit: Habit with a goal to update
+    func resetProgress(habit: Habit) async throws {
+        do {
+            try await self.habitsService.resetProgress(habit, selectedDate: self.selectedDate)
             try await loadHabits(date: self.selectedDate)
         } catch let error { print(error.localizedDescription) }
     }

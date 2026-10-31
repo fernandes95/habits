@@ -60,31 +60,6 @@ struct NewHabitContentView: View {
                     .focused(self.$nameFocused)
                     .accessibilityIdentifier("new_habit_name")
 
-                // Duration
-                Section(header: Text("new_habit_duration_section_title")) {
-                    DatePicker("habit_start_date", selection: $habit.startDate,
-                               in: self.startDateIn...,
-                               displayedComponents: .date
-                    )
-
-                    if !habit.hasNoEndDate {
-                        DatePicker("habit_end_date", selection: self.$habit.endDate,
-                                   in: self.habit.startDate...,
-                                   displayedComponents: .date)
-                    }
-
-                    Toggle("habit_has_end_date", isOn: $habit.hasNoEndDate)
-                        .onChange(of: self.habit.hasNoEndDate) { _, hasNoEndDate in
-                            if hasNoEndDate {
-                                let calendar = Calendar.current
-                                let endDate = calendar.date(byAdding: .year, value: 100, to: self.habit.endDate)!
-                                self.habit.endDate = endDate
-                            } else {
-                                self.habit.endDate = self.habit.startDate
-                            }
-                        }
-                }
-
                 HabitLocationSectionView(
                     location: self.$habit.location,
                     hasLocationReminder: self.$habit.hasLocationReminder,
@@ -100,7 +75,16 @@ struct NewHabitContentView: View {
                     habit: self.$habit,
                     isEditing: .constant(true)
                 )
+
+                // Duration. The end date isn't offered for now, new habits are forever (see `Habit.empty`)
+                Section(header: Text("new_habit_duration_section_title")) {
+                    DatePicker("habit_start_date", selection: $habit.startDate,
+                               in: self.startDateIn...,
+                               displayedComponents: .date
+                    )
+                }
             }
+            .keyboardDismissable()
             .navigationTitle("new_habit_title")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear { self.nameFocused = true }
@@ -153,7 +137,7 @@ struct NewHabitContentView: View {
                     Button("general_add") {
                         self.addHabit()
                     }
-                    .disabled(self.habit.name.isEmpty)
+                    .disabled(!self.habit.isValid)
                 }
             }
         }
@@ -179,11 +163,13 @@ struct NewHabitContentView: View {
             if self.habit.startDate >= self.habit.endDate {
                 self.habit.endDate = self.habit.startDate
             }
-            let newHabit = self.habit
+            var newHabit = self.habit
                 .with(
                     createdDate: .now,
                     updatedDate: .now
                 )
+            // Saved with the habit so the list can show the place name
+            newHabit.location?.place = self.locationPlace
 
             do {
                 try await self.state.addHabit(newHabit)

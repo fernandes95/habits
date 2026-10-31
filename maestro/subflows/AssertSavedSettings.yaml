@@ -1,0 +1,100 @@
+appId: ${appId}
+---
+# Opens the habit detail and checks it was saved with FREQUENCY, VALUE, HAS_SCHEDULE, HAS_END_DATE and HAS_LOCATION
+- runFlow: OpenHabitDetail.yaml
+- assertVisible: "Frequency, ${FREQUENCY == 'Daily' || FREQUENCY == 'Weekly' || FREQUENCY == 'Minimum Times' ? output.frequencyWeekDays : FREQUENCY}"
+
+# End date is only shown for habits that end
+- runFlow:
+    when:
+      true: ${HAS_END_DATE == 'true'}
+    commands:
+      - assertVisible: "End date"
+- runFlow:
+    when:
+      true: ${HAS_END_DATE != 'true'}
+    commands:
+      - assertNotVisible: "End date"
+
+# Checked top to bottom: frequency, schedule, then location
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Daily'}
+    file: AssertAllWeekDaysSelected.yaml
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Weekly'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: ${output.idWeekDayPrefix + output.tomorrowWeekDay}
+      - assertVisible:
+          id: ${output.idWeekDayPrefix + output.tomorrowWeekDay}
+          selected: true
+      - assertNotVisible:
+          id: ${output.idWeekDayPrefix + output.todayWeekDay}
+          selected: true
+
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Interval'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: ${output.idIntervalValue}
+      - assertVisible:
+          id: ${output.idIntervalValue}
+          text: ${VALUE}
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Minimum Days'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: ${output.idMinDays}
+      - assertVisible:
+          id: ${output.idMinDays}
+          text: ${VALUE}
+- runFlow:
+    when:
+      true: ${FREQUENCY == 'Minimum Times'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: ${output.idGoalValue}
+      - assertVisible:
+          id: ${output.idGoalValue}
+          text: ${VALUE}
+
+- runFlow:
+    when:
+      true: ${HAS_SCHEDULE == 'true'}
+    commands:
+      - scrollUntilVisible:
+          element: "Hour #2"
+      - assertVisible: "Hour #1"
+      - assertVisible: "09:00"
+      - assertVisible: "10:00"
+- runFlow:
+    when:
+      true: ${HAS_SCHEDULE != 'true'}
+    commands:
+      - assertNotVisible: "Hour #1"
+
+# Location section is only shown for habits with a location
+- runFlow:
+    when:
+      true: ${HAS_LOCATION == 'true'}
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: ${output.idNewHabitLocationReminder}
+      - assertVisible:
+          id: ${output.idNewHabitLocationReminder}
+          checked: true
+- runFlow:
+    when:
+      true: ${HAS_LOCATION != 'true'}
+    commands:
+      - assertNotVisible:
+          id: ${output.idNewHabitLocationReminder}

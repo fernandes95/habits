@@ -1,0 +1,5 @@
+appId: ${appId}
+---
+- assertVisible: ${output.habitName}
+- tapOn: ${output.buttonHomeListItemArrow}
+- assertVisible: ${output.buttonHabitDetailEdit}

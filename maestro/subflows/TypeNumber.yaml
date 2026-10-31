@@ -1,0 +1,14 @@
+appId: ${appId}
+---
+# Replaces the value of the number field FIELD_ID with VALUE, VALUE can be empty.
+# The field must be on screen.
+- tapOn:
+    id: ${FIELD_ID}
+- eraseText
+- runFlow:
+    when:
+      true: ${VALUE != ''}
+    commands:
+      - inputText: ${VALUE}
+# Return commits the value and closes the keyboard
+- pressKey: Enter

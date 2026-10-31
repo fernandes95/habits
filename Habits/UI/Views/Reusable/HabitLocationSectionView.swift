@@ -27,11 +27,19 @@ struct HabitLocationSectionView: View {
 
     var isEditing: Bool = true
 
+    /// The reminder is on but can't remind, `Always` location isn't allowed.
+    /// Shows a Settings row and a note, the switch stays on and the reminder starts again once it's allowed.
+    /// Off while adding a habit, `Always` is still being asked there
+    var isReminderPaused: Bool = false
+
     /// Called when the location picker should be presented
     let onPickLocation: () -> Void
 
     @State
     private var isNotificationsDenied: Bool = false
+
+    @State
+    private var isResolvingPlace: Bool = false
 
     var body: some View {
         Section {
@@ -39,6 +47,7 @@ struct HabitLocationSectionView: View {
                 LocationCardView(
                     location: location,
                     place: self.place,
+                    isLoading: self.isResolvingPlace,
                     onTap: self.isEditing ? self.onPickLocation : nil,
                     onClear: self.isEditing ? self.clearLocation : nil
                 )
@@ -70,12 +79,6 @@ struct HabitLocationSectionView: View {
                         self.requestNotificationsAuthorization()
                     }
                 }
-                .onChange(of: self.location) { _, location in
-                    // Reminders fire in the background, so they need always authorization
-                    if location != nil {
-                        self.state.requestAlwaysLocation()
-                    }
-                }
                 .onAppear {
                     self.refreshNotificationsDenied()
                 }
@@ -100,14 +103,65 @@ struct HabitLocationSectionView: View {
                     .contentShape(.rect)
                 }
                 .accessibilityIdentifier("new_habit_open_notification_settings")
+            } else if self.isReminderPaused {
+                // Also while only viewing the habit, it tells the user something is wrong
+                Button {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        self.openURL(url)
+                    }
+                } label: {
+                    HStack {
+                        Text("general_open_settings")
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                    }
+                    .contentShape(.rect)
+                }
+                .accessibilityIdentifier("habit_location_open_settings")
             }
         } header: {
             Text("habit_location_section_title")
         } footer: {
             if self.isEditing && self.isNotificationsDenied {
                 Text("habit_location_notifications_denied")
+            } else if self.isReminderPaused {
+                (
+                    Text(Image(systemName: "location.slash.fill"))
+                        .foregroundStyle(Color.stepAccent)
+                    + Text(verbatim: " ")
+                    + Text("habit_location_paused_footer_title")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.stepAccent)
+                    + Text(verbatim: " ")
+                    + Text("habit_location_paused_footer_message")
+                )
             }
         }
+        .task(id: self.resolvePlaceKey) {
+            await self.resolvePlaceIfNeeded()
+        }
+    }
+
+    /// Changes when the pin moves or the place is cleared, so a dropped pin gets its street looked up again
+    private var resolvePlaceKey: String {
+        guard let location = self.location else { return "" }
+        return "\(location.latitude),\(location.longitude),\(self.place == nil)"
+    }
+
+    /// Dropped pins have no place name, look up the street once here so it's saved with the habit
+    /// and the habits list never has to look it up
+    private func resolvePlaceIfNeeded() async {
+        guard let location = self.location, self.place == nil else {
+            self.isResolvingPlace = false
+            return
+        }
+
+        self.isResolvingPlace = true
+        let place = await LocationPlaceDetails.resolve(latitude: location.latitude, longitude: location.longitude)
+        // The pin moved or the section went away while looking it up
+        guard !Task.isCancelled else { return }
+        self.place = place
+        self.isResolvingPlace = false
     }
 
     private func clearLocation() {
@@ -118,21 +172,25 @@ struct HabitLocationSectionView: View {
         }
     }
 
-    /// Location reminders are delivered as notifications, the switch goes back off if they aren't allowed
+    /// Location reminders are delivered as notifications, the switch goes back off if they aren't allowed.
+    /// Once notifications are allowed, asks for `Always` location, reminders fire in the background.
+    /// One after the other, iOS only shows one permission alert at a time.
     private func requestNotificationsAuthorization() {
         Task {
             do {
-                if try await self.state.getNotificationsAuthorizationStatus() {
-                    return
+                if try await !self.state.getNotificationsAuthorizationStatus() {
+                    try await self.state.getNotificationsAuthorization()
                 }
-                try await self.state.getNotificationsAuthorization()
 
                 if try await !self.state.getNotificationsAuthorizationStatus() {
                     withAnimation {
                         self.hasLocationReminder = false
                         self.isNotificationsDenied = self.state.notificationStatus == .denied
                     }
+                    return
                 }
+
+                self.state.requestAlwaysLocation()
             } catch let error { print(error.localizedDescription) }
         }
     }

@@ -1,0 +1,20 @@
+appId: ${appId}
+---
+# Changes the habit frequency to FREQUENCY with VALUE from the habit detail and goes back to the list
+- runFlow: OpenHabitDetail.yaml
+- tapOn: ${output.buttonHabitDetailEdit}
+- assertVisible: ${output.buttonHabitDetailDone}
+- runFlow: SelectFrequency.yaml
+
+# Like "Add", the toolbar reports "Done" twice and only the inner one follows the disabled state
+- assertNotVisible:
+    text: ${output.buttonHabitDetailDone}
+    enabled: false
+- tapOn: ${output.buttonHabitDetailDone}
+- assertVisible: ${output.buttonHabitDetailEdit}
+- scrollUntilVisible:
+    element: "Frequency, ${FREQUENCY == 'Daily' || FREQUENCY == 'Weekly' || FREQUENCY == 'Minimum Times' ? output.frequencyWeekDays : FREQUENCY}"
+    direction: UP
+
+- tapOn: ${output.buttonHabitDetailBack}
+- assertVisible: ${output.habitName}

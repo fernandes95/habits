@@ -16,6 +16,7 @@ struct HabitEntity: Codable {
     var hasNoEndDate: Bool
     var frequency: String
     var frequencyType: Ocurrence
+    var goal: Goal?
     var category: String
     var statusList: [Status]
     var schedule: [Hour]
@@ -41,7 +42,9 @@ struct HabitEntity: Codable {
          updatedDate: Date = .now,
          hasLocationReminder: Bool = false,
          location: Location? = nil,
-         scheduleInterval: Int? = nil
+         scheduleInterval: Int? = nil,
+         goal: Goal? = nil,
+         createdDate: Date = .now
     ) {
         self.id = id
         self.eventId = eventId
@@ -59,7 +62,8 @@ struct HabitEntity: Codable {
         self.hasLocationReminder = hasLocationReminder
         self.location = location
         self.scheduleInterval = scheduleInterval
-        self.createdDate = .now
+        self.goal = goal
+        self.createdDate = createdDate
     }
 
     internal func with(
@@ -95,7 +99,9 @@ struct HabitEntity: Codable {
             updatedDate: updatedDate ?? self.updatedDate,
             hasLocationReminder: hasLocationReminder ?? self.hasLocationReminder,
             location: location ?? self.location,
-            scheduleInterval: scheduleInterval ?? self.scheduleInterval
+            scheduleInterval: scheduleInterval ?? self.scheduleInterval,
+            goal: self.goal,
+            createdDate: self.createdDate
         )
     }
 
@@ -116,7 +122,8 @@ struct HabitEntity: Codable {
             updatedDate: self.updatedDate,
             hasLocationReminder: self.hasLocationReminder,
             location: self.location,
-            scheduleInterval: self.scheduleInterval
+            scheduleInterval: self.scheduleInterval,
+            goal: self.goal
         )
     }
 
@@ -127,6 +134,8 @@ struct HabitEntity: Codable {
         var isChecked: Bool
         var count: Int
         var requiredCount: Int?
+        /// Reminder hours done this day. Nil on days saved before hours could be checked
+        var hours: [HourCheck]?
 
         init(
             id: UUID = UUID(),
@@ -135,6 +144,7 @@ struct HabitEntity: Codable {
             isChecked: Bool = false,
             count: Int = 0,
             requiredCount: Int? = nil,
+            hours: [HourCheck]? = nil
         ) {
             self.id = id
             self.date = date
@@ -142,11 +152,20 @@ struct HabitEntity: Codable {
             self.isChecked = isChecked
             self.count = count
             self.requiredCount = requiredCount
+            self.hours = hours
         }
+    }
+
+    /// Reminder hour done, `date` is when it was actually done
+    internal struct HourCheck: Codable, Equatable {
+        let hourId: UUID
+        let date: Date
     }
 
     internal struct Location: Codable {
         var latitude: Double
         var longitude: Double
+        var name: String?
+        var address: String?
     }
 }

@@ -1,0 +1,22 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# Adds a minimum days habit with the lowest minimum, 1 day
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetForever.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Minimum Days
+      VALUE: "1"
+- runFlow: ../subflows/AddHabit.yaml
+- runFlow:
+    file: ../subflows/AssertSavedSettings.yaml
+    env:
+      FREQUENCY: Minimum Days
+      VALUE: "1"
+      HAS_SCHEDULE: false
+      HAS_END_DATE: false
+      HAS_LOCATION: false
+      WEEK_DAYS: one

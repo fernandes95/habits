@@ -17,6 +17,7 @@
 		AE30E1582B9F7428009E10CD /* CalendarService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1572B9F7428009E10CD /* CalendarService.swift */; };
 		AE30E1602BA4C182009E10CD /* Ocurrence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E15F2BA4C182009E10CD /* Ocurrence.swift */; };
 		AE30E1622BA88B5B009E10CD /* WeekDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1612BA88B5B009E10CD /* WeekDay.swift */; };
+		AE30E1712BA4C182009E10CD /* Goal.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE30E1702BA4C182009E10CD /* Goal.swift */; };
 		AE319CEE2BF3AC3500754149 /* EKEventStore+Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE319CED2BF3AC3500754149 /* EKEventStore+Swizzle.swift */; };
 		AE319CF22BF505BE00754149 /* CalendarServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE319CF12BF505BE00754149 /* CalendarServiceTests.swift */; };
 		AE32F8102BED08BD0095DD1A /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE32F80F2BED08BD0095DD1A /* ViewModifiers.swift */; };
@@ -70,9 +71,24 @@
 		AEA4C92B308B7AEE00B71C76 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4C92A308B7AEE00B71C76 /* SplashView.swift */; };
 		AEA4C92D308BACA700B71C76 /* NewHabitLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4C92C308BACA600B71C76 /* NewHabitLocationView.swift */; };
 		AEA4C92F308BC83200B71C76 /* LocationCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4C92E308BC83000B71C76 /* LocationCardView.swift */; };
+		AEA4D1013090A00000B71C76 /* HabitsView+ViewMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4D1003090A00000B71C76 /* HabitsView+ViewMode.swift */; };
+		AEA4D1113090A00000B71C76 /* DefaultStoreService+Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4D1103090A00000B71C76 /* DefaultStoreService+Tests.swift */; };
+		AEA4D1213090A00000B71C76 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AEA4D1203090A00000B71C76 /* InfoPlist.xcstrings */; };
+		AEA4D1313090A00000B71C76 /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA4D1303090A00000B71C76 /* AppLanguage.swift */; };
 		AEB1C0DE308C000200A1B2C3 /* LocationPlaceDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB1C0DE308C000100A1B2C3 /* LocationPlaceDetails.swift */; };
 		AEB1C0DE308C000600A1B2C3 /* HabitLocationSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB1C0DE308C000500A1B2C3 /* HabitLocationSectionView.swift */; };
 		AEB1C0DE308C000800A1B2C3 /* LocationAlwaysSheetContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB1C0DE308C000700A1B2C3 /* LocationAlwaysSheetContentView.swift */; };
+		AEC0DE012EB1A00000000001 /* HabitAddTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000011 /* HabitAddTests.swift */; };
+		AEC0DE012EB1A00000000002 /* HabitValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000012 /* HabitValidationTests.swift */; };
+		AEC0DE012EB1A00000000003 /* HabitEditTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000013 /* HabitEditTests.swift */; };
+		AEC0DE012EB1A00000000004 /* Habit+TestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000014 /* Habit+TestFactory.swift */; };
+		AEC0DE012EB1A00000000005 /* HabitWeekDaysTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000015 /* HabitWeekDaysTests.swift */; };
+		AEC0DE012EB1A00000000006 /* HabitGoalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC0DE012EB1A00000000016 /* HabitGoalTests.swift */; };
+		AEC2D0A1308D000200A1B2C3 /* Habit+Reminder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2D0A1308D000100A1B2C3 /* Habit+Reminder.swift */; };
+		AEC2D0A1308D000400A1B2C3 /* HabitReminderSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2D0A1308D000300A1B2C3 /* HabitReminderSectionView.swift */; };
+		AEC2D0A1308D000500A1B2C3 /* HabitHoursTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2D0A1308D000600A1B2C3 /* HabitHoursTests.swift */; };
+		AEC2D0A1308D000700A1B2C3 /* HabitsView+Reminders.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2D0A1308D000800A1B2C3 /* HabitsView+Reminders.swift */; };
+		AEC2D0A1308D000900A1B2C3 /* AllHabitsContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2D0A1308D000A00A1B2C3 /* AllHabitsContentView.swift */; };
 		AECA0CA13086AB7C00AC1AF2 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */; };
 		AECAF3193085FE5400AC1AF2 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AECAF3183085FE5100AC1AF2 /* AppConfig.swift */; };
 		AEDAA9D72E60B9E10001ABA6 /* LocationSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */; };
@@ -100,6 +116,7 @@
 		AE30E1572B9F7428009E10CD /* CalendarService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarService.swift; sourceTree = "<group>"; };
 		AE30E15F2BA4C182009E10CD /* Ocurrence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ocurrence.swift; sourceTree = "<group>"; };
 		AE30E1612BA88B5B009E10CD /* WeekDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDay.swift; sourceTree = "<group>"; };
+		AE30E1702BA4C182009E10CD /* Goal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goal.swift; sourceTree = "<group>"; };
 		AE319CED2BF3AC3500754149 /* EKEventStore+Swizzle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EKEventStore+Swizzle.swift"; sourceTree = "<group>"; };
 		AE319CF12BF505BE00754149 /* CalendarServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarServiceTests.swift; sourceTree = "<group>"; };
 		AE32F80F2BED08BD0095DD1A /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
@@ -157,10 +174,25 @@
 		AEA4C92A308B7AEE00B71C76 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		AEA4C92C308BACA600B71C76 /* NewHabitLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewHabitLocationView.swift; sourceTree = "<group>"; };
 		AEA4C92E308BC83000B71C76 /* LocationCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCardView.swift; sourceTree = "<group>"; };
+		AEA4D1003090A00000B71C76 /* HabitsView+ViewMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HabitsView+ViewMode.swift"; sourceTree = "<group>"; };
+		AEA4D1103090A00000B71C76 /* DefaultStoreService+Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DefaultStoreService+Tests.swift"; sourceTree = "<group>"; };
+		AEA4D1203090A00000B71C76 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
+		AEA4D1303090A00000B71C76 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
 		AEAFF2552DF5FC1D00B03261 /* gpxmarques.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = gpxmarques.gpx; sourceTree = "<group>"; };
 		AEB1C0DE308C000100A1B2C3 /* LocationPlaceDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPlaceDetails.swift; sourceTree = "<group>"; };
 		AEB1C0DE308C000500A1B2C3 /* HabitLocationSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitLocationSectionView.swift; sourceTree = "<group>"; };
 		AEB1C0DE308C000700A1B2C3 /* LocationAlwaysSheetContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationAlwaysSheetContentView.swift; sourceTree = "<group>"; };
+		AEC0DE012EB1A00000000011 /* HabitAddTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitAddTests.swift; sourceTree = "<group>"; };
+		AEC0DE012EB1A00000000012 /* HabitValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitValidationTests.swift; sourceTree = "<group>"; };
+		AEC0DE012EB1A00000000013 /* HabitEditTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitEditTests.swift; sourceTree = "<group>"; };
+		AEC0DE012EB1A00000000014 /* Habit+TestFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+TestFactory.swift"; sourceTree = "<group>"; };
+		AEC0DE012EB1A00000000015 /* HabitWeekDaysTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitWeekDaysTests.swift; sourceTree = "<group>"; };
+		AEC0DE012EB1A00000000016 /* HabitGoalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitGoalTests.swift; sourceTree = "<group>"; };
+		AEC2D0A1308D000100A1B2C3 /* Habit+Reminder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Habit+Reminder.swift"; sourceTree = "<group>"; };
+		AEC2D0A1308D000300A1B2C3 /* HabitReminderSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitReminderSectionView.swift; sourceTree = "<group>"; };
+		AEC2D0A1308D000600A1B2C3 /* HabitHoursTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitHoursTests.swift; sourceTree = "<group>"; };
+		AEC2D0A1308D000800A1B2C3 /* HabitsView+Reminders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HabitsView+Reminders.swift"; sourceTree = "<group>"; };
+		AEC2D0A1308D000A00A1B2C3 /* AllHabitsContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllHabitsContentView.swift; sourceTree = "<group>"; };
 		AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		AECAF3183085FE5100AC1AF2 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		AEDAA9D62E60B9DA0001ABA6 /* LocationSearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchService.swift; sourceTree = "<group>"; };
@@ -211,6 +243,8 @@
 			isa = PBXGroup;
 			children = (
 				AE319CED2BF3AC3500754149 /* EKEventStore+Swizzle.swift */,
+				AEC0DE012EB1A00000000014 /* Habit+TestFactory.swift */,
+				AEA4D1103090A00000B71C76 /* DefaultStoreService+Tests.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -238,6 +272,12 @@
 			children = (
 				AE43FF152BF29234008A7085 /* Store */,
 				AE43FF182BF34583008A7085 /* HabitsServiceTests.swift */,
+				AEC0DE012EB1A00000000013 /* HabitEditTests.swift */,
+				AEC0DE012EB1A00000000012 /* HabitValidationTests.swift */,
+				AEC0DE012EB1A00000000015 /* HabitWeekDaysTests.swift */,
+				AEC0DE012EB1A00000000016 /* HabitGoalTests.swift */,
+				AEC2D0A1308D000600A1B2C3 /* HabitHoursTests.swift */,
+				AEC0DE012EB1A00000000011 /* HabitAddTests.swift */,
 				AE319CF12BF505BE00754149 /* CalendarServiceTests.swift */,
 			);
 			path = Core;
@@ -255,6 +295,7 @@
 			isa = PBXGroup;
 			children = (
 				AEA4C92E308BC83000B71C76 /* LocationCardView.swift */,
+				AEC2D0A1308D000300A1B2C3 /* HabitReminderSectionView.swift */,
 				AEB1C0DE308C000500A1B2C3 /* HabitLocationSectionView.swift */,
 				AEA4B5CE308908FE00B71C76 /* AddToolbarButton.swift */,
 				AEA4B5CC3089081100B71C76 /* SettingsToolbarButton.swift */,
@@ -288,6 +329,7 @@
 			children = (
 				AEA3D6BE2B5E85B900A08F31 /* Assets.xcassets */,
 				AE448A8C2B8925D80034898F /* Localizable.xcstrings */,
+				AEA4D1203090A00000B71C76 /* InfoPlist.xcstrings */,
 			);
 			path = Content;
 			sourceTree = "<group>";
@@ -340,9 +382,12 @@
 			isa = PBXGroup;
 			children = (
 				AECA0CA03086AB7600AC1AF2 /* AppTheme.swift */,
+				AEA4D1303090A00000B71C76 /* AppLanguage.swift */,
 				AE448A9B2B8DEC970034898F /* Habit.swift */,
+				AEC2D0A1308D000100A1B2C3 /* Habit+Reminder.swift */,
 				AE43FF042BF28F4C008A7085 /* Habit+Default.swift */,
 				AE30E15F2BA4C182009E10CD /* Ocurrence.swift */,
+				AE30E1702BA4C182009E10CD /* Goal.swift */,
 				AE30E1612BA88B5B009E10CD /* WeekDay.swift */,
 			);
 			path = Models;
@@ -498,6 +543,9 @@
 				AE448A802B84E99F0034898F /* HabitDetailView.swift */,
 				AEA4B5C13088F74500B71C76 /* HabitsView.swift */,
 				AEA4B5C23088F74500B71C76 /* HabitsView+Components.swift */,
+				AEC2D0A1308D000800A1B2C3 /* HabitsView+Reminders.swift */,
+				AEC2D0A1308D000A00A1B2C3 /* AllHabitsContentView.swift */,
+				AEA4D1003090A00000B71C76 /* HabitsView+ViewMode.swift */,
 			);
 			path = Habits;
 			sourceTree = "<group>";
@@ -604,6 +652,8 @@
 			knownRegions = (
 				en,
 				Base,
+				"pt-BR",
+				"pt-PT",
 			);
 			mainGroup = AEA3D6AE2B5E85B700A08F31;
 			packageReferences = (
@@ -634,6 +684,7 @@
 				AEA4C929308B744000B71C76 /* LaunchScreen.storyboard in Resources */,
 				AEA3D6BF2B5E85B900A08F31 /* Assets.xcassets in Resources */,
 				AE448A8D2B8925D80034898F /* Localizable.xcstrings in Resources */,
+				AEA4D1213090A00000B71C76 /* InfoPlist.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -667,6 +718,14 @@
 			files = (
 				AE319CF22BF505BE00754149 /* CalendarServiceTests.swift in Sources */,
 				AE43FF192BF34583008A7085 /* HabitsServiceTests.swift in Sources */,
+				AEC0DE012EB1A00000000004 /* Habit+TestFactory.swift in Sources */,
+				AEA4D1113090A00000B71C76 /* DefaultStoreService+Tests.swift in Sources */,
+				AEC0DE012EB1A00000000003 /* HabitEditTests.swift in Sources */,
+				AEC0DE012EB1A00000000002 /* HabitValidationTests.swift in Sources */,
+				AEC0DE012EB1A00000000005 /* HabitWeekDaysTests.swift in Sources */,
+				AEC0DE012EB1A00000000006 /* HabitGoalTests.swift in Sources */,
+				AEC2D0A1308D000500A1B2C3 /* HabitHoursTests.swift in Sources */,
+				AEC0DE012EB1A00000000001 /* HabitAddTests.swift in Sources */,
 				AE43FF0E2BF291BB008A7085 /* HabitsTests.swift in Sources */,
 				AE43FF172BF29254008A7085 /* DefaultStoreServiceTests.swift in Sources */,
 				AE319CEE2BF3AC3500754149 /* EKEventStore+Swizzle.swift in Sources */,
@@ -713,6 +772,9 @@
 				AEA4C92D308BACA700B71C76 /* NewHabitLocationView.swift in Sources */,
 				AEA4B5C43088F74500B71C76 /* HabitsView.swift in Sources */,
 				AEA4B5C53088F74500B71C76 /* HabitsView+Components.swift in Sources */,
+				AEC2D0A1308D000700A1B2C3 /* HabitsView+Reminders.swift in Sources */,
+				AEC2D0A1308D000900A1B2C3 /* AllHabitsContentView.swift in Sources */,
+				AEA4D1013090A00000B71C76 /* HabitsView+ViewMode.swift in Sources */,
 				AEA4B5CF3089090300B71C76 /* AddToolbarButton.swift in Sources */,
 				AE744E202B600D85002C7EEB /* RelativeHeightSheetContentModifier.swift in Sources */,
 				AE25CCB72F37C1C100A285FA /* Logger+Extensions.swift in Sources */,
@@ -721,10 +783,13 @@
 				AE30E1582B9F7428009E10CD /* CalendarService.swift in Sources */,
 				AEA4B5CD3089081200B71C76 /* SettingsToolbarButton.swift in Sources */,
 				AE30E1602BA4C182009E10CD /* Ocurrence.swift in Sources */,
+				AE30E1712BA4C182009E10CD /* Goal.swift in Sources */,
 				AECA0CA13086AB7C00AC1AF2 /* AppTheme.swift in Sources */,
+				AEA4D1313090A00000B71C76 /* AppLanguage.swift in Sources */,
 				AEA4B5C03088F74300B71C76 /* TodoView.swift in Sources */,
 				AE9D9A112BB3328400CF3498 /* LocationService.swift in Sources */,
 				AEA3D6BB2B5E85B700A08F31 /* HabitsApp.swift in Sources */,
+				AEC2D0A1308D000200A1B2C3 /* Habit+Reminder.swift in Sources */,
 				AE43FF052BF28F4C008A7085 /* Habit+Default.swift in Sources */,
 				AE2B2A4A2BB07223004669B6 /* NotificationService.swift in Sources */,
 				AE3AA21C2E61170B002F78E9 /* LocationSearchResult.swift in Sources */,
@@ -737,6 +802,7 @@
 				AE3AA2282E6707F0002F78E9 /* ConflictResolution.swift in Sources */,
 				AE7DD34F2E748801007BF33A /* HabitsService+Settings.swift in Sources */,
 				AEA4C92F308BC83200B71C76 /* LocationCardView.swift in Sources */,
+				AEC2D0A1308D000400A1B2C3 /* HabitReminderSectionView.swift in Sources */,
 				AEB1C0DE308C000600A1B2C3 /* HabitLocationSectionView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -915,7 +981,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"Habits/Preview Content\"";
 				DEVELOPMENT_TEAM = KD8RY2LWJD;
 				ENABLE_PREVIEWS = YES;
@@ -929,7 +995,6 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Allow location access to show where you are on the map while picking the places for your habit reminders.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
@@ -937,7 +1002,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = test.tiago.Habits;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -956,7 +1021,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"Habits/Preview Content\"";
 				DEVELOPMENT_TEAM = KD8RY2LWJD;
 				ENABLE_PREVIEWS = YES;
@@ -970,7 +1035,6 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Allow location access to show where you are on the map while picking the places for your habit reminders.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
@@ -978,7 +1042,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = test.tiago.Habits;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

@@ -1,0 +1,9 @@
+appId: ${appId}
+---
+# Switches the habits list to the week view, which starts on today
+- tapOn: ${output.buttonHomeViewMode}
+- tapOn: ${output.buttonHomeWeekView}
+- waitForAnimationToEnd
+- assertVisible:
+    text: ${output.dayLabel0}
+    selected: true

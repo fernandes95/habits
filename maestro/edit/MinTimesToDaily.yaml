@@ -1,0 +1,24 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# Adds a minimum times habit, changes it to daily
+# and checks the list shows it on the days daily allows
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetForever.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Minimum Times
+      VALUE: "5"
+- runFlow: ../subflows/AddHabit.yaml
+
+- runFlow:
+    file: ../subflows/EditFrequency.yaml
+    env:
+      FREQUENCY: Daily
+      VALUE: ""
+- runFlow:
+    file: ../subflows/AssertListedDays.yaml
+    env:
+      FREQUENCY: Daily

@@ -1,0 +1,20 @@
+appId: ${appId}
+onFlowStart:
+  - runFlow: ../env.yaml
+---
+# A valid minimum times habit with schedule, end date and location
+# can't be added once it has two schedule hours at the same time
+- runFlow: ../subflows/OpenNewHabit.yaml
+- runFlow: ../subflows/SetForever.yaml
+- runFlow: ../subflows/PickLocation.yaml
+- runFlow:
+    file: ../subflows/SelectFrequency.yaml
+    env:
+      FREQUENCY: Minimum Times
+      VALUE: "5"
+- runFlow: ../subflows/AddScheduleHours.yaml
+- runFlow: ../subflows/AssertAddEnabled.yaml
+
+- runFlow: ../subflows/AddDuplicatedHour.yaml
+
+- runFlow: ../subflows/AssertAddDisabled.yaml
