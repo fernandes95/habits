@@ -23,6 +23,10 @@ class MainState: ObservableObject {
     @Published
     var allHabits: [Habit] = []
 
+    /// False until the habits are loaded the first time, so nothing says there are none before that
+    @Published
+    private(set) var didLoadHabits: Bool = false
+
     @Published
     var configs: AppConfig = AppConfig.empty
 
@@ -39,6 +43,9 @@ class MainState: ObservableObject {
     /// Location permission, nil until it's known. Updated when the user changes it in Settings
     @Published
     var locationStatus: CLAuthorizationStatus?
+
+    /// Start of the day that was today when the habits were last loaded, to notice when midnight passes
+    private var loadedToday: Date = Date.now.startOfDay
 
     /// Habits of each loaded day, keyed by start of day
     private var habitsByDay: [Date: [Habit]] = [:]
@@ -180,10 +187,26 @@ class MainState: ObservableObject {
         self.allHabits = self.habitsService.habits
             .map { Habit(habitEntity: $0) }
             .sorted { $0.createdDate > $1.createdDate }
+        self.didLoadHabits = true
         // The user may have moved to another day while loading, show whatever is selected now
         self.showHabits(of: self.selectedDate, animated: animated)
         // Any change to the habits can change their reminders
         await self.syncReminders()
+    }
+
+    /// Reloads the habits once the day changes, since the app can stay open past midnight.
+    /// The selected day moves to the new today only if it was today, a day picked in the week view stays.
+    ///
+    /// - Parameter now: Current date, the day is compared to the one the habits were loaded on
+    func refreshDayIfNeeded(now: Date = .now) async {
+        let today = now.startOfDay
+        guard today != self.loadedToday else { return }
+
+        let wasToday = self.selectedDate.startOfDay == self.loadedToday
+        self.loadedToday = today
+        do {
+            try await self.loadHabits(date: wasToday ? now : self.selectedDate, animated: false)
+        } catch let error { print(error.localizedDescription) }
     }
 
     /// Schedules the reminders of the coming days again, see `HabitsService.syncReminders`

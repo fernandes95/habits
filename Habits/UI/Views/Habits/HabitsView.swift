@@ -62,7 +62,7 @@ struct HabitsView: View {
                     AllHabitsContentView(
                         list: self.state.allHabits,
                         isEmptyStateVisible: self.state.didLoadHabits && self.state.allHabits.isEmpty,
-                        distance: self.state.distance(to:),
+                        calendar: self.state.calendar,
                         isLocationReminderPaused: self.state.isLocationReminderPaused,
                         isNotificationReminderPaused: self.state.isNotificationReminderPaused,
                         onItemAction: { habit in
@@ -95,7 +95,15 @@ struct HabitsView: View {
                 self.state.refreshCurrentLocation()
                 // Notifications may have been allowed in Settings, and the reminder days move forward
                 Task { await self.state.syncReminders() }
+                // Midnight may have passed while the app was in the background
+                Task { await self.state.refreshDayIfNeeded() }
             }
+        }
+        // Posted at midnight while the app is open, and when the clock or time zone changes
+        .onReceive(
+            NotificationCenter.default.publisher(for: .NSCalendarDayChanged).receive(on: DispatchQueue.main)
+        ) { _ in
+            Task { await self.state.refreshDayIfNeeded() }
         }
         .task {
             if !didLoadData {
@@ -385,53 +393,5 @@ struct HabitsDayContentView: View {
         guard habit.hasReachedMinDays(inWeekOf: self.selectedDate, calendar: self.calendar) else { return nil }
         let checkedDays = habit.checkedDays(inWeekOf: self.selectedDate, calendar: self.calendar)
         return "\(checkedDays)/\(habit.frequencyType.minimumDays)"
-    }
-}
-
-/// Every saved habit, without a status, only the name and the way to its detail
-private struct AllHabitsContentView: View {
-    let list: [Habit]
-    /// True once the habits are loaded and there are none
-    var isEmptyStateVisible: Bool = false
-    /// Distance from the user to a habit location, nil while the user location is unknown
-    let distance: (Habit.Location) -> CLLocationDistance?
-    /// True when the habit's location reminder can't remind, `Always` location isn't allowed
-    let isLocationReminderPaused: (Habit) -> Bool
-    /// True when the habit's reminder hours can't remind, notifications aren't allowed
-    let isNotificationReminderPaused: (Habit) -> Bool
-    var onItemAction: (Habit) -> Void
-
-    var body: some View {
-        if self.isEmptyStateVisible {
-            HabitsEmptyView()
-        } else {
-            self.habitsList
-        }
-    }
-
-    private var habitsList: some View {
-        List(self.list) { habit in
-            let dividerColor = self.list.count == 1 ?
-                Color.black.opacity(0.0) : nil
-
-            ListItem(
-                name: habit.name,
-                type: .noStatusListItem,
-                location: habit.location,
-                locationDistance: habit.location.flatMap { self.distance($0) },
-                isLocationReminderPaused: self.isLocationReminderPaused(habit),
-                isNotificationReminderPaused: self.isNotificationReminderPaused(habit),
-                hasLocationReminder: habit.hasLocationReminder,
-                status: .constant(false),
-                statusAction: {},
-                itemAction: { onItemAction(habit) }
-            )
-            .listItemRowInsets()
-            .listRowSeparatorTint(dividerColor)
-            // No divider above the first habit
-            .listRowSeparator(habit.id == self.list.first?.id ? .hidden : .automatic, edges: .top)
-        }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
     }
 }
